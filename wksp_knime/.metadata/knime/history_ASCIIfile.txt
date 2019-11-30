@@ -1,0 +1,2 @@
+file:/C:/DATOS/GITHUB_REPOS/bolsa/knime_mockdata/bolsa_mock_precios.csv
+knime://knime.workflow/data.all

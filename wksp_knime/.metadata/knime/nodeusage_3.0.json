@@ -1,0 +1,31 @@
+
+{
+    "version":"4.0.2.v201909300911",
+    "created":"2019-11-30 15:35",
+    "nodestats":{
+        "nodes":[
+            {
+                "id":"org.knime.base.node.io.csvreader.CSVReaderNodeFactory#CSV Reader",
+                "nrexecs":0,
+                "nrfails":1,
+                "exectime":92,
+                "nrcreated":0,
+                "successor":"n/a"
+            }
+        ],
+        "metaNodes":{
+        },
+        "wrappedNodes":{
+        }
+    },
+    "uptime":114689,
+    "workflowsOpened":1,
+    "remoteWorkflowsOpened":0,
+    "workflowsImported":0,
+    "workflowsExported":0,
+    "launches":1,
+    "lastApplicationID":"org.knime.product.KNIME_APPLICATION",
+    "timeSinceLastStart":114689,
+    "crashes":0,
+    "properlyShutDown":false
+}
