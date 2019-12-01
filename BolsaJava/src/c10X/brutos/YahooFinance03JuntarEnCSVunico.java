@@ -1,24 +1,33 @@
 package c10X.brutos;
 
 import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 /**
  * Descarga de pruebas de una página de Yahoo Finance
  *
  */
-public class YahooFinance01Descargar {
+public class YahooFinance03JuntarEnCSVunico {
 
-	static Logger MY_LOGGER = Logger.getLogger(YahooFinance01Descargar.class);
+	static Logger MY_LOGGER = Logger.getLogger(YahooFinance03JuntarEnCSVunico.class);
 
-	public YahooFinance01Descargar() {
+	public YahooFinance03JuntarEnCSVunico() {
 		super();
 	}
 
@@ -26,17 +35,18 @@ public class YahooFinance01Descargar {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		System.out.println("Bolsa - YahooFinance - INICIO");
+		System.out.println("Bolsa - YahooFinance - Prueba - INICIO");
 
 		String ficheroPath = "C:\\DATOS\\GITHUB_REPOS\\bolsa\\knime_mockdata\\YahooFinance_prueba.txt";
 
-		YahooFinance01Descargar instancia = new YahooFinance01Descargar();
-		Boolean out = instancia.descargarPagina(ficheroPath, true,
+		YahooFinance03JuntarEnCSVunico instancia = new YahooFinance03JuntarEnCSVunico();
+		String contenidoDescargado = instancia.descargarPagina(ficheroPath, true,
 				"https://query1.finance.yahoo.com/v8/finance/chart/CGIX?symbol=CGIX&range=6mo&interval=60m");
+		// https://finance.yahoo.com/quote/CGIX/chart?p=CGIX&_guc_consent_skip=1575197868
 
-		System.out.println("Bolsa - YahooFinance - Resultado: " + out);
+		instancia.parsearJson(ficheroPath);
 
-		System.out.println("Bolsa - YahooFinance - FIN");
+		System.out.println("Bolsa - YahooFinance - Prueba - FIN");
 	}
 
 	/**
@@ -48,10 +58,10 @@ public class YahooFinance01Descargar {
 	 *                       la carpeta) de donde se van a guardar los DATOS BRUTOS.
 	 * @param urlEntrada     URL de la pÃ¡gina web a descargar
 	 */
-	public Boolean descargarPagina(String pathOut, Boolean borrarSiExiste, String urlEntrada) {
+	public String descargarPagina(String pathOut, Boolean borrarSiExiste, String urlEntrada) {
 
 		MY_LOGGER.info("[URL|pathOut|borrarSiExiste] --> " + urlEntrada + " | " + pathOut + " | " + borrarSiExiste);
-		Boolean out = false;
+		String contenido = null;
 
 		try {
 			if (Files.exists(Paths.get(pathOut)) && borrarSiExiste) {
@@ -108,18 +118,62 @@ public class YahooFinance01Descargar {
 			MY_LOGGER.debug("Carpeta escribible:" + escribible);
 			MY_LOGGER.debug("Escribiendo a fichero...");
 			MY_LOGGER.debug("StringBuffer con " + content.length() + " elementos de 16-bits)");
-			// contenido = content.toString();
+			contenido = content.toString();
 
 			Files.write(Paths.get(pathOut), content.toString().getBytes());
-
-			out = true;
 
 		} catch (IOException e) {
 			MY_LOGGER.error("Error:" + e.getMessage());
 			e.printStackTrace();
 		}
 
-		return out;
+		return contenido;
+
+	}
+
+	/**
+	 * @param pathJsonEntrada
+	 */
+	public void parsearJson(String pathJsonEntrada) {
+
+		MY_LOGGER.info("Parseando JSON...");
+
+		JSONParser parser = new JSONParser();
+
+		try (Reader reader = new FileReader(pathJsonEntrada)) {
+
+			JSONObject primerJson = (JSONObject) parser.parse(reader);
+
+			Map<String, JSONObject> mapaChart = (HashMap<String, JSONObject>) primerJson.get("chart");
+			Object resultValor = mapaChart.get("result");
+			JSONArray a1 = (JSONArray) resultValor;
+			JSONObject a2 = (JSONObject) a1.get(0);
+			Set<String> claves = a2.keySet();
+			for (String clave : claves) {
+				System.out.println(clave);
+			}
+
+			Object meta = a2.get("meta");
+			Object indicators = a2.get("indicators");
+			Object tiempos = a2.get("timestamp");
+
+			System.out.println("meta ---> " + meta);
+			System.out.println("indicators ---> " + indicators);
+			System.out.println("tiempos ---> " + tiempos);
+
+//			// loop array
+//			JSONArray msg = (JSONArray) jsonObject.get("messages");
+//			Iterator<String> iterator = msg.iterator();
+//			while (iterator.hasNext()) {
+//				System.out.println(iterator.next());
+//			}
+
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
+		} catch (ParseException e) {
+			System.err.println(e.getMessage());
+		}
+
 	}
 
 }
