@@ -1,18 +1,18 @@
 /**
  * 
  */
-package pruebas.bolsa;
+package pruebas;
 
 /**
  * @author casa
  *
  */
-public class Pruebas {
+public class PruebasTemp {
 
 	/**
 	 * 
 	 */
-	public Pruebas() {
+	public PruebasTemp() {
 		// TODO Auto-generated constructor stub
 	}
 
