@@ -8,6 +8,8 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 /**
@@ -26,17 +28,40 @@ public class YahooFinance01Descargar {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		System.out.println("Bolsa - YahooFinance - INICIO");
 
-		String ficheroPath = "C:\\DATOS\\GITHUB_REPOS\\bolsa\\knime_mockdata\\YahooFinance_prueba.txt";
+		MY_LOGGER.info("INICIO");
+
+		BasicConfigurator.configure();
+		MY_LOGGER.setLevel(Level.INFO);
+
+		String mercado = "NASDAQ"; // DEFAULT
+		String ticker = "CGIX"; // DEFAULT
+
+		if (args.length == 0) {
+			MY_LOGGER.info("Sin parametros de entrada. Rellenamos los DEFAULT...");
+		} else if (args.length != 2) {
+			MY_LOGGER.error("Parametros de entrada incorrectos!!");
+			System.exit(-1);
+		} else {
+			mercado = args[0];
+			ticker = args[1];
+		}
+
+		MY_LOGGER.info("mercado=" + mercado);
+		MY_LOGGER.info("ticker=" + ticker);
+
+		String pathOut = "C:\\bolsa\\pasado\\brutos\\bruto_" + mercado + "_" + ticker + ".txt";
+		String URL_yahoo_ticker = "https://query1.finance.yahoo.com/v8/finance/chart/" + ticker + "?symbol=" + ticker
+				+ "&range=6mo&interval=60m";
+
+		MY_LOGGER.info("pathOut=" + pathOut);
+		MY_LOGGER.info("URL_yahoo_ticker=" + URL_yahoo_ticker);
 
 		YahooFinance01Descargar instancia = new YahooFinance01Descargar();
-		Boolean out = instancia.descargarPagina(ficheroPath, true,
-				"https://query1.finance.yahoo.com/v8/finance/chart/CGIX?symbol=CGIX&range=6mo&interval=60m");
+		Boolean out = instancia.descargarPagina(pathOut, true, URL_yahoo_ticker);
 
-		System.out.println("Bolsa - YahooFinance - Resultado: " + out);
-
-		System.out.println("Bolsa - YahooFinance - FIN");
+		MY_LOGGER.info("Resultado: " + out);
+		MY_LOGGER.info("FIN");
 	}
 
 	/**
@@ -59,7 +84,7 @@ public class YahooFinance01Descargar {
 				Files.delete(Paths.get(pathOut));
 			}
 
-			MY_LOGGER.info("--- Peticion HTTP normal ---");
+			// MY_LOGGER.info("--- Peticion HTTP normal ---");
 			// Request
 			URL url = new URL(urlEntrada);
 			HttpURLConnection.setFollowRedirects(true);
