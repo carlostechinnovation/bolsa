@@ -77,7 +77,7 @@ public class ContructorElaborados {
 		// CÁLCULOS DE PARÁMETROS ELABORADOS
 		Integer duracionVela = tiempoEnHoras(T_velaEntrada);
 		Integer antiguedadEnAnalisis;
-		Float media_precio_sma;
+		Float media_precio_sma, media_volumen_sma;
 		HashMap<Date, HashMap<String, String>> bloquesAnterioresEnAnalisis = new HashMap<Date, HashMap<String, String>>();
 
 		for (int x = 0; x < empresas.size(); x++) {
@@ -86,15 +86,16 @@ public class ContructorElaborados {
 			System.out.println("Empresa: " + empresas.get(x));
 			for (Integer periodo : periodosHParaParametros) {
 				// PARA CADA PERIODO DE CÁLCULO DE PARÁMETROS ELABORADOS...
-				SimpleMovingAverage calculadora_media_precio_sma = new SimpleMovingAverage();
+				Estadistica calculadoraPrecios = new Estadistica();
+				Estadistica calculadoraVolumenes = new Estadistica();
 				Iterator<Integer> iteradorAntiguedad = datosEmpresa.keySet().iterator();
 				while (iteradorAntiguedad.hasNext()) {
 					antiguedadEnAnalisis = iteradorAntiguedad.next();
 					// Se cogen sólo los datos con la antigüedad dento del rango a analizar
 					if (antiguedadEnAnalisis < periodo) {
 						HashMap<String, String> parametros = datosEmpresa.get(antiguedadEnAnalisis);
-						calculadora_media_precio_sma
-								.addData(new Float(parametros.get(NOMBRES_PARAMETROS.PRECIO.toString())));
+						calculadoraPrecios.addData(new Float(parametros.get(NOMBRES_PARAMETROS.PRECIO.toString())));
+						calculadoraVolumenes.addData(new Float(parametros.get(NOMBRES_PARAMETROS.VOLUMEN.toString())));
 					} else {
 						// Para los datos de antigüedad excesiva, se sale del bucle
 						break;
@@ -103,12 +104,20 @@ public class ContructorElaborados {
 				// Se calculan los parámetros
 				// Si no se tienen todos los datos del periodo (por ejemplo, para una media de
 				// 200 días, 200*7 valores hacia atrás), lanzará excepción
-				media_precio_sma = calculadora_media_precio_sma.getMean(periodo);
+				// PRECIOS
+				media_precio_sma = calculadoraPrecios.getSMA(periodo);
+				// VOLÚMENES
+				media_volumen_sma = calculadoraVolumenes.getSMA(periodo);
 
 				// Validación
-				System.out.println("Valores usados: " + calculadora_media_precio_sma.getDataToString());
+				// PRECIOS
+				System.out.println("Precios usados: " + calculadoraPrecios.getDataToString());
 				System.out.println(
 						"Resultado media_precio_sma\" + periodo / HORAS_AL_DIA + \": \" : " + media_precio_sma);
+				// VOLÚMENES
+				System.out.println("Volúmenes usados: " + calculadoraVolumenes.getDataToString());
+				System.out.println(
+						"Resultado media_volumen_sma\" + periodo / HORAS_AL_DIA + \": \" : " + media_volumen_sma);
 			}
 		}
 	}
