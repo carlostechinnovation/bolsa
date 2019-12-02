@@ -1,7 +1,6 @@
 package c30x.elaborados.construir;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -14,12 +13,20 @@ public class ContructorElaborados {
 	// META-PARAMETRIZACIÓN
 	// Periodo de la vela de entrada
 	public final static String T_velaEntrada = "H";
-	// 5, 20, 50 y 200 días
-	public final static Integer HORAS_AL_DIA = 7;
-	public final static Integer[] periodosHParaParametros = new Integer[] { 1 * HORAS_AL_DIA };
+	// x días
+	public final static Integer HORAS_AL_DIA = 4;
+	public final static Integer[] periodosHParaParametros = new Integer[] { 1 * HORAS_AL_DIA, 2 * HORAS_AL_DIA };
 
 	// IMPORTANTE: se asume que los datos están ordenados de menor a mayor
 	// antigÜedad, y agrupados por empresa
+	/**
+	 * @param args
+	 * @throws Exception
+	 */
+	/**
+	 * @param args
+	 * @throws Exception
+	 */
 	public static void main(String[] args) throws Exception {
 		// DATOS DE ENTRADA
 		// Asumo que la clave es el ticker de la empresa.
@@ -28,7 +35,6 @@ public class ContructorElaborados {
 		// El valor es un mapa, de antigüedad (en HORAS) + String de valores de
 		// parámetros limpios
 		HashMap<String, HashMap<Integer, HashMap<String, String>>> datosEntrada = new HashMap<String, HashMap<Integer, HashMap<String, String>>>();
-		String empresa;
 
 		HashMap<String, String> datosParametrosEmpresaSNAP8 = new HashMap<String, String>();
 		HashMap<String, String> datosParametrosEmpresaSNAP7 = new HashMap<String, String>();
@@ -75,10 +81,7 @@ public class ContructorElaborados {
 		datosEntrada.put("SNAP", datosEmpresa);
 
 		// CÁLCULOS DE PARÁMETROS ELABORADOS
-		Integer duracionVela = tiempoEnHoras(T_velaEntrada);
 		Integer antiguedadEnAnalisis;
-		Float media_precio_sma, media_volumen_sma;
-		HashMap<Date, HashMap<String, String>> bloquesAnterioresEnAnalisis = new HashMap<Date, HashMap<String, String>>();
 
 		for (int x = 0; x < empresas.size(); x++) {
 			// EXTRACCIÓN DE DATOS DE LA EMPRESA
@@ -86,38 +89,54 @@ public class ContructorElaborados {
 			System.out.println("Empresa: " + empresas.get(x));
 			for (Integer periodo : periodosHParaParametros) {
 				// PARA CADA PERIODO DE CÁLCULO DE PARÁMETROS ELABORADOS...
-				Estadistica calculadoraPrecios = new Estadistica();
-				Estadistica calculadoraVolumenes = new Estadistica();
+				Estadisticas estadisticasPrecio = new Estadisticas();
+				Estadisticas estadisticasVolumen = new Estadisticas();
 				Iterator<Integer> iteradorAntiguedad = datosEmpresa.keySet().iterator();
 				while (iteradorAntiguedad.hasNext()) {
 					antiguedadEnAnalisis = iteradorAntiguedad.next();
 					// Se cogen sólo los datos con la antigüedad dento del rango a analizar
 					if (antiguedadEnAnalisis < periodo) {
 						HashMap<String, String> parametros = datosEmpresa.get(antiguedadEnAnalisis);
-						calculadoraPrecios.addData(new Float(parametros.get(NOMBRES_PARAMETROS.PRECIO.toString())));
-						calculadoraVolumenes.addData(new Float(parametros.get(NOMBRES_PARAMETROS.VOLUMEN.toString())));
+						estadisticasPrecio.addValue(new Double(parametros.get(NOMBRES_PARAMETROS.PRECIO.toString())));
+						estadisticasVolumen.addValue(new Double(parametros.get(NOMBRES_PARAMETROS.VOLUMEN.toString())));
 					} else {
 						// Para los datos de antigüedad excesiva, se sale del bucle
 						break;
 					}
 				}
-				// Se calculan los parámetros
+
+				// VALIDACIÓN DE ENTRADA
 				// Si no se tienen todos los datos del periodo (por ejemplo, para una media de
 				// 200 días, 200*7 valores hacia atrás), lanzará excepción
-				// PRECIOS
-				media_precio_sma = calculadoraPrecios.getSMA(periodo);
-				// VOLÚMENES
-				media_volumen_sma = calculadoraVolumenes.getSMA(periodo);
+				System.out.println("********************************************************");
+				if (estadisticasPrecio.getN() != periodo) {
+					throw new Exception("PRECIO El número de datos a analizar no es el adecuado. Se usan "
+							+ estadisticasPrecio.getN() + " y se necesitan " + periodo);
+				} else {
+					System.out.println("PRECIO Se tienen " + estadisticasPrecio.getN() + " y se usan " + periodo);
+					for (int i = 0; i < estadisticasPrecio.getN(); i++) {
+						System.out.print(estadisticasPrecio.getElement(i) + ", ");
+					}
+					System.out.println("");
+				}
+				if (estadisticasVolumen.getN() != periodo) {
+					throw new Exception("VOLUMEN El número de datos a analizar no es el adecuado. Se usan "
+							+ estadisticasVolumen.getN() + " y se necesitan " + periodo);
+				} else {
+					System.out.println("VOLUMEN Se usan " + estadisticasVolumen.getN() + " y se necesitan " + periodo);
+					for (int i = 0; i < estadisticasVolumen.getN(); i++) {
+						System.out.print(estadisticasVolumen.getElement(i) + ", ");
+					}
+					System.out.println("");
+				}
 
+				// CÁLCULO
 				// Validación
 				// PRECIOS
-				System.out.println("Precios usados: " + calculadoraPrecios.getDataToString());
-				System.out.println(
-						"Resultado media_precio_sma\" + periodo / HORAS_AL_DIA + \": \" : " + media_precio_sma);
+				estadisticasPrecio.debugValidacion();
 				// VOLÚMENES
-				System.out.println("Volúmenes usados: " + calculadoraVolumenes.getDataToString());
-				System.out.println(
-						"Resultado media_volumen_sma\" + periodo / HORAS_AL_DIA + \": \" : " + media_volumen_sma);
+				estadisticasVolumen.debugValidacion();
+
 			}
 		}
 	}
