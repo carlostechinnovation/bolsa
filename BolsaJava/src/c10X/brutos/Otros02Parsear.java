@@ -75,6 +75,7 @@ public class Otros02Parsear {
 					tempArr = lineaLimpia.split(delimitador);
 					out.add(new Otros02NasdaqTicker(tempArr[0], tempArr[1], tempArr[2], tempArr[3], tempArr[4],
 							tempArr[5], tempArr[6], tempArr[7]));
+
 				}
 			}
 			br.close();

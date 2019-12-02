@@ -1,7 +1,11 @@
 package c10X.brutos;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,8 +46,8 @@ public class YahooFinance02Parsear {
 		MY_LOGGER.setLevel(Level.INFO);
 
 		// DEFAULT
-		String pathBruto = "C:\\bolsa\\pasado\\brutos\\bruto_NASDAQ_CGIX.txt";
-		String pathBrutoCsv = "C:\\bolsa\\pasado\\brutos_csv\\bruto_NASDAQ_CGIX.csv";
+		String pathBruto = "C:\\bolsa\\pasado\\brutos\\bruto_NASDAQ_AXAS.txt";
+		String pathBrutoCsv = "C:\\bolsa\\pasado\\brutos_csv\\bruto_NASDAQ_AXAS.csv";
 
 		if (args.length == 0) {
 			MY_LOGGER.info("Sin parametros de entrada. Rellenamos los DEFAULT...");
@@ -76,11 +80,12 @@ public class YahooFinance02Parsear {
 
 		MY_LOGGER.info("Parseando JSON...");
 		Boolean out = false;
-
 		JSONParser parser = new JSONParser();
 
 		try (Reader reader = new FileReader(pathBrutoEntrada)) {
 
+			// ---------------------------- LECTURA ------------------
+			MY_LOGGER.info("Lectura...");
 			JSONObject primerJson = (JSONObject) parser.parse(reader);
 
 			Map<String, JSONObject> mapaChart = (HashMap<String, JSONObject>) primerJson.get("chart");
@@ -89,16 +94,12 @@ public class YahooFinance02Parsear {
 			JSONObject a2 = (JSONObject) a1.get(0);
 			Set<String> claves = a2.keySet();
 			for (String clave : claves) {
-				MY_LOGGER.info(clave);
+				MY_LOGGER.info("clave=" + clave);
 			}
 
 			// Object meta = a2.get("meta");
 			JSONObject indicators = (JSONObject) a2.get("indicators");
 			// Object tiempos = a2.get("timestamp");
-
-			// MY_LOGGER.info("meta ---> " + meta);
-			MY_LOGGER.info("indicators ---> " + indicators);
-			// MY_LOGGER.info("tiempos ---> " + tiempos);
 
 			JSONArray quote1 = (JSONArray) indicators.get("quote");
 			JSONObject quote2 = (JSONObject) quote1.get(0);
@@ -109,12 +110,32 @@ public class YahooFinance02Parsear {
 			JSONArray listaPreciosClose = (JSONArray) quote2.get("close");
 			JSONArray listaPreciosOpen = (JSONArray) quote2.get("open");
 
-//			// loop array
-//			JSONArray msg = (JSONArray) jsonObject.get("messages");
-//			Iterator<String> iterator = msg.iterator();
-//			while (iterator.hasNext()) {
-//				MY_LOGGER.info(iterator.next());
-//			}
+			MY_LOGGER.info("Tamanios --> " + listaVolumenes.size() + "|" + listaPreciosHigh.size() + "|"
+					+ listaPreciosLow.size() + "|" + listaPreciosClose.size() + "|" + listaPreciosOpen.size());
+
+			// ---------------------------- ESCRITURA ---------------
+			MY_LOGGER.info("Escritura...");
+			File fout = new File(pathBrutoCsvSalida);
+			FileOutputStream fos = new FileOutputStream(fout, false);
+			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
+
+			// Cabecera
+			bw.write("antiguedad|volumen|high|low|close|open");
+			bw.newLine();
+
+			int i = 0;
+			int numTodos = listaVolumenes.size();
+			int antiguedad = 0;
+			for (i = 0; i < listaVolumenes.size(); i++) {
+
+				antiguedad = numTodos - i - 1;
+				// MY_LOGGER.info("i=" + i + " antiguedad=" + String.valueOf(antiguedad));
+				bw.write(antiguedad + "|" + listaVolumenes.get(i) + "|" + listaPreciosHigh.get(i) + "|"
+						+ listaPreciosLow.get(i) + "|" + listaPreciosClose.get(i) + "|" + listaPreciosOpen.get(i));
+				bw.newLine();
+			}
+
+			bw.close();
 
 			out = true;
 

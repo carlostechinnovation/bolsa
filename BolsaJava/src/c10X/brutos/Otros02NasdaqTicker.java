@@ -34,4 +34,11 @@ public class Otros02NasdaqTicker {
 		this.summaryQuote = summaryQuote;
 	}
 
+	@Override
+	public String toString() {
+		return "Otros02NasdaqTicker [symbol=" + symbol + ", name=" + name + ", lastSale=" + lastSale + ", marketCap="
+				+ marketCap + ", ipoYear=" + ipoYear + ", sector=" + sector + ", industry=" + industry
+				+ ", summaryQuote=" + summaryQuote + "]";
+	}
+
 }
