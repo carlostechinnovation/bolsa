@@ -105,37 +105,11 @@ public class ContructorElaborados {
 					}
 				}
 
-				// VALIDACIÓN DE ENTRADA
-				// Si no se tienen todos los datos del periodo (por ejemplo, para una media de
-				// 200 días, 200*7 valores hacia atrás), lanzará excepción
-				System.out.println("********************************************************");
-				if (estadisticasPrecio.getN() != periodo) {
-					throw new Exception("PRECIO El número de datos a analizar no es el adecuado. Se usan "
-							+ estadisticasPrecio.getN() + " y se necesitan " + periodo);
-				} else {
-					System.out.println("PRECIO Se tienen " + estadisticasPrecio.getN() + " y se usan " + periodo);
-					for (int i = 0; i < estadisticasPrecio.getN(); i++) {
-						System.out.print(estadisticasPrecio.getElement(i) + ", ");
-					}
-					System.out.println("");
-				}
-				if (estadisticasVolumen.getN() != periodo) {
-					throw new Exception("VOLUMEN El número de datos a analizar no es el adecuado. Se usan "
-							+ estadisticasVolumen.getN() + " y se necesitan " + periodo);
-				} else {
-					System.out.println("VOLUMEN Se usan " + estadisticasVolumen.getN() + " y se necesitan " + periodo);
-					for (int i = 0; i < estadisticasVolumen.getN(); i++) {
-						System.out.print(estadisticasVolumen.getElement(i) + ", ");
-					}
-					System.out.println("");
-				}
-
-				// CÁLCULO
 				// Validación
 				// PRECIOS
-				estadisticasPrecio.debugValidacion();
+				estadisticasPrecio.debugValidacion(periodo);
 				// VOLÚMENES
-				estadisticasVolumen.debugValidacion();
+				estadisticasVolumen.debugValidacion(periodo);
 
 			}
 		}
