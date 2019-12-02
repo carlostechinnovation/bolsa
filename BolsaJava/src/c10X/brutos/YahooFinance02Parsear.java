@@ -89,30 +89,39 @@ public class YahooFinance02Parsear {
 			JSONObject a2 = (JSONObject) a1.get(0);
 			Set<String> claves = a2.keySet();
 			for (String clave : claves) {
-				System.out.println(clave);
+				MY_LOGGER.info(clave);
 			}
 
-			Object meta = a2.get("meta");
-			Object indicators = a2.get("indicators");
-			Object tiempos = a2.get("timestamp");
+			// Object meta = a2.get("meta");
+			JSONObject indicators = (JSONObject) a2.get("indicators");
+			// Object tiempos = a2.get("timestamp");
 
-			System.out.println("meta ---> " + meta);
-			System.out.println("indicators ---> " + indicators);
-			System.out.println("tiempos ---> " + tiempos);
+			// MY_LOGGER.info("meta ---> " + meta);
+			MY_LOGGER.info("indicators ---> " + indicators);
+			// MY_LOGGER.info("tiempos ---> " + tiempos);
+
+			JSONArray quote1 = (JSONArray) indicators.get("quote");
+			JSONObject quote2 = (JSONObject) quote1.get(0);
+
+			JSONArray listaVolumenes = (JSONArray) quote2.get("volume");
+			JSONArray listaPreciosHigh = (JSONArray) quote2.get("high");
+			JSONArray listaPreciosLow = (JSONArray) quote2.get("low");
+			JSONArray listaPreciosClose = (JSONArray) quote2.get("close");
+			JSONArray listaPreciosOpen = (JSONArray) quote2.get("open");
 
 //			// loop array
 //			JSONArray msg = (JSONArray) jsonObject.get("messages");
 //			Iterator<String> iterator = msg.iterator();
 //			while (iterator.hasNext()) {
-//				System.out.println(iterator.next());
+//				MY_LOGGER.info(iterator.next());
 //			}
 
 			out = true;
 
 		} catch (IOException e) {
-			System.err.println(e.getMessage());
+			MY_LOGGER.error(e.getMessage());
 		} catch (ParseException e) {
-			System.err.println(e.getMessage());
+			MY_LOGGER.error(e.getMessage());
 		}
 
 		return out;

@@ -35,22 +35,25 @@ public class YahooFinance01Descargar {
 		MY_LOGGER.setLevel(Level.INFO);
 
 		String mercado = "NASDAQ"; // DEFAULT
-		String ticker = "CGIX"; // DEFAULT
+		String ticker = "AXAS"; // DEFAULT
+		String directorioOut = "C:\\bolsa\\pasado\\brutos\\";
 
 		if (args.length == 0) {
 			MY_LOGGER.info("Sin parametros de entrada. Rellenamos los DEFAULT...");
-		} else if (args.length != 2) {
+		} else if (args.length != 3) {
 			MY_LOGGER.error("Parametros de entrada incorrectos!!");
 			System.exit(-1);
 		} else {
 			mercado = args[0];
 			ticker = args[1];
+			directorioOut = args[2];
 		}
 
 		MY_LOGGER.info("mercado=" + mercado);
 		MY_LOGGER.info("ticker=" + ticker);
+		MY_LOGGER.info("directorioOut=" + directorioOut);
 
-		String pathOut = "C:\\bolsa\\pasado\\brutos\\bruto_" + mercado + "_" + ticker + ".txt";
+		String pathOut = directorioOut + "bruto_" + mercado + "_" + ticker + ".txt";
 		String URL_yahoo_ticker = "https://query1.finance.yahoo.com/v8/finance/chart/" + ticker + "?symbol=" + ticker
 				+ "&range=6mo&interval=60m";
 
