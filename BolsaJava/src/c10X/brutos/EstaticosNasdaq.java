@@ -1,15 +1,19 @@
 package c10X.brutos;
 
-public class Otros02NasdaqTicker {
+/**
+ * Datos estáticos del NASDAQ
+ *
+ */
+public class EstaticosNasdaq {
 
-	private String symbol = "";
-	private String name = "";
-	private String lastSale = "";
-	private String marketCap = "";
-	private String ipoYear = "";
-	private String sector = "";
-	private String industry = "";
-	private String summaryQuote = "";
+	public String symbol = "";
+	public String name = "";
+	public String lastSale = "";
+	public String marketCap = "";
+	public String ipoYear = "";
+	public String sector = "";
+	public String industry = "";
+	public String summaryQuote = "";
 
 	/**
 	 * @param symbol
@@ -21,8 +25,8 @@ public class Otros02NasdaqTicker {
 	 * @param industry
 	 * @param summaryQuote
 	 */
-	public Otros02NasdaqTicker(String symbol, String name, String lastSale, String marketCap, String ipoYear,
-			String sector, String industry, String summaryQuote) {
+	public EstaticosNasdaq(String symbol, String name, String lastSale, String marketCap, String ipoYear, String sector,
+			String industry, String summaryQuote) {
 		super();
 		this.symbol = symbol;
 		this.name = name;
@@ -36,7 +40,7 @@ public class Otros02NasdaqTicker {
 
 	@Override
 	public String toString() {
-		return "Otros02NasdaqTicker [symbol=" + symbol + ", name=" + name + ", lastSale=" + lastSale + ", marketCap="
+		return "EstaticosNasdaq [symbol=" + symbol + ", name=" + name + ", lastSale=" + lastSale + ", marketCap="
 				+ marketCap + ", ipoYear=" + ipoYear + ", sector=" + sector + ", industry=" + industry
 				+ ", summaryQuote=" + summaryQuote + "]";
 	}

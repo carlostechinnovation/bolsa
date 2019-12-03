@@ -7,7 +7,13 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -20,12 +26,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 /**
- * Descarga de pruebas de una página de Yahoo Finance
- *
- */
-/**
- * @author casa
- *
+ * Parsear datos de Yahoo Finance
  */
 public class YahooFinance02Parsear {
 
@@ -37,17 +38,17 @@ public class YahooFinance02Parsear {
 
 	/**
 	 * @param args
+	 * @throws IOException
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 
 		MY_LOGGER.info("INICIO");
 
 		BasicConfigurator.configure();
 		MY_LOGGER.setLevel(Level.INFO);
 
-		// DEFAULT
-		String pathBruto = "C:\\bolsa\\pasado\\brutos\\bruto_NASDAQ_AXAS.txt";
-		String pathBrutoCsv = "C:\\bolsa\\pasado\\brutos_csv\\bruto_NASDAQ_AXAS.csv";
+		String directorioIn = "/bolsa/pasado/brutos/"; // DEFAULT
+		String directorioOut = "/bolsa/pasado/brutos_csv/"; // DEFAULT
 
 		if (args.length == 0) {
 			MY_LOGGER.info("Sin parametros de entrada. Rellenamos los DEFAULT...");
@@ -55,18 +56,63 @@ public class YahooFinance02Parsear {
 			MY_LOGGER.error("Parametros de entrada incorrectos!!");
 			System.exit(-1);
 		} else {
-			pathBruto = args[0];
-			pathBrutoCsv = args[1];
+			directorioIn = args[0];
+			directorioOut = args[1];
 		}
 
-		MY_LOGGER.info("pathBruto=" + pathBruto);
-		MY_LOGGER.info("pathBrutoCsv=" + pathBrutoCsv);
+		List<EstaticosNasdaq> nasdaqEstaticos1 = EstaticosDescargarYParsear.descargarNasdaqEstaticos1();
+		parsearNasdaqDinamicos01(nasdaqEstaticos1, directorioIn, directorioOut);
 
-		YahooFinance02Parsear instancia = new YahooFinance02Parsear();
-		Boolean out = instancia.parsearJson(pathBruto, pathBrutoCsv);
-
-		MY_LOGGER.info("Resultado: " + out);
 		MY_LOGGER.info("FIN");
+	}
+
+	/**
+	 * @param nasdaqEstaticos1
+	 * @param directorioIn
+	 * @param directorioOut
+	 * @return
+	 * @throws IOException
+	 */
+	public static Boolean parsearNasdaqDinamicos01(List<EstaticosNasdaq> nasdaqEstaticos1, String directorioIn,
+			String directorioOut) throws IOException {
+
+		MY_LOGGER.info("parsearNasdaqDinamicos01...");
+		MY_LOGGER.info("directorioIn=" + directorioIn);
+		MY_LOGGER.info("directorioOut=" + directorioOut);
+
+		String mercado = "NASDAQ"; // DEFAULT
+		Boolean out = false;
+		String ticker;
+
+		MY_LOGGER.info("mercado=" + mercado);
+
+		String pathBruto;
+		String pathBrutoCsv;
+
+		for (int i = 0; i < nasdaqEstaticos1.size(); i++) {
+
+			ticker = nasdaqEstaticos1.get(i).symbol;
+			pathBruto = directorioIn + "bruto_" + mercado + "_" + ticker + ".txt";
+			pathBrutoCsv = directorioOut + "bruto_" + mercado + "_" + ticker + ".csv";
+
+			MY_LOGGER.info("pathBruto|pathBrutoCsv =" + pathBruto + "|" + pathBrutoCsv);
+
+			if (Files.exists(Paths.get(pathBruto))) {
+				Files.deleteIfExists(Paths.get(pathBrutoCsv)); // Borramos el fichero de salida si existe
+
+				out = parsearJson(pathBruto, pathBrutoCsv);
+
+				if (out.booleanValue() == false) {
+					MY_LOGGER.error("La descarga de datos estaticos 1 de " + mercado + " - " + ticker
+							+ " ha fallado. Saliendo...");
+				}
+
+			} else {
+				MY_LOGGER.warn("Fichero de entrada no existe: " + pathBruto + " Continúa...");
+			}
+
+		}
+		return out;
 	}
 
 	/**
@@ -76,7 +122,7 @@ public class YahooFinance02Parsear {
 	 * @param pathBrutoEntrada
 	 * @param pathBrutoCsvSalida
 	 */
-	public Boolean parsearJson(String pathBrutoEntrada, String pathBrutoCsvSalida) {
+	public static Boolean parsearJson(String pathBrutoEntrada, String pathBrutoCsvSalida) {
 
 		MY_LOGGER.info("Parseando JSON...");
 		Boolean out = false;
@@ -85,7 +131,7 @@ public class YahooFinance02Parsear {
 		try (Reader reader = new FileReader(pathBrutoEntrada)) {
 
 			// ---------------------------- LECTURA ------------------
-			MY_LOGGER.info("Lectura...");
+			MY_LOGGER.debug("Lectura...");
 			JSONObject primerJson = (JSONObject) parser.parse(reader);
 
 			Map<String, JSONObject> mapaChart = (HashMap<String, JSONObject>) primerJson.get("chart");
@@ -93,13 +139,10 @@ public class YahooFinance02Parsear {
 			JSONArray a1 = (JSONArray) resultValor;
 			JSONObject a2 = (JSONObject) a1.get(0);
 			Set<String> claves = a2.keySet();
-			for (String clave : claves) {
-				MY_LOGGER.info("clave=" + clave);
-			}
 
-			// Object meta = a2.get("meta");
+			Object meta = a2.get("meta");
 			JSONObject indicators = (JSONObject) a2.get("indicators");
-			// Object tiempos = a2.get("timestamp");
+			JSONArray tiemposEnSegundosDesde1970 = (JSONArray) a2.get("timestamp");
 
 			JSONArray quote1 = (JSONArray) indicators.get("quote");
 			JSONObject quote2 = (JSONObject) quote1.get(0);
@@ -114,24 +157,25 @@ public class YahooFinance02Parsear {
 					+ listaPreciosLow.size() + "|" + listaPreciosClose.size() + "|" + listaPreciosOpen.size());
 
 			// ---------------------------- ESCRITURA ---------------
-			MY_LOGGER.info("Escritura...");
+			MY_LOGGER.debug("Escritura...");
 			File fout = new File(pathBrutoCsvSalida);
 			FileOutputStream fos = new FileOutputStream(fout, false);
 			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
 
 			// Cabecera
-			bw.write("antiguedad|volumen|high|low|close|open");
+			bw.write("intanteensegdesde1970|volumen|high|low|close|open");
 			bw.newLine();
 
 			int i = 0;
-			int numTodos = listaVolumenes.size();
-			int antiguedad = 0;
+			DateFormat df = new SimpleDateFormat("yyyy|MM|dd|HH|mm");
+
 			for (i = 0; i < listaVolumenes.size(); i++) {
 
-				antiguedad = numTodos - i - 1;
-				// MY_LOGGER.info("i=" + i + " antiguedad=" + String.valueOf(antiguedad));
-				bw.write(antiguedad + "|" + listaVolumenes.get(i) + "|" + listaPreciosHigh.get(i) + "|"
-						+ listaPreciosLow.get(i) + "|" + listaPreciosClose.get(i) + "|" + listaPreciosOpen.get(i));
+				long msegDesde1970 = (long) tiemposEnSegundosDesde1970.get(i) * 1000L;
+
+				bw.write(df.format(new Date(msegDesde1970)) + "|" + listaVolumenes.get(i) + "|"
+						+ listaPreciosHigh.get(i) + "|" + listaPreciosLow.get(i) + "|" + listaPreciosClose.get(i) + "|"
+						+ listaPreciosOpen.get(i));
 				bw.newLine();
 			}
 

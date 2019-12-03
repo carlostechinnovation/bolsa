@@ -7,18 +7,21 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 /**
- * Descarga de pruebas de una página de Yahoo Finance
+ * Descarga de datos de Yahoo Finance
  *
  */
 public class YahooFinance01Descargar {
 
 	static Logger MY_LOGGER = Logger.getLogger(YahooFinance01Descargar.class);
+	public static final int ESPERA_ALEATORIA_MSEG_MIN = 200;
+	public static final int ESPERA_ALEATORIA_SEG_MAX = 2;
 
 	public YahooFinance01Descargar() {
 		super();
@@ -26,45 +29,89 @@ public class YahooFinance01Descargar {
 
 	/**
 	 * @param args
+	 * @throws IOException
+	 * @throws InterruptedException
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException, InterruptedException {
 
 		MY_LOGGER.info("INICIO");
 
 		BasicConfigurator.configure();
 		MY_LOGGER.setLevel(Level.INFO);
 
-		String mercado = "NASDAQ"; // DEFAULT
-		String ticker = "AXAS"; // DEFAULT
-		String directorioOut = "C:\\bolsa\\pasado\\brutos\\";
+		Integer numMaxEmpresas = 2; // DEFAULT
+		String directorioOut = "/bolsa/pasado/brutos/"; // DEFAULT
 
 		if (args.length == 0) {
 			MY_LOGGER.info("Sin parametros de entrada. Rellenamos los DEFAULT...");
-		} else if (args.length != 3) {
+		} else if (args.length != 2) {
 			MY_LOGGER.error("Parametros de entrada incorrectos!!");
 			System.exit(-1);
 		} else {
-			mercado = args[0];
-			ticker = args[1];
-			directorioOut = args[2];
+			numMaxEmpresas = Integer.valueOf(args[0]);
+			directorioOut = args[1];
 		}
 
-		MY_LOGGER.info("mercado=" + mercado);
-		MY_LOGGER.info("ticker=" + ticker);
+		List<EstaticosNasdaq> nasdaqEstaticos1 = EstaticosDescargarYParsear.descargarNasdaqEstaticos1();
+		descargarNasdaqDinamicos01(nasdaqEstaticos1, numMaxEmpresas, directorioOut);
+
+		MY_LOGGER.info("FIN");
+	}
+
+	/**
+	 * NASDAQ - DINAMICOS-1
+	 * 
+	 * @param nasdaqEstaticos1
+	 * @param numMaxEmpresas
+	 * @param directorioOut
+	 * @return
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
+	public static Boolean descargarNasdaqDinamicos01(List<EstaticosNasdaq> nasdaqEstaticos1, Integer numMaxEmpresas,
+			String directorioOut) throws IOException, InterruptedException {
+
+		MY_LOGGER.info("descargarNasdaqDinamicos01...");
+		MY_LOGGER.info("numMaxEmpresas=" + numMaxEmpresas);
 		MY_LOGGER.info("directorioOut=" + directorioOut);
 
-		String pathOut = directorioOut + "bruto_" + mercado + "_" + ticker + ".txt";
-		String URL_yahoo_ticker = "https://query1.finance.yahoo.com/v8/finance/chart/" + ticker + "?symbol=" + ticker
-				+ "&range=6mo&interval=60m";
-
-		MY_LOGGER.info("pathOut=" + pathOut);
-		MY_LOGGER.info("URL_yahoo_ticker=" + URL_yahoo_ticker);
-
+		String mercado = "NASDAQ"; // DEFAULT
+		Boolean out = false;
+		String ticker;
+		long msegEspera;
 		YahooFinance01Descargar instancia = new YahooFinance01Descargar();
-		Boolean out = instancia.descargarPagina(pathOut, true, URL_yahoo_ticker);
 
-		MY_LOGGER.info("Resultado: " + out);
-		MY_LOGGER.info("FIN");
+		MY_LOGGER.info("mercado=" + mercado);
+
+		for (int i = 0; i < nasdaqEstaticos1.size(); i++) {
+
+			if (i <= numMaxEmpresas) {
+				ticker = nasdaqEstaticos1.get(i).symbol;
+
+				String pathOut = directorioOut + "bruto_" + mercado + "_" + ticker + ".txt";
+				String URL_yahoo_ticker = "https://query1.finance.yahoo.com/v8/finance/chart/" + ticker + "?symbol="
+						+ ticker + "&range=6mo&interval=60m";
+
+				MY_LOGGER.info("pathOut=" + pathOut);
+				MY_LOGGER.info("URL_yahoo_ticker=" + URL_yahoo_ticker);
+
+				Files.deleteIfExists(Paths.get(pathOut)); // Borramos el fichero de salida si existe
+
+				// espera aleatoria
+				msegEspera = (long) (ESPERA_ALEATORIA_MSEG_MIN + Math.random() * 1000 * ESPERA_ALEATORIA_SEG_MAX);
+				MY_LOGGER.info("Espera aleatoria " + msegEspera + " mseg...");
+				Thread.sleep(msegEspera);
+
+				out = instancia.descargarPagina(pathOut, true, URL_yahoo_ticker);
+				if (out.booleanValue() == false) {
+					MY_LOGGER.error("La descarga de datos estaticos 1 de " + mercado + " - " + ticker
+							+ " ha fallado. Saliendo...");
+				}
+
+			}
+		}
+
+		return out;
 	}
 
 	/**
@@ -74,10 +121,11 @@ public class YahooFinance01Descargar {
 	 *                       GUARDAR los DATOS BRUTOS.
 	 * @param borrarSiExiste BOOLEAN que indica si se quiere BORRAR el FICHERO (no
 	 *                       la carpeta) de donde se van a guardar los DATOS BRUTOS.
-	 * @param urlEntrada     URL de la pÃ¡gina web a descargar
+	 * @param urlEntrada     URL de la pagina web a descargar
 	 */
 	public Boolean descargarPagina(String pathOut, Boolean borrarSiExiste, String urlEntrada) {
 
+		MY_LOGGER.info("descargarPagina...");
 		MY_LOGGER.info("[URL|pathOut|borrarSiExiste] --> " + urlEntrada + " | " + pathOut + " | " + borrarSiExiste);
 		Boolean out = false;
 

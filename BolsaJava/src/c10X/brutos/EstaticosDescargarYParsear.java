@@ -12,14 +12,14 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 /**
- * Datos de otras fuentes
+ * Datos ESTATICOS
  *
  */
-public class Otros02Parsear {
+public class EstaticosDescargarYParsear {
 
-	static Logger MY_LOGGER = Logger.getLogger(Otros02Parsear.class);
+	static Logger MY_LOGGER = Logger.getLogger(EstaticosDescargarYParsear.class);
 
-	public Otros02Parsear() {
+	public EstaticosDescargarYParsear() {
 		super();
 	}
 
@@ -38,22 +38,23 @@ public class Otros02Parsear {
 			System.exit(-1);
 		}
 
-		List<Otros02NasdaqTicker> tickersNasdaq = cargarNasdaqTickers();
+		List<EstaticosNasdaq> nasdaqEstaticos1 = descargarNasdaqEstaticos1();
 
 		MY_LOGGER.info("FIN");
 	}
 
 	/**
-	 * @param csvFile
-	 * @param delimitador
+	 * NASDAQ - ESTATICOS-1
+	 * 
+	 * @return Lista de empresas del NASDAQ con algunos datos ESTATICOS
 	 */
-	public static List<Otros02NasdaqTicker> cargarNasdaqTickers() {
+	public static List<EstaticosNasdaq> descargarNasdaqEstaticos1() {
 
 		String csvFile = "C:\\DATOS\\GITHUB_REPOS\\bolsa\\BolsaJava\\src\\main\\resources\\nasdaq_tickers.csv";
 		String delimitador = ",";
 		MY_LOGGER.info("Cargando NASDAQ-TICKERS de: " + csvFile);
 
-		List<Otros02NasdaqTicker> out = new ArrayList<Otros02NasdaqTicker>();
+		List<EstaticosNasdaq> out = new ArrayList<EstaticosNasdaq>();
 		try {
 			File file = new File(csvFile);
 			FileReader fr = new FileReader(file);
@@ -73,8 +74,8 @@ public class Otros02Parsear {
 
 				} else {
 					tempArr = lineaLimpia.split(delimitador);
-					out.add(new Otros02NasdaqTicker(tempArr[0], tempArr[1], tempArr[2], tempArr[3], tempArr[4],
-							tempArr[5], tempArr[6], tempArr[7]));
+					out.add(new EstaticosNasdaq(tempArr[0], tempArr[1], tempArr[2], tempArr[3], tempArr[4], tempArr[5],
+							tempArr[6], tempArr[7]));
 
 				}
 			}
