@@ -60,7 +60,7 @@ public class YahooFinance02Parsear {
 			directorioOut = args[1];
 		}
 
-		List<EstaticosNasdaq> nasdaqEstaticos1 = EstaticosDescargarYParsear.descargarNasdaqEstaticos1();
+		List<EstaticoNasdaqModelo> nasdaqEstaticos1 = EstaticosNasdaqDescargarYParsear.descargarNasdaqEstaticos1();
 		parsearNasdaqDinamicos01(nasdaqEstaticos1, directorioIn, directorioOut);
 
 		MY_LOGGER.info("FIN");
@@ -73,12 +73,10 @@ public class YahooFinance02Parsear {
 	 * @return
 	 * @throws IOException
 	 */
-	public static Boolean parsearNasdaqDinamicos01(List<EstaticosNasdaq> nasdaqEstaticos1, String directorioIn,
+	public static Boolean parsearNasdaqDinamicos01(List<EstaticoNasdaqModelo> nasdaqEstaticos1, String directorioIn,
 			String directorioOut) throws IOException {
 
-		MY_LOGGER.info("parsearNasdaqDinamicos01...");
-		MY_LOGGER.info("directorioIn=" + directorioIn);
-		MY_LOGGER.info("directorioOut=" + directorioOut);
+		MY_LOGGER.info("parsearNasdaqDinamicos01 --> " + directorioIn + "|" + directorioOut);
 
 		String mercado = "NASDAQ"; // DEFAULT
 		Boolean out = false;
@@ -124,7 +122,7 @@ public class YahooFinance02Parsear {
 	 */
 	public static Boolean parsearJson(String pathBrutoEntrada, String pathBrutoCsvSalida) {
 
-		MY_LOGGER.info("Parseando JSON...");
+		MY_LOGGER.info("parsearJson... --> " + pathBrutoEntrada + "|" + pathBrutoCsvSalida);
 		Boolean out = false;
 		JSONParser parser = new JSONParser();
 
@@ -163,7 +161,7 @@ public class YahooFinance02Parsear {
 			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
 
 			// Cabecera
-			bw.write("intanteensegdesde1970|volumen|high|low|close|open");
+			bw.write("anio|mes|dia|hora|minuto|volumen|high|low|close|open");
 			bw.newLine();
 
 			int i = 0;

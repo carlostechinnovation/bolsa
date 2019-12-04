@@ -52,7 +52,7 @@ public class YahooFinance01Descargar {
 			directorioOut = args[1];
 		}
 
-		List<EstaticosNasdaq> nasdaqEstaticos1 = EstaticosDescargarYParsear.descargarNasdaqEstaticos1();
+		List<EstaticoNasdaqModelo> nasdaqEstaticos1 = EstaticosNasdaqDescargarYParsear.descargarNasdaqEstaticos1();
 		descargarNasdaqDinamicos01(nasdaqEstaticos1, numMaxEmpresas, directorioOut);
 
 		MY_LOGGER.info("FIN");
@@ -68,12 +68,10 @@ public class YahooFinance01Descargar {
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
-	public static Boolean descargarNasdaqDinamicos01(List<EstaticosNasdaq> nasdaqEstaticos1, Integer numMaxEmpresas,
+	public static Boolean descargarNasdaqDinamicos01(List<EstaticoNasdaqModelo> nasdaqEstaticos1, Integer numMaxEmpresas,
 			String directorioOut) throws IOException, InterruptedException {
 
-		MY_LOGGER.info("descargarNasdaqDinamicos01...");
-		MY_LOGGER.info("numMaxEmpresas=" + numMaxEmpresas);
-		MY_LOGGER.info("directorioOut=" + directorioOut);
+		MY_LOGGER.info("descargarNasdaqDinamicos01 --> " + numMaxEmpresas + "|" + directorioOut);
 
 		String mercado = "NASDAQ"; // DEFAULT
 		Boolean out = false;
@@ -108,6 +106,8 @@ public class YahooFinance01Descargar {
 							+ " ha fallado. Saliendo...");
 				}
 
+			} else {
+				break;
 			}
 		}
 
@@ -123,10 +123,9 @@ public class YahooFinance01Descargar {
 	 *                       la carpeta) de donde se van a guardar los DATOS BRUTOS.
 	 * @param urlEntrada     URL de la pagina web a descargar
 	 */
-	public Boolean descargarPagina(String pathOut, Boolean borrarSiExiste, String urlEntrada) {
+	public static Boolean descargarPagina(String pathOut, Boolean borrarSiExiste, String urlEntrada) {
 
-		MY_LOGGER.info("descargarPagina...");
-		MY_LOGGER.info("[URL|pathOut|borrarSiExiste] --> " + urlEntrada + " | " + pathOut + " | " + borrarSiExiste);
+		MY_LOGGER.info("descargarPagina --> " + urlEntrada + " | " + pathOut + " | " + borrarSiExiste);
 		Boolean out = false;
 
 		try {

@@ -22,6 +22,7 @@ DIR_BRUTOS="/bolsa/pasado/brutos/"
 DIR_BRUTOS_CSV="/bolsa/pasado/brutos_csv/"
 
 echo -e "Descargando..." >> ${LOG_MASTER}
+java -Djava.util.logging.SimpleFormatter.format='%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n' -jar ${PATH_JAR} --class 'c10X.brutos.EstaticosNasdaqDescargarYParsear' '${DIR_BRUTOS}' '${DIR_BRUTOS_CSV}' 2>>${PATH_LOG} 1>>${PATH_LOG}
 java -Djava.util.logging.SimpleFormatter.format='%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n' -jar ${PATH_JAR} --class 'c10X.brutos.YahooFinance01Descargar' '2' '${DIR_BRUTOS}' 2>>${PATH_LOG} 1>>${PATH_LOG}
 
 echo -e "Estructurando (primera limpieza)..." >> ${LOG_MASTER}

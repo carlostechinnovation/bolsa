@@ -4,7 +4,7 @@ package c10X.brutos;
  * Datos estáticos del NASDAQ
  *
  */
-public class EstaticosNasdaq {
+public class EstaticoNasdaqModelo {
 
 	public String symbol = "";
 	public String name = "";
@@ -25,7 +25,7 @@ public class EstaticosNasdaq {
 	 * @param industry
 	 * @param summaryQuote
 	 */
-	public EstaticosNasdaq(String symbol, String name, String lastSale, String marketCap, String ipoYear, String sector,
+	public EstaticoNasdaqModelo(String symbol, String name, String lastSale, String marketCap, String ipoYear, String sector,
 			String industry, String summaryQuote) {
 		super();
 		this.symbol = symbol;
