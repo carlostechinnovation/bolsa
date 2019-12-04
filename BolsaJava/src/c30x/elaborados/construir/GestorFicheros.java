@@ -11,12 +11,17 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 
-import c30x.elaborados.construir.ContructorElaborados.NOMBRES_PARAMETROS;
-
 public class GestorFicheros {
 
+	public final static Boolean DEPURAR = Boolean.TRUE;
+
+	public enum NOMBRES_PARAMETROS_INICIALES {
+		EMPRESA, ANTIGUEDAD, ANIO, MES, DIA, HORA, MINUTO, VOLUMEN, HIGH, LOW, CLOSE, OPEN;
+	}
+
+	public final static String SEPARADOR_PARAMETROS = ";";
+
 	public static void main(String[] args) throws Exception {
-		// TODO Auto-generated method stub
 		HashMap<String, HashMap<Integer, HashMap<String, String>>> datos = new HashMap<String, HashMap<Integer, HashMap<String, String>>>();
 		final File directorio = new File("C:\\\\Users\\\\t151521\\\\git\\\\bolsa\\\\BolsaJava\\\\ficherosEjemplo");
 		ArrayList<File> ficherosEntradaEmpresas = listaFicherosDeDirectorio(directorio);
@@ -28,7 +33,7 @@ public class GestorFicheros {
 			ficheroGestionado = iterator.next();
 			System.out.println("Fichero entrada: " + ficheroGestionado.getAbsolutePath());
 			datos = leeFicheroDeSoloUnaEmpresa(ficheroGestionado.getPath());
-			destino = ficheroGestionado.getParentFile().getAbsolutePath() + "\\salidaElaborada\\salida"
+			destino = ficheroGestionado.getParentFile().getAbsolutePath() + "\\validaGestionFichero\\salida"
 					+ ficheroGestionado.getName().substring(0, ficheroGestionado.getName().length() - 4) + ".csv";
 			System.out.println("Fichero salida:  " + destino);
 			creaFicheroDeSoloUnaEmpresa(datos, destino);
@@ -59,6 +64,8 @@ public class GestorFicheros {
 	 */
 	public static HashMap<String, HashMap<Integer, HashMap<String, String>>> leeFicheroDeSoloUnaEmpresa(
 			final String pathFichero) throws IOException {
+		if (DEPURAR)
+			System.out.println("Fichero leído: " + pathFichero);
 		HashMap<String, HashMap<Integer, HashMap<String, String>>> datosSalida = new HashMap<String, HashMap<Integer, HashMap<String, String>>>();
 		String row, empresa = "";
 		String[] data;
@@ -70,14 +77,26 @@ public class GestorFicheros {
 		}
 		BufferedReader csvReader = new BufferedReader(new FileReader(pathFichero));
 		while ((row = csvReader.readLine()) != null) {
-			data = row.split(";");
+			if (DEPURAR)
+				System.out.println("Fila leída: " + row);
+			data = row.split(SEPARADOR_PARAMETROS);
 			empresa = data[0];
 			datosParametrosEmpresa = new HashMap<String, String>();
-			datosParametrosEmpresa.put(NOMBRES_PARAMETROS.PRECIO.toString(), data[2]);
-			datosParametrosEmpresa.put(NOMBRES_PARAMETROS.VOLUMEN.toString(), data[3]);
+			datosParametrosEmpresa.put(NOMBRES_PARAMETROS_INICIALES.ANIO.toString(), data[2]);
+			datosParametrosEmpresa.put(NOMBRES_PARAMETROS_INICIALES.MES.toString(), data[3]);
+			datosParametrosEmpresa.put(NOMBRES_PARAMETROS_INICIALES.DIA.toString(), data[4]);
+			datosParametrosEmpresa.put(NOMBRES_PARAMETROS_INICIALES.HORA.toString(), data[5]);
+			datosParametrosEmpresa.put(NOMBRES_PARAMETROS_INICIALES.MINUTO.toString(), data[6]);
+			datosParametrosEmpresa.put(NOMBRES_PARAMETROS_INICIALES.VOLUMEN.toString(), data[7]);
+			datosParametrosEmpresa.put(NOMBRES_PARAMETROS_INICIALES.HIGH.toString(), data[8]);
+			datosParametrosEmpresa.put(NOMBRES_PARAMETROS_INICIALES.LOW.toString(), data[9]);
+			datosParametrosEmpresa.put(NOMBRES_PARAMETROS_INICIALES.CLOSE.toString(), data[10]);
+			datosParametrosEmpresa.put(NOMBRES_PARAMETROS_INICIALES.OPEN.toString(), data[11]);
 
+			// Se guarda la antigüedad
 			datosEmpresa.put(Integer.parseInt(data[1]), datosParametrosEmpresa);
 		}
+		// Se guarda la empresa
 		datosSalida.put(empresa, datosEmpresa);
 
 		csvReader.close();
@@ -117,10 +136,10 @@ public class GestorFicheros {
 			nombresParametros = parametrosEmpresa.keySet();
 			itNombresParametros = nombresParametros.iterator();
 			// Se añade empresa y antigüedad
-			csvWriter.append(empresa + ";" + itAntiguedades.next());
+			csvWriter.append(empresa + SEPARADOR_PARAMETROS + antiguedad);
 			while (itNombresParametros.hasNext()) {
 				// Se añaden el resto de parámetros
-				csvWriter.append(";" + parametrosEmpresa.get(itNombresParametros.next()));
+				csvWriter.append(SEPARADOR_PARAMETROS + parametrosEmpresa.get(itNombresParametros.next()));
 			}
 			// Siguiente fila
 			if (itAntiguedades.hasNext())

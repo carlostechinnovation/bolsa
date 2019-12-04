@@ -1,10 +1,19 @@
 package c30x.elaborados.construir;
 
+import java.util.HashMap;
+
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 public class Estadisticas extends DescriptiveStatistics {
 
 	private static final long serialVersionUID = 1L;
+
+	public enum COMIENZO_NOMBRES_PARAMETROS_ELABORADOS {
+		media_zzz_sma, std_zzz_sma, pendiente_zzz_sma, ratio_zzz_sma, ratio_zzz_maxrelativo, ratio_zzz_minrelativo,
+		curtosis_zzz, skewness_zzz;
+	}
+
+	public final static String VALOR_INVALIDO = "NULL";
 
 	/** Como si fuera la derivada, pero sólo con el primer y último valores */
 	public double getPendiente() {
@@ -62,6 +71,50 @@ public class Estadisticas extends DescriptiveStatistics {
 		System.out.println("ratio_minrelativo = " + getRatioMin());
 		System.out.println("curtosis = " + getKurtosis());
 		System.out.println("skewness = " + getSkewness());
+	}
+
+	/**
+	 * 
+	 * @param periodo
+	 * @param rellenarConInvalidos
+	 * @return
+	 */
+	public HashMap<String, String> getParametros(final Integer periodo, final Boolean rellenarConInvalidos) {
+		String periodoString = periodo.toString();
+		HashMap<String, String> parametros = new HashMap<String, String>();
+		if (rellenarConInvalidos) {
+			parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.media_zzz_sma + periodoString, VALOR_INVALIDO);
+			parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.std_zzz_sma + periodoString, VALOR_INVALIDO);
+			parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.pendiente_zzz_sma + periodoString, VALOR_INVALIDO);
+			parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.ratio_zzz_sma + periodoString, VALOR_INVALIDO);
+			parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.ratio_zzz_sma + periodoString, VALOR_INVALIDO);
+			parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.ratio_zzz_maxrelativo + periodoString,
+					VALOR_INVALIDO);
+			parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.ratio_zzz_minrelativo + periodoString,
+					VALOR_INVALIDO);
+			parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.curtosis_zzz + periodoString, VALOR_INVALIDO);
+			parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.skewness_zzz + periodoString, VALOR_INVALIDO);
+		} else {
+			parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.media_zzz_sma + periodoString,
+					String.valueOf(this.getMean()));
+			parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.std_zzz_sma + periodoString,
+					String.valueOf(this.getStandardDeviation()));
+			parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.pendiente_zzz_sma + periodoString,
+					String.valueOf(this.getPendiente()));
+			parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.ratio_zzz_sma + periodoString,
+					String.valueOf(this.getRatioSMA()));
+			parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.ratio_zzz_sma + periodoString,
+					String.valueOf(this.getRatioSMA()));
+			parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.ratio_zzz_maxrelativo + periodoString,
+					String.valueOf(this.getMax()));
+			parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.ratio_zzz_minrelativo + periodoString,
+					String.valueOf(this.getMin()));
+			parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.curtosis_zzz + periodoString,
+					String.valueOf(this.getKurtosis()));
+			parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.skewness_zzz + periodoString,
+					String.valueOf(this.getSkewness()));
+		}
+		return parametros;
 	}
 
 }
