@@ -1,14 +1,14 @@
 package c30x.elaborados.construir;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Set;
 
 public class ContructorElaborados {
 
-	public enum NOMBRES_PARAMETROS {
-		PRECIO, VOLUMEN;
-	}
+	public final static Boolean DEPURAR = Boolean.TRUE;
 
 	// META-PARAMETRIZACIÓN
 	// Periodo de la vela de entrada
@@ -18,7 +18,7 @@ public class ContructorElaborados {
 	public final static Integer[] periodosHParaParametros = new Integer[] { 1 * HORAS_AL_DIA, 2 * HORAS_AL_DIA };
 
 	// IMPORTANTE: se asume que los datos están ordenados de menor a mayor
-	// antigÜedad, y agrupados por empresa
+	// antigüedad, y agrupados por empresa
 	/**
 	 * @param args
 	 * @throws Exception
@@ -28,91 +28,118 @@ public class ContructorElaborados {
 	 * @throws Exception
 	 */
 	public static void main(String[] args) throws Exception {
-		// DATOS DE ENTRADA
-		// Asumo que la clave es el ticker de la empresa.
-		// Mapa de tickers de empresas (OJO en el orden)
-		ArrayList<String> empresas = new ArrayList<String>();
-		// El valor es un mapa, de antigüedad (en HORAS) + String de valores de
-		// parámetros limpios
+
 		HashMap<String, HashMap<Integer, HashMap<String, String>>> datosEntrada = new HashMap<String, HashMap<Integer, HashMap<String, String>>>();
+		final File directorio = new File("C:\\\\Users\\\\t151521\\\\git\\\\bolsa\\\\BolsaJava\\\\ficherosEjemplo");
+		ArrayList<File> ficherosEntradaEmpresas = GestorFicheros.listaFicherosDeDirectorio(directorio);
 
-		HashMap<String, String> datosParametrosEmpresaSNAP8 = new HashMap<String, String>();
-		HashMap<String, String> datosParametrosEmpresaSNAP7 = new HashMap<String, String>();
-		HashMap<String, String> datosParametrosEmpresaSNAP6 = new HashMap<String, String>();
-		HashMap<String, String> datosParametrosEmpresaSNAP5 = new HashMap<String, String>();
-		HashMap<String, String> datosParametrosEmpresaSNAP4 = new HashMap<String, String>();
-		HashMap<String, String> datosParametrosEmpresaSNAP3 = new HashMap<String, String>();
-		HashMap<String, String> datosParametrosEmpresaSNAP2 = new HashMap<String, String>();
-		HashMap<String, String> datosParametrosEmpresaSNAP1 = new HashMap<String, String>();
-		HashMap<String, String> datosParametrosEmpresaSNAP0 = new HashMap<String, String>();
-		HashMap<Integer, HashMap<String, String>> datosEmpresa = new HashMap<Integer, HashMap<String, String>>();
+		String destino = "";
+		Iterator<File> iterator = ficherosEntradaEmpresas.iterator();
+		File ficheroGestionado;
+		while (iterator.hasNext()) {
+			ficheroGestionado = iterator.next();
+			System.out.println("Fichero entrada: " + ficheroGestionado.getAbsolutePath());
+			datosEntrada = GestorFicheros.leeFicheroDeSoloUnaEmpresa(ficheroGestionado.getPath());
+			destino = ficheroGestionado.getParentFile().getAbsolutePath() + "\\salidaElaborada\\salida"
+					+ ficheroGestionado.getName().substring(0, ficheroGestionado.getName().length() - 4) + ".csv";
+			System.out.println("Fichero salida:  " + destino);
+			GestorFicheros.creaFicheroDeSoloUnaEmpresa(datosEntrada, destino);
+		}
+		System.out.println("FIN");
+	}
 
-		// Meto datos de EJEMPLO
-		empresas.add("SNAP");
+	/**
+	 * 
+	 * @param datosEntrada
+	 * @return
+	 * @throws Exception
+	 */
+	public HashMap<String, HashMap<Integer, HashMap<String, String>>> anadirParametrosElaboradosDeSoloUnaEmpresa(
+			final HashMap<String, HashMap<Integer, HashMap<String, String>>> datosEntrada) throws Exception {
 
-		datosParametrosEmpresaSNAP8.put(NOMBRES_PARAMETROS.PRECIO.toString(), "1");
-		datosParametrosEmpresaSNAP8.put(NOMBRES_PARAMETROS.VOLUMEN.toString(), "5000");
-		datosParametrosEmpresaSNAP7.put(NOMBRES_PARAMETROS.PRECIO.toString(), "2");
-		datosParametrosEmpresaSNAP7.put(NOMBRES_PARAMETROS.VOLUMEN.toString(), "1000");
-		datosParametrosEmpresaSNAP6.put(NOMBRES_PARAMETROS.PRECIO.toString(), "3");
-		datosParametrosEmpresaSNAP6.put(NOMBRES_PARAMETROS.VOLUMEN.toString(), "1000");
-		datosParametrosEmpresaSNAP5.put(NOMBRES_PARAMETROS.PRECIO.toString(), "4");
-		datosParametrosEmpresaSNAP5.put(NOMBRES_PARAMETROS.VOLUMEN.toString(), "1000");
-		datosParametrosEmpresaSNAP4.put(NOMBRES_PARAMETROS.PRECIO.toString(), "5");
-		datosParametrosEmpresaSNAP4.put(NOMBRES_PARAMETROS.VOLUMEN.toString(), "1000");
-		datosParametrosEmpresaSNAP3.put(NOMBRES_PARAMETROS.PRECIO.toString(), "6");
-		datosParametrosEmpresaSNAP3.put(NOMBRES_PARAMETROS.VOLUMEN.toString(), "1000");
-		datosParametrosEmpresaSNAP2.put(NOMBRES_PARAMETROS.PRECIO.toString(), "7");
-		datosParametrosEmpresaSNAP2.put(NOMBRES_PARAMETROS.VOLUMEN.toString(), "1000");
-		datosParametrosEmpresaSNAP1.put(NOMBRES_PARAMETROS.PRECIO.toString(), "8");
-		datosParametrosEmpresaSNAP1.put(NOMBRES_PARAMETROS.VOLUMEN.toString(), "1000");
-		datosParametrosEmpresaSNAP0.put(NOMBRES_PARAMETROS.PRECIO.toString(), "9");
-		datosParametrosEmpresaSNAP0.put(NOMBRES_PARAMETROS.VOLUMEN.toString(), "2000");
-
-		datosEmpresa.put(8, datosParametrosEmpresaSNAP8);
-		datosEmpresa.put(7, datosParametrosEmpresaSNAP7);
-		datosEmpresa.put(6, datosParametrosEmpresaSNAP6);
-		datosEmpresa.put(5, datosParametrosEmpresaSNAP5);
-		datosEmpresa.put(4, datosParametrosEmpresaSNAP4);
-		datosEmpresa.put(3, datosParametrosEmpresaSNAP3);
-		datosEmpresa.put(2, datosParametrosEmpresaSNAP2);
-		datosEmpresa.put(1, datosParametrosEmpresaSNAP1);
-		datosEmpresa.put(0, datosParametrosEmpresaSNAP0);
-		datosEntrada.put("SNAP", datosEmpresa);
+		HashMap<String, HashMap<Integer, HashMap<String, String>>> datosSalida = new HashMap<String, HashMap<Integer, HashMap<String, String>>>();
+		HashMap<Integer, HashMap<String, String>> datosEmpresaEntrada = new HashMap<Integer, HashMap<String, String>>();
+		HashMap<Integer, HashMap<String, String>> datosEmpresaFinales = new HashMap<Integer, HashMap<String, String>>();
 
 		// CÁLCULOS DE PARÁMETROS ELABORADOS
-		Integer antiguedadEnAnalisis;
-
-		for (int x = 0; x < empresas.size(); x++) {
-			// EXTRACCIÓN DE DATOS DE LA EMPRESA
-			datosEmpresa = datosEntrada.get(empresas.get(x));
-			System.out.println("Empresa: " + empresas.get(x));
-			for (Integer periodo : periodosHParaParametros) {
-				// PARA CADA PERIODO DE CÁLCULO DE PARÁMETROS ELABORADOS...
-				Estadisticas estadisticasPrecio = new Estadisticas();
-				Estadisticas estadisticasVolumen = new Estadisticas();
-				Iterator<Integer> iteradorAntiguedad = datosEmpresa.keySet().iterator();
-				while (iteradorAntiguedad.hasNext()) {
-					antiguedadEnAnalisis = iteradorAntiguedad.next();
-					// Se cogen sólo los datos con la antigüedad dento del rango a analizar
-					if (antiguedadEnAnalisis < periodo) {
-						HashMap<String, String> parametros = datosEmpresa.get(antiguedadEnAnalisis);
-						estadisticasPrecio.addValue(new Double(parametros.get(NOMBRES_PARAMETROS.PRECIO.toString())));
-						estadisticasVolumen.addValue(new Double(parametros.get(NOMBRES_PARAMETROS.VOLUMEN.toString())));
-					} else {
-						// Para los datos de antigüedad excesiva, se sale del bucle
-						break;
+		Integer antiguedad;
+		Iterator<String> itParametros;
+		Set<String> nombresParametros;
+		String nombreParametro;
+		String empresa = "";
+		Set<String> empresas = datosEntrada.keySet();
+		Iterator<String> itEmpresas = datosEntrada.keySet().iterator();
+		if (empresas.size() != 1) {
+			throw new Exception("Es están calculando parámetros elaborados de más de una empresa");
+		} else {
+			while (itEmpresas.hasNext())
+				empresa = itEmpresas.next();
+		}
+		// EXTRACCIÓN DE DATOS DE LA EMPRESA
+		datosEmpresaEntrada = datosEntrada.get(empresa);
+		System.out.println("Empresa: " + empresa);
+		HashMap<String, String> parametros = new HashMap<String, String>();
+		Iterator<Integer> iteradorAntiguedad;
+		Set<Integer> periodos, antiguedades;
+		HashMap<Integer, Estadisticas> estadisticasPorAntiguedad = new HashMap<Integer, Estadisticas>();
+		Estadisticas estadisticas = new Estadisticas();
+		HashMap<Integer, HashMap<Integer, Estadisticas>> estadisticasPorAntiguedadYPeriodo = new HashMap<Integer, HashMap<Integer, Estadisticas>>();
+		for (Integer periodo : periodosHParaParametros) {
+			// PARA CADA PERIODO DE CÁLCULO DE PARÁMETROS ELABORADOS, que será un GRUPO de
+			// COLUMNAS...
+			iteradorAntiguedad = datosEmpresaEntrada.keySet().iterator();
+			while (iteradorAntiguedad.hasNext()) {
+				antiguedad = iteradorAntiguedad.next();
+				// Se cogen sólo los datos con la antigüedad dentro del rango a analizar
+				if (antiguedad < periodo) {
+					parametros = datosEmpresaEntrada.get(antiguedad);
+					nombresParametros = parametros.keySet();
+					itParametros = nombresParametros.iterator();
+					while (itParametros.hasNext()) {
+						nombreParametro = itParametros.next();
+						estadisticas.addValue(new Double(nombreParametro));
 					}
+				} else {
+					// Para los datos de antigüedad excesiva, se sale del bucle
+					break;
 				}
+				estadisticasPorAntiguedad.put(antiguedad, estadisticas);
+			}
 
-				// Validación
-				// PRECIOS
-				estadisticasPrecio.debugValidacion(periodo);
-				// VOLÚMENES
-				estadisticasVolumen.debugValidacion(periodo);
+			// VALIDACIÓN DE ESTADÍSTICAS
+			if (DEPURAR)
+				estadisticas.debugValidacion(periodo);
 
+			estadisticasPorAntiguedadYPeriodo.put(periodo, estadisticasPorAntiguedad);
+		}
+
+		// ESTADÍSTICAS: iré calculando y rellenando
+		periodos = estadisticasPorAntiguedadYPeriodo.keySet();
+		Integer periodoActual;
+		while (periodos.iterator().hasNext()) {
+			periodoActual = periodos.iterator().next();
+			antiguedades = estadisticasPorAntiguedadYPeriodo.get(periodoActual).keySet();
+
+			while (antiguedades.iterator().hasNext()) {
+				antiguedad = antiguedades.iterator().next();
+				estadisticas = estadisticasPorAntiguedad.get(antiguedad);
+				// Se cogen sólo los datos con la antigüedad dentro del rango a analizar
+				if (antiguedad < periodoActual) {
+					parametros = datosEmpresaEntrada.get(antiguedad);
+					// COSTE DE COMPUTACIÓN
+					// <<<<<<<<-------
+					parametros.putAll(estadisticas.getParametros(periodoActual, Boolean.FALSE));
+					// <<<<<<<------
+				} else {
+					// Para los datos de antigüedad excesiva, LOS RELLENO CON UN VALOR INVÁLIDO
+					parametros.putAll(estadisticas.getParametros(periodoActual, Boolean.TRUE));
+				}
+				// ADICIÓN DE PARÁMETROS ELABORADOS AL HASHMAP
+				datosEmpresaFinales.put(antiguedad, parametros);
 			}
 		}
+		datosSalida.put(empresa, datosEmpresaFinales);
+		return datosSalida;
 	}
 
 	public static Integer tiempoEnHoras(String T) throws Exception {
@@ -123,11 +150,10 @@ public class ContructorElaborados {
 		else if (T == "D")
 			// HAY DÍAS QUE LA BOLSA ABRE SÓLO MEDIA JORNADA, ASÍ QUE ESTO NO ES TOTALMENTE
 			// CORRECTO. Normalmente son 7h al día
-			horas = 7;
+			horas = HORAS_AL_DIA;
 		else if (T == "H")
 			throw new Exception("Tiempo erróneo");
 
 		return horas;
 	}
-
 }
