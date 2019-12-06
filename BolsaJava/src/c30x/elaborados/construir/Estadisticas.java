@@ -8,12 +8,32 @@ public class Estadisticas extends DescriptiveStatistics {
 
 	private static final long serialVersionUID = 1L;
 
+	public final static String VALOR_INVALIDO = "NULL";
+
+	// Si añado más parámetros, debo modificar la constructora
+	private HashMap<Integer, String> ordenNombresParametrosElaborados;
+
 	public enum COMIENZO_NOMBRES_PARAMETROS_ELABORADOS {
 		media_zzz_sma, std_zzz_sma, pendiente_zzz_sma, ratio_zzz_sma, ratio_zzz_maxrelativo, ratio_zzz_minrelativo,
 		curtosis_zzz, skewness_zzz;
 	}
 
-	public final static String VALOR_INVALIDO = "NULL";
+	/**
+	 * 
+	 */
+	public Estadisticas() {
+		ordenNombresParametrosElaborados = new HashMap<Integer, String>();
+		ordenNombresParametrosElaborados.put(1, COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.media_zzz_sma.toString());
+		ordenNombresParametrosElaborados.put(2, COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.std_zzz_sma.toString());
+		ordenNombresParametrosElaborados.put(3, COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.pendiente_zzz_sma.toString());
+		ordenNombresParametrosElaborados.put(4, COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.ratio_zzz_sma.toString());
+		ordenNombresParametrosElaborados.put(5,
+				COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.ratio_zzz_maxrelativo.toString());
+		ordenNombresParametrosElaborados.put(6,
+				COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.ratio_zzz_minrelativo.toString());
+		ordenNombresParametrosElaborados.put(7, COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.curtosis_zzz.toString());
+		ordenNombresParametrosElaborados.put(8, COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.skewness_zzz.toString());
+	}
 
 	/** Como si fuera la derivada, pero sólo con el primer y último valores */
 	public double getPendiente() {
@@ -47,16 +67,16 @@ public class Estadisticas extends DescriptiveStatistics {
 	/**
 	 * Se imprime al log una validación de los cálculos de esta función.
 	 */
-	public void debugValidacion(final Integer periodo) throws Exception {
+	public void debugValidacion(final Integer numDatosGestionados) throws Exception {
 		// VALIDACIÓN DE ENTRADA
 		// Si no se tienen todos los datos del periodo (por ejemplo, para una media de
 		// 200 días, 200*7 valores hacia atrás), lanzará excepción
 		System.out.println("********************************************************");
-		if (getN() != periodo) {
+		if (getN() != numDatosGestionados) {
 			throw new Exception("El número de datos a analizar no es el adecuado. Se usan " + getN()
-					+ " y se necesitan " + periodo);
+					+ " y se necesitan " + numDatosGestionados);
 		} else {
-			System.out.println("Se tienen " + getN() + " y se usan " + periodo);
+			System.out.println("Se tienen " + getN() + " y se usan " + numDatosGestionados);
 			for (int i = 0; i < getN(); i++) {
 				System.out.print(getElement(i) + ", ");
 			}
@@ -115,6 +135,13 @@ public class Estadisticas extends DescriptiveStatistics {
 					String.valueOf(this.getSkewness()));
 		}
 		return parametros;
+	}
+
+	/**
+	 * @return the ordenNombresParametrosElaborados
+	 */
+	public HashMap<Integer, String> getOrdenNombresParametrosElaborados() {
+		return ordenNombresParametrosElaborados;
 	}
 
 }

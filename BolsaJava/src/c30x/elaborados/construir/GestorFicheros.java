@@ -13,15 +13,11 @@ import java.util.Set;
 
 public class GestorFicheros {
 
-	public final static Boolean DEPURAR = Boolean.TRUE;
+	private Boolean activarDebug;
+	// Para modificarlos, vete a la constructora
+	private HashMap<Integer, String> ordenNombresParametrosLeidos;
 
-	public enum NOMBRES_PARAMETROS_INICIALES {
-		EMPRESA, ANTIGUEDAD, ANIO, MES, DIA, HORA, MINUTO, VOLUMEN, HIGH, LOW, CLOSE, OPEN;
-	}
-
-	public final static String SEPARADOR_PARAMETROS = ";";
-
-	public static void main(String[] args) throws Exception {
+	public void main(String[] args) throws Exception {
 		HashMap<String, HashMap<Integer, HashMap<String, String>>> datos = new HashMap<String, HashMap<Integer, HashMap<String, String>>>();
 		final File directorio = new File("C:\\\\Users\\\\t151521\\\\git\\\\bolsa\\\\BolsaJava\\\\ficherosEjemplo");
 		ArrayList<File> ficherosEntradaEmpresas = listaFicherosDeDirectorio(directorio);
@@ -36,9 +32,31 @@ public class GestorFicheros {
 			destino = ficheroGestionado.getParentFile().getAbsolutePath() + "\\validaGestionFichero\\salida"
 					+ ficheroGestionado.getName().substring(0, ficheroGestionado.getName().length() - 4) + ".csv";
 			System.out.println("Fichero salida:  " + destino);
-			creaFicheroDeSoloUnaEmpresa(datos, destino);
+			HashMap<Integer, String> ordenNombresParametros = getOrdenNombresParametrosLeidos();
+			creaFicheroDeSoloUnaEmpresa(datos, ordenNombresParametros, destino);
 		}
 		System.out.println("FIN");
+	}
+
+	/**
+	 * 
+	 * @param quieresDepurar
+	 */
+	public GestorFicheros(final Boolean quieresDepurar) {
+		activarDebug = quieresDepurar;
+		ordenNombresParametrosLeidos = new HashMap<Integer, String>();
+		ordenNombresParametrosLeidos.put(0, "empresa");
+		ordenNombresParametrosLeidos.put(1, "antiguedad");
+		ordenNombresParametrosLeidos.put(2, "anio");
+		ordenNombresParametrosLeidos.put(3, "mes");
+		ordenNombresParametrosLeidos.put(4, "dia");
+		ordenNombresParametrosLeidos.put(5, "hora");
+		ordenNombresParametrosLeidos.put(6, "minuto");
+		ordenNombresParametrosLeidos.put(7, "volumen");
+		ordenNombresParametrosLeidos.put(8, "high");
+		ordenNombresParametrosLeidos.put(9, "low");
+		ordenNombresParametrosLeidos.put(10, "close");
+		ordenNombresParametrosLeidos.put(11, "open");
 	}
 
 	/**
@@ -46,7 +64,7 @@ public class GestorFicheros {
 	 * @param folder
 	 * @return
 	 */
-	public static ArrayList<File> listaFicherosDeDirectorio(final File folder) {
+	public ArrayList<File> listaFicherosDeDirectorio(final File folder) {
 		ArrayList<File> salida = new ArrayList<File>();
 		for (final File fileEntry : folder.listFiles()) {
 			if (!fileEntry.isDirectory()) {
@@ -62,9 +80,10 @@ public class GestorFicheros {
 	 * @return
 	 * @throws IOException
 	 */
-	public static HashMap<String, HashMap<Integer, HashMap<String, String>>> leeFicheroDeSoloUnaEmpresa(
-			final String pathFichero) throws IOException {
-		if (DEPURAR)
+	public HashMap<String, HashMap<Integer, HashMap<String, String>>> leeFicheroDeSoloUnaEmpresa(
+			final String pathFichero) throws Exception, IOException {
+		Boolean esPrimeraLinea = Boolean.TRUE;
+		if (activarDebug)
 			System.out.println("Fichero leído: " + pathFichero);
 		HashMap<String, HashMap<Integer, HashMap<String, String>>> datosSalida = new HashMap<String, HashMap<Integer, HashMap<String, String>>>();
 		String row, empresa = "";
@@ -76,30 +95,38 @@ public class GestorFicheros {
 			throw new FileNotFoundException("Fichero no válido: " + pathFichero);
 		}
 		BufferedReader csvReader = new BufferedReader(new FileReader(pathFichero));
-		while ((row = csvReader.readLine()) != null) {
-			if (DEPURAR)
-				System.out.println("Fila leída: " + row);
-			data = row.split(SEPARADOR_PARAMETROS);
-			empresa = data[0];
-			datosParametrosEmpresa = new HashMap<String, String>();
-			datosParametrosEmpresa.put(NOMBRES_PARAMETROS_INICIALES.ANIO.toString(), data[2]);
-			datosParametrosEmpresa.put(NOMBRES_PARAMETROS_INICIALES.MES.toString(), data[3]);
-			datosParametrosEmpresa.put(NOMBRES_PARAMETROS_INICIALES.DIA.toString(), data[4]);
-			datosParametrosEmpresa.put(NOMBRES_PARAMETROS_INICIALES.HORA.toString(), data[5]);
-			datosParametrosEmpresa.put(NOMBRES_PARAMETROS_INICIALES.MINUTO.toString(), data[6]);
-			datosParametrosEmpresa.put(NOMBRES_PARAMETROS_INICIALES.VOLUMEN.toString(), data[7]);
-			datosParametrosEmpresa.put(NOMBRES_PARAMETROS_INICIALES.HIGH.toString(), data[8]);
-			datosParametrosEmpresa.put(NOMBRES_PARAMETROS_INICIALES.LOW.toString(), data[9]);
-			datosParametrosEmpresa.put(NOMBRES_PARAMETROS_INICIALES.CLOSE.toString(), data[10]);
-			datosParametrosEmpresa.put(NOMBRES_PARAMETROS_INICIALES.OPEN.toString(), data[11]);
 
-			// Se guarda la antigüedad
-			datosEmpresa.put(Integer.parseInt(data[1]), datosParametrosEmpresa);
+		while ((row = csvReader.readLine()) != null) {
+			if (activarDebug)
+				System.out.println("Fila leída: " + row);
+			if (esPrimeraLinea) {
+				// En la primera línea está la cabecera de parámetros
+				// Se valida que el nombre recibido es igual que el usado en la constructora, y
+				// en dicho orden
+				data = row.split("\\|");
+				for (int i = 0; i < data.length; i++) {
+					if (ordenNombresParametrosLeidos.get(i).compareTo(data[i]) != 0)
+						throw new Exception(
+								"El orden de los parámetros leídos en el fichero no es el que espera el gestor de ficheros");
+				}
+				esPrimeraLinea = Boolean.FALSE;
+			} else {
+				data = row.split("\\|");
+				empresa = data[0];
+				datosParametrosEmpresa = new HashMap<String, String>();
+				// Se excluyen los 2 primeros elementos
+				for (int i = 2; i < ordenNombresParametrosLeidos.size(); i++) {
+					datosParametrosEmpresa.put(ordenNombresParametrosLeidos.get(i), data[i]);
+				}
+
+				// Se guarda la antigüedad
+				datosEmpresa.put(Integer.parseInt(data[1]), datosParametrosEmpresa);
+			}
 		}
+		csvReader.close();
 		// Se guarda la empresa
 		datosSalida.put(empresa, datosEmpresa);
 
-		csvReader.close();
 		return datosSalida;
 	}
 
@@ -109,8 +136,8 @@ public class GestorFicheros {
 	 * @param directorio
 	 * @throws IOException
 	 */
-	public static void creaFicheroDeSoloUnaEmpresa(
-			final HashMap<String, HashMap<Integer, HashMap<String, String>>> datos, final String pathAbsolutoFichero)
+	public void creaFicheroDeSoloUnaEmpresa(final HashMap<String, HashMap<Integer, HashMap<String, String>>> datos,
+			final HashMap<Integer, String> ordenNombresParametros, final String pathAbsolutoFichero)
 			throws IOException {
 		FileWriter csvWriter = new FileWriter(pathAbsolutoFichero);
 		Set<String> empresas = datos.keySet();
@@ -129,17 +156,32 @@ public class GestorFicheros {
 		Iterator<Integer> itAntiguedades = antiguedades.iterator();
 		HashMap<String, String> parametrosEmpresa;
 		Set<String> nombresParametros;
-		Iterator<String> itNombresParametros;
+		String nombreParametro, elementoAAnadir;
+		//En la primera fila del fichero, se añade una cabecera
+		for (int i = 0; i < ordenNombresParametros.size(); i++) {
+			csvWriter.append(ordenNombresParametros.get(i));
+			//Se añade el pipe en todos los elementos menos en el último
+			if(i<ordenNombresParametros.size()-1) {
+				csvWriter.append("|");
+			}
+		}
+		csvWriter.append("\n");
+		
 		while (itAntiguedades.hasNext()) {
 			antiguedad = itAntiguedades.next();
 			parametrosEmpresa = datosEmpresa.get(antiguedad);
 			nombresParametros = parametrosEmpresa.keySet();
-			itNombresParametros = nombresParametros.iterator();
 			// Se añade empresa y antigüedad
-			csvWriter.append(empresa + SEPARADOR_PARAMETROS + antiguedad);
-			while (itNombresParametros.hasNext()) {
+			csvWriter.append(empresa + "|" + antiguedad);
+			// Las dos primeras no se leen (empresa y antigüedad)
+			for (int i = 2; i < nombresParametros.size(); i++) {
 				// Se añaden el resto de parámetros
-				csvWriter.append(SEPARADOR_PARAMETROS + parametrosEmpresa.get(itNombresParametros.next()));
+				nombreParametro = ordenNombresParametros.get(i);
+				elementoAAnadir = "|" + parametrosEmpresa.get(nombreParametro);
+				if (activarDebug)
+					System.out.println("Elemento a añadir: \"" + nombreParametro + "\" con valor: "
+							+ parametrosEmpresa.get(nombreParametro));
+				csvWriter.append(elementoAAnadir);
 			}
 			// Siguiente fila
 			if (itAntiguedades.hasNext())
@@ -149,4 +191,12 @@ public class GestorFicheros {
 		csvWriter.close();
 
 	}
+
+	/**
+	 * @return the ordenNombresParametrosLeidos
+	 */
+	public HashMap<Integer, String> getOrdenNombresParametrosLeidos() {
+		return ordenNombresParametrosLeidos;
+	}
+
 }
