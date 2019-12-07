@@ -35,11 +35,15 @@ java -Djava.util.logging.SimpleFormatter.format='%1$tY-%1$tm-%1$td %1$tH:%1$tM:%
 echo -e "Juntando en un CSV único: ESTATICOS y DINAMICOS..." >> ${LOG_MASTER}
 java -Djava.util.logging.SimpleFormatter.format='%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n' -jar ${PATH_JAR} --class 'c10X.brutos.JuntarEstaticosYDinamicosCSVunico' '${DIR_BRUTOS}' '${DIR_BRUTOS_CSV}' 2>>${PATH_LOG} 1>>${PATH_LOG}
 
+echo -e "Limpiando CSVs intermedios brutos..." >> ${LOG_MASTER}
+java -Djava.util.logging.SimpleFormatter.format='%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n' -jar ${PATH_JAR} --class 'c10X.brutos.JuntarEstaticosYDinamicosCSVunico' '${DIR_BRUTOS}' '${DIR_BRUTOS_CSV}' 2>>${PATH_LOG} 1>>${PATH_LOG}
 
 ################################################################################################
 echo -e "-------- DATOS LIMPIOS -------------" >> ${LOG_MASTER}
+DIR_LIMPIOS="/bolsa/pasado/limpios/"
 
-
+echo -e "Operaciones de limpieza: quitar outliers, rellenar missing values..." >> ${LOG_MASTER}
+java -Djava.util.logging.SimpleFormatter.format='%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n' -jar ${PATH_JAR} --class 'c30X.elaborados.LimpiarOperaciones' '${DIR_BRUTOS_CSV}' '${DIR_LIMPIOS}' 2>>${PATH_LOG} 1>>${PATH_LOG}
 
 
 ################################################################################################

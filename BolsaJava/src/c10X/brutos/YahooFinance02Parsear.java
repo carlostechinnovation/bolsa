@@ -89,7 +89,7 @@ public class YahooFinance02Parsear {
 	public static void extraerVelasReferencia(Map<String, Integer> velas, String directorioIn, String directorioOut)
 			throws IOException {
 
-		String mercadoReferencia = "NASDAQ";
+		String mercadoReferencia = BrutosUtils.MERCADO_NQ;
 		String valorReferencia = "AAPL";
 
 		String ficheroConVelasYTiempos = parsearDinamicosEmpresa01(mercadoReferencia, valorReferencia, directorioIn,

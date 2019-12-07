@@ -126,6 +126,7 @@ public class JuntarEstaticosYDinamicosCSVunico {
 				dinamicosFilaExtraida += "|" + partes[9];
 				dinamicosFilaExtraida += "|" + partes[10];
 				dinamicosFilaExtraida += "|" + partes[11];
+				dinamicosFilaExtraida += "|" + partes[12];
 
 				dinamicosDatos.add(dinamicosFilaExtraida);
 			}
