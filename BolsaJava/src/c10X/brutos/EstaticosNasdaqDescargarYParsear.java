@@ -31,7 +31,6 @@ public class EstaticosNasdaqDescargarYParsear {
 
 	static Logger MY_LOGGER = Logger.getLogger(EstaticosNasdaqDescargarYParsear.class);
 
-	static String MERCADO_NQ = "NASDAQ";
 	static String ID_SRL = "stockreportslink";
 
 	public EstaticosNasdaqDescargarYParsear() {
@@ -41,17 +40,18 @@ public class EstaticosNasdaqDescargarYParsear {
 	/**
 	 * @param args
 	 * @throws IOException
+	 * @throws InterruptedException
 	 */
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, InterruptedException {
 
 		MY_LOGGER.info("INICIO");
 
 		BasicConfigurator.configure();
 		MY_LOGGER.setLevel(Level.INFO);
 
-		Integer numMaxEmpresas = 2; // DEFAULT
-		String dirBruto = "/bolsa/pasado/brutos/"; // DEFAULT
-		String dirBrutoCsv = "/bolsa/pasado/brutos_csv/"; // DEFAULT
+		Integer numMaxEmpresas = BrutosUtils.NUM_EMPRESAS_PRUEBAS; // DEFAULT
+		String dirBruto = BrutosUtils.DIR_BRUTOS; // DEFAULT
+		String dirBrutoCsv = BrutosUtils.DIR_BRUTOS_CSV; // DEFAULT
 
 		if (args.length != 0) {
 			MY_LOGGER.error("Parametros de entrada incorrectos!!");
@@ -69,8 +69,9 @@ public class EstaticosNasdaqDescargarYParsear {
 			dirBrutoCsv = args[2];
 		}
 
-		List<EstaticoNasdaqModelo> nasdaqEstaticos1 = descargarNasdaqEstaticos1();
-		descargarYparsearNasdaqEstaticos2(nasdaqEstaticos1, dirBruto, dirBrutoCsv, numMaxEmpresas);
+		List<EstaticoNasdaqModelo> nasdaqEstaticos1 = descargarNasdaqEstaticosSoloLocal1();
+		// TODO descargarYparsearNasdaqEstaticos2(nasdaqEstaticos1, dirBruto,
+		// dirBrutoCsv, numMaxEmpresas);
 
 		MY_LOGGER.info("FIN");
 	}
@@ -80,7 +81,7 @@ public class EstaticosNasdaqDescargarYParsear {
 	 * 
 	 * @return Lista de empresas del NASDAQ con algunos datos ESTATICOS
 	 */
-	public static List<EstaticoNasdaqModelo> descargarNasdaqEstaticos1() {
+	public static List<EstaticoNasdaqModelo> descargarNasdaqEstaticosSoloLocal1() {
 
 		MY_LOGGER.info("descargarNasdaqEstaticos1...");
 		String csvFile = "C:\\DATOS\\GITHUB_REPOS\\bolsa\\BolsaJava\\src\\main\\resources\\nasdaq_tickers.csv";
@@ -136,16 +137,18 @@ public class EstaticosNasdaqDescargarYParsear {
 	 * @param numMaxEmpresas
 	 * @return
 	 * @throws IOException
+	 * @throws InterruptedException
 	 */
 	public static Boolean descargarYparsearNasdaqEstaticos2(List<EstaticoNasdaqModelo> nasdaqEstaticos1,
-			String dirBruto, String dirBrutoCsv, Integer numMaxEmpresas) throws IOException {
+			String dirBruto, String dirBrutoCsv, Integer numMaxEmpresas) throws IOException, InterruptedException {
 
 		MY_LOGGER.info("descargarYparsearNasdaqEstaticos2 --> " + nasdaqEstaticos1.size() + "|" + dirBruto + "|"
 				+ dirBrutoCsv + "|" + numMaxEmpresas);
 		Boolean out = false;
-		String rutaHtmlBruto1, rutaHtmlBruto2, rutaCsvBruto;
+		String rutaHtmlBruto1, rutaHtmlBruto2, rutaCsvBruto, rutaHtmlBruto3;
 		int numEmpresasLeidas = 0;
 		Map<String, String> mapaExtraidos = new HashMap<String, String>();
+		long msegEspera = -1;
 
 		for (EstaticoNasdaqModelo modelo : nasdaqEstaticos1) {
 
@@ -154,19 +157,29 @@ public class EstaticosNasdaqDescargarYParsear {
 
 			if (numEmpresasLeidas <= numMaxEmpresas) {
 
-				rutaHtmlBruto1 = dirBruto + "bruto_BORRAR1_" + MERCADO_NQ + "_" + modelo.symbol + ".html";
-				rutaHtmlBruto2 = dirBruto + "bruto_BORRAR2_" + MERCADO_NQ + "_" + modelo.symbol + ".html";
-				rutaCsvBruto = dirBrutoCsv + "bruto_ESTAT_" + MERCADO_NQ + "_" + modelo.symbol + ".csv";
+				rutaHtmlBruto1 = dirBruto + BrutosUtils.NASDAQOLD + "_BORRAR1_" + BrutosUtils.MERCADO_NQ + "_"
+						+ modelo.symbol + ".html";
+				rutaHtmlBruto2 = dirBruto + BrutosUtils.NASDAQOLD + "_BORRAR2_" + BrutosUtils.MERCADO_NQ + "_"
+						+ modelo.symbol + ".html";
+				rutaHtmlBruto3 = dirBruto + BrutosUtils.NASDAQOLD + "_BORRAR3_" + BrutosUtils.MERCADO_NQ + "_"
+						+ modelo.symbol + ".html";
+				rutaCsvBruto = dirBrutoCsv + BrutosUtils.NASDAQOLD + "_" + BrutosUtils.MERCADO_NQ + "_" + modelo.symbol
+						+ ".csv";
 
 				MY_LOGGER.info("Descarga OLD-NASDAQ - SUMMARY: " + rutaHtmlBruto1);
+				msegEspera = (long) (BrutosUtils.ESPERA_ALEATORIA_MSEG_MIN
+						+ Math.random() * 1000 * BrutosUtils.ESPERA_ALEATORIA_SEG_MAX);
+				Thread.sleep(msegEspera);
 				descargarPagina(rutaHtmlBruto1, true, modelo.summaryQuote);
 				parsearNasdaqEstatico2(rutaHtmlBruto1, mapaExtraidos);
 
-				MY_LOGGER.info("Descarga OLD-NASDAQ - SUMMARY: " + rutaHtmlBruto1);
+				// TODO MY_LOGGER.info("Descarga OLD-NASDAQ - SUMMARY: " + rutaHtmlBruto1);
+				msegEspera = (long) (BrutosUtils.ESPERA_ALEATORIA_MSEG_MIN
+						+ Math.random() * 1000 * BrutosUtils.ESPERA_ALEATORIA_SEG_MAX);
+				Thread.sleep(msegEspera);
 				descargarPagina(rutaHtmlBruto2, true, mapaExtraidos.get(ID_SRL));
-				parsearNasdaqEstatico3(rutaHtmlBruto2, mapaExtraidos);
-
-				volcarEnCSV(MERCADO_NQ, modelo.symbol, mapaExtraidos, rutaCsvBruto);
+				parsearNasdaqEstatico3(rutaHtmlBruto2, rutaHtmlBruto3, mapaExtraidos);
+				volcarEnCSV(BrutosUtils.MERCADO_NQ, modelo.symbol, mapaExtraidos, rutaCsvBruto);
 
 			} else {
 				break;
@@ -314,18 +327,18 @@ public class EstaticosNasdaqDescargarYParsear {
 		String text11 = items11.text();
 		String text12 = items12.text();
 
-		// TODO pendiente
-		int x = 0;
-
+		mapaExtraidos.put(text11, text12);
 	}
 
 	/**
 	 * @param rutaHtmlBruto
+	 * @param rutaHtmlReportBruto
 	 * @param mapaExtraidos
 	 * @throws IOException
+	 * @throws InterruptedException
 	 */
-	public static void parsearNasdaqEstatico3(String rutaHtmlBruto, Map<String, String> mapaExtraidos)
-			throws IOException {
+	public static void parsearNasdaqEstatico3(String rutaHtmlBruto, String rutaHtmlReportBruto,
+			Map<String, String> mapaExtraidos) throws IOException, InterruptedException {
 
 		MY_LOGGER.info("descargarYparsearNasdaqEstaticos3 --> " + rutaHtmlBruto);
 
@@ -334,16 +347,108 @@ public class EstaticosNasdaqDescargarYParsear {
 
 		Document doc = Jsoup.parse(in);
 
+		// -------------------- Tabla de ARRIBA (contiene el dividendo_pct y PER)
+		Elements t1 = doc.getElementsByClass("marginB5px");
+		Elements t11 = t1.get(1).children().get(0).children();
+
+		List<String> tempItemValor = new ArrayList<String>();
+
+		for (Element t111 : t11) {
+
+			Elements t2 = t111.children();
+
+			for (Element t21 : t2) {
+
+				if (!t21.ownText().trim().isEmpty()) {
+					tempItemValor.add(t21.ownText().trim());
+				} else {
+					Element t3 = t21.children().get(0);
+					Elements t31 = t3.getAllElements();
+					Element t311 = t31.get(0);
+					Element t4 = t311.getAllElements().get(0);
+					tempItemValor.add(t4.ownText());
+				}
+
+			}
+		}
+
+		int i = 0;
+		for (i = 0; i < tempItemValor.size(); i = i + 2) {
+			// MY_LOGGER.info(tempItemValor.get(i) + "-->" + tempItemValor.get(i + 1));
+
+			// De los datos que hay, solo cojo algunos
+			if (tempItemValor.get(i).contains("Dividend Yield") || tempItemValor.get(i).contains("P/E Ratio")) {
+				mapaExtraidos.put(tempItemValor.get(i), tempItemValor.get(i + 1));
+			}
+		}
+
+		// -------------------- Tabla de ARRIBA (contiene el dividendo_pct y PER)
+		Element p2 = doc.getElementById("stockreportInfo");
+		Element p21 = p2.children().get(0);
+		String urlStockReport = p21.attr("src");
+
+		long msegEspera = (long) (BrutosUtils.ESPERA_ALEATORIA_MSEG_MIN
+				+ Math.random() * 1000 * BrutosUtils.ESPERA_ALEATORIA_SEG_MAX);
+		// TODO Thread.sleep(msegEspera);
+		// TODO descargarPagina(rutaHtmlReportBruto, true, urlStockReport);
+		// TODO parsearNasdaqEstatico4(rutaHtmlReportBruto, mapaExtraidos);
+
 		// TODO pendiente
 		int x = 0;
+
+	}
+
+	/**
+	 * Parsea STOCK REPORT (NASDAQ EDGAR)
+	 * 
+	 * @param rutaHtmlReportBruto
+	 * @param mapaExtraidos
+	 * @throws IOException
+	 */
+	public static void parsearNasdaqEstatico4(String rutaHtmlReportBruto, Map<String, String> mapaExtraidos)
+			throws IOException {
+
+		MY_LOGGER.info("parsearNasdaqEstatico4 --> " + rutaHtmlReportBruto);
+
+		byte[] encoded = Files.readAllBytes(Paths.get(rutaHtmlReportBruto));
+		String in = new String(encoded, Charset.forName("ISO-8859-1"));
+
+		Document doc = Jsoup.parse(in);
+
+		Elements t = doc.getElementById("pnlReport").children().get(0).children().get(0).children().get(0).children()
+				.get(0).children();
+
+		for (Element e : t) {
+			// BALANCE SHEET: activos y pasivos totales
+			procesarNasdaqEstatico4Tabla(e, "Total Assets", mapaExtraidos);
+			procesarNasdaqEstatico4Tabla(e, "Total Liabilities", mapaExtraidos);
+
+			// STOCK OWNERSHIP: porcentaje de particiones por parte de instituciones
+			// (fondos)
+			procesarNasdaqEstatico4Tabla(e, "Institutional", mapaExtraidos);
+
+		}
+
+	}
+
+	private static void procesarNasdaqEstatico4Tabla(Element t, String datoBuscado, Map<String, String> mapaExtraidos) {
+
+		if (t.toString().contains(">" + datoBuscado + "<")) {
+			MY_LOGGER.info("procesarNasdaqEstatico4Tabla --> " + datoBuscado);
+			MY_LOGGER.info("-----------------------------------");
+			MY_LOGGER.info(t.toString());
+			MY_LOGGER.info("-----------------------------------");
+
+			// TODO
+			int x = 0;
+		}
 
 	}
 
 	public static void volcarEnCSV(String mercado, String empresa, Map<String, String> mapaExtraidos,
 			String rutaCsvBruto) {
 
-		MY_LOGGER.info("descargarYparsearNasdaqEstaticos3 --> " + mercado + "|" + empresa + "|" + mapaExtraidos.size()
-				+ "|" + rutaCsvBruto);
+		MY_LOGGER.info("volcarEnCSV --> " + mercado + "|" + empresa + "|" + mapaExtraidos.size() + "|" + rutaCsvBruto);
 
 		// TODO pendiente
 		int x = 0;

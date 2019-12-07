@@ -15,21 +15,26 @@ rm -f "${DIR_BASE}../../bolsa_log4j.log"
 rm -f "${LOG_MASTER}"
 
 
-
 ################################################################################################
 echo -e "-------- DATOS BRUTOS -------------" >> ${LOG_MASTER}
 DIR_BRUTOS="/bolsa/pasado/brutos/"
 DIR_BRUTOS_CSV="/bolsa/pasado/brutos_csv/"
 
-echo -e "Descargando..." >> ${LOG_MASTER}
-java -Djava.util.logging.SimpleFormatter.format='%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n' -jar ${PATH_JAR} --class 'c10X.brutos.EstaticosNasdaqDescargarYParsear' '${DIR_BRUTOS}' '${DIR_BRUTOS_CSV}' 2>>${PATH_LOG} 1>>${PATH_LOG}
-java -Djava.util.logging.SimpleFormatter.format='%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n' -jar ${PATH_JAR} --class 'c10X.brutos.YahooFinance01Descargar' '2' '${DIR_BRUTOS}' 2>>${PATH_LOG} 1>>${PATH_LOG}
+############## echo -e "Descargando de NASDAQ-OLD..." >> ${LOG_MASTER}
+############## java -Djava.util.logging.SimpleFormatter.format='%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n' -jar ${PATH_JAR} --class 'c10X.brutos.EstaticosNasdaqDescargarYParsear' '${DIR_BRUTOS}' '${DIR_BRUTOS_CSV}' 2>>${PATH_LOG} 1>>${PATH_LOG}
 
-echo -e "Estructurando (primera limpieza)..." >> ${LOG_MASTER}
+echo -e "Descargando de YAHOO FINANCE..." >> ${LOG_MASTER}
+java -Djava.util.logging.SimpleFormatter.format='%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n' -jar ${PATH_JAR} --class 'c10X.brutos.YahooFinance01Descargar' '2' '${DIR_BRUTOS}' '${DIR_BRUTOS_CSV}' 2>>${PATH_LOG} 1>>${PATH_LOG}
+
+echo -e "Limpieza de YAHOO FINANCE..." >> ${LOG_MASTER}
 java -Djava.util.logging.SimpleFormatter.format='%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n' -jar ${PATH_JAR} --class 'c10X.brutos.YahooFinance02Parsear' '${DIR_BRUTOS}' '${DIR_BRUTOS_CSV}' 2>>${PATH_LOG} 1>>${PATH_LOG}
 
+echo -e "Descargando de FINVIZ..." >> ${LOG_MASTER}
+java -Djava.util.logging.SimpleFormatter.format='%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n' -jar ${PATH_JAR} --class 'c10X.brutos.EstaticosFinvizDescargarYParsear' '2' '${DIR_BRUTOS}' '${DIR_BRUTOS_CSV}' 2>>${PATH_LOG} 1>>${PATH_LOG}
 
-echo -e "Juntando en un CSV único..." >> ${LOG_MASTER}
+echo -e "Juntando en un CSV único: ESTATICOS y DINAMICOS..." >> ${LOG_MASTER}
+java -Djava.util.logging.SimpleFormatter.format='%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n' -jar ${PATH_JAR} --class 'c10X.brutos.JuntarEstaticosYDinamicosCSVunico' '${DIR_BRUTOS}' '${DIR_BRUTOS_CSV}' 2>>${PATH_LOG} 1>>${PATH_LOG}
+
 
 ################################################################################################
 echo -e "-------- DATOS LIMPIOS -------------" >> ${LOG_MASTER}

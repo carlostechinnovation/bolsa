@@ -20,8 +20,6 @@ import org.apache.log4j.Logger;
 public class YahooFinance01Descargar {
 
 	static Logger MY_LOGGER = Logger.getLogger(YahooFinance01Descargar.class);
-	public static final int ESPERA_ALEATORIA_MSEG_MIN = 200;
-	public static final int ESPERA_ALEATORIA_SEG_MAX = 2;
 
 	public YahooFinance01Descargar() {
 		super();
@@ -39,8 +37,8 @@ public class YahooFinance01Descargar {
 		BasicConfigurator.configure();
 		MY_LOGGER.setLevel(Level.INFO);
 
-		Integer numMaxEmpresas = 2; // DEFAULT
-		String directorioOut = "/bolsa/pasado/brutos/"; // DEFAULT
+		Integer numMaxEmpresas = BrutosUtils.NUM_EMPRESAS_PRUEBAS; // DEFAULT
+		String directorioOut = BrutosUtils.DIR_BRUTOS; // DEFAULT
 
 		if (args.length == 0) {
 			MY_LOGGER.info("Sin parametros de entrada. Rellenamos los DEFAULT...");
@@ -52,7 +50,7 @@ public class YahooFinance01Descargar {
 			directorioOut = args[1];
 		}
 
-		List<EstaticoNasdaqModelo> nasdaqEstaticos1 = EstaticosNasdaqDescargarYParsear.descargarNasdaqEstaticos1();
+		List<EstaticoNasdaqModelo> nasdaqEstaticos1 = EstaticosNasdaqDescargarYParsear.descargarNasdaqEstaticosSoloLocal1();
 		descargarNasdaqDinamicos01(nasdaqEstaticos1, numMaxEmpresas, directorioOut);
 
 		MY_LOGGER.info("FIN");
@@ -68,8 +66,8 @@ public class YahooFinance01Descargar {
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
-	public static Boolean descargarNasdaqDinamicos01(List<EstaticoNasdaqModelo> nasdaqEstaticos1, Integer numMaxEmpresas,
-			String directorioOut) throws IOException, InterruptedException {
+	public static Boolean descargarNasdaqDinamicos01(List<EstaticoNasdaqModelo> nasdaqEstaticos1,
+			Integer numMaxEmpresas, String directorioOut) throws IOException, InterruptedException {
 
 		MY_LOGGER.info("descargarNasdaqDinamicos01 --> " + numMaxEmpresas + "|" + directorioOut);
 
@@ -86,7 +84,7 @@ public class YahooFinance01Descargar {
 			if (i <= numMaxEmpresas) {
 				ticker = nasdaqEstaticos1.get(i).symbol;
 
-				String pathOut = directorioOut + "bruto_" + mercado + "_" + ticker + ".txt";
+				String pathOut = directorioOut + BrutosUtils.YAHOOFINANCE + "_" + mercado + "_" + ticker + ".txt";
 				String URL_yahoo_ticker = "https://query1.finance.yahoo.com/v8/finance/chart/" + ticker + "?symbol="
 						+ ticker + "&range=6mo&interval=60m";
 
@@ -96,7 +94,8 @@ public class YahooFinance01Descargar {
 				Files.deleteIfExists(Paths.get(pathOut)); // Borramos el fichero de salida si existe
 
 				// espera aleatoria
-				msegEspera = (long) (ESPERA_ALEATORIA_MSEG_MIN + Math.random() * 1000 * ESPERA_ALEATORIA_SEG_MAX);
+				msegEspera = (long) (BrutosUtils.ESPERA_ALEATORIA_MSEG_MIN
+						+ Math.random() * 1000 * BrutosUtils.ESPERA_ALEATORIA_SEG_MAX);
 				MY_LOGGER.info("Espera aleatoria " + msegEspera + " mseg...");
 				Thread.sleep(msegEspera);
 

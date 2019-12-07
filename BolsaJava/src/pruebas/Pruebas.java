@@ -27,6 +27,13 @@ public class Pruebas {
 
 //		String cadena = (anio + 1970) + "|" + mes + "|" + dia + "|" + hora + "|" + minuto + "|";
 		System.out.println(cadena);
+
+		String cadenaconAntiguedad = "124" + "|" + cadena;
+		int indexPrimerPipe = cadenaconAntiguedad.indexOf("|");
+		String antiguedad = cadenaconAntiguedad.substring(0, indexPrimerPipe);
+		String fechaStr = cadenaconAntiguedad.substring(indexPrimerPipe + 1);
+		System.out.println(antiguedad);
+		System.out.println(fechaStr);
 	}
 
 }

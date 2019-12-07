@@ -1,21 +1,23 @@
 package c10X.brutos;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
@@ -31,6 +33,7 @@ import org.json.simple.parser.ParseException;
 public class YahooFinance02Parsear {
 
 	static Logger MY_LOGGER = Logger.getLogger(YahooFinance02Parsear.class);
+	static DateFormat df = new SimpleDateFormat("yyyy|MM|dd|HH|mm");
 
 	public YahooFinance02Parsear() {
 		super();
@@ -47,8 +50,8 @@ public class YahooFinance02Parsear {
 		BasicConfigurator.configure();
 		MY_LOGGER.setLevel(Level.INFO);
 
-		String directorioIn = "/bolsa/pasado/brutos/"; // DEFAULT
-		String directorioOut = "/bolsa/pasado/brutos_csv/"; // DEFAULT
+		String directorioIn = BrutosUtils.DIR_BRUTOS; // DEFAULT
+		String directorioOut = BrutosUtils.DIR_BRUTOS_CSV; // DEFAULT
 
 		if (args.length == 0) {
 			MY_LOGGER.info("Sin parametros de entrada. Rellenamos los DEFAULT...");
@@ -60,67 +63,136 @@ public class YahooFinance02Parsear {
 			directorioOut = args[1];
 		}
 
-		List<EstaticoNasdaqModelo> nasdaqEstaticos1 = EstaticosNasdaqDescargarYParsear.descargarNasdaqEstaticos1();
-		parsearNasdaqDinamicos01(nasdaqEstaticos1, directorioIn, directorioOut);
+		// EMPRESAS NASDAQ
+		List<EstaticoNasdaqModelo> nasdaqEstaticos1 = EstaticosNasdaqDescargarYParsear
+				.descargarNasdaqEstaticosSoloLocal1();
+
+		// VELAS (tomando una empresa buena, que tendra todo relleno)
+		Map<String, Integer> velas = new HashMap<String, Integer>();
+		extraerVelasReferencia(velas, directorioIn, directorioOut);
+
+		// DATOS DINAMICOS DE TODAS LAS EMPRESAS
+		parsearDinamicos01(nasdaqEstaticos1, directorioIn, directorioOut, false);
+		rellenarVelasDiariasHuecoyAntiguedad02(nasdaqEstaticos1, directorioOut, velas);
 
 		MY_LOGGER.info("FIN");
+	}
+
+	/**
+	 * EXTRAE LAS VELAS CON UNA EMPRESA DE REFERENCIA DE UN MERCADO
+	 * 
+	 * @param velas
+	 * @param directorioIn
+	 * @param directorioOut
+	 * @throws IOException
+	 */
+	public static void extraerVelasReferencia(Map<String, Integer> velas, String directorioIn, String directorioOut)
+			throws IOException {
+
+		String mercadoReferencia = "NASDAQ";
+		String valorReferencia = "AAPL";
+
+		String ficheroConVelasYTiempos = parsearDinamicosEmpresa01(mercadoReferencia, valorReferencia, directorioIn,
+				directorioOut, true);
+
+		// --------- Leer fichero -------------
+		File file = new File(ficheroConVelasYTiempos);
+		FileReader fr = new FileReader(file);
+		BufferedReader br = new BufferedReader(fr);
+		String actual, antiguedad, fechaStr;
+		int indexPrimerPipe;
+		boolean primeraLinea = true;
+
+		while ((actual = br.readLine()) != null) {
+			if (primeraLinea == false) {
+				indexPrimerPipe = actual.indexOf("|");
+				antiguedad = actual.substring(0, indexPrimerPipe);
+				fechaStr = actual.substring(indexPrimerPipe + 1);
+				velas.put(fechaStr, Integer.valueOf(antiguedad));
+			}
+			primeraLinea = false;
+		}
+		br.close();
+
+		MY_LOGGER.info("Velas leidas: " + velas.size());
 	}
 
 	/**
 	 * @param nasdaqEstaticos1
 	 * @param directorioIn
 	 * @param directorioOut
+	 * @param soloVelas
 	 * @return
 	 * @throws IOException
 	 */
-	public static Boolean parsearNasdaqDinamicos01(List<EstaticoNasdaqModelo> nasdaqEstaticos1, String directorioIn,
-			String directorioOut) throws IOException {
+	public static List<String> parsearDinamicos01(List<EstaticoNasdaqModelo> nasdaqEstaticos1, String directorioIn,
+			String directorioOut, Boolean soloVelas) throws IOException {
 
 		MY_LOGGER.info("parsearNasdaqDinamicos01 --> " + directorioIn + "|" + directorioOut);
 
 		String mercado = "NASDAQ"; // DEFAULT
-		Boolean out = false;
-		String ticker;
+		List<String> ficherosSalida = new ArrayList<String>();
 
 		MY_LOGGER.info("mercado=" + mercado);
 
-		String pathBruto;
-		String pathBrutoCsv;
-
 		for (int i = 0; i < nasdaqEstaticos1.size(); i++) {
-
-			ticker = nasdaqEstaticos1.get(i).symbol;
-			pathBruto = directorioIn + "bruto_" + mercado + "_" + ticker + ".txt";
-			pathBrutoCsv = directorioOut + "bruto_" + mercado + "_" + ticker + ".csv";
-
-			MY_LOGGER.info("pathBruto|pathBrutoCsv =" + pathBruto + "|" + pathBrutoCsv);
-
-			if (Files.exists(Paths.get(pathBruto))) {
-				Files.deleteIfExists(Paths.get(pathBrutoCsv)); // Borramos el fichero de salida si existe
-
-				out = parsearJson(pathBruto, pathBrutoCsv);
-
-				if (out.booleanValue() == false) {
-					MY_LOGGER.error("La descarga de datos estaticos 1 de " + mercado + " - " + ticker
-							+ " ha fallado. Saliendo...");
-				}
-
-			} else {
-				MY_LOGGER.warn("Fichero de entrada no existe: " + pathBruto + " Continúa...");
-			}
+			ficherosSalida.add(parsearDinamicosEmpresa01(mercado, nasdaqEstaticos1.get(i).symbol, directorioIn,
+					directorioOut, soloVelas));
 
 		}
-		return out;
+		return ficherosSalida;
+	}
+
+	/**
+	 * @param mercado
+	 * @param ticker
+	 * @param directorioIn
+	 * @param directorioOut
+	 * @param soloVelas
+	 * @return
+	 * @throws IOException
+	 */
+	public static String parsearDinamicosEmpresa01(String mercado, String ticker, String directorioIn,
+			String directorioOut, Boolean soloVelas) throws IOException {
+
+		Boolean out = false;
+		String pathBruto;
+		String pathBrutoCsv;
+		pathBruto = directorioIn + BrutosUtils.YAHOOFINANCE + "_" + mercado + "_" + ticker + ".txt";
+		pathBrutoCsv = soloVelas ? (directorioOut + "VELAS_" + mercado + ".csv")
+				: (directorioOut + BrutosUtils.YAHOOFINANCE + "_" + mercado + "_" + ticker + ".csv");
+
+		MY_LOGGER.info("pathBruto|pathBrutoCsv =" + pathBruto + "|" + pathBrutoCsv);
+
+		if (Files.exists(Paths.get(pathBruto))) {
+			Files.deleteIfExists(Paths.get(pathBrutoCsv)); // Borramos el fichero de salida si existe
+
+			out = parsearJson(mercado, ticker, pathBruto, pathBrutoCsv, soloVelas);
+
+			if (out.booleanValue() == false) {
+				MY_LOGGER.error(
+						"La descarga de datos estaticos 1 de " + mercado + " - " + ticker + " ha fallado. Saliendo...");
+			}
+
+		} else {
+			MY_LOGGER.warn("Fichero de entrada no existe: " + pathBruto + " Continúa...");
+		}
+		return pathBrutoCsv;
 	}
 
 	/**
 	 * Lee un fichero bruto de datos, los extrae y los escribe en un CSV
 	 * (estructurados)
 	 * 
+	 * @param mercado
+	 * @param empresa
 	 * @param pathBrutoEntrada
 	 * @param pathBrutoCsvSalida
+	 * @param soloVelas
+	 * @return
 	 */
-	public static Boolean parsearJson(String pathBrutoEntrada, String pathBrutoCsvSalida) {
+	public static Boolean parsearJson(String mercado, String empresa, String pathBrutoEntrada,
+			String pathBrutoCsvSalida, Boolean soloVelas) {
 
 		MY_LOGGER.info("parsearJson... --> " + pathBrutoEntrada + "|" + pathBrutoCsvSalida);
 		Boolean out = false;
@@ -136,9 +208,7 @@ public class YahooFinance02Parsear {
 			Object resultValor = mapaChart.get("result");
 			JSONArray a1 = (JSONArray) resultValor;
 			JSONObject a2 = (JSONObject) a1.get(0);
-			Set<String> claves = a2.keySet();
 
-			Object meta = a2.get("meta");
 			JSONObject indicators = (JSONObject) a2.get("indicators");
 			JSONArray tiemposEnSegundosDesde1970 = (JSONArray) a2.get("timestamp");
 
@@ -161,19 +231,38 @@ public class YahooFinance02Parsear {
 			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
 
 			// Cabecera
-			bw.write("anio|mes|dia|hora|minuto|volumen|high|low|close|open");
+			String cabecera = soloVelas ? "antiguedad|anio|mes|dia|hora|minuto"
+					: "mercado|empresa|antiguedad|anio|mes|dia|hora|minuto|volumen|high|low|close|open";
+			bw.write(cabecera);
 			bw.newLine();
 
 			int i = 0;
-			DateFormat df = new SimpleDateFormat("yyyy|MM|dd|HH|mm");
 
-			for (i = 0; i < listaVolumenes.size(); i++) {
+			String cad;
+			int numVelas = listaVolumenes.size();
+			for (i = 0; i < numVelas; i++) {
 
 				long msegDesde1970 = (long) tiemposEnSegundosDesde1970.get(i) * 1000L;
 
-				bw.write(df.format(new Date(msegDesde1970)) + "|" + listaVolumenes.get(i) + "|"
-						+ listaPreciosHigh.get(i) + "|" + listaPreciosLow.get(i) + "|" + listaPreciosClose.get(i) + "|"
-						+ listaPreciosOpen.get(i));
+				if (soloVelas) {
+					cad = String.valueOf(numVelas - i - 1);
+					cad += "|" + df.format(new Date(msegDesde1970));
+				} else {
+					cad = mercado + "|" + empresa;
+					cad += "|" + df.format(new Date(msegDesde1970));
+					cad += "|" + BrutosUtils.tratamientoLigero(
+							listaVolumenes.get(i) == null ? BrutosUtils.NULO : listaVolumenes.get(i).toString());
+					cad += "|" + BrutosUtils.tratamientoLigero(
+							listaPreciosHigh.get(i) == null ? BrutosUtils.NULO : listaPreciosHigh.get(i).toString());
+					cad += "|" + BrutosUtils.tratamientoLigero(
+							listaPreciosLow.get(i) == null ? BrutosUtils.NULO : listaPreciosLow.get(i).toString());
+					cad += "|" + BrutosUtils.tratamientoLigero(
+							listaPreciosClose.get(i) == null ? BrutosUtils.NULO : listaPreciosClose.get(i).toString());
+					cad += "|" + BrutosUtils.tratamientoLigero(
+							listaPreciosOpen.get(i) == null ? BrutosUtils.NULO : listaPreciosOpen.get(i).toString());
+				}
+
+				bw.write(cad);
 				bw.newLine();
 			}
 
@@ -190,4 +279,174 @@ public class YahooFinance02Parsear {
 		return out;
 	}
 
+	/**
+	 * Todos los tickers deben tener
+	 * 
+	 * @param nasdaqEstaticos1
+	 * @param directorioCsv
+	 * @param velas
+	 * @throws IOException
+	 */
+	public static void rellenarVelasDiariasHuecoyAntiguedad02(List<EstaticoNasdaqModelo> nasdaqEstaticos1,
+			String directorioCsv, Map<String, Integer> velas) throws IOException {
+
+		// Recorrer todo el directorio, cogiendo los ficheros de Yahoo Finance y
+		// metiendoles las velas que falten
+
+		final File folder = new File(directorioCsv);
+		List<String> result = new ArrayList<String>();
+		BrutosUtils.encontrarFicherosEnCarpeta("YF.*\\.csv", folder, result);
+
+		for (String pathFichero : result) {
+			MY_LOGGER.info(pathFichero);
+			rellenarVelasDiariasHuecoyAntiguedadPorFichero03(pathFichero, velas);
+		}
+	}
+
+	/**
+	 * Dado un fichero CSV de Yahoo Finance (con precios, etc), rellena las velas
+	 * horarias (antiguedad). Genera las filas HUECO que falten, poniendo PRECIO
+	 * ARRASTRADO (de la última vela conocida) y VOLUMEN CERO.
+	 * 
+	 * @param pathFicheroIn
+	 * @param velas
+	 * @throws IOException
+	 */
+	public static void rellenarVelasDiariasHuecoyAntiguedadPorFichero03(String pathFicheroIn,
+			Map<String, Integer> velas) throws IOException {
+
+		List<String> lista = new ArrayList<String>();
+
+		File file = new File(pathFicheroIn);
+		FileReader fr = new FileReader(file);
+		BufferedReader br = new BufferedReader(fr);
+
+		String actual = "", anterior = null;
+		Integer velaAnterior = null;
+		String ultimaLineaRellenaCompletaConocida = null;
+		boolean primeraLinea = true;
+		boolean filaActualEsCompleta = false;
+
+		while ((actual = br.readLine()) != null) {
+
+			filaActualEsCompleta = false; // default
+
+			if (primeraLinea == false) {// excluye la cabecera
+
+				String[] lineArray = actual.split("\\|");
+
+				// RELLENOS: volumen y precio de cierre
+				filaActualEsCompleta = !lineArray[7].isEmpty() && !lineArray[7].equalsIgnoreCase(BrutosUtils.NULO)
+						&& !lineArray[10].isEmpty() && !lineArray[10].equalsIgnoreCase(BrutosUtils.NULO);
+
+				ultimaLineaRellenaCompletaConocida = filaActualEsCompleta ? actual : ultimaLineaRellenaCompletaConocida;
+
+				String[] actualArray = actual.split("\\|");
+				Integer velaActual = velas.get(actualArray[2] + "|" + actualArray[3] + "|" + actualArray[4] + "|"
+						+ actualArray[5] + "|" + actualArray[6]);
+
+				if (anterior != null && ultimaLineaRellenaCompletaConocida != null) {
+					String[] anteriorArray = actual.split("\\|");
+					velaAnterior = velas.get(anteriorArray[2] + "|" + anteriorArray[3] + "|" + anteriorArray[4] + "|"
+							+ anteriorArray[5] + "|" + anteriorArray[6]);
+
+					// Si entre la vela anterior y la actual faltan filas, las CREO con precio
+					// arrastrado y volumen cero
+
+					String[] completaAnteriorArray = ultimaLineaRellenaCompletaConocida.split("\\|");
+
+					for (int numVelaHueco = (velaAnterior + 1); numVelaHueco < velaActual; numVelaHueco++) {
+						String corregida = actualArray[0];// mercado
+						corregida += "|" + actualArray[1];// empresa
+						corregida += "|" + String.valueOf(numVelaHueco);// antiguedad (vela)
+						corregida += "|" + actualArray[2];// anio
+						corregida += "|" + actualArray[3];// mes
+						corregida += "|" + actualArray[4];// dia
+						corregida += "|" + actualArray[5];// hora
+						corregida += "|" + actualArray[6];// minuto
+						corregida += "|" + "0";// CORRIJO volumen: pongo un CERO
+						corregida += "|" + completaAnteriorArray[8];// CORRIJO high
+						corregida += "|" + completaAnteriorArray[9];// CORRIJO low
+						corregida += "|" + completaAnteriorArray[10];// CORRIJO close
+						corregida += "|" + completaAnteriorArray[11];// CORRIJO open
+
+						// FILA CORREGIDA
+						lista.add(corregida);
+					}
+
+				}
+
+				// En FILAS YA EXISTENTES (no son huecos), que tengan datos null, también
+				// relleno con precio arrastrado y volumen cero
+				if (ultimaLineaRellenaCompletaConocida != null && filaActualEsCompleta == false) {
+
+					String[] completaAnteriorArray = ultimaLineaRellenaCompletaConocida.split("\\|");
+
+					String corregida = actualArray[0];// mercado
+					corregida += "|" + actualArray[1];// empresa
+					corregida += "|" + String.valueOf(velaActual);// antiguedad (vela)
+					corregida += "|" + actualArray[2];// anio
+					corregida += "|" + actualArray[3];// mes
+					corregida += "|" + actualArray[4];// dia
+					corregida += "|" + actualArray[5];// hora
+					corregida += "|" + actualArray[6];// minuto
+					corregida += "|" + "0";// CORRIJO volumen: pongo un CERO
+					corregida += "|" + completaAnteriorArray[8];// CORRIJO high
+					corregida += "|" + completaAnteriorArray[9];// CORRIJO low
+					corregida += "|" + completaAnteriorArray[10];// CORRIJO close
+					corregida += "|" + completaAnteriorArray[11];// CORRIJO open
+
+					// FILA CORREGIDA
+					lista.add(corregida);
+
+				} else {
+
+					String[] originalArray = actual.split("\\|");
+
+					String originalconVela = originalArray[0];// mercado
+					originalconVela += "|" + originalArray[1];// empresa
+					originalconVela += "|" + String.valueOf(velaActual);// antiguedad (vela)
+					originalconVela += "|" + originalArray[2];// anio
+					originalconVela += "|" + originalArray[3];// mes
+					originalconVela += "|" + originalArray[4];// dia
+					originalconVela += "|" + originalArray[5];// hora
+					originalconVela += "|" + originalArray[6];// minuto
+					originalconVela += "|" + originalArray[7];// volumen
+					originalconVela += "|" + originalArray[8];// high
+					originalconVela += "|" + originalArray[9];// low
+					originalconVela += "|" + originalArray[10];// close
+					originalconVela += "|" + originalArray[11];// open
+
+					lista.add(originalconVela);
+				}
+
+				anterior = actual;// GUARDO PARA LA SIGUIENTE ITERACION (salvo la cabecera, que no la quiero)
+
+			} else {
+				// CABECERA INTACTA
+				lista.add(actual);
+			}
+
+			primeraLinea = false;
+		}
+		br.close();
+
+		MY_LOGGER.info("Lineas leidas: " + lista.size());
+
+		// ---------------- ESCRITURA: sustituye al existente ------
+		MY_LOGGER.debug("Escritura...");
+		File fout = new File(pathFicheroIn);
+		PrintWriter writer = new PrintWriter(file);
+		writer.print("");// VACIAMOS CONTENIDO
+		writer.close();
+		FileOutputStream fos = new FileOutputStream(fout, false);
+		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
+
+		for (String cad : lista) {
+			bw.write(cad);
+			bw.newLine();
+		}
+		bw.close();
+
+	}
 }
