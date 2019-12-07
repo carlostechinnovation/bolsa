@@ -2,6 +2,7 @@ package c30x.elaborados.construir;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
@@ -18,6 +19,13 @@ public class ConstructorElaborados {
 	// x días
 	public final static Integer HORAS_AL_DIA = 4;
 	public final static Integer[] periodosHParaParametros = new Integer[] { 1 * HORAS_AL_DIA, 2 * HORAS_AL_DIA };
+
+	// Parámetros del TARGET (subida del S% en precio de close, tras X velas, y no
+	// cae más de un R% dentro de las siguientes M velas posteriores)
+	public final static Integer S = 30;
+	public final static Integer X = 5;
+	public final static Integer R = 10;
+	public final static Integer M = 2;
 
 	// IMPORTANTE: se asume que los datos están ordenados de menor a mayor
 	// antigüedad, y agrupados por empresa
@@ -113,9 +121,9 @@ public class ConstructorElaborados {
 								+ FINAL_NOMBRES_PARAMETROS_ELABORADOS._VOLUMEN.toString());
 			}
 			parametrosAcumulados += ordenVolumenNombresParametrosElaborados.size();
-			itAntiguedad = datosEmpresaEntrada.keySet().iterator();
-			while (itAntiguedad.hasNext()) {
-				antiguedad = itAntiguedad.next();
+			Iterator<Integer> itAntiguedadTarget = datosEmpresaEntrada.keySet().iterator();
+			while (itAntiguedadTarget.hasNext()) {
+				antiguedad = itAntiguedadTarget.next();
 				// PARA CADA PERIODO DE CÁLCULO DE PARÁMETROS ELABORADOS y cada antigüedad, que
 				// será un GRUPO de COLUMNAS...
 
@@ -201,6 +209,74 @@ public class ConstructorElaborados {
 				datosEmpresaFinales.put(antiguedad, parametros);
 			}
 		}
+
+		// Añado el TARGET
+		Integer antiguedadX, antiguedadM;
+		Double subidaSPrecioTantoPorUno = (100 + S * 100) / 100.0;
+		Double caidaRPrecioTantoPorUno = (100 - R * 100) / 100.0;
+		// Target=0 es que no se cumple. 1 es que sí. -1 es que no se puede calcular
+		Integer target = -1;
+		Boolean mCumplida = Boolean.FALSE;
+
+		antiguedades = datosEmpresaEntrada.keySet();
+		Integer antiguedadMaxima = Collections.max(antiguedades);
+		HashMap<String, String> datosAntiguedad, datosAntiguedadX;
+		Iterator<Integer> itAntiguedadTarget = datosEmpresaEntrada.keySet().iterator();
+		HashMap<Integer, Integer> antiguedadYTarget = new HashMap<Integer, Integer>();
+		while (itAntiguedadTarget.hasNext()) {
+			antiguedad = itAntiguedadTarget.next();
+			antiguedadM = antiguedad + M;
+			if (antiguedad > M) {
+				antiguedadX = antiguedad + X;
+				if (antiguedadMaxima < antiguedadX) {
+					// Estamos analizando un punto en el tiempo X datos anteriores
+					target = -1;
+					break;
+				} else {
+					// Si el precio actual ha subido S% tras X velas viejas, y si después, durante
+					// todas las M velas nuevas, no ha caído más de R%, entonces Target=1
+					datosAntiguedad = datosEmpresaEntrada.get(antiguedad);
+					datosAntiguedadX = datosEmpresaEntrada.get(antiguedadX);
+					if (Double.valueOf(datosAntiguedad.get("close")) >= (Double.valueOf(datosAntiguedadX.get("close"))
+							* subidaSPrecioTantoPorUno)) {
+						for (int i = 0; i < M; i++) {
+							if (Double.valueOf(datosEmpresaEntrada.get(antiguedad).get("close"))
+									* caidaRPrecioTantoPorUno < Double
+											.valueOf(datosEmpresaEntrada.get(antiguedadM).get("close"))) {
+								// No se cumple el target
+								mCumplida = Boolean.FALSE;
+								break;
+							} else {
+								mCumplida = Boolean.TRUE;
+							}
+						}
+						if (mCumplida) {
+							// La S sí se cumple, y la M también en todo el rango
+							target = 1;
+						}
+					} else {
+						// La S no se cumple
+						target = 0;
+					}
+				}
+			} else {
+				// La antigüedad es demasiado reciente para ver si es estable en M
+				target = -1;
+			}
+			antiguedadYTarget.put(antiguedad, target);
+		}
+
+		// Se rellena el target en los datos de entrada tras el análisis, al final de todos los parámetros
+		Iterator<Integer> itAntiguedadDatos = datosEmpresaFinales.keySet().iterator();
+		ordenNombresParametrosSalida.put(ordenNombresParametrosSalida.size(), "TARGET");
+		while (itAntiguedadDatos.hasNext()) {
+			antiguedad = itAntiguedadDatos.next();
+			parametros = datosEmpresaFinales.get(antiguedad);
+			parametros.put("TARGET", String.valueOf(antiguedadYTarget.get(antiguedad)));
+			datosEmpresaFinales.replace(antiguedad, parametros);
+		}
+
+		// Vuelco todos los parámetros
 		datosSalida.put(empresa, datosEmpresaFinales);
 		datos = datosSalida;
 		ordenNombresParametros.clear();
