@@ -39,7 +39,13 @@ echo -e "-------- DATOS LIMPIOS -------------" >> ${LOG_MASTER}
 
 ################################################################################################
 echo -e "-------- VARIABLES ELABORADAS -------------" >> ${LOG_MASTER}
+DIR_ELABORADOS="/bolsa/pasado/elaborados/"
+DIR_ELABORADOS_CSV="/bolsa/pasado/elaborados_csv/"
 
+echo -e "Calculando elaborados y target..." >> ${LOG_MASTER}
+java -Djava.util.logging.SimpleFormatter.format='%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n' -jar ${PATH_JAR} --class 'c30X.elaborados.ConstructorElaborados' '${DIR_BRUTOS}' '${DIR_BRUTOS_CSV}' 2>>${PATH_LOG} 1>>${PATH_LOG}
+
+echo -e "Elaborados y target ya calculados" >> ${LOG_MASTER}
 
 
 ################################################################################################
