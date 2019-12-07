@@ -13,6 +13,9 @@ public class ConstructorElaborados {
 
 	public final static Boolean DEPURAR = Boolean.TRUE;
 
+	final static File directorioOrigenDatos = new File(
+			"C:\\\\Users\\\\t151521\\\\git\\\\bolsa\\\\BolsaJava\\\\ficherosEjemplo");
+
 	// META-PARAMETRIZACIÓN
 	// Periodo de la vela de entrada
 	public final static String T_velaEntrada = "H";
@@ -38,25 +41,26 @@ public class ConstructorElaborados {
 
 		HashMap<String, HashMap<Integer, HashMap<String, String>>> datosEntrada = new HashMap<String, HashMap<Integer, HashMap<String, String>>>();
 		HashMap<Integer, String> ordenNombresParametros;
-		final File directorio = new File("C:\\\\Users\\\\t151521\\\\git\\\\bolsa\\\\BolsaJava\\\\ficherosEjemplo");
 		GestorFicheros gestorFicheros = new GestorFicheros(Boolean.TRUE);
-		ArrayList<File> ficherosEntradaEmpresas = gestorFicheros.listaFicherosDeDirectorio(directorio);
+		ArrayList<File> ficherosEntradaEmpresas = gestorFicheros.listaFicherosDeDirectorio(directorioOrigenDatos);
 
 		String destino = "";
 		Iterator<File> iterator = ficherosEntradaEmpresas.iterator();
 		File ficheroGestionado;
 		while (iterator.hasNext()) {
 			ficheroGestionado = iterator.next();
-			System.out.println("Fichero entrada: " + ficheroGestionado.getAbsolutePath());
+
 			datosEntrada = gestorFicheros.leeFicheroDeSoloUnaEmpresa(ficheroGestionado.getPath());
 			destino = ficheroGestionado.getParentFile().getAbsolutePath() + "\\salidaElaborada\\salida"
 					+ ficheroGestionado.getName().substring(0, ficheroGestionado.getName().length() - 4) + ".csv";
-			System.out.println("Fichero salida:  " + destino);
+			if (DEPURAR) {
+				System.out.println("Fichero entrada: " + ficheroGestionado.getAbsolutePath());
+				System.out.println("Fichero salida:  " + destino);
+			}
 			ordenNombresParametros = gestorFicheros.getOrdenNombresParametrosLeidos();
 			anadirParametrosElaboradosDeSoloUnaEmpresa(datosEntrada, ordenNombresParametros);
 			gestorFicheros.creaFicheroDeSoloUnaEmpresa(datosEntrada, ordenNombresParametros, destino);
 		}
-		System.out.println("FIN");
 	}
 
 	public static void anadirParametrosElaboradosDeSoloUnaEmpresa(
@@ -87,7 +91,8 @@ public class ConstructorElaborados {
 		}
 		// EXTRACCIÓN DE DATOS DE LA EMPRESA
 		datosEmpresaEntrada = datos.get(empresa);
-		System.out.println("Empresa: " + empresa);
+		if (DEPURAR)
+			System.out.println("Empresa: " + empresa);
 		HashMap<String, String> parametros = new HashMap<String, String>();
 		Iterator<Integer> itAntiguedad;
 		Set<Integer> periodos, antiguedades;
@@ -129,8 +134,8 @@ public class ConstructorElaborados {
 
 				// Deben existir datos de una antiguëdadHistórica = (antigüedad + periodo)
 				antiguedadHistoricaMaxima = antiguedad + periodo;
-				System.out.println("datosEmpresaEntrada.size(): " + datosEmpresaEntrada.size());
 				if (DEPURAR) {
+					System.out.println("datosEmpresaEntrada.size(): " + datosEmpresaEntrada.size());
 					System.out.println("Antigüedad: " + antiguedad);
 				}
 				if (antiguedadHistoricaMaxima < datosEmpresaEntrada.size()) {
@@ -266,7 +271,8 @@ public class ConstructorElaborados {
 			antiguedadYTarget.put(antiguedad, target);
 		}
 
-		// Se rellena el target en los datos de entrada tras el análisis, al final de todos los parámetros
+		// Se rellena el target en los datos de entrada tras el análisis, al final de
+		// todos los parámetros
 		Iterator<Integer> itAntiguedadDatos = datosEmpresaFinales.keySet().iterator();
 		ordenNombresParametrosSalida.put(ordenNombresParametrosSalida.size(), "TARGET");
 		while (itAntiguedadDatos.hasNext()) {

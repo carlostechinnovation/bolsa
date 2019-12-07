@@ -13,7 +13,7 @@ import java.util.Set;
 
 public class GestorFicheros {
 
-	private Boolean activarDebug;
+	private Boolean DEPURAR = Boolean.TRUE;
 	// Para modificarlos, vete a la constructora
 	private HashMap<Integer, String> ordenNombresParametrosLeidos;
 
@@ -27,15 +27,17 @@ public class GestorFicheros {
 		File ficheroGestionado;
 		while (iterator.hasNext()) {
 			ficheroGestionado = iterator.next();
-			System.out.println("Fichero entrada: " + ficheroGestionado.getAbsolutePath());
+
 			datos = leeFicheroDeSoloUnaEmpresa(ficheroGestionado.getPath());
 			destino = ficheroGestionado.getParentFile().getAbsolutePath() + "\\validaGestionFichero\\salida"
 					+ ficheroGestionado.getName().substring(0, ficheroGestionado.getName().length() - 4) + ".csv";
-			System.out.println("Fichero salida:  " + destino);
+			if (DEPURAR) {
+				System.out.println("Fichero entrada: " + ficheroGestionado.getAbsolutePath());
+				System.out.println("Fichero salida:  " + destino);
+			}
 			HashMap<Integer, String> ordenNombresParametros = getOrdenNombresParametrosLeidos();
 			creaFicheroDeSoloUnaEmpresa(datos, ordenNombresParametros, destino);
 		}
-		System.out.println("FIN");
 	}
 
 	/**
@@ -43,7 +45,7 @@ public class GestorFicheros {
 	 * @param quieresDepurar
 	 */
 	public GestorFicheros(final Boolean quieresDepurar) {
-		activarDebug = quieresDepurar;
+		DEPURAR = quieresDepurar;
 		ordenNombresParametrosLeidos = new HashMap<Integer, String>();
 		ordenNombresParametrosLeidos.put(0, "empresa");
 		ordenNombresParametrosLeidos.put(1, "antiguedad");
@@ -83,7 +85,7 @@ public class GestorFicheros {
 	public HashMap<String, HashMap<Integer, HashMap<String, String>>> leeFicheroDeSoloUnaEmpresa(
 			final String pathFichero) throws Exception, IOException {
 		Boolean esPrimeraLinea = Boolean.TRUE;
-		if (activarDebug)
+		if (DEPURAR)
 			System.out.println("Fichero leído: " + pathFichero);
 		HashMap<String, HashMap<Integer, HashMap<String, String>>> datosSalida = new HashMap<String, HashMap<Integer, HashMap<String, String>>>();
 		String row, empresa = "";
@@ -97,7 +99,7 @@ public class GestorFicheros {
 		BufferedReader csvReader = new BufferedReader(new FileReader(pathFichero));
 		try {
 			while ((row = csvReader.readLine()) != null) {
-				if (activarDebug)
+				if (DEPURAR)
 					System.out.println("Fila leída: " + row);
 				if (esPrimeraLinea) {
 					// En la primera línea está la cabecera de parámetros
@@ -135,7 +137,7 @@ public class GestorFicheros {
 	/**
 	 * 
 	 * @param datos
-	 * @param directorio
+	 * @param directorioOrigenDatos
 	 * @throws IOException
 	 */
 	public void creaFicheroDeSoloUnaEmpresa(final HashMap<String, HashMap<Integer, HashMap<String, String>>> datos,
@@ -171,9 +173,6 @@ public class GestorFicheros {
 		Integer numParametros = ordenNombresParametros.size();
 		while (itAntiguedades.hasNext()) {
 			antiguedad = itAntiguedades.next();
-			if (antiguedad == 19) {
-				System.out.println("sas");
-			}
 			parametrosEmpresa = datosEmpresa.get(antiguedad);
 			// Se añade empresa y antigüedad
 			csvWriter.append(empresa + "|" + antiguedad);
@@ -185,7 +184,7 @@ public class GestorFicheros {
 				} else {
 					// Se añaden el resto de parámetros
 					elementoAAnadir = "|" + parametrosEmpresa.get(nombreParametro);
-					if (activarDebug)
+					if (DEPURAR)
 						System.out.println("Elemento a añadir i=" + i + ": \"" + nombreParametro + "\" con valor: "
 								+ parametrosEmpresa.get(nombreParametro));
 					csvWriter.append(elementoAAnadir);
