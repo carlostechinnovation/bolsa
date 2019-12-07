@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 
+import c30x.elaborados.construir.Estadisticas.FINAL_NOMBRES_PARAMETROS_ELABORADOS;
+
 public class ConstructorElaborados {
 
 	public final static Boolean DEPURAR = Boolean.TRUE;
@@ -81,11 +83,15 @@ public class ConstructorElaborados {
 		HashMap<String, String> parametros = new HashMap<String, String>();
 		Iterator<Integer> itAntiguedad;
 		Set<Integer> periodos, antiguedades;
-		HashMap<Integer, Estadisticas> estadisticasPorAntiguedad = new HashMap<Integer, Estadisticas>();
+		HashMap<Integer, Estadisticas> estadisticasPrecioPorAntiguedad = new HashMap<Integer, Estadisticas>();
+		HashMap<Integer, Estadisticas> estadisticasVolumenPorAntiguedad = new HashMap<Integer, Estadisticas>();
 		Estadisticas estadisticasPrecio = new Estadisticas();
 		Estadisticas estadisticasVolumen = new Estadisticas();
-		HashMap<Integer, HashMap<Integer, Estadisticas>> estadisticasPorAntiguedadYPeriodo = new HashMap<Integer, HashMap<Integer, Estadisticas>>();
-		HashMap<Integer, String> ordenNombresParametrosElaborados = estadisticasPrecio
+		HashMap<Integer, HashMap<Integer, Estadisticas>> estadisticasPrecioPorAntiguedadYPeriodo = new HashMap<Integer, HashMap<Integer, Estadisticas>>();
+		HashMap<Integer, HashMap<Integer, Estadisticas>> estadisticasVolumenPorAntiguedadYPeriodo = new HashMap<Integer, HashMap<Integer, Estadisticas>>();
+		HashMap<Integer, String> ordenPrecioNombresParametrosElaborados = estadisticasPrecio
+				.getOrdenNombresParametrosElaborados();
+		HashMap<Integer, String> ordenVolumenNombresParametrosElaborados = estadisticasPrecio
 				.getOrdenNombresParametrosElaborados();
 		Integer parametrosAcumulados = numeroParametrosEntrada;
 		String auxPrecio, auxVolumen;
@@ -93,19 +99,27 @@ public class ConstructorElaborados {
 		for (Integer periodo : periodosHParaParametros) {
 
 			// Se guarda el orden de los datos elaborados
-			for (int i = 0; i < ordenNombresParametrosElaborados.size(); i++) {
+			for (int i = 0; i < ordenPrecioNombresParametrosElaborados.size(); i++) {
+				// PRECIO
 				ordenNombresParametrosSalida.put(parametrosAcumulados + i,
-						ordenNombresParametrosElaborados.get(i + 1) + periodo);
+						ordenPrecioNombresParametrosElaborados.get(i + 1) + periodo
+								+ FINAL_NOMBRES_PARAMETROS_ELABORADOS._PRECIO.toString());
 			}
-			parametrosAcumulados += ordenNombresParametrosElaborados.size();
+			parametrosAcumulados += ordenPrecioNombresParametrosElaborados.size();
+			for (int i = 0; i < ordenVolumenNombresParametrosElaborados.size(); i++) {
+				// VOLUMEN
+				ordenNombresParametrosSalida.put(parametrosAcumulados + i,
+						ordenVolumenNombresParametrosElaborados.get(i + 1) + periodo
+								+ FINAL_NOMBRES_PARAMETROS_ELABORADOS._VOLUMEN.toString());
+			}
+			parametrosAcumulados += ordenVolumenNombresParametrosElaborados.size();
 			itAntiguedad = datosEmpresaEntrada.keySet().iterator();
 			while (itAntiguedad.hasNext()) {
 				antiguedad = itAntiguedad.next();
 				// PARA CADA PERIODO DE CÁLCULO DE PARÁMETROS ELABORADOS y cada antigüedad, que
-				// será un GRUPO de
-				// COLUMNAS...
-				
-				// Deben existir datos de una antiguëdadHistórica= (antigüedad + periodo)
+				// será un GRUPO de COLUMNAS...
+
+				// Deben existir datos de una antiguëdadHistórica = (antigüedad + periodo)
 				antiguedadHistoricaMaxima = antiguedad + periodo;
 				System.out.println("datosEmpresaEntrada.size(): " + datosEmpresaEntrada.size());
 				if (DEPURAR) {
@@ -124,8 +138,8 @@ public class ConstructorElaborados {
 						estadisticasPrecio.addValue(new Double(auxPrecio));
 						estadisticasVolumen.addValue(new Double(auxVolumen));
 						if (DEPURAR) {
-							System.out
-									.println("(antigüedad: " + antiguedad + ", periodo: "+periodo+") Metido para estadísticas: " + auxPrecio);
+							System.out.println("(antigüedad: " + antiguedad + ", periodo: " + periodo
+									+ ") Metido para estadísticas: " + auxPrecio);
 						}
 					}
 				} else {
@@ -136,34 +150,48 @@ public class ConstructorElaborados {
 				if (DEPURAR) {
 					// La empresa y la antigüedad no las usamos
 					estadisticasPrecio.debugValidacion(periodo);
+					estadisticasVolumen.debugValidacion(periodo);
+					System.out.println(
+							"------------------>>>>>>> Periodo: " + periodo + ", n: " + estadisticasPrecio.getN());
 				}
-				estadisticasPorAntiguedad.put(antiguedad, estadisticasPrecio);
+				estadisticasPrecioPorAntiguedad.put(antiguedad, estadisticasPrecio);
+				estadisticasVolumenPorAntiguedad.put(antiguedad, estadisticasVolumen);
 				// Se limpia este almacén temporal
 				estadisticasPrecio = new Estadisticas();
+				estadisticasVolumen = new Estadisticas();
 			}
 
-			estadisticasPorAntiguedadYPeriodo.put(periodo, estadisticasPorAntiguedad);
+			estadisticasPrecioPorAntiguedadYPeriodo.put(periodo, estadisticasPrecioPorAntiguedad);
+			estadisticasVolumenPorAntiguedadYPeriodo.put(periodo, estadisticasVolumenPorAntiguedad);
+			// Se limpia este almacén temporal
+			estadisticasPrecioPorAntiguedad = new HashMap<Integer, Estadisticas>();
+			estadisticasVolumenPorAntiguedad = new HashMap<Integer, Estadisticas>();
 		}
 
 		// ESTADÍSTICAS: iré calculando y rellenando
-		periodos = estadisticasPorAntiguedadYPeriodo.keySet();
+		periodos = estadisticasPrecioPorAntiguedadYPeriodo.keySet();
 		Integer periodoActual;
 		Iterator<Integer> itPeriodo = periodos.iterator();
 		while (itPeriodo.hasNext()) {
 			periodoActual = itPeriodo.next();
-			estadisticasPorAntiguedad = estadisticasPorAntiguedadYPeriodo.get(periodoActual);
-			antiguedades = estadisticasPorAntiguedad.keySet();
+			estadisticasPrecioPorAntiguedad = estadisticasPrecioPorAntiguedadYPeriodo.get(periodoActual);
+			estadisticasVolumenPorAntiguedad = estadisticasVolumenPorAntiguedadYPeriodo.get(periodoActual);
+			antiguedades = estadisticasPrecioPorAntiguedad.keySet();
 			itAntiguedad = antiguedades.iterator();
 			while (itAntiguedad.hasNext()) {
 				antiguedad = itAntiguedad.next();
-				estadisticasPrecio = estadisticasPorAntiguedad.get(antiguedad);
+				estadisticasPrecio = estadisticasPrecioPorAntiguedad.get(antiguedad);
+				estadisticasVolumen = estadisticasVolumenPorAntiguedad.get(antiguedad);
 				antiguedadHistoricaMaxima = antiguedad + periodoActual;
 				// Se cogen sólo los datos con la antigüedad dentro del rango a analizar
 				if (antiguedadHistoricaMaxima < datosEmpresaEntrada.size()) {
 					parametros = datosEmpresaEntrada.get(antiguedad);
 					// COSTE DE COMPUTACIÓN
 					// <<<<<<<<-------
-					parametros.putAll(estadisticasPrecio.getParametros(periodoActual, Boolean.FALSE));
+					parametros.putAll(estadisticasPrecio.getParametros(periodoActual,
+							FINAL_NOMBRES_PARAMETROS_ELABORADOS._PRECIO.toString(), Boolean.FALSE));
+					parametros.putAll(estadisticasVolumen.getParametros(periodoActual,
+							FINAL_NOMBRES_PARAMETROS_ELABORADOS._VOLUMEN.toString(), Boolean.FALSE));
 					// <<<<<<<------
 				} else {
 					// Para los datos de antigüedad excesiva, salgo del bucle

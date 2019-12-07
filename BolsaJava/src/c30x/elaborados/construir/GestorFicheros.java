@@ -95,35 +95,37 @@ public class GestorFicheros {
 			throw new FileNotFoundException("Fichero no válido: " + pathFichero);
 		}
 		BufferedReader csvReader = new BufferedReader(new FileReader(pathFichero));
+		try {
+			while ((row = csvReader.readLine()) != null) {
+				if (activarDebug)
+					System.out.println("Fila leída: " + row);
+				if (esPrimeraLinea) {
+					// En la primera línea está la cabecera de parámetros
+					// Se valida que el nombre recibido es igual que el usado en la constructora, y
+					// en dicho orden
+					data = row.split("\\|");
+					for (int i = 0; i < data.length; i++) {
+						if (ordenNombresParametrosLeidos.get(i).compareTo(data[i]) != 0)
+							throw new Exception(
+									"El orden de los parámetros leídos en el fichero no es el que espera el gestor de ficheros");
+					}
+					esPrimeraLinea = Boolean.FALSE;
+				} else {
+					data = row.split("\\|");
+					empresa = data[0];
+					datosParametrosEmpresa = new HashMap<String, String>();
+					// Se excluyen los 2 primeros elementos
+					for (int i = 2; i < ordenNombresParametrosLeidos.size(); i++) {
+						datosParametrosEmpresa.put(ordenNombresParametrosLeidos.get(i), data[i]);
+					}
 
-		while ((row = csvReader.readLine()) != null) {
-			if (activarDebug)
-				System.out.println("Fila leída: " + row);
-			if (esPrimeraLinea) {
-				// En la primera línea está la cabecera de parámetros
-				// Se valida que el nombre recibido es igual que el usado en la constructora, y
-				// en dicho orden
-				data = row.split("\\|");
-				for (int i = 0; i < data.length; i++) {
-					if (ordenNombresParametrosLeidos.get(i).compareTo(data[i]) != 0)
-						throw new Exception(
-								"El orden de los parámetros leídos en el fichero no es el que espera el gestor de ficheros");
+					// Se guarda la antigüedad
+					datosEmpresa.put(Integer.parseInt(data[1]), datosParametrosEmpresa);
 				}
-				esPrimeraLinea = Boolean.FALSE;
-			} else {
-				data = row.split("\\|");
-				empresa = data[0];
-				datosParametrosEmpresa = new HashMap<String, String>();
-				// Se excluyen los 2 primeros elementos
-				for (int i = 2; i < ordenNombresParametrosLeidos.size(); i++) {
-					datosParametrosEmpresa.put(ordenNombresParametrosLeidos.get(i), data[i]);
-				}
-
-				// Se guarda la antigüedad
-				datosEmpresa.put(Integer.parseInt(data[1]), datosParametrosEmpresa);
 			}
+		} finally {
+			csvReader.close();
 		}
-		csvReader.close();
 		// Se guarda la empresa
 		datosSalida.put(empresa, datosEmpresa);
 
@@ -155,33 +157,39 @@ public class GestorFicheros {
 		Set<Integer> antiguedades = datosEmpresa.keySet();
 		Iterator<Integer> itAntiguedades = antiguedades.iterator();
 		HashMap<String, String> parametrosEmpresa;
-		Set<String> nombresParametros;
 		String nombreParametro, elementoAAnadir;
-		//En la primera fila del fichero, se añade una cabecera
+		// En la primera fila del fichero, se añade una cabecera
 		for (int i = 0; i < ordenNombresParametros.size(); i++) {
 			csvWriter.append(ordenNombresParametros.get(i));
-			//Se añade el pipe en todos los elementos menos en el último
-			if(i<ordenNombresParametros.size()-1) {
+			// Se añade el pipe en todos los elementos menos en el último
+			if (i < ordenNombresParametros.size() - 1) {
 				csvWriter.append("|");
 			}
 		}
 		csvWriter.append("\n");
-		
+
+		Integer numParametros = ordenNombresParametros.size();
 		while (itAntiguedades.hasNext()) {
 			antiguedad = itAntiguedades.next();
+			if (antiguedad == 19) {
+				System.out.println("sas");
+			}
 			parametrosEmpresa = datosEmpresa.get(antiguedad);
-			nombresParametros = parametrosEmpresa.keySet();
 			// Se añade empresa y antigüedad
 			csvWriter.append(empresa + "|" + antiguedad);
-			// Las dos primeras no se leen (empresa y antigüedad)
-			for (int i = 2; i < nombresParametros.size(); i++) {
-				// Se añaden el resto de parámetros
+			for (int i = 0; i < numParametros; i++) {
 				nombreParametro = ordenNombresParametros.get(i);
-				elementoAAnadir = "|" + parametrosEmpresa.get(nombreParametro);
-				if (activarDebug)
-					System.out.println("Elemento a añadir: \"" + nombreParametro + "\" con valor: "
-							+ parametrosEmpresa.get(nombreParametro));
-				csvWriter.append(elementoAAnadir);
+				// Empresa y antigüedad se tratan aparte. No se añaden aquí
+				if (nombreParametro == "empresa" || nombreParametro == "antiguedad") {
+					// no se hace nada
+				} else {
+					// Se añaden el resto de parámetros
+					elementoAAnadir = "|" + parametrosEmpresa.get(nombreParametro);
+					if (activarDebug)
+						System.out.println("Elemento a añadir i=" + i + ": \"" + nombreParametro + "\" con valor: "
+								+ parametrosEmpresa.get(nombreParametro));
+					csvWriter.append(elementoAAnadir);
+				}
 			}
 			// Siguiente fila
 			if (itAntiguedades.hasNext())
