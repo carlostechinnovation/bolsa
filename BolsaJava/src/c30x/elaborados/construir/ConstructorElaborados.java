@@ -7,14 +7,15 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+
 import c30x.elaborados.construir.Estadisticas.FINAL_NOMBRES_PARAMETROS_ELABORADOS;
 
 public class ConstructorElaborados {
 
-	public final static Boolean DEPURAR = Boolean.TRUE;
-
-	final static File directorioOrigenDatos = new File(
-			"C:\\\\Users\\\\t151521\\\\git\\\\bolsa\\\\BolsaJava\\\\ficherosEjemplo");
+	static Logger MY_LOGGER = Logger.getLogger(ConstructorElaborados.class);
 
 	// META-PARAMETRIZACIÓN
 	// Periodo de la vela de entrada
@@ -25,8 +26,8 @@ public class ConstructorElaborados {
 
 	// Parámetros del TARGET (subida del S% en precio de close, tras X velas, y no
 	// cae más de un R% dentro de las siguientes M velas posteriores)
-	public final static Integer S = 30;
-	public final static Integer X = 5;
+	public final static Integer S = 20;
+	public final static Integer X = 2;
 	public final static Integer R = 10;
 	public final static Integer M = 2;
 
@@ -39,10 +40,30 @@ public class ConstructorElaborados {
 	 */
 	public static void main(String[] args) throws Exception {
 
+		MY_LOGGER.info("INICIO");
+
+		BasicConfigurator.configure();
+		MY_LOGGER.setLevel(Level.INFO);
+
+		String directorioIn = "/bolsa/pasado/elaborados/"; // DEFAULT
+		String directorioOut = "/bolsa/pasado/elaborados_csv/"; // DEFAULT
+
+		if (args.length == 0) {
+			MY_LOGGER.info("Sin parametros de entrada. Rellenamos los DEFAULT...");
+		} else if (args.length != 2) {
+			MY_LOGGER.error("Parametros de entrada incorrectos!!");
+			System.exit(-1);
+		} else {
+			directorioIn = args[0];
+			directorioOut = args[1];
+		}
+
+		File directorioEntrada = new File(directorioIn);
+		File directorioSalida= new File(directorioOut);
 		HashMap<String, HashMap<Integer, HashMap<String, String>>> datosEntrada = new HashMap<String, HashMap<Integer, HashMap<String, String>>>();
 		HashMap<Integer, String> ordenNombresParametros;
 		GestorFicheros gestorFicheros = new GestorFicheros(Boolean.TRUE);
-		ArrayList<File> ficherosEntradaEmpresas = gestorFicheros.listaFicherosDeDirectorio(directorioOrigenDatos);
+		ArrayList<File> ficherosEntradaEmpresas = gestorFicheros.listaFicherosDeDirectorio(directorioEntrada);
 
 		String destino = "";
 		Iterator<File> iterator = ficherosEntradaEmpresas.iterator();
@@ -51,12 +72,10 @@ public class ConstructorElaborados {
 			ficheroGestionado = iterator.next();
 
 			datosEntrada = gestorFicheros.leeFicheroDeSoloUnaEmpresa(ficheroGestionado.getPath());
-			destino = ficheroGestionado.getParentFile().getAbsolutePath() + "\\salidaElaborada\\salida"
-					+ ficheroGestionado.getName().substring(0, ficheroGestionado.getName().length() - 4) + ".csv";
-			if (DEPURAR) {
-				System.out.println("Fichero entrada: " + ficheroGestionado.getAbsolutePath());
-				System.out.println("Fichero salida:  " + destino);
-			}
+			destino = directorioSalida+"/" + ficheroGestionado.getName().substring(0, ficheroGestionado.getName().length() - 4)
+					+ "elaborada.csv";
+			MY_LOGGER.debug("Fichero entrada: " + ficheroGestionado.getAbsolutePath());
+			MY_LOGGER.debug("Fichero salida:  " + destino);
 			ordenNombresParametros = gestorFicheros.getOrdenNombresParametrosLeidos();
 			anadirParametrosElaboradosDeSoloUnaEmpresa(datosEntrada, ordenNombresParametros);
 			gestorFicheros.creaFicheroDeSoloUnaEmpresa(datosEntrada, ordenNombresParametros, destino);
@@ -91,8 +110,7 @@ public class ConstructorElaborados {
 		}
 		// EXTRACCIÓN DE DATOS DE LA EMPRESA
 		datosEmpresaEntrada = datos.get(empresa);
-		if (DEPURAR)
-			System.out.println("Empresa: " + empresa);
+		MY_LOGGER.debug("Empresa: " + empresa);
 		HashMap<String, String> parametros = new HashMap<String, String>();
 		Iterator<Integer> itAntiguedad;
 		Set<Integer> periodos, antiguedades;
@@ -134,39 +152,28 @@ public class ConstructorElaborados {
 
 				// Deben existir datos de una antiguëdadHistórica = (antigüedad + periodo)
 				antiguedadHistoricaMaxima = antiguedad + periodo;
-				if (DEPURAR) {
-					System.out.println("datosEmpresaEntrada.size(): " + datosEmpresaEntrada.size());
-					System.out.println("Antigüedad: " + antiguedad);
-				}
+				MY_LOGGER.debug("datosEmpresaEntrada.size(): " + datosEmpresaEntrada.size());
+				MY_LOGGER.debug("Antigüedad: " + antiguedad);
 				if (antiguedadHistoricaMaxima < datosEmpresaEntrada.size()) {
 					for (int i = 0; i < periodo; i++) {
 						parametros = datosEmpresaEntrada.get(i + antiguedad);
-						if (DEPURAR) {
-							System.out.println("i + antigüedad: " + (i + antiguedad));
-						}
+						MY_LOGGER.debug("i + antigüedad: " + (i + antiguedad));
 						// Se toma el parámetro "close" para las estadísticas de precio
 						// Se toma el parámetro "volumen" para las estadísticas de volumen
 						auxPrecio = parametros.get("close");
 						auxVolumen = parametros.get("volumen");
 						estadisticasPrecio.addValue(new Double(auxPrecio));
 						estadisticasVolumen.addValue(new Double(auxVolumen));
-						if (DEPURAR) {
-							System.out.println("(antigüedad: " + antiguedad + ", periodo: " + periodo
-									+ ") Metido para estadísticas: " + auxPrecio);
-						}
+						MY_LOGGER.debug("(antigüedad: " + antiguedad + ", periodo: " + periodo
+								+ ") Metido para estadísticas: " + auxPrecio);
 					}
 				} else {
 					// Para los datos de antigüedad excesiva, se sale del bucle
 					break;
 				}
 				// VALIDACIÓN DE ESTADÍSTICAS
-				if (DEPURAR) {
-					// La empresa y la antigüedad no las usamos
-					estadisticasPrecio.debugValidacion(periodo);
-					estadisticasVolumen.debugValidacion(periodo);
-					System.out.println(
-							"------------------>>>>>>> Periodo: " + periodo + ", n: " + estadisticasPrecio.getN());
-				}
+				// La empresa y la antigüedad no las usamos
+				MY_LOGGER.debug("------------------>>>>>>> Periodo: " + periodo + ", n: " + estadisticasPrecio.getN());
 				estadisticasPrecioPorAntiguedad.put(antiguedad, estadisticasPrecio);
 				estadisticasVolumenPorAntiguedad.put(antiguedad, estadisticasVolumen);
 				// Se limpia este almacén temporal
@@ -217,8 +224,8 @@ public class ConstructorElaborados {
 
 		// Añado el TARGET
 		Integer antiguedadX, antiguedadM;
-		Double subidaSPrecioTantoPorUno = (100 + S * 100) / 100.0;
-		Double caidaRPrecioTantoPorUno = (100 - R * 100) / 100.0;
+		Double subidaSPrecioTantoPorUno = (100 + S ) / 100.0;
+		Double caidaRPrecioTantoPorUno = (100 - R ) / 100.0;
 		// Target=0 es que no se cumple. 1 es que sí. -1 es que no se puede calcular
 		Integer target = -1;
 		Boolean mCumplida = Boolean.FALSE;
