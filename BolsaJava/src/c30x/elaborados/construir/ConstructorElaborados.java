@@ -11,28 +11,29 @@ import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
+import c20X.limpios.LimpiosUtils;
 import c30x.elaborados.construir.Estadisticas.FINAL_NOMBRES_PARAMETROS_ELABORADOS;
 
 public class ConstructorElaborados {
 
 	static Logger MY_LOGGER = Logger.getLogger(ConstructorElaborados.class);
 
-	// META-PARAMETRIZACIÓN
+	// META-PARAMETRIZACIï¿½N
 	// Periodo de la vela de entrada
 	public final static String T_velaEntrada = "H";
-	// x días
+	// x dï¿½as
 	public final static Integer HORAS_AL_DIA = 4;
 	public final static Integer[] periodosHParaParametros = new Integer[] { 1 * HORAS_AL_DIA, 2 * HORAS_AL_DIA };
 
-	// Parámetros del TARGET (subida del S% en precio de close, tras X velas, y no
-	// cae más de un R% dentro de las siguientes M velas posteriores)
+	// Parï¿½metros del TARGET (subida del S% en precio de close, tras X velas, y no
+	// cae mï¿½s de un R% dentro de las siguientes M velas posteriores)
 	public final static Integer S = 20;
 	public final static Integer X = 2;
 	public final static Integer R = 10;
 	public final static Integer M = 2;
 
-	// IMPORTANTE: se asume que los datos están ordenados de menor a mayor
-	// antigüedad, y agrupados por empresa
+	// IMPORTANTE: se asume que los datos estï¿½n ordenados de menor a mayor
+	// antigï¿½edad, y agrupados por empresa
 
 	/**
 	 * @param args
@@ -45,8 +46,8 @@ public class ConstructorElaborados {
 		BasicConfigurator.configure();
 		MY_LOGGER.setLevel(Level.INFO);
 
-		String directorioIn = "/bolsa/pasado/limpios/"; // DEFAULT
-		String directorioOut = "/bolsa/pasado/elaborados/"; // DEFAULT
+		String directorioIn = LimpiosUtils.DIR_LIMPIOS; // DEFAULT
+		String directorioOut = ElaboradosUtils.DIR_ELABORADOS; // DEFAULT
 
 		if (args.length == 0) {
 			MY_LOGGER.info("Sin parametros de entrada. Rellenamos los DEFAULT...");
@@ -59,7 +60,7 @@ public class ConstructorElaborados {
 		}
 
 		File directorioEntrada = new File(directorioIn);
-		File directorioSalida= new File(directorioOut);
+		File directorioSalida = new File(directorioOut);
 		HashMap<String, HashMap<Integer, HashMap<String, String>>> datosEntrada = new HashMap<String, HashMap<Integer, HashMap<String, String>>>();
 		HashMap<Integer, String> ordenNombresParametros;
 		GestorFicheros gestorFicheros = new GestorFicheros(Boolean.TRUE);
@@ -72,7 +73,8 @@ public class ConstructorElaborados {
 			ficheroGestionado = iterator.next();
 
 			datosEntrada = gestorFicheros.leeFicheroDeSoloUnaEmpresa(ficheroGestionado.getPath());
-			destino = directorioSalida+"/" + ficheroGestionado.getName().substring(0, ficheroGestionado.getName().length() - 4)
+			destino = directorioSalida + "/"
+					+ ficheroGestionado.getName().substring(0, ficheroGestionado.getName().length() - 4)
 					+ "elaborada.csv";
 			MY_LOGGER.debug("Fichero entrada: " + ficheroGestionado.getAbsolutePath());
 			MY_LOGGER.debug("Fichero salida:  " + destino);
@@ -90,25 +92,25 @@ public class ConstructorElaborados {
 		HashMap<Integer, HashMap<String, String>> datosEmpresaEntrada = new HashMap<Integer, HashMap<String, String>>();
 		HashMap<Integer, HashMap<String, String>> datosEmpresaFinales = new HashMap<Integer, HashMap<String, String>>();
 
-		// ORDEN DE PARÁMETROS DE ENTRADA
+		// ORDEN DE PARï¿½METROS DE ENTRADA
 		HashMap<Integer, String> ordenNombresParametrosSalida = new HashMap<Integer, String>();
 		Integer numeroParametrosEntrada = ordenNombresParametros.size();
 		for (int i = 0; i < numeroParametrosEntrada; i++) {
 			ordenNombresParametrosSalida.put(i, ordenNombresParametros.get(i));
 		}
 
-		// CÁLCULOS DE PARÁMETROS ELABORADOS
+		// Cï¿½LCULOS DE PARï¿½METROS ELABORADOS
 		Integer antiguedad;
 		String empresa = "";
 		Set<String> empresas = datos.keySet();
 		Iterator<String> itEmpresas = datos.keySet().iterator();
 		if (empresas.size() != 1) {
-			throw new Exception("Es están calculando parámetros elaborados de más de una empresa");
+			throw new Exception("Es estï¿½n calculando parï¿½metros elaborados de mï¿½s de una empresa");
 		} else {
 			while (itEmpresas.hasNext())
 				empresa = itEmpresas.next();
 		}
-		// EXTRACCIÓN DE DATOS DE LA EMPRESA
+		// EXTRACCIï¿½N DE DATOS DE LA EMPRESA
 		datosEmpresaEntrada = datos.get(empresa);
 		MY_LOGGER.debug("Empresa: " + empresa);
 		HashMap<String, String> parametros = new HashMap<String, String>();
@@ -147,48 +149,48 @@ public class ConstructorElaborados {
 			Iterator<Integer> itAntiguedadTarget = datosEmpresaEntrada.keySet().iterator();
 			while (itAntiguedadTarget.hasNext()) {
 				antiguedad = itAntiguedadTarget.next();
-				// PARA CADA PERIODO DE CÁLCULO DE PARÁMETROS ELABORADOS y cada antigüedad, que
-				// será un GRUPO de COLUMNAS...
+				// PARA CADA PERIODO DE Cï¿½LCULO DE PARï¿½METROS ELABORADOS y cada antigï¿½edad, que
+				// serï¿½ un GRUPO de COLUMNAS...
 
-				// Deben existir datos de una antiguëdadHistórica = (antigüedad + periodo)
+				// Deben existir datos de una antiguï¿½dadHistï¿½rica = (antigï¿½edad + periodo)
 				antiguedadHistoricaMaxima = antiguedad + periodo;
 				MY_LOGGER.debug("datosEmpresaEntrada.size(): " + datosEmpresaEntrada.size());
-				MY_LOGGER.debug("Antigüedad: " + antiguedad);
+				MY_LOGGER.debug("Antigï¿½edad: " + antiguedad);
 				if (antiguedadHistoricaMaxima < datosEmpresaEntrada.size()) {
 					for (int i = 0; i < periodo; i++) {
 						parametros = datosEmpresaEntrada.get(i + antiguedad);
-						MY_LOGGER.debug("i + antigüedad: " + (i + antiguedad));
-						// Se toma el parámetro "close" para las estadísticas de precio
-						// Se toma el parámetro "volumen" para las estadísticas de volumen
+						MY_LOGGER.debug("i + antigï¿½edad: " + (i + antiguedad));
+						// Se toma el parï¿½metro "close" para las estadï¿½sticas de precio
+						// Se toma el parï¿½metro "volumen" para las estadï¿½sticas de volumen
 						auxPrecio = parametros.get("close");
 						auxVolumen = parametros.get("volumen");
 						estadisticasPrecio.addValue(new Double(auxPrecio));
 						estadisticasVolumen.addValue(new Double(auxVolumen));
-						MY_LOGGER.debug("(antigüedad: " + antiguedad + ", periodo: " + periodo
-								+ ") Metido para estadísticas: " + auxPrecio);
+						MY_LOGGER.debug("(antigï¿½edad: " + antiguedad + ", periodo: " + periodo
+								+ ") Metido para estadï¿½sticas: " + auxPrecio);
 					}
 				} else {
-					// Para los datos de antigüedad excesiva, se sale del bucle
+					// Para los datos de antigï¿½edad excesiva, se sale del bucle
 					break;
 				}
-				// VALIDACIÓN DE ESTADÍSTICAS
-				// La empresa y la antigüedad no las usamos
+				// VALIDACIï¿½N DE ESTADï¿½STICAS
+				// La empresa y la antigï¿½edad no las usamos
 				MY_LOGGER.debug("------------------>>>>>>> Periodo: " + periodo + ", n: " + estadisticasPrecio.getN());
 				estadisticasPrecioPorAntiguedad.put(antiguedad, estadisticasPrecio);
 				estadisticasVolumenPorAntiguedad.put(antiguedad, estadisticasVolumen);
-				// Se limpia este almacén temporal
+				// Se limpia este almacï¿½n temporal
 				estadisticasPrecio = new Estadisticas();
 				estadisticasVolumen = new Estadisticas();
 			}
 
 			estadisticasPrecioPorAntiguedadYPeriodo.put(periodo, estadisticasPrecioPorAntiguedad);
 			estadisticasVolumenPorAntiguedadYPeriodo.put(periodo, estadisticasVolumenPorAntiguedad);
-			// Se limpia este almacén temporal
+			// Se limpia este almacï¿½n temporal
 			estadisticasPrecioPorAntiguedad = new HashMap<Integer, Estadisticas>();
 			estadisticasVolumenPorAntiguedad = new HashMap<Integer, Estadisticas>();
 		}
 
-		// ESTADÍSTICAS: iré calculando y rellenando
+		// ESTADï¿½STICAS: irï¿½ calculando y rellenando
 		periodos = estadisticasPrecioPorAntiguedadYPeriodo.keySet();
 		Integer periodoActual;
 		Iterator<Integer> itPeriodo = periodos.iterator();
@@ -203,10 +205,10 @@ public class ConstructorElaborados {
 				estadisticasPrecio = estadisticasPrecioPorAntiguedad.get(antiguedad);
 				estadisticasVolumen = estadisticasVolumenPorAntiguedad.get(antiguedad);
 				antiguedadHistoricaMaxima = antiguedad + periodoActual;
-				// Se cogen sólo los datos con la antigüedad dentro del rango a analizar
+				// Se cogen sï¿½lo los datos con la antigï¿½edad dentro del rango a analizar
 				if (antiguedadHistoricaMaxima < datosEmpresaEntrada.size()) {
 					parametros = datosEmpresaEntrada.get(antiguedad);
-					// COSTE DE COMPUTACIÓN
+					// COSTE DE COMPUTACIï¿½N
 					// <<<<<<<<-------
 					parametros.putAll(estadisticasPrecio.getParametros(periodoActual,
 							FINAL_NOMBRES_PARAMETROS_ELABORADOS._PRECIO.toString(), Boolean.FALSE));
@@ -214,19 +216,19 @@ public class ConstructorElaborados {
 							FINAL_NOMBRES_PARAMETROS_ELABORADOS._VOLUMEN.toString(), Boolean.FALSE));
 					// <<<<<<<------
 				} else {
-					// Para los datos de antigüedad excesiva, salgo del bucle
+					// Para los datos de antigï¿½edad excesiva, salgo del bucle
 					break;
 				}
-				// ADICIÓN DE PARÁMETROS ELABORADOS AL HASHMAP
+				// ADICIï¿½N DE PARï¿½METROS ELABORADOS AL HASHMAP
 				datosEmpresaFinales.put(antiguedad, parametros);
 			}
 		}
 
-		// Añado el TARGET
+		// Aï¿½ado el TARGET
 		Integer antiguedadX, antiguedadM;
-		Double subidaSPrecioTantoPorUno = (100 + S ) / 100.0;
-		Double caidaRPrecioTantoPorUno = (100 - R ) / 100.0;
-		// Target=0 es que no se cumple. 1 es que sí. -1 es que no se puede calcular
+		Double subidaSPrecioTantoPorUno = (100 + S) / 100.0;
+		Double caidaRPrecioTantoPorUno = (100 - R) / 100.0;
+		// Target=0 es que no se cumple. 1 es que sï¿½. -1 es que no se puede calcular
 		Integer target = -1;
 		Boolean mCumplida = Boolean.FALSE;
 
@@ -245,8 +247,8 @@ public class ConstructorElaborados {
 					target = -1;
 					break;
 				} else {
-					// Si el precio actual ha subido S% tras X velas viejas, y si después, durante
-					// todas las M velas nuevas, no ha caído más de R%, entonces Target=1
+					// Si el precio actual ha subido S% tras X velas viejas, y si despuï¿½s, durante
+					// todas las M velas nuevas, no ha caï¿½do mï¿½s de R%, entonces Target=1
 					datosAntiguedad = datosEmpresaEntrada.get(antiguedad);
 					datosAntiguedadX = datosEmpresaEntrada.get(antiguedadX);
 					if (Double.valueOf(datosAntiguedad.get("close")) >= (Double.valueOf(datosAntiguedadX.get("close"))
@@ -263,7 +265,7 @@ public class ConstructorElaborados {
 							}
 						}
 						if (mCumplida) {
-							// La S sí se cumple, y la M también en todo el rango
+							// La S sï¿½ se cumple, y la M tambiï¿½n en todo el rango
 							target = 1;
 						}
 					} else {
@@ -272,14 +274,14 @@ public class ConstructorElaborados {
 					}
 				}
 			} else {
-				// La antigüedad es demasiado reciente para ver si es estable en M
+				// La antigï¿½edad es demasiado reciente para ver si es estable en M
 				target = -1;
 			}
 			antiguedadYTarget.put(antiguedad, target);
 		}
 
-		// Se rellena el target en los datos de entrada tras el análisis, al final de
-		// todos los parámetros
+		// Se rellena el target en los datos de entrada tras el anï¿½lisis, al final de
+		// todos los parï¿½metros
 		Iterator<Integer> itAntiguedadDatos = datosEmpresaFinales.keySet().iterator();
 		ordenNombresParametrosSalida.put(ordenNombresParametrosSalida.size(), "TARGET");
 		while (itAntiguedadDatos.hasNext()) {
@@ -289,7 +291,7 @@ public class ConstructorElaborados {
 			datosEmpresaFinales.replace(antiguedad, parametros);
 		}
 
-		// Vuelco todos los parámetros
+		// Vuelco todos los parï¿½metros
 		datosSalida.put(empresa, datosEmpresaFinales);
 		datos = datosSalida;
 		ordenNombresParametros.clear();
@@ -297,16 +299,16 @@ public class ConstructorElaborados {
 	}
 
 	public static Integer tiempoEnHoras(String T) throws Exception {
-		// Traducción a horas (hábiles, con Bolsa abierta)
+		// Traducciï¿½n a horas (hï¿½biles, con Bolsa abierta)
 		Integer horas = 0;
 		if (T == "H")
 			horas = 1;
 		else if (T == "D")
-			// HAY DÍAS QUE LA BOLSA ABRE SÓLO MEDIA JORNADA, ASÍ QUE ESTO NO ES TOTALMENTE
-			// CORRECTO. Normalmente son 7h al día
+			// HAY Dï¿½AS QUE LA BOLSA ABRE Sï¿½LO MEDIA JORNADA, ASï¿½ QUE ESTO NO ES TOTALMENTE
+			// CORRECTO. Normalmente son 7h al dï¿½a
 			horas = HORAS_AL_DIA;
 		else if (T == "H")
-			throw new Exception("Tiempo erróneo");
+			throw new Exception("Tiempo errï¿½neo");
 
 		return horas;
 	}

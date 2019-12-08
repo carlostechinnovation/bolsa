@@ -49,7 +49,7 @@ public class LimpiarOperaciones {
 	 */
 	public static void operacionesLimpieza(String directorioIn, String directorioOut) {
 
-		// TODO Quitar anomalías (outliers)
+		// TODO Quitar anomalias (outliers)
 
 		// TODO Valores vacios (missing values): borramos esa fila o imputamos valores
 
