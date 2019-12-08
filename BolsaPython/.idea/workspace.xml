@@ -2,25 +2,42 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="22edbd2f-b3d9-42f0-a7dd-659033ab601a" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/configuraciones/instalaciones" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ejemplos/01_introduccion.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ejemplos/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HolaMundo.py" beforeDir="false" afterPath="$PROJECT_DIR$/HolaMundo.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../wksp_knime/.metadata/.log" beforeDir="false" afterPath="$PROJECT_DIR$/../wksp_knime/.metadata/.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BolsaScripts/master.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/master.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../wksp_knime/.metadata/.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../wksp_knime/.metadata/.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../wksp_knime/.metadata/.plugins/org.eclipse.core.resources/.root/.indexes/history.version" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../wksp_knime/.metadata/.plugins/org.eclipse.core.resources/.root/.indexes/properties.version" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../wksp_knime/.metadata/.plugins/org.eclipse.core.resources/.root/2.tree" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../wksp_knime/.metadata/.plugins/org.eclipse.core.resources/.safetable/org.eclipse.core.resources" beforeDir="false" afterPath="$PROJECT_DIR$/../wksp_knime/.metadata/.plugins/org.eclipse.core.resources/.safetable/org.eclipse.core.resources" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../wksp_knime/.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.ui.browser.prefs" beforeDir="false" afterPath="$PROJECT_DIR$/../wksp_knime/.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.ui.browser.prefs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../wksp_knime/.metadata/.plugins/org.eclipse.e4.workbench/workbench.xmi" beforeDir="false" afterPath="$PROJECT_DIR$/../wksp_knime/.metadata/.plugins/org.eclipse.e4.workbench/workbench.xmi" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../wksp_knime/.metadata/.plugins/org.knime.product/combined-preferences.epf" beforeDir="false" afterPath="$PROJECT_DIR$/../wksp_knime/.metadata/.plugins/org.knime.product/combined-preferences.epf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../wksp_knime/.metadata/knime/history_ASCIIfile.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../wksp_knime/.metadata/knime/history_ASCIIfile.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../wksp_knime/.metadata/knime/knime.log" beforeDir="false" afterPath="$PROJECT_DIR$/../wksp_knime/.metadata/knime/knime.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../wksp_knime/.metadata/knime/nodeusage_3.0.json" beforeDir="false" afterPath="$PROJECT_DIR$/../wksp_knime/.metadata/knime/nodeusage_3.0.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/.savedWithData" beforeDir="false" afterPath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/.savedWithData" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/File Reader (#10)/port_1/data.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/File Reader (#10)/port_1/data.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/File Reader (#10)/port_1/data.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/File Reader (#10)/port_1/data.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/File Reader (#10)/port_1/spec.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/File Reader (#10)/port_1/spec.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/File Reader (#10)/settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/File Reader (#10)/settings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../wksp_knime/.metadata/.plugins/org.eclipse.core.resources/.safetable/org.eclipse.core.resources" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../wksp_knime/.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.ui.browser.prefs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../wksp_knime/.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.ui.workbench.prefs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../wksp_knime/.metadata/.plugins/org.eclipse.core.runtime/.settings/org.knime.product.prefs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../wksp_knime/.metadata/.plugins/org.eclipse.core.runtime/.settings/org.knime.workbench.core.prefs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../wksp_knime/.metadata/.plugins/org.eclipse.core.runtime/.settings/org.knime.workbench.explorer.view.prefs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../wksp_knime/.metadata/.plugins/org.eclipse.core.runtime/.settings/org.knime.workbench.ui.prefs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../wksp_knime/.metadata/.plugins/org.eclipse.e4.workbench/workbench.xmi" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../wksp_knime/.metadata/.plugins/org.eclipse.equinox.p2.ui/dialog_settings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../wksp_knime/.metadata/.plugins/org.eclipse.jdt.core/assumedExternalFilesCache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../wksp_knime/.metadata/.plugins/org.eclipse.jdt.core/externalFilesCache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../wksp_knime/.metadata/.plugins/org.eclipse.jdt.core/index.db" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../wksp_knime/.metadata/.plugins/org.eclipse.jdt.core/nonChainingJarsCache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../wksp_knime/.metadata/.plugins/org.eclipse.jdt.core/variablesAndContainers.dat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../wksp_knime/.metadata/.plugins/org.eclipse.ui.workbench/dialog_settings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../wksp_knime/.metadata/.plugins/org.knime.product/combined-preferences.epf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../wksp_knime/.metadata/knime/history_ASCIIfile.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../wksp_knime/.metadata/knime/history_csv_read.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../wksp_knime/.metadata/knime/knime.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../wksp_knime/.metadata/knime/log4j3.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../wksp_knime/.metadata/knime/nodeusage_3.0.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../wksp_knime/.metadata/version.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../wksp_knime/.project" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/.savedWithData" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/File Reader (#10)/port_1/data.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/File Reader (#10)/port_1/data.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/File Reader (#10)/port_1/spec.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/File Reader (#10)/settings.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/PCA (#364)/port_1/data.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/PCA (#364)/port_1/data.zip" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/PCA (#364)/port_1/spec.xml" beforeDir="false" />
@@ -101,21 +118,21 @@
       <change beforePath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/Reduction ba (#363)/Variable to Table Row (#352)/settings.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/Reduction ba (#363)/settings.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/Reduction ba (#363)/workflow.knime" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/Statistics (#9)/internal/statistic.xml.gz" beforeDir="false" afterPath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/Statistics (#9)/internal/statistic.xml.gz" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/Statistics (#9)/port_1/data.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/Statistics (#9)/port_1/data.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/Statistics (#9)/port_1/data.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/Statistics (#9)/port_1/data.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/Statistics (#9)/port_1/r0/data.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/Statistics (#9)/port_1/r0/data.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/Statistics (#9)/port_1/r0/data.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/Statistics (#9)/port_1/r0/data.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/Statistics (#9)/port_2/data.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/Statistics (#9)/port_2/data.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/Statistics (#9)/port_2/data.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/Statistics (#9)/port_2/data.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/Statistics (#9)/port_3/data.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/Statistics (#9)/port_3/data.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/Statistics (#9)/port_3/r0/data.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/Statistics (#9)/port_3/r0/data.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/Statistics (#9)/port_3/r0/data.zip" beforeDir="false" afterPath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/Statistics (#9)/port_3/r0/data.zip" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/Statistics (#9)/port_3/r0/spec.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/Statistics (#9)/port_3/r0/spec.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/Statistics (#9)/port_3/spec.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/Statistics (#9)/port_3/spec.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/Statistics (#9)/settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/Statistics (#9)/settings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/workflow.knime" beforeDir="false" afterPath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/workflow.knime" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/workflow.svg" beforeDir="false" afterPath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/workflow.svg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/Statistics (#9)/internal/statistic.xml.gz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/Statistics (#9)/port_1/data.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/Statistics (#9)/port_1/data.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/Statistics (#9)/port_1/r0/data.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/Statistics (#9)/port_1/r0/data.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/Statistics (#9)/port_2/data.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/Statistics (#9)/port_2/data.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/Statistics (#9)/port_3/data.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/Statistics (#9)/port_3/r0/data.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/Statistics (#9)/port_3/r0/data.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/Statistics (#9)/port_3/r0/spec.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/Statistics (#9)/port_3/spec.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/Statistics (#9)/settings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/workflow.knime" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../wksp_knime/bolsa_wg/wf_pruebas_001/workflow.svg" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -230,38 +247,57 @@
       <option name="project" value="LOCAL" />
       <updated>1575803578294</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Machine Learning - Ejemplo">
+      <created>1575807576044</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1575807576044</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Hola mundo en python" />
-    <option name="LAST_COMMIT_MESSAGE" value="Hola mundo en python" />
+    <MESSAGE value="Machine Learning - Ejemplo" />
+    <option name="LAST_COMMIT_MESSAGE" value="Machine Learning - Ejemplo" />
   </component>
   <component name="WindowStateProjectService">
     <state x="518" y="215" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1575803718365">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="518" y="215" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1536.824@0.0.1536.824" timestamp="1575803718365" />
-    <state x="424" y="6" key="CommitChangelistDialog2" timestamp="1575803577262">
+    <state x="424" y="6" key="CommitChangelistDialog2" timestamp="1575807574777">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="424" y="6" key="CommitChangelistDialog2/0.0.1536.824@0.0.1536.824" timestamp="1575803577262" />
-    <state width="1515" height="150" key="GridCell.Tab.0.bottom" timestamp="1575807524669">
+    <state x="424" y="6" key="CommitChangelistDialog2/0.0.1536.824@0.0.1536.824" timestamp="1575807574777" />
+    <state width="1515" height="150" key="GridCell.Tab.0.bottom" timestamp="1575807584655">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="150" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1575807524669" />
-    <state width="1515" height="150" key="GridCell.Tab.0.center" timestamp="1575807524669">
+    <state width="1515" height="150" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1575807584655" />
+    <state width="1515" height="150" key="GridCell.Tab.0.center" timestamp="1575807584655">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="150" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1575807524669" />
-    <state width="1515" height="150" key="GridCell.Tab.0.left" timestamp="1575807524669">
+    <state width="1515" height="150" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1575807584655" />
+    <state width="1515" height="150" key="GridCell.Tab.0.left" timestamp="1575807584655">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="150" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1575807524669" />
-    <state width="1515" height="150" key="GridCell.Tab.0.right" timestamp="1575807524669">
+    <state width="1515" height="150" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1575807584655" />
+    <state width="1515" height="150" key="GridCell.Tab.0.right" timestamp="1575807584655">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="150" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1575807524669" />
+    <state width="1515" height="150" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1575807584655" />
     <state width="1515" height="252" key="GridCell.Tab.1.bottom" timestamp="1575807257038">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -278,14 +314,14 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state width="1515" height="252" key="GridCell.Tab.1.right/0.0.1536.824@0.0.1536.824" timestamp="1575807257038" />
-    <state x="277" y="54" key="SettingsEditor" timestamp="1575807159252">
+    <state x="277" y="54" key="SettingsEditor" timestamp="1575807723022">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="277" y="54" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1575807159252" />
-    <state x="361" y="145" key="Vcs.Push.Dialog.v2" timestamp="1575803589501">
+    <state x="277" y="54" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1575807723022" />
+    <state x="361" y="145" key="Vcs.Push.Dialog.v2" timestamp="1575807577762">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="361" y="145" key="Vcs.Push.Dialog.v2/0.0.1536.824@0.0.1536.824" timestamp="1575803589501" />
+    <state x="361" y="145" key="Vcs.Push.Dialog.v2/0.0.1536.824@0.0.1536.824" timestamp="1575807577762" />
     <state x="489" y="117" key="com.intellij.execution.console.ConsoleHistoryController$MyBrowseAction$1" timestamp="1575803844210">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
