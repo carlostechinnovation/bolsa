@@ -84,7 +84,7 @@ public class EstaticosNasdaqDescargarYParsear {
 	public static List<EstaticoNasdaqModelo> descargarNasdaqEstaticosSoloLocal1() {
 
 		MY_LOGGER.info("descargarNasdaqEstaticos1...");
-		String csvFile = "C:\\DATOS\\GITHUB_REPOS\\bolsa\\BolsaJava\\src\\main\\resources\\nasdaq_tickers.csv";
+		String csvFile = "src/main/resources/nasdaq_tickers.csv";
 		MY_LOGGER.info("Cargando NASDAQ-TICKERS de: " + csvFile);
 
 		List<EstaticoNasdaqModelo> out = new ArrayList<EstaticoNasdaqModelo>();
@@ -307,13 +307,13 @@ public class EstaticosNasdaqDescargarYParsear {
 			extraerUnIndicadorDeTablaConcreta(col2Item, mapaExtraidos);
 		}
 
-		// ----URL del STOCK REPORT: para sacar después otros datos estáticos -------
+		// ----URL del STOCK REPORT: para sacar despuï¿½s otros datos estï¿½ticos -------
 		mapaExtraidos.put(ID_SRL, doc.getElementById(ID_SRL).attr("href"));
 
 	}
 
 	/**
-	 * Parsea un trozo concreto de la página NASDAQ-OLD - Summary
+	 * Parsea un trozo concreto de la pï¿½gina NASDAQ-OLD - Summary
 	 * 
 	 * @param in
 	 * @param mapaExtraidos
