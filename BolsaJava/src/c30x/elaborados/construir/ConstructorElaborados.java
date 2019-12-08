@@ -45,8 +45,8 @@ public class ConstructorElaborados {
 		BasicConfigurator.configure();
 		MY_LOGGER.setLevel(Level.INFO);
 
-		String directorioIn = "/bolsa/pasado/elaborados/"; // DEFAULT
-		String directorioOut = "/bolsa/pasado/elaborados_csv/"; // DEFAULT
+		String directorioIn = "/bolsa/pasado/limpios/"; // DEFAULT
+		String directorioOut = "/bolsa/pasado/elaborados/"; // DEFAULT
 
 		if (args.length == 0) {
 			MY_LOGGER.info("Sin parametros de entrada. Rellenamos los DEFAULT...");
