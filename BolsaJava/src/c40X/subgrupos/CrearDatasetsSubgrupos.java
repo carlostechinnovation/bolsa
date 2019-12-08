@@ -43,7 +43,7 @@ public class CrearDatasetsSubgrupos {
 			directorioOut = args[1];
 		}
 
-		definirSubgruposPorFiltrosEstaticos();
+		definirSubgruposUsandoFiltrosEstaticos();
 
 		// TODO Para cada subgrupo:
 		crearDatasetDeCadaSubgrupo(directorioIn, directorioOut);
@@ -55,7 +55,7 @@ public class CrearDatasetsSubgrupos {
 	/**
 	 * Cada subgrupo está definido por filtros sobre las variables ESTATICAS
 	 */
-	public static void definirSubgruposPorFiltrosEstaticos() {
+	public static void definirSubgruposUsandoFiltrosEstaticos() {
 
 		// TODO pendiente
 
