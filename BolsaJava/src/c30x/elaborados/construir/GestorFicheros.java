@@ -49,16 +49,25 @@ public class GestorFicheros {
 		ordenNombresParametrosLeidos = new HashMap<Integer, String>();
 		ordenNombresParametrosLeidos.put(0, "empresa");
 		ordenNombresParametrosLeidos.put(1, "antiguedad");
-		ordenNombresParametrosLeidos.put(2, "anio");
-		ordenNombresParametrosLeidos.put(3, "mes");
-		ordenNombresParametrosLeidos.put(4, "dia");
-		ordenNombresParametrosLeidos.put(5, "hora");
-		ordenNombresParametrosLeidos.put(6, "minuto");
-		ordenNombresParametrosLeidos.put(7, "volumen");
-		ordenNombresParametrosLeidos.put(8, "high");
-		ordenNombresParametrosLeidos.put(9, "low");
-		ordenNombresParametrosLeidos.put(10, "close");
-		ordenNombresParametrosLeidos.put(11, "open");
+		ordenNombresParametrosLeidos.put(2, "mercado");
+		ordenNombresParametrosLeidos.put(3, "anio");
+		ordenNombresParametrosLeidos.put(4, "mes");
+		ordenNombresParametrosLeidos.put(5, "dia");
+		ordenNombresParametrosLeidos.put(6, "hora");
+		ordenNombresParametrosLeidos.put(7, "minuto");
+		ordenNombresParametrosLeidos.put(8, "volumen");
+		ordenNombresParametrosLeidos.put(9, "high");
+		ordenNombresParametrosLeidos.put(10, "low");
+		ordenNombresParametrosLeidos.put(11, "close");
+		ordenNombresParametrosLeidos.put(12, "open");
+		ordenNombresParametrosLeidos.put(13, "Insider Own");
+		ordenNombresParametrosLeidos.put(14, "Debt/Eq");
+		ordenNombresParametrosLeidos.put(15, "P/E");
+		ordenNombresParametrosLeidos.put(16, "Dividend %");
+		ordenNombresParametrosLeidos.put(17, "Employees");
+		ordenNombresParametrosLeidos.put(18, "Inst Own");
+		ordenNombresParametrosLeidos.put(19, "Market Cap");
+		
 	}
 
 	/**
@@ -85,7 +94,7 @@ public class GestorFicheros {
 	public HashMap<String, HashMap<Integer, HashMap<String, String>>> leeFicheroDeSoloUnaEmpresa(
 			final String pathFichero) throws Exception, IOException {
 		Boolean esPrimeraLinea = Boolean.TRUE;
-		MY_LOGGER.debug("Fichero leído: " + pathFichero);
+		MY_LOGGER.debug("Fichero leï¿½do: " + pathFichero);
 		HashMap<String, HashMap<Integer, HashMap<String, String>>> datosSalida = new HashMap<String, HashMap<Integer, HashMap<String, String>>>();
 		String row, empresa = "";
 		String[] data;
@@ -93,21 +102,21 @@ public class GestorFicheros {
 		HashMap<String, String> datosParametrosEmpresa = new HashMap<String, String>();
 		File csvFile = new File(pathFichero);
 		if (!csvFile.isFile()) {
-			throw new FileNotFoundException("Fichero no válido: " + pathFichero);
+			throw new FileNotFoundException("Fichero no vï¿½lido: " + pathFichero);
 		}
 		BufferedReader csvReader = new BufferedReader(new FileReader(pathFichero));
 		try {
 			while ((row = csvReader.readLine()) != null) {
-				MY_LOGGER.debug("Fila leída: " + row);
+				MY_LOGGER.debug("Fila leï¿½da: " + row);
 				if (esPrimeraLinea) {
-					// En la primera línea está la cabecera de parámetros
+					// En la primera lï¿½nea estï¿½ la cabecera de parï¿½metros
 					// Se valida que el nombre recibido es igual que el usado en la constructora, y
 					// en dicho orden
 					data = row.split("\\|");
 					for (int i = 0; i < data.length; i++) {
 						if (ordenNombresParametrosLeidos.get(i).compareTo(data[i]) != 0)
 							throw new Exception(
-									"El orden de los parámetros leídos en el fichero no es el que espera el gestor de ficheros");
+									"El orden de los parï¿½metros leï¿½dos en el fichero no es el que espera el gestor de ficheros");
 					}
 					esPrimeraLinea = Boolean.FALSE;
 				} else {
@@ -119,7 +128,7 @@ public class GestorFicheros {
 						datosParametrosEmpresa.put(ordenNombresParametrosLeidos.get(i), data[i]);
 					}
 
-					// Se guarda la antigüedad
+					// Se guarda la antigï¿½edad
 					datosEmpresa.put(Integer.parseInt(data[1]), datosParametrosEmpresa);
 				}
 			}
@@ -146,7 +155,7 @@ public class GestorFicheros {
 		String empresa = "";
 		Integer antiguedad = -99999;
 		HashMap<Integer, HashMap<String, String>> datosEmpresa = new HashMap<Integer, HashMap<String, String>>();
-		// Se asume que el fichero sólo tiene una empresa
+		// Se asume que el fichero sï¿½lo tiene una empresa
 		Iterator<String> itEmpresas = empresas.iterator();
 		while (itEmpresas.hasNext()) {
 			empresa = itEmpresas.next();
@@ -158,10 +167,10 @@ public class GestorFicheros {
 		Iterator<Integer> itAntiguedades = antiguedades.iterator();
 		HashMap<String, String> parametrosEmpresa;
 		String nombreParametro, elementoAAnadir;
-		// En la primera fila del fichero, se añade una cabecera
+		// En la primera fila del fichero, se aï¿½ade una cabecera
 		for (int i = 0; i < ordenNombresParametros.size(); i++) {
 			csvWriter.append(ordenNombresParametros.get(i));
-			// Se añade el pipe en todos los elementos menos en el último
+			// Se aï¿½ade el pipe en todos los elementos menos en el ï¿½ltimo
 			if (i < ordenNombresParametros.size() - 1) {
 				csvWriter.append("|");
 			}
@@ -172,17 +181,17 @@ public class GestorFicheros {
 		while (itAntiguedades.hasNext()) {
 			antiguedad = itAntiguedades.next();
 			parametrosEmpresa = datosEmpresa.get(antiguedad);
-			// Se añade empresa y antigüedad
+			// Se aï¿½ade empresa y antigï¿½edad
 			csvWriter.append(empresa + "|" + antiguedad);
 			for (int i = 0; i < numParametros; i++) {
 				nombreParametro = ordenNombresParametros.get(i);
-				// Empresa y antigüedad se tratan aparte. No se añaden aquí
+				// Empresa y antigï¿½edad se tratan aparte. No se aï¿½aden aquï¿½
 				if (nombreParametro == "empresa" || nombreParametro == "antiguedad") {
 					// no se hace nada
 				} else {
-					// Se añaden el resto de parámetros
+					// Se aï¿½aden el resto de parï¿½metros
 					elementoAAnadir = "|" + parametrosEmpresa.get(nombreParametro);
-					MY_LOGGER.debug("Elemento a añadir i=" + i + ": \"" + nombreParametro + "\" con valor: "
+					MY_LOGGER.debug("Elemento a aï¿½adir i=" + i + ": \"" + nombreParametro + "\" con valor: "
 							+ parametrosEmpresa.get(nombreParametro));
 					csvWriter.append(elementoAAnadir);
 				}
