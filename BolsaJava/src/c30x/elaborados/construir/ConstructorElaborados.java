@@ -22,15 +22,16 @@ public class ConstructorElaborados {
 	// Periodo de la vela de entrada
 	public final static String T_velaEntrada = "H";
 	// x d�as
-	public final static Integer HORAS_AL_DIA = 4;
-	public final static Integer[] periodosHParaParametros = new Integer[] { 1 * HORAS_AL_DIA, 2 * HORAS_AL_DIA };
+	public final static Integer HORAS_AL_DIA = 7;
+	public final static Integer[] periodosHParaParametros = new Integer[] { 5 * HORAS_AL_DIA, 10 * HORAS_AL_DIA,
+			20 * HORAS_AL_DIA, 50 * HORAS_AL_DIA };
 
 	// Par�metros del TARGET (subida del S% en precio de close, tras X velas, y no
 	// cae m�s de un R% dentro de las siguientes M velas posteriores)
 	public final static Integer S = 20;
-	public final static Integer X = 2;
+	public final static Integer X = 4 * HORAS_AL_DIA;
 	public final static Integer R = 10;
-	public final static Integer M = 2;
+	public final static Integer M = 1 * HORAS_AL_DIA;
 
 	// IMPORTANTE: se asume que los datos est�n ordenados de menor a mayor
 	// antig�edad, y agrupados por empresa
@@ -61,18 +62,19 @@ public class ConstructorElaborados {
 
 		File directorioEntrada = new File(directorioIn);
 		File directorioSalida = new File(directorioOut);
-		HashMap<String, HashMap<Integer, HashMap<String, String>>> datosEntrada = new HashMap<String, HashMap<Integer, HashMap<String, String>>>();
+		HashMap<String, HashMap<Integer, HashMap<String, String>>> datosEntrada;
 		HashMap<Integer, String> ordenNombresParametros;
-		GestorFicheros gestorFicheros = new GestorFicheros(Boolean.TRUE);
+		GestorFicheros gestorFicheros = new GestorFicheros();
 		ArrayList<File> ficherosEntradaEmpresas = gestorFicheros.listaFicherosDeDirectorio(directorioEntrada);
 
 		String destino = "";
 		Iterator<File> iterator = ficherosEntradaEmpresas.iterator();
 		File ficheroGestionado;
 		while (iterator.hasNext()) {
+			gestorFicheros = new GestorFicheros();
+			datosEntrada = new HashMap<String, HashMap<Integer, HashMap<String, String>>>();
 			ficheroGestionado = iterator.next();
-
-			datosEntrada = gestorFicheros.leeFicheroDeSoloUnaEmpresa(ficheroGestionado.getPath());
+			datosEntrada = gestorFicheros.leeSoloParametrosNoElaboradosFicheroDeSoloUnaEmpresa(ficheroGestionado.getPath(), Boolean.FALSE);
 			destino = directorioSalida + "/"
 					+ ficheroGestionado.getName().substring(0, ficheroGestionado.getName().length() - 4)
 					+ "elaborada.csv";

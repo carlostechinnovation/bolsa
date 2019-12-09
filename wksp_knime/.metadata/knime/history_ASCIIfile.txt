@@ -1,7 +1,0 @@
-knime://knime.workflow/KDD_data/smallDataSet/orange_small_train_appetency.labels
-knime://knime.workflow/KDD_data/smallDataSet/orange_small_train_upselling.labels
-knime://knime.workflow/KDD_data/smallDataSet/orange_small_train_churn.labels
-knime://knime.workflow/KDD_data/smallDataSet/orange_small_train_.labels
-knime://knime.workflow/KDD_data/smallDataSet/orange_small_train.data
-file:/C:/DATOS/GITHUB_REPOS/bolsa/knime_mockdata/bolsa_mock_precios.csv
-knime://knime.workflow/data.all

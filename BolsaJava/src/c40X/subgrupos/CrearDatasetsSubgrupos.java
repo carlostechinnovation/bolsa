@@ -60,11 +60,31 @@ public class CrearDatasetsSubgrupos {
 			directorioOut = args[1];
 		}
 
+<<<<<<< HEAD
 		crearSubgruposYNormalizar(directorioIn, directorioOut);
 		
 		MY_LOGGER.info("FIN");
 	}
 
+=======
+		definirSubgruposUsandoFiltrosEstaticos();
+
+		// TODO Para cada subgrupo:
+		crearDatasetDeCadaSubgrupo(directorioIn, directorioOut);
+		normalizarDatasetDeSubgrupo(directorioOut);
+
+		MY_LOGGER.info("FIN");
+	}
+
+	/**
+	 * Cada subgrupo está definido por filtros sobre las variables ESTATICAS
+	 */
+	public static void definirSubgruposUsandoFiltrosEstaticos() {
+
+		// TODO pendiente
+
+	}
+>>>>>>> f1f4202015805cfc8b44d5a2062c381d1235a5e6
 
 	/**
 	 * Crea un CSV para cada subgrupo

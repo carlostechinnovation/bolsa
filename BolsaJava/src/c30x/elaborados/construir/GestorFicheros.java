@@ -31,7 +31,7 @@ public class GestorFicheros {
 		while (iterator.hasNext()) {
 			ficheroGestionado = iterator.next();
 
-			datos = leeFicheroDeSoloUnaEmpresa(ficheroGestionado.getPath());
+			datos = leeSoloParametrosNoElaboradosFicheroDeSoloUnaEmpresa(ficheroGestionado.getPath(), Boolean.TRUE);
 			destino = ficheroGestionado.getParentFile().getAbsolutePath() + "\\\\elaborados_csv"
 					+ ficheroGestionado.getName().substring(0, ficheroGestionado.getName().length() - 4) + ".csv";
 			MY_LOGGER.debug("Fichero entrada: " + ficheroGestionado.getAbsolutePath());
@@ -43,9 +43,8 @@ public class GestorFicheros {
 
 	/**
 	 * 
-	 * @param quieresDepurar
 	 */
-	public GestorFicheros(final Boolean quieresDepurar) {
+	public GestorFicheros() {
 		ordenNombresParametrosLeidos = new HashMap<Integer, String>();
 		ordenNombresParametrosLeidos.put(0, "empresa");
 		ordenNombresParametrosLeidos.put(1, "antiguedad");
@@ -67,7 +66,7 @@ public class GestorFicheros {
 		ordenNombresParametrosLeidos.put(17, "Employees");
 		ordenNombresParametrosLeidos.put(18, "Inst Own");
 		ordenNombresParametrosLeidos.put(19, "Market Cap");
-		
+
 	}
 
 	/**
@@ -88,18 +87,20 @@ public class GestorFicheros {
 	/**
 	 * 
 	 * @param pathFichero
+	 * @param leeSoloCabeceraYUnaFila
 	 * @return
+	 * @throws Exception
 	 * @throws IOException
 	 */
-	public HashMap<String, HashMap<Integer, HashMap<String, String>>> leeFicheroDeSoloUnaEmpresa(
-			final String pathFichero) throws Exception, IOException {
+	public HashMap<String, HashMap<Integer, HashMap<String, String>>> leeSoloParametrosNoElaboradosFicheroDeSoloUnaEmpresa(
+			final String pathFichero, final Boolean leeSoloCabeceraYUnaFila) throws Exception, IOException {
 		Boolean esPrimeraLinea = Boolean.TRUE;
 		MY_LOGGER.debug("Fichero le�do: " + pathFichero);
 		HashMap<String, HashMap<Integer, HashMap<String, String>>> datosSalida = new HashMap<String, HashMap<Integer, HashMap<String, String>>>();
 		String row, empresa = "";
 		String[] data;
 		HashMap<Integer, HashMap<String, String>> datosEmpresa = new HashMap<Integer, HashMap<String, String>>();
-		HashMap<String, String> datosParametrosEmpresa = new HashMap<String, String>();
+		HashMap<String, String> datosParametrosEmpresa;
 		File csvFile = new File(pathFichero);
 		if (!csvFile.isFile()) {
 			throw new FileNotFoundException("Fichero no v�lido: " + pathFichero);
@@ -113,10 +114,12 @@ public class GestorFicheros {
 					// Se valida que el nombre recibido es igual que el usado en la constructora, y
 					// en dicho orden
 					data = row.split("\\|");
-					for (int i = 0; i < data.length; i++) {
+					// Sólo se leen los parámetros NO ELABORADOS. Meto esto para que se pueda usar
+					// en pasos posteriores del proyecto
+					for (int i = 0; i < Math.min(data.length, ordenNombresParametrosLeidos.size()); i++) {
 						if (ordenNombresParametrosLeidos.get(i).compareTo(data[i]) != 0)
 							throw new Exception(
-									"El orden de los par�metros le�dos en el fichero no es el que espera el gestor de ficheros");
+									"El orden de los par�metros le�dos (sólo se tratan los NO ELABORADOS) en el fichero no es el que espera el gestor de ficheros");
 					}
 					esPrimeraLinea = Boolean.FALSE;
 				} else {
@@ -127,9 +130,12 @@ public class GestorFicheros {
 					for (int i = 2; i < ordenNombresParametrosLeidos.size(); i++) {
 						datosParametrosEmpresa.put(ordenNombresParametrosLeidos.get(i), data[i]);
 					}
-
 					// Se guarda la antig�edad
 					datosEmpresa.put(Integer.parseInt(data[1]), datosParametrosEmpresa);
+
+					if (leeSoloCabeceraYUnaFila) {
+						break;
+					}
 				}
 			}
 		} finally {
