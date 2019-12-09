@@ -169,18 +169,16 @@ public class CrearDatasetsSubgrupos {
 					try {
 						while ((row = csvReader.readLine()) != null) {
 							MY_LOGGER.debug("Fila le�da: " + row);
-							System.out.println("Fila le�da: " + row);
 							// La cabecera se toma de la primera línea del primer fichero
 							if (i == 0 && esPrimeraLinea) {
 								// En la primera l�nea est� la cabecera de par�metros
 								// Se valida que el nombre recibido es igual que el usado en la constructora, y
 								// en dicho orden
-								csvWriter.append(row + "\n");
+								csvWriter.append(row);
 							}
 							if (!esPrimeraLinea) {
-								// Para todos los ficheros que no sean el primero, se toman sólo los datos, sin
-								// la cabecera
-								csvWriter.append(row + "\n");
+								// Para todos los ficheros, se escriben las filas 2 y siguientes
+								csvWriter.append("\n" + row);
 							}
 							// Para las siguientes filas del fichero
 							esPrimeraLinea = Boolean.FALSE;
