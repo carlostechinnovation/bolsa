@@ -65,7 +65,13 @@ echo -e "Elaborados (incluye la variable elaborada TARGET) ya calculados" >> ${L
 
 ################################################################################################
 echo -e "-------- SUBGRUPOS -------------" >> ${LOG_MASTER}
+DIR_SUBGRUPOS="/bolsa/pasado/datasets/"
+mkdir -p "${DIR_SUBGRUPOS}"
 
+echo -e "Calculando subgrupos..." >> ${LOG_MASTER}
+java -Djava.util.logging.SimpleFormatter.format='%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n' -jar ${PATH_JAR} --class 'c40X.subgrupos.CrearDatasetsSubgrupos' '${DIR_ELABORADOS}' '${DIR_SUBGRUPOS}' 2>>${PATH_LOG} 1>>${PATH_LOG}
+
+echo -e "Subgrupos ya generados" >> ${LOG_MASTER}
 
 
 ################################################################################################
