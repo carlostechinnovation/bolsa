@@ -173,7 +173,7 @@ public class EstaticosNasdaqDescargarYParsear {
 				descargarPagina(rutaHtmlBruto1, true, modelo.summaryQuote);
 				parsearNasdaqEstatico2(rutaHtmlBruto1, mapaExtraidos);
 
-				// TODO MY_LOGGER.info("Descarga OLD-NASDAQ - SUMMARY: " + rutaHtmlBruto1);
+				MY_LOGGER.info("Descarga OLD-NASDAQ - SUMMARY: " + rutaHtmlBruto1);
 				msegEspera = (long) (BrutosUtils.ESPERA_ALEATORIA_MSEG_MIN
 						+ Math.random() * 1000 * BrutosUtils.ESPERA_ALEATORIA_SEG_MAX);
 				Thread.sleep(msegEspera);

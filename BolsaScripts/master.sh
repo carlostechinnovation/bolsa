@@ -48,8 +48,11 @@ echo -e "-------- DATOS LIMPIOS -------------" >> ${LOG_MASTER}
 DIR_LIMPIOS="/bolsa/pasado/limpios/"
 mkdir -p "${DIR_LIMPIOS}"
 
-echo -e "Operaciones de limpieza: quitar outliers, rellenar missing values..." >> ${LOG_MASTER}
-java -Djava.util.logging.SimpleFormatter.format='%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n' -jar ${PATH_JAR} --class 'c30X.elaborados.LimpiarOperaciones' '${DIR_BRUTOS_CSV}' '${DIR_LIMPIOS}' 2>>${PATH_LOG} 1>>${PATH_LOG}
+#######echo -e "Operaciones de limpieza: quitar outliers, rellenar missing values..." >> ${LOG_MASTER}
+#######java -Djava.util.logging.SimpleFormatter.format='%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n' -jar ${PATH_JAR} --class 'c30X.elaborados.LimpiarOperaciones' '${DIR_BRUTOS_CSV}' '${DIR_LIMPIOS}' 2>>${PATH_LOG} 1>>${PATH_LOG}
+
+# PENDIENTE: de momento, no limpiamos, pero habrá que hacerlo
+cp '${DIR_BRUTOS_CSV}*' '${DIR_LIMPIOS}' 
 
 
 ################################################################################################
@@ -70,7 +73,8 @@ echo -e "-------- SUBGRUPOS -------------" >> ${LOG_MASTER}
 
 ################################################################################################
 echo -e "-------- PARA CADA SUBGRUPO: SELECCIÓN DE VARIABLES -------------" >> ${LOG_MASTER}
-
+DIR_MODELOS="/bolsa/modelos"
+mkdir -p "${DIR_MODELOS}"
 
 
 ################################################################################################
@@ -88,6 +92,7 @@ echo -e "-------- PARA CADA SUBGRUPO: VALIDACIÓN MANUAL DE MODELO GANADOR (rent
 
 
 
+################################################################################################
 ################################################################################################
 echo -e "-------- CADENA FUTURA -------------" >> ${LOG_MASTER}
 

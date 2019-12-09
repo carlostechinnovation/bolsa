@@ -55,17 +55,16 @@ public class BrutosUtils {
 					if (in.contains("K")) {
 						out = in.replace("K", "").trim();
 						numero = Float.valueOf(out);
-						numero = (numero * 1000F);
+						numero = (numero / 1000F);
 					} else if (in.contains("M")) {
 						out = in.replace("M", "").trim();
 						numero = Float.valueOf(out);
-						numero = (numero * 1000000F);
 					} else if (in.contains("B")) {
 						out = in.replace("B", "").trim();
 						numero = Float.valueOf(out);
-						numero = (numero * 1000000000F);
+						numero = (numero * 1000F);
 					} else {
-						numero = Float.valueOf(out);
+						numero = Float.valueOf(out) / 1000000F;
 					}
 
 					out = df.format(numero);
