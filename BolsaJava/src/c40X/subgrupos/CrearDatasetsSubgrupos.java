@@ -61,11 +61,13 @@ public class CrearDatasetsSubgrupos {
 		}
 
 		crearSubgruposYNormalizar(directorioIn, directorioOut);
-
+		
 		MY_LOGGER.info("FIN");
 	}
 
+
 	/**
+	 * Crea un CSV para cada subgrupo
 	 * 
 	 * @param directorioIn
 	 * @param directorioOut
