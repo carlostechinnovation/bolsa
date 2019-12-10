@@ -7,6 +7,7 @@ echo -e "ID_EJECUCION = "${ID_EJECUCION}
 DIR_BASE="/bolsa/"
 LOG_MASTER="${DIR_BASE}bolsa_coordinador.log"
 PATH_SCRIPTS="C:\DATOS\GITHUB_REPOS\bolsa\BolsaScripts/"
+PYTHON_SCRIPTS="C:\DATOS\GITHUB_REPOS\bolsa\BolsaPython/"
 PATH_JAR="C:\DATOS\GITHUB_REPOS\bolsa\BolsaJava/target/bolsajava-1.0.jar"
 
 mkdir -p "${DIR_BASE}"
@@ -79,13 +80,13 @@ echo -e "Subgrupos ya generados" >> ${LOG_MASTER}
 
 ################################################################################################
 echo -e "-------- PARA CADA SUBGRUPO: SELECCIÓN DE VARIABLES -------------" >> ${LOG_MASTER}
-DIR_MODELOS="/bolsa/modelos"
-mkdir -p "${DIR_MODELOS}"
+DIR_MODELOS="/bolsa/modelos/"
+mkdir -p "${DIR_MODELOS}bolsa/C6CreadorModelosDeSubgrupo.py"
 
 
 ################################################################################################
 echo -e "-------- PARA CADA SUBGRUPO: CREACIÓN DE MODELOS (entrenamiento, test, validación) -------------" >> ${LOG_MASTER}
-
+python "${PYTHON_SCRIPTS}" --help me
 
 
 ################################################################################################

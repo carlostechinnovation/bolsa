@@ -73,6 +73,7 @@ public class CrearDatasetsSubgrupos {
 	 * @throws Exception
 	 */
 	public static void crearSubgruposYNormalizar(String directorioIn, String directorioOut) throws Exception {
+
 		// Debo leer el parámetro que me interese: de momento el market cap. En el
 		// futuro sería conveniente separar por sector y liquidez (volumen medio de 6
 		// meses en dólares).
@@ -83,6 +84,7 @@ public class CrearDatasetsSubgrupos {
 		Iterator<File> iterator = ficherosEntradaEmpresas.iterator();
 		File ficheroGestionado;
 		HashMap<String, String> parametros;
+
 		HashMap<Integer, HashMap<String, String>> datosEmpresaEntrada = new HashMap<Integer, HashMap<String, String>>();
 		// Tipos de empresa
 		// Tipo 1: MARKETCAP=MEGA
@@ -97,7 +99,9 @@ public class CrearDatasetsSubgrupos {
 		ArrayList<String> pathEmpresasTipo4 = new ArrayList<String>();
 		ArrayList<String> pathEmpresasTipo5 = new ArrayList<String>();
 		ArrayList<String> pathEmpresasTipo6 = new ArrayList<String>();
+
 		while (iterator.hasNext()) {
+
 			gestorFicheros = new GestorFicheros();
 			datosEntrada = new HashMap<String, HashMap<Integer, HashMap<String, String>>>();
 			ficheroGestionado = iterator.next();
@@ -106,19 +110,28 @@ public class CrearDatasetsSubgrupos {
 			// optimizo la lectura
 			datosEntrada = gestorFicheros
 					.leeSoloParametrosNoElaboradosFicheroDeSoloUnaEmpresa(ficheroGestionado.getPath(), Boolean.TRUE);
+
 			String empresa = "";
 			Set<String> empresas = datosEntrada.keySet();
 			Iterator<String> itEmpresas = datosEntrada.keySet().iterator();
 			if (empresas.size() != 1) {
-				throw new Exception("Es est�n calculando par�metros elaborados de m�s de una empresa");
+				throw new Exception("Se están calculando parámetros elaborados de más de una empresa");
 			} else {
 				while (itEmpresas.hasNext())
 					empresa = itEmpresas.next();
 			}
-			// EXTRACCI�N DE DATOS DE LA EMPRESA
+
+			// EXTRACCIÓN DE DATOS DE LA EMPRESA: sólo se usan los datos ESTATICOS, así que
+			// basta coger la PRIMERA fila de datos
 			datosEmpresaEntrada = datosEntrada.get(empresa);
-			parametros = datosEmpresaEntrada.get(0);
-			Integer marketCapValor = Integer.valueOf(parametros.get("Market Cap"));
+
+			Set<Integer> a = datosEmpresaEntrada.keySet();
+			Integer indicePrimeraFilaDeDatos = null;
+			if (a.iterator().hasNext()) {
+				indicePrimeraFilaDeDatos = a.iterator().next();
+			}
+			parametros = datosEmpresaEntrada.get(indicePrimeraFilaDeDatos); // PRIMERA FILA
+			Long marketCapValor = Long.valueOf(parametros.get("Market Cap"));
 
 			// CLASIFICACIÓN DEL TIPO DE EMPRESA
 			if (marketCapValor < marketCap_nano_max)
@@ -135,6 +148,7 @@ public class CrearDatasetsSubgrupos {
 				pathEmpresasTipo1.add(ficheroGestionado.getAbsolutePath());
 
 		}
+
 		// Almacenamiento del tipo de empresa en la lista
 		empresasPorTipo = new HashMap<Integer, ArrayList<String>>();
 		empresasPorTipo.put(1, pathEmpresasTipo1);
@@ -152,26 +166,32 @@ public class CrearDatasetsSubgrupos {
 		String pathFichero;
 		String row;
 		Boolean esPrimeraLinea;
+
 		while (itTipos.hasNext()) {
+
 			tipo = itTipos.next();
 			numEmpresasPorTipo = empresasPorTipo.size();
+
 			if (numEmpresasPorTipo > 0) {
 				// Hay alguna empresa de este tipo. Creo un CSV común para todas las del mismo
 				// tipo
 				ArrayList<String> pathFicheros = empresasPorTipo.get(tipo);
 				FileWriter csvWriter = new FileWriter(directorioOut + tipo + ".csv");
+
 				for (int i = 0; i < pathFicheros.size(); i++) {
+
 					esPrimeraLinea = Boolean.TRUE;
 					// Se lee el fichero de la empresa a meter en el CSV común
 					pathFichero = pathFicheros.get(i);
 					MY_LOGGER.debug("Fichero a leer para clasificar en subgrupo: " + pathFichero);
 					BufferedReader csvReader = new BufferedReader(new FileReader(pathFichero));
 					try {
+
 						while ((row = csvReader.readLine()) != null) {
-							MY_LOGGER.debug("Fila le�da: " + row);
+							MY_LOGGER.debug("Fila leída: " + row);
 							// La cabecera se toma de la primera línea del primer fichero
 							if (i == 0 && esPrimeraLinea) {
-								// En la primera l�nea est� la cabecera de par�metros
+								// En la primera línea está la cabecera de parámetros
 								// Se valida que el nombre recibido es igual que el usado en la constructora, y
 								// en dicho orden
 								csvWriter.append(row);
@@ -183,6 +203,7 @@ public class CrearDatasetsSubgrupos {
 							// Para las siguientes filas del fichero
 							esPrimeraLinea = Boolean.FALSE;
 						}
+
 					} finally {
 						csvReader.close();
 					}

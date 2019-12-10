@@ -70,22 +70,31 @@ public class ConstructorElaborados {
 		String destino = "";
 		Iterator<File> iterator = ficherosEntradaEmpresas.iterator();
 		File ficheroGestionado;
+
 		while (iterator.hasNext()) {
 			gestorFicheros = new GestorFicheros();
 			datosEntrada = new HashMap<String, HashMap<Integer, HashMap<String, String>>>();
 			ficheroGestionado = iterator.next();
-			datosEntrada = gestorFicheros.leeSoloParametrosNoElaboradosFicheroDeSoloUnaEmpresa(ficheroGestionado.getPath(), Boolean.FALSE);
+			datosEntrada = gestorFicheros
+					.leeSoloParametrosNoElaboradosFicheroDeSoloUnaEmpresa(ficheroGestionado.getPath(), Boolean.FALSE);
 			destino = directorioSalida + "/"
 					+ ficheroGestionado.getName().substring(0, ficheroGestionado.getName().length() - 4)
 					+ "elaborada.csv";
-			MY_LOGGER.debug("Fichero entrada: " + ficheroGestionado.getAbsolutePath());
-			MY_LOGGER.debug("Fichero salida:  " + destino);
+			MY_LOGGER.info("Fichero entrada: " + ficheroGestionado.getAbsolutePath());
+			MY_LOGGER.info("Fichero salida:  " + destino);
 			ordenNombresParametros = gestorFicheros.getOrdenNombresParametrosLeidos();
 			anadirParametrosElaboradosDeSoloUnaEmpresa(datosEntrada, ordenNombresParametros);
 			gestorFicheros.creaFicheroDeSoloUnaEmpresa(datosEntrada, ordenNombresParametros, destino);
 		}
+
+		MY_LOGGER.info("FIN");
 	}
 
+	/**
+	 * @param datos
+	 * @param ordenNombresParametros
+	 * @throws Exception
+	 */
 	public static void anadirParametrosElaboradosDeSoloUnaEmpresa(
 			HashMap<String, HashMap<Integer, HashMap<String, String>>> datos,
 			HashMap<Integer, String> ordenNombresParametros) throws Exception {
@@ -94,14 +103,14 @@ public class ConstructorElaborados {
 		HashMap<Integer, HashMap<String, String>> datosEmpresaEntrada = new HashMap<Integer, HashMap<String, String>>();
 		HashMap<Integer, HashMap<String, String>> datosEmpresaFinales = new HashMap<Integer, HashMap<String, String>>();
 
-		// ORDEN DE PAR�METROS DE ENTRADA
+		// ORDEN DE PARÁMETROS DE ENTRADA
 		HashMap<Integer, String> ordenNombresParametrosSalida = new HashMap<Integer, String>();
 		Integer numeroParametrosEntrada = ordenNombresParametros.size();
 		for (int i = 0; i < numeroParametrosEntrada; i++) {
 			ordenNombresParametrosSalida.put(i, ordenNombresParametros.get(i));
 		}
 
-		// C�LCULOS DE PAR�METROS ELABORADOS
+		// CÁLCULOS DE PARÁMETROS ELABORADOS
 		Integer antiguedad;
 		String empresa = "";
 		Set<String> empresas = datos.keySet();
@@ -112,7 +121,8 @@ public class ConstructorElaborados {
 			while (itEmpresas.hasNext())
 				empresa = itEmpresas.next();
 		}
-		// EXTRACCI�N DE DATOS DE LA EMPRESA
+
+		// EXTRACCIÓN DE DATOS DE LA EMPRESA
 		datosEmpresaEntrada = datos.get(empresa);
 		MY_LOGGER.debug("Empresa: " + empresa);
 		HashMap<String, String> parametros = new HashMap<String, String>();
@@ -131,6 +141,7 @@ public class ConstructorElaborados {
 		Integer parametrosAcumulados = numeroParametrosEntrada;
 		String auxPrecio, auxVolumen;
 		Integer antiguedadHistoricaMaxima;
+
 		for (Integer periodo : periodosHParaParametros) {
 
 			// Se guarda el orden de los datos elaborados
@@ -149,6 +160,7 @@ public class ConstructorElaborados {
 			}
 			parametrosAcumulados += ordenVolumenNombresParametrosElaborados.size();
 			Iterator<Integer> itAntiguedadTarget = datosEmpresaEntrada.keySet().iterator();
+
 			while (itAntiguedadTarget.hasNext()) {
 				antiguedad = itAntiguedadTarget.next();
 				// PARA CADA PERIODO DE C�LCULO DE PAR�METROS ELABORADOS y cada antig�edad, que
@@ -175,8 +187,10 @@ public class ConstructorElaborados {
 					// Para los datos de antig�edad excesiva, se sale del bucle
 					break;
 				}
-				// VALIDACI�N DE ESTAD�STICAS
-				// La empresa y la antig�edad no las usamos
+
+				// VALIDACIÓN DE ESTADíSTICAS
+				// La empresa y la antigüedad no las usamos
+
 				MY_LOGGER.debug("------------------>>>>>>> Periodo: " + periodo + ", n: " + estadisticasPrecio.getN());
 				estadisticasPrecioPorAntiguedad.put(antiguedad, estadisticasPrecio);
 				estadisticasVolumenPorAntiguedad.put(antiguedad, estadisticasVolumen);
@@ -196,12 +210,14 @@ public class ConstructorElaborados {
 		periodos = estadisticasPrecioPorAntiguedadYPeriodo.keySet();
 		Integer periodoActual;
 		Iterator<Integer> itPeriodo = periodos.iterator();
+
 		while (itPeriodo.hasNext()) {
 			periodoActual = itPeriodo.next();
 			estadisticasPrecioPorAntiguedad = estadisticasPrecioPorAntiguedadYPeriodo.get(periodoActual);
 			estadisticasVolumenPorAntiguedad = estadisticasVolumenPorAntiguedadYPeriodo.get(periodoActual);
 			antiguedades = estadisticasPrecioPorAntiguedad.keySet();
 			itAntiguedad = antiguedades.iterator();
+
 			while (itAntiguedad.hasNext()) {
 				antiguedad = itAntiguedad.next();
 				estadisticasPrecio = estadisticasPrecioPorAntiguedad.get(antiguedad);
@@ -226,7 +242,7 @@ public class ConstructorElaborados {
 			}
 		}
 
-		// A�ado el TARGET
+		// Aniado el TARGET
 		Integer antiguedadX, antiguedadM;
 		Double subidaSPrecioTantoPorUno = (100 + S) / 100.0;
 		Double caidaRPrecioTantoPorUno = (100 - R) / 100.0;
@@ -293,25 +309,32 @@ public class ConstructorElaborados {
 			datosEmpresaFinales.replace(antiguedad, parametros);
 		}
 
-		// Vuelco todos los par�metros
+		// Vuelco todos los parámetros
 		datosSalida.put(empresa, datosEmpresaFinales);
 		datos = datosSalida;
 		ordenNombresParametros.clear();
 		ordenNombresParametros.putAll(ordenNombresParametrosSalida);
 	}
 
+	/**
+	 * Traducción a horas (hábiles, con Bolsa abierta)
+	 * 
+	 * @param T
+	 * @return
+	 * @throws Exception
+	 */
 	public static Integer tiempoEnHoras(String T) throws Exception {
-		// Traducci�n a horas (h�biles, con Bolsa abierta)
-		Integer horas = 0;
-		if (T == "H")
-			horas = 1;
-		else if (T == "D")
-			// HAY D�AS QUE LA BOLSA ABRE S�LO MEDIA JORNADA, AS� QUE ESTO NO ES TOTALMENTE
-			// CORRECTO. Normalmente son 7h al d�a
-			horas = HORAS_AL_DIA;
-		else if (T == "H")
-			throw new Exception("Tiempo err�neo");
 
+		Integer horas = 0;
+		if (T == "H") {
+			horas = 1;
+		} else if (T == "D") {
+			// HAY DÍAS QUE LA BOLSA ABRE SÓLO MEDIA JORNADA, ASÍ QUE ESTO NO ES TOTALMENTE
+			// CORRECTO. Normalmente son 7h al día
+			horas = HORAS_AL_DIA;
+		} else if (T == "H") {
+			throw new Exception("Tiempo erróneo");
+		}
 		return horas;
 	}
 
