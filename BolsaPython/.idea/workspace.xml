@@ -2,14 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="22edbd2f-b3d9-42f0-a7dd-659033ab601a" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/bolsa/C6CreadorModelosDeSubgrupo.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bolsa/C7EvaluadorModelosDeSubgrupo.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bolsa/C8OtrasValidacionesManuales.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/c40X/subgrupos/CrearDatasetsSubgrupos.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/c40X/subgrupos/CrearDatasetsSubgrupos.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bolsa/C5SeleccionDeVariablesDeSubgrupo.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ejemplos/02_seleccion_features_rfe_cv.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/HolaMundo.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ejemplos/03_modelos_clasificacion.py" beforeDir="false" afterPath="$PROJECT_DIR$/ejemplos/03_modelos_clasificacion.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ejemplos/04_como_medir_modelos.py" beforeDir="false" afterPath="$PROJECT_DIR$/ejemplos/04_como_medir_modelos.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bolsa/C6CreadorModelosDeSubgrupo.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/C6CreadorModelosDeSubgrupo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bolsa/C7EvaluadorModelosDeSubgrupo.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/C7EvaluadorModelosDeSubgrupo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bolsa/C8OtrasValidacionesManuales.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/C8OtrasValidacionesManuales.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../BolsaScripts/master.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/master.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -43,9 +41,13 @@
     <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/bolsa" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PythonContentEntriesConfigurable" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\DATOS\GITHUB_REPOS\bolsa\BolsaPython\bolsa" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\DATOS\GITHUB_REPOS\bolsa\BolsaPython\bolsa" />
     </key>

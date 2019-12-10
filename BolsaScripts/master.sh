@@ -78,26 +78,31 @@ java -Djava.util.logging.SimpleFormatter.format='%1$tY-%1$tm-%1$td %1$tH:%1$tM:%
 echo -e "Subgrupos ya generados" >> ${LOG_MASTER}
 
 
-################################################################################################
-echo -e "-------- PARA CADA SUBGRUPO: SELECCIÓN DE VARIABLES -------------" >> ${LOG_MASTER}
-DIR_MODELOS="/bolsa/modelos/"
-mkdir -p "${DIR_MODELOS}bolsa/C6CreadorModelosDeSubgrupo.py"
+
+############  PARA CADA SUBGRUPO ###############################################################
 
 
-################################################################################################
-echo -e "-------- PARA CADA SUBGRUPO: CREACIÓN DE MODELOS (entrenamiento, test, validación) -------------" >> ${LOG_MASTER}
-python "${PYTHON_SCRIPTS}" --help me
-
-
-################################################################################################
-echo -e "-------- PARA CADA SUBGRUPO: EVALUACIÓN DE MODELOS (ROC, R2...); GUARDAR MODELO GANADOR -------------" >> ${LOG_MASTER}
-
-
-
-################################################################################################
-echo -e "-------- PARA CADA SUBGRUPO: VALIDACIÓN MANUAL DE MODELO GANADOR (rentabilidad, etc) -------------" >> ${LOG_MASTER}
-
-
+for path_csv_subgrupo in "${DIR_SUBGRUPOS}"/*
+do
+	echo "Analizando subgrupo cuyo dataset de entrada es: ${path_csv_subgrupo}"
+	
+	echo -e "-------- PARA CADA SUBGRUPO: SELECCIÓN DE VARIABLES -------------" >> ${LOG_MASTER}
+	mkdir -p "${PYTHON_SCRIPTS}bolsa/C5SeleccionDeVariablesDeSubgrupo.py" "${path_csv_subgrupo}"
+	
+	echo -e "-------- PARA CADA SUBGRUPO: CREACIÓN DE MODELOS (entrenamiento, test, validación) -------------" >> ${LOG_MASTER}
+	DIR_MODELOS="/bolsa/modelos/"
+	mkdir -p "${PYTHON_SCRIPTS}bolsa/C6CreadorModelosDeSubgrupo.py" "${path_csv_subgrupo}" "${DIR_MODELOS}"
+	
+	echo -e "-------- PARA CADA SUBGRUPO: EVALUACIÓN DE MODELOS (ROC, R2...); GUARDAR MODELO GANADOR -------------" >> ${LOG_MASTER}
+	python "${PYTHON_SCRIPTS}bolsa/C7EvaluadorModelosDeSubgrupo.py"
+	
+	echo -e "-------- PARA CADA SUBGRUPO: VALIDACIÓN MANUAL DE MODELO GANADOR (rentabilidad, etc) -------------" >> ${LOG_MASTER}
+	python "${PYTHON_SCRIPTS}bolsa/C8OtrasValidacionesManuales.py"
+	
+	
+	
+	
+done
 
 ################################################################################################
 ################################################################################################
