@@ -1,6 +1,9 @@
 package c30x.elaborados.construir;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.HashMap;
+import java.util.Locale;
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
@@ -8,18 +11,21 @@ public class Estadisticas extends DescriptiveStatistics {
 
 	private static final long serialVersionUID = 1L;
 
-	public final static String VALOR_INVALIDO = "NULL";
+	public final static String VALOR_INVALIDO = "null";
 
-	// Si añado más parámetros, debo modificar la constructora
+	// Si aï¿½ado mï¿½s parï¿½metros, debo modificar la constructora
 	private HashMap<Integer, String> ordenNombresParametrosElaborados;
 
 	public enum COMIENZO_NOMBRES_PARAMETROS_ELABORADOS {
-		MEDIA_SMA_, STD_SMA_, PENDIENTE_SMA_, RATIO_SMA_, RATIO_MAXRELATIVO_, RATIO_MINRELATIVO_,
-		CURTOSIS_, SKEWNESS_;
+		MEDIA_SMA_, STD_SMA_, PENDIENTE_SMA_, RATIO_SMA_, RATIO_MAXRELATIVO_, RATIO_MINRELATIVO_, CURTOSIS_, SKEWNESS_;
 	}
+
 	public enum FINAL_NOMBRES_PARAMETROS_ELABORADOS {
 		_PRECIO, _VOLUMEN;
 	}
+
+	static Locale locale;
+	static DecimalFormat df;
 
 	/**
 	 * 
@@ -30,15 +36,16 @@ public class Estadisticas extends DescriptiveStatistics {
 		ordenNombresParametrosElaborados.put(2, COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.STD_SMA_.toString());
 		ordenNombresParametrosElaborados.put(3, COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.PENDIENTE_SMA_.toString());
 		ordenNombresParametrosElaborados.put(4, COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_SMA_.toString());
-		ordenNombresParametrosElaborados.put(5,
-				COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_MAXRELATIVO_.toString());
-		ordenNombresParametrosElaborados.put(6,
-				COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_MINRELATIVO_.toString());
+		ordenNombresParametrosElaborados.put(5, COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_MAXRELATIVO_.toString());
+		ordenNombresParametrosElaborados.put(6, COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_MINRELATIVO_.toString());
 		ordenNombresParametrosElaborados.put(7, COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.CURTOSIS_.toString());
 		ordenNombresParametrosElaborados.put(8, COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.SKEWNESS_.toString());
+
+		locale = new Locale("en", "UK");
+		df = (DecimalFormat) NumberFormat.getNumberInstance(locale);
 	}
 
-	/** Como si fuera la derivada, pero sólo con el primer y último valores */
+	/** Como si fuera la derivada, pero sï¿½lo con el primer y ï¿½ltimo valores */
 	public double getPendiente() {
 		return (this.getElement((int) (this.getN() - 1)) - this.getElement(0)) / this.getN();
 	}
@@ -52,7 +59,7 @@ public class Estadisticas extends DescriptiveStatistics {
 	}
 
 	/**
-	 * Ratio, en porcentaje, entre el PRIMER dato y el MÁXIMO del conjunto de datos.
+	 * Ratio, en porcentaje, entre el PRIMER dato y el Mï¿½XIMO del conjunto de datos.
 	 * Puede tener valores negativos.
 	 */
 	public int getRatioMax() {
@@ -60,7 +67,7 @@ public class Estadisticas extends DescriptiveStatistics {
 	}
 
 	/**
-	 * Ratio, en porcentaje, entre el PRIMER dato y el MÍNIMO del conjunto de datos.
+	 * Ratio, en porcentaje, entre el PRIMER dato y el Mï¿½NIMO del conjunto de datos.
 	 * Puede tener valores negativos.
 	 */
 	public int getRatioMin() {
@@ -68,15 +75,15 @@ public class Estadisticas extends DescriptiveStatistics {
 	}
 
 	/**
-	 * Se imprime al log una validación de los cálculos de esta función.
+	 * Se imprime al log una validaciï¿½n de los cï¿½lculos de esta funciï¿½n.
 	 */
 	public void debugValidacion(final Integer numDatosGestionados) throws Exception {
-		// VALIDACIÓN DE ENTRADA
+		// VALIDACIï¿½N DE ENTRADA
 		// Si no se tienen todos los datos del periodo (por ejemplo, para una media de
-		// 200 días, 200*7 valores hacia atrás), lanzará excepción
+		// 200 dï¿½as, 200*7 valores hacia atrï¿½s), lanzarï¿½ excepciï¿½n
 		System.out.println("********************************************************");
 		if (getN() != numDatosGestionados) {
-			throw new Exception("El número de datos a analizar no es el adecuado. Se usan " + getN()
+			throw new Exception("El nï¿½mero de datos a analizar no es el adecuado. Se usan " + getN()
 					+ " y se necesitan " + numDatosGestionados);
 		} else {
 			System.out.println("Se tienen " + getN() + " y se usan " + numDatosGestionados);
@@ -111,8 +118,7 @@ public class Estadisticas extends DescriptiveStatistics {
 					VALOR_INVALIDO);
 			parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.STD_SMA_ + periodoString + finalNombreParametro,
 					VALOR_INVALIDO);
-			parametros.put(
-					COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.PENDIENTE_SMA_ + periodoString + finalNombreParametro,
+			parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.PENDIENTE_SMA_ + periodoString + finalNombreParametro,
 					VALOR_INVALIDO);
 			parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_SMA_ + periodoString + finalNombreParametro,
 					VALOR_INVALIDO);
@@ -129,27 +135,27 @@ public class Estadisticas extends DescriptiveStatistics {
 			parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.SKEWNESS_ + periodoString + finalNombreParametro,
 					VALOR_INVALIDO);
 		} else {
+
 			parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_ + periodoString + finalNombreParametro,
-					String.valueOf(this.getMean()));
+					df.format(this.getMean()));
 			parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.STD_SMA_ + periodoString + finalNombreParametro,
-					String.valueOf(this.getStandardDeviation()));
-			parametros.put(
-					COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.PENDIENTE_SMA_ + periodoString + finalNombreParametro,
-					String.valueOf(this.getPendiente()));
+					df.format(this.getStandardDeviation()));
+			parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.PENDIENTE_SMA_ + periodoString + finalNombreParametro,
+					df.format(this.getPendiente()));
 			parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_SMA_ + periodoString + finalNombreParametro,
-					String.valueOf(this.getRatioSMA()));
+					df.format(this.getRatioSMA()));
 			parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_SMA_ + periodoString + finalNombreParametro,
-					String.valueOf(this.getRatioSMA()));
+					df.format(this.getRatioSMA()));
 			parametros.put(
 					COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_MAXRELATIVO_ + periodoString + finalNombreParametro,
-					String.valueOf(this.getMax()));
+					df.format(this.getMax()));
 			parametros.put(
 					COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_MINRELATIVO_ + periodoString + finalNombreParametro,
-					String.valueOf(this.getMin()));
+					df.format(this.getMin()));
 			parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.CURTOSIS_ + periodoString + finalNombreParametro,
-					String.valueOf(this.getKurtosis()));
+					df.format(this.getKurtosis()));
 			parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.SKEWNESS_ + periodoString + finalNombreParametro,
-					String.valueOf(this.getSkewness()));
+					df.format(this.getSkewness()));
 		}
 		return parametros;
 	}

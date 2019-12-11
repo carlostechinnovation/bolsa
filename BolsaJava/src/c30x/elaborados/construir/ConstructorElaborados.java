@@ -36,6 +36,8 @@ public class ConstructorElaborados {
 	// IMPORTANTE: se asume que los datos est�n ordenados de menor a mayor
 	// antig�edad, y agrupados por empresa
 
+	final static String TARGET_INVALIDO = "null";
+
 	/**
 	 * @param args
 	 * @throws Exception
@@ -77,9 +79,7 @@ public class ConstructorElaborados {
 			ficheroGestionado = iterator.next();
 			datosEntrada = gestorFicheros
 					.leeSoloParametrosNoElaboradosFicheroDeSoloUnaEmpresa(ficheroGestionado.getPath(), Boolean.FALSE);
-			destino = directorioSalida + "/"
-					+ ficheroGestionado.getName().substring(0, ficheroGestionado.getName().length() - 4)
-					+ "elaborada.csv";
+			destino = directorioSalida + "/" + ficheroGestionado.getName();
 			MY_LOGGER.info("Fichero entrada: " + ficheroGestionado.getAbsolutePath());
 			MY_LOGGER.info("Fichero salida:  " + destino);
 			ordenNombresParametros = gestorFicheros.getOrdenNombresParametrosLeidos();
@@ -246,15 +246,16 @@ public class ConstructorElaborados {
 		Integer antiguedadX, antiguedadM;
 		Double subidaSPrecioTantoPorUno = (100 + S) / 100.0;
 		Double caidaRPrecioTantoPorUno = (100 - R) / 100.0;
-		// Target=0 es que no se cumple. 1 es que s�. -1 es que no se puede calcular
-		Integer target = -1;
+		// Target=0 es que no se cumple. 1 es que sí. TARGET_INVALIDO es que no se puede
+		// calcular
+		String target = TARGET_INVALIDO;
 		Boolean mCumplida = Boolean.FALSE;
 
 		antiguedades = datosEmpresaEntrada.keySet();
 		Integer antiguedadMaxima = Collections.max(antiguedades);
 		HashMap<String, String> datosAntiguedad, datosAntiguedadX;
 		Iterator<Integer> itAntiguedadTarget = datosEmpresaEntrada.keySet().iterator();
-		HashMap<Integer, Integer> antiguedadYTarget = new HashMap<Integer, Integer>();
+		HashMap<Integer, String> antiguedadYTarget = new HashMap<Integer, String>();
 		while (itAntiguedadTarget.hasNext()) {
 			antiguedad = itAntiguedadTarget.next();
 			antiguedadM = antiguedad + M;
@@ -262,7 +263,7 @@ public class ConstructorElaborados {
 				antiguedadX = antiguedad + X;
 				if (antiguedadMaxima < antiguedadX) {
 					// Estamos analizando un punto en el tiempo X datos anteriores
-					target = -1;
+					target = TARGET_INVALIDO;
 					break;
 				} else {
 					// Si el precio actual ha subido S% tras X velas viejas, y si despu�s, durante
@@ -284,16 +285,16 @@ public class ConstructorElaborados {
 						}
 						if (mCumplida) {
 							// La S s� se cumple, y la M tambi�n en todo el rango
-							target = 1;
+							target = "1";
 						}
 					} else {
 						// La S no se cumple
-						target = 0;
+						target = "0";
 					}
 				}
 			} else {
 				// La antig�edad es demasiado reciente para ver si es estable en M
-				target = -1;
+				target = TARGET_INVALIDO;
 			}
 			antiguedadYTarget.put(antiguedad, target);
 		}
