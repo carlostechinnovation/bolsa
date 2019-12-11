@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="22edbd2f-b3d9-42f0-a7dd-659033ab601a" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/c40X/subgrupos/CrearDatasetsSubgrupos.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/c40X/subgrupos/CrearDatasetsSubgrupos.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bolsa/C5SeleccionDeVariablesDeSubgrupo.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/C5SeleccionDeVariablesDeSubgrupo.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bolsa/C6CreadorModelosDeSubgrupo.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/C6CreadorModelosDeSubgrupo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bolsa/C5SeleccionDeVariablesDeSubgrupo.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/C5NormalizarYReducirDatasetSubgrupo.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ejemplos/01_introduccion.py" beforeDir="false" afterPath="$PROJECT_DIR$/ejemplos/01_introduccion.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../BolsaScripts/master.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/master.sh" afterDir="false" />
     </list>
@@ -51,7 +49,7 @@
       <recent name="C:\DATOS\GITHUB_REPOS\bolsa\BolsaPython\bolsa" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.C5SeleccionDeVariablesDeSubgrupo">
+  <component name="RunManager" selected="Python.C5NormalizarYReducirDatasetSubgrupo">
     <configuration name="01_introduccion" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="BolsaPython" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -115,6 +113,27 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="C5NormalizarYReducirDatasetSubgrupo" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="BolsaPython" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/bolsa" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/bolsa/C5NormalizarYReducirDatasetSubgrupo.py" />
+      <option name="PARAMETERS" value="C:\bolsa\pasado\datasets\ C:\bolsa\pasado\datasets\reducidos\" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="C5SeleccionDeVariablesDeSubgrupo" type="PythonConfigurationType" factoryName="Python">
       <module name="BolsaPython" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -127,7 +146,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/bolsa/C5SeleccionDeVariablesDeSubgrupo.py" />
+      <option name="SCRIPT_NAME" value="C:\DATOS\GITHUB_REPOS\bolsa\BolsaPython\bolsa\C5NormalizarYReducirDatasetSubgrupo.py" />
       <option name="PARAMETERS" value="C:\bolsa\pasado\datasets\ C:\bolsa\pasado\datasets\reducidos\" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -163,9 +182,11 @@
       <item itemvalue="Python.02_seleccion_features_rfe_cv" />
       <item itemvalue="Python.03_modelos_clasificacion" />
       <item itemvalue="Python.C6CreadorModelosDeSubgrupo" />
+      <item itemvalue="Python.C5NormalizarYReducirDatasetSubgrupo" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.C5NormalizarYReducirDatasetSubgrupo" />
         <item itemvalue="Python.01_introduccion" />
         <item itemvalue="Python.C6CreadorModelosDeSubgrupo" />
         <item itemvalue="Python.03_modelos_clasificacion" />
@@ -232,10 +253,10 @@
     <option name="LAST_COMMIT_MESSAGE" value="Machine Learning - Ejemplo" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="223" y="67" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1576070670644">
+    <state x="223" y="67" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1576072908297">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="223" y="67" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.824@0.0.1536.824" timestamp="1576070670644" />
+    <state x="223" y="67" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.824@0.0.1536.824" timestamp="1576072908297" />
     <state x="518" y="215" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1575811004655">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -244,42 +265,46 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="499" y="159" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1536.824@0.0.1536.824" timestamp="1575811011711" />
+    <state x="0" y="165" key="#xdebugger.XInspectDialog" timestamp="1576076109802">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="0" y="165" key="#xdebugger.XInspectDialog/0.0.1536.824@0.0.1536.824" timestamp="1576076109802" />
     <state x="424" y="6" key="CommitChangelistDialog2" timestamp="1575807574777">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="424" y="6" key="CommitChangelistDialog2/0.0.1536.824@0.0.1536.824" timestamp="1575807574777" />
-    <state width="1515" height="207" key="GridCell.Tab.0.bottom" timestamp="1576070675197">
+    <state width="1515" height="207" key="GridCell.Tab.0.bottom" timestamp="1576076423405">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="207" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1576070675197" />
-    <state width="1515" height="207" key="GridCell.Tab.0.center" timestamp="1576070675197">
+    <state width="1515" height="207" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1576076423405" />
+    <state width="1515" height="207" key="GridCell.Tab.0.center" timestamp="1576076423405">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="207" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1576070675197" />
-    <state width="1515" height="207" key="GridCell.Tab.0.left" timestamp="1576070675197">
+    <state width="1515" height="207" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1576076423405" />
+    <state width="1515" height="207" key="GridCell.Tab.0.left" timestamp="1576076423405">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="207" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1576070675197" />
-    <state width="1515" height="207" key="GridCell.Tab.0.right" timestamp="1576070675197">
+    <state width="1515" height="207" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1576076423405" />
+    <state width="1515" height="207" key="GridCell.Tab.0.right" timestamp="1576076423405">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="207" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1576070675197" />
-    <state width="1515" height="211" key="GridCell.Tab.1.bottom" timestamp="1576070245285">
+    <state width="1515" height="207" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1576076423405" />
+    <state width="1515" height="211" key="GridCell.Tab.1.bottom" timestamp="1576076155427">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="211" key="GridCell.Tab.1.bottom/0.0.1536.824@0.0.1536.824" timestamp="1576070245285" />
-    <state width="1515" height="211" key="GridCell.Tab.1.center" timestamp="1576070245285">
+    <state width="1515" height="211" key="GridCell.Tab.1.bottom/0.0.1536.824@0.0.1536.824" timestamp="1576076155427" />
+    <state width="1515" height="211" key="GridCell.Tab.1.center" timestamp="1576076155427">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="211" key="GridCell.Tab.1.center/0.0.1536.824@0.0.1536.824" timestamp="1576070245285" />
-    <state width="1515" height="211" key="GridCell.Tab.1.left" timestamp="1576070245285">
+    <state width="1515" height="211" key="GridCell.Tab.1.center/0.0.1536.824@0.0.1536.824" timestamp="1576076155427" />
+    <state width="1515" height="211" key="GridCell.Tab.1.left" timestamp="1576076155427">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="211" key="GridCell.Tab.1.left/0.0.1536.824@0.0.1536.824" timestamp="1576070245285" />
-    <state width="1515" height="211" key="GridCell.Tab.1.right" timestamp="1576070245285">
+    <state width="1515" height="211" key="GridCell.Tab.1.left/0.0.1536.824@0.0.1536.824" timestamp="1576076155427" />
+    <state width="1515" height="211" key="GridCell.Tab.1.right" timestamp="1576076155427">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1515" height="211" key="GridCell.Tab.1.right/0.0.1536.824@0.0.1536.824" timestamp="1576070245285" />
+    <state width="1515" height="211" key="GridCell.Tab.1.right/0.0.1536.824@0.0.1536.824" timestamp="1576076155427" />
     <state x="277" y="54" key="SettingsEditor" timestamp="1575884668967">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -288,6 +313,10 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="361" y="145" key="Vcs.Push.Dialog.v2/0.0.1536.824@0.0.1536.824" timestamp="1575807577762" />
+    <state width="775" height="419" key="XDebugger.FullValuePopup" timestamp="1576076107171">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state width="775" height="419" key="XDebugger.FullValuePopup/0.0.1536.824@0.0.1536.824" timestamp="1576076107171" />
     <state x="489" y="117" key="com.intellij.execution.console.ConsoleHistoryController$MyBrowseAction$1" timestamp="1575803844210">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -299,13 +328,6 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/ejemplos/01_introduccion.py</url>
-          <line>47</line>
-          <option name="timeStamp" value="3" />
-        </line-breakpoint>
-      </breakpoints>
       <default-breakpoints>
         <breakpoint type="python-exception">
           <properties notifyOnTerminate="true" exception="BaseException">

@@ -88,7 +88,7 @@ do
 	echo "Analizando subgrupo cuyo dataset de entrada es: ${path_csv_subgrupo}"
 	
 	echo -e "-------- PARA CADA SUBGRUPO: SELECCIÓN DE VARIABLES -------------" >> ${LOG_MASTER}
-	python "${PYTHON_SCRIPTS}bolsa/C5SeleccionDeVariablesDeSubgrupo.py" "${path_csv_subgrupo}" "${DIR_SUBGRUPOS_REDUCIDOS}"
+	python "${PYTHON_SCRIPTS}bolsa/C5NormalizarYReducirDatasetSubgrupo.py" "${path_csv_subgrupo}" "${DIR_SUBGRUPOS_REDUCIDOS}"
 	
 	echo -e "-------- PARA CADA SUBGRUPO: CREACIÓN DE MODELOS (entrenamiento, test, validación) -------------" >> ${LOG_MASTER}
 	
