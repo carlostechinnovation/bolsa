@@ -164,9 +164,14 @@ public class CrearDatasetsSubgrupos {
 		Integer numEmpresasPorTipo;
 		Integer tipo;
 		String pathFichero;
-		String row;
+		String row, rowTratada;
 		Boolean esPrimeraLinea;
 
+		// En el Gestor de Ficheros aparecen los nombres de los parámetros estáticos a
+		// eliminar. Sólo se cuentan. Habrá tantos pipes como parámetros
+		Integer numeroParametrosEstaticos = gestorFicheros.getOrdenNombresParametrosLeidos().size();
+		String pipe = "|";
+		Character characterPipe = pipe.charAt(0);
 		while (itTipos.hasNext()) {
 
 			tipo = itTipos.next();
@@ -179,7 +184,6 @@ public class CrearDatasetsSubgrupos {
 				FileWriter csvWriter = new FileWriter(directorioOut + tipo + ".csv");
 
 				for (int i = 0; i < pathFicheros.size(); i++) {
-
 					esPrimeraLinea = Boolean.TRUE;
 					// Se lee el fichero de la empresa a meter en el CSV común
 					pathFichero = pathFicheros.get(i);
@@ -189,16 +193,22 @@ public class CrearDatasetsSubgrupos {
 
 						while ((row = csvReader.readLine()) != null) {
 							MY_LOGGER.debug("Fila leída: " + row);
+							// Se eliminan los parámetros estáticos de la fila
+							// Para cada fila de datos o de cabecera, de longitud variable, se eliminan los
+							// datos estáticos
+							rowTratada = SubgruposUtils.recortaPrimeraParteDeString(characterPipe,
+									numeroParametrosEstaticos, row);
+							MY_LOGGER.debug("Fila escrita: " + rowTratada);
 							// La cabecera se toma de la primera línea del primer fichero
 							if (i == 0 && esPrimeraLinea) {
 								// En la primera línea está la cabecera de parámetros
 								// Se valida que el nombre recibido es igual que el usado en la constructora, y
 								// en dicho orden
-								csvWriter.append(row);
+								csvWriter.append(rowTratada);
 							}
 							if (!esPrimeraLinea) {
 								// Para todos los ficheros, se escriben las filas 2 y siguientes
-								csvWriter.append("\n" + row);
+								csvWriter.append("\n" + rowTratada);
 							}
 							// Para las siguientes filas del fichero
 							esPrimeraLinea = Boolean.FALSE;

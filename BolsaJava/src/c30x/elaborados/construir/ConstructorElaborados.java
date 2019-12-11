@@ -23,7 +23,7 @@ public class ConstructorElaborados {
 	public final static String T_velaEntrada = "H";
 	// x d�as
 	public final static Integer HORAS_AL_DIA = 7;
-	public final static Integer[] periodosHParaParametros = new Integer[] { 5 * HORAS_AL_DIA, 10 * HORAS_AL_DIA,
+	public final static Integer[] periodosHParaParametros = new Integer[] { 3 * HORAS_AL_DIA, 7 * HORAS_AL_DIA,
 			20 * HORAS_AL_DIA, 50 * HORAS_AL_DIA };
 
 	// Par�metros del TARGET (subida del S% en precio de close, tras X velas, y no
@@ -31,7 +31,7 @@ public class ConstructorElaborados {
 	public final static Integer S = 20;
 	public final static Integer X = 4 * HORAS_AL_DIA;
 	public final static Integer R = 10;
-	public final static Integer M = 1 * HORAS_AL_DIA;
+	public final static Integer M = 2 * HORAS_AL_DIA;
 
 	// IMPORTANTE: se asume que los datos est�n ordenados de menor a mayor
 	// antig�edad, y agrupados por empresa
