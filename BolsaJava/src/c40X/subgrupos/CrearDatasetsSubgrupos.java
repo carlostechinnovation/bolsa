@@ -105,7 +105,7 @@ public class CrearDatasetsSubgrupos {
 			gestorFicheros = new GestorFicheros();
 			datosEntrada = new HashMap<String, HashMap<Integer, HashMap<String, String>>>();
 			ficheroGestionado = iterator.next();
-			MY_LOGGER.debug("Fichero entrada: " + ficheroGestionado.getAbsolutePath());
+			MY_LOGGER.info("Fichero entrada: " + ficheroGestionado.getAbsolutePath());
 			// Sólo leo la cabecera y la primera línea de datos, con antigüedad=0. Así
 			// optimizo la lectura
 			datosEntrada = gestorFicheros
@@ -181,7 +181,9 @@ public class CrearDatasetsSubgrupos {
 				// Hay alguna empresa de este tipo. Creo un CSV común para todas las del mismo
 				// tipo
 				ArrayList<String> pathFicheros = empresasPorTipo.get(tipo);
-				FileWriter csvWriter = new FileWriter(directorioOut + tipo + ".csv");
+				String ficheroOut = directorioOut + tipo + ".csv";
+				MY_LOGGER.info("Fichero a escribir: " + ficheroOut);
+				FileWriter csvWriter = new FileWriter(ficheroOut);
 
 				for (int i = 0; i < pathFicheros.size(); i++) {
 					esPrimeraLinea = Boolean.TRUE;
