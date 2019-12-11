@@ -80,26 +80,25 @@ echo -e "Subgrupos ya generados" >> ${LOG_MASTER}
 
 
 ############  PARA CADA SUBGRUPO ###############################################################
-
+DIR_MODELOS="/bolsa/modelos/"
+DIR_SUBGRUPOS_REDUCIDOS="${DIR_SUBGRUPOS}reducidos/"
 
 for path_csv_subgrupo in "${DIR_SUBGRUPOS}"/*
 do
 	echo "Analizando subgrupo cuyo dataset de entrada es: ${path_csv_subgrupo}"
 	
 	echo -e "-------- PARA CADA SUBGRUPO: SELECCIÓN DE VARIABLES -------------" >> ${LOG_MASTER}
-	mkdir -p "${PYTHON_SCRIPTS}bolsa/C5SeleccionDeVariablesDeSubgrupo.py" "${path_csv_subgrupo}"
+	python "${PYTHON_SCRIPTS}bolsa/C5SeleccionDeVariablesDeSubgrupo.py" "${path_csv_subgrupo}" "${DIR_SUBGRUPOS_REDUCIDOS}"
 	
 	echo -e "-------- PARA CADA SUBGRUPO: CREACIÓN DE MODELOS (entrenamiento, test, validación) -------------" >> ${LOG_MASTER}
-	DIR_MODELOS="/bolsa/modelos/"
-	mkdir -p "${PYTHON_SCRIPTS}bolsa/C6CreadorModelosDeSubgrupo.py" "${path_csv_subgrupo}" "${DIR_MODELOS}"
+	
+	python "${PYTHON_SCRIPTS}bolsa/C6CreadorModelosDeSubgrupo.py" "${path_csv_subgrupo}" "${DIR_MODELOS}"
 	
 	echo -e "-------- PARA CADA SUBGRUPO: EVALUACIÓN DE MODELOS (ROC, R2...); GUARDAR MODELO GANADOR -------------" >> ${LOG_MASTER}
 	python "${PYTHON_SCRIPTS}bolsa/C7EvaluadorModelosDeSubgrupo.py"
 	
 	echo -e "-------- PARA CADA SUBGRUPO: VALIDACIÓN MANUAL DE MODELO GANADOR (rentabilidad, etc) -------------" >> ${LOG_MASTER}
 	python "${PYTHON_SCRIPTS}bolsa/C8OtrasValidacionesManuales.py"
-	
-	
 	
 	
 done
