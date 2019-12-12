@@ -43,6 +43,7 @@ public class Estadisticas extends DescriptiveStatistics {
 
 		locale = new Locale("en", "UK");
 		df = (DecimalFormat) NumberFormat.getNumberInstance(locale);
+		df.applyPattern("#0.#");
 	}
 
 	/** Como si fuera la derivada, pero s�lo con el primer y �ltimo valores */
@@ -104,59 +105,63 @@ public class Estadisticas extends DescriptiveStatistics {
 	}
 
 	/**
-	 * 
 	 * @param periodo
+	 * @param finalNombreParametro
 	 * @param rellenarConInvalidos
 	 * @return
 	 */
 	public HashMap<String, String> getParametros(final Integer periodo, final String finalNombreParametro,
 			final Boolean rellenarConInvalidos) {
+
 		String periodoString = periodo.toString();
 		HashMap<String, String> parametros = new HashMap<String, String>();
-		if (rellenarConInvalidos) {
-			parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_ + periodoString + finalNombreParametro,
-					VALOR_INVALIDO);
-			parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.STD_SMA_ + periodoString + finalNombreParametro,
-					VALOR_INVALIDO);
-			parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.PENDIENTE_SMA_ + periodoString + finalNombreParametro,
-					VALOR_INVALIDO);
-			parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_SMA_ + periodoString + finalNombreParametro,
-					VALOR_INVALIDO);
-			parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_SMA_ + periodoString + finalNombreParametro,
-					VALOR_INVALIDO);
-			parametros.put(
-					COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_MAXRELATIVO_ + periodoString + finalNombreParametro,
-					VALOR_INVALIDO);
-			parametros.put(
-					COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_MINRELATIVO_ + periodoString + finalNombreParametro,
-					VALOR_INVALIDO);
-			parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.CURTOSIS_ + periodoString + finalNombreParametro,
-					VALOR_INVALIDO);
-			parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.SKEWNESS_ + periodoString + finalNombreParametro,
-					VALOR_INVALIDO);
-		} else {
 
-			parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_ + periodoString + finalNombreParametro,
-					df.format(this.getMean()));
-			parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.STD_SMA_ + periodoString + finalNombreParametro,
-					df.format(this.getStandardDeviation()));
-			parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.PENDIENTE_SMA_ + periodoString + finalNombreParametro,
-					df.format(this.getPendiente()));
-			parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_SMA_ + periodoString + finalNombreParametro,
-					df.format(this.getRatioSMA()));
-			parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_SMA_ + periodoString + finalNombreParametro,
-					df.format(this.getRatioSMA()));
-			parametros.put(
-					COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_MAXRELATIVO_ + periodoString + finalNombreParametro,
-					df.format(this.getMax()));
-			parametros.put(
-					COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_MINRELATIVO_ + periodoString + finalNombreParametro,
-					df.format(this.getMin()));
-			parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.CURTOSIS_ + periodoString + finalNombreParametro,
-					df.format(this.getKurtosis()));
-			parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.SKEWNESS_ + periodoString + finalNombreParametro,
-					df.format(this.getSkewness()));
+		String media_sma = VALOR_INVALIDO;// default
+		String std_sma = VALOR_INVALIDO;// default
+		String pendiente_sma = VALOR_INVALIDO;// default
+		String ratio_sma = VALOR_INVALIDO;// default
+		String ratio_maxrelativo = VALOR_INVALIDO;// default
+		String ratio_minrelativo = VALOR_INVALIDO;// default
+		String kurtosis = VALOR_INVALIDO;// default
+		String skewness = VALOR_INVALIDO;// default
+
+		if (rellenarConInvalidos == false) {
+
+			double d_media_sma = this.getMean();
+			double d_std_sma = this.getStandardDeviation();
+			double d_pendiente_sma = this.getPendiente();
+			double d_ratio_sma = this.getRatioSMA();
+			double d_ratio_maxrelativo = this.getMax();
+			double d_ratio_minrelativo = this.getMin();
+			double d_kurtosis = this.getKurtosis();
+			double d_skewness = this.getSkewness();
+
+			media_sma = Double.isNaN(d_media_sma) ? VALOR_INVALIDO : df.format(d_media_sma);
+			std_sma = Double.isNaN(d_std_sma) ? VALOR_INVALIDO : df.format(d_std_sma);
+			pendiente_sma = Double.isNaN(d_pendiente_sma) ? VALOR_INVALIDO : df.format(d_pendiente_sma);
+			ratio_sma = Double.isNaN(d_ratio_sma) ? VALOR_INVALIDO : df.format(d_ratio_sma);
+			ratio_maxrelativo = Double.isNaN(d_ratio_maxrelativo) ? VALOR_INVALIDO : df.format(d_ratio_maxrelativo);
+			ratio_minrelativo = Double.isNaN(d_ratio_minrelativo) ? VALOR_INVALIDO : df.format(d_ratio_minrelativo);
+			kurtosis = Double.isNaN(d_kurtosis) ? VALOR_INVALIDO : df.format(d_kurtosis);
+			skewness = Double.isNaN(d_skewness) ? VALOR_INVALIDO : df.format(d_skewness);
 		}
+
+		parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_ + periodoString + finalNombreParametro,
+				media_sma);
+		parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.STD_SMA_ + periodoString + finalNombreParametro, std_sma);
+		parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.PENDIENTE_SMA_ + periodoString + finalNombreParametro,
+				pendiente_sma);
+		parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_SMA_ + periodoString + finalNombreParametro,
+				ratio_sma);
+		parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_MAXRELATIVO_ + periodoString + finalNombreParametro,
+				ratio_maxrelativo);
+		parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_MINRELATIVO_ + periodoString + finalNombreParametro,
+				ratio_minrelativo);
+		parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.CURTOSIS_ + periodoString + finalNombreParametro,
+				kurtosis);
+		parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.SKEWNESS_ + periodoString + finalNombreParametro,
+				skewness);
+
 		return parametros;
 	}
 

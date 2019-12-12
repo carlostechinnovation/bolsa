@@ -116,7 +116,7 @@ public class ConstructorElaborados {
 		Set<String> empresas = datos.keySet();
 		Iterator<String> itEmpresas = datos.keySet().iterator();
 		if (empresas.size() != 1) {
-			throw new Exception("Es est�n calculando par�metros elaborados de m�s de una empresa");
+			throw new Exception("Se están calculando parámetros elaborados de más de una empresa");
 		} else {
 			while (itEmpresas.hasNext())
 				empresa = itEmpresas.next();
@@ -125,6 +125,7 @@ public class ConstructorElaborados {
 		// EXTRACCIÓN DE DATOS DE LA EMPRESA
 		datosEmpresaEntrada = datos.get(empresa);
 		MY_LOGGER.debug("Empresa: " + empresa);
+
 		HashMap<String, String> parametros = new HashMap<String, String>();
 		Iterator<Integer> itAntiguedad;
 		Set<Integer> periodos, antiguedades;
@@ -152,6 +153,7 @@ public class ConstructorElaborados {
 								+ FINAL_NOMBRES_PARAMETROS_ELABORADOS._PRECIO.toString());
 			}
 			parametrosAcumulados += ordenPrecioNombresParametrosElaborados.size();
+
 			for (int i = 0; i < ordenVolumenNombresParametrosElaborados.size(); i++) {
 				// VOLUMEN
 				ordenNombresParametrosSalida.put(parametrosAcumulados + i,
@@ -163,28 +165,28 @@ public class ConstructorElaborados {
 
 			while (itAntiguedadTarget.hasNext()) {
 				antiguedad = itAntiguedadTarget.next();
-				// PARA CADA PERIODO DE C�LCULO DE PAR�METROS ELABORADOS y cada antig�edad, que
-				// ser� un GRUPO de COLUMNAS...
+				// PARA CADA PERIODO DE CALCULO DE PAR�METROS ELABORADOS y cada antiguedad, que
+				// será un GRUPO de COLUMNAS...
 
-				// Deben existir datos de una antigu�dadHist�rica = (antig�edad + periodo)
+				// Deben existir datos de una antiguedadHistorica = (antiguedad + periodo)
 				antiguedadHistoricaMaxima = antiguedad + periodo;
 				MY_LOGGER.debug("datosEmpresaEntrada.size(): " + datosEmpresaEntrada.size());
-				MY_LOGGER.debug("Antig�edad: " + antiguedad);
+				MY_LOGGER.debug("Antiguedad: " + antiguedad);
 				if (antiguedadHistoricaMaxima < datosEmpresaEntrada.size()) {
 					for (int i = 0; i < periodo; i++) {
 						parametros = datosEmpresaEntrada.get(i + antiguedad);
-						MY_LOGGER.debug("i + antig�edad: " + (i + antiguedad));
-						// Se toma el par�metro "close" para las estad�sticas de precio
-						// Se toma el par�metro "volumen" para las estad�sticas de volumen
+						MY_LOGGER.debug("i + antiguedad: " + (i + antiguedad));
+						// Se toma el parámetro "close" para las estad�sticas de precio
+						// Se toma el parámetro "volumen" para las estad�sticas de volumen
 						auxPrecio = parametros.get("close");
 						auxVolumen = parametros.get("volumen");
 						estadisticasPrecio.addValue(new Double(auxPrecio));
 						estadisticasVolumen.addValue(new Double(auxVolumen));
-						MY_LOGGER.debug("(antig�edad: " + antiguedad + ", periodo: " + periodo
-								+ ") Metido para estad�sticas: " + auxPrecio);
+						MY_LOGGER.debug("(antiguedad: " + antiguedad + ", periodo: " + periodo
+								+ ") Metido para estadísticas: " + auxPrecio);
 					}
 				} else {
-					// Para los datos de antig�edad excesiva, se sale del bucle
+					// Para los datos de antiguuedad excesiva, se sale del bucle
 					break;
 				}
 
@@ -194,22 +196,24 @@ public class ConstructorElaborados {
 				MY_LOGGER.debug("------------------>>>>>>> Periodo: " + periodo + ", n: " + estadisticasPrecio.getN());
 				estadisticasPrecioPorAntiguedad.put(antiguedad, estadisticasPrecio);
 				estadisticasVolumenPorAntiguedad.put(antiguedad, estadisticasVolumen);
-				// Se limpia este almac�n temporal
+				// Se limpia este almacén temporal
 				estadisticasPrecio = new Estadisticas();
 				estadisticasVolumen = new Estadisticas();
 			}
 
 			estadisticasPrecioPorAntiguedadYPeriodo.put(periodo, estadisticasPrecioPorAntiguedad);
 			estadisticasVolumenPorAntiguedadYPeriodo.put(periodo, estadisticasVolumenPorAntiguedad);
-			// Se limpia este almac�n temporal
+			// Se limpia este almacén temporal
 			estadisticasPrecioPorAntiguedad = new HashMap<Integer, Estadisticas>();
 			estadisticasVolumenPorAntiguedad = new HashMap<Integer, Estadisticas>();
 		}
 
-		// ESTAD�STICAS: ir� calculando y rellenando
+		// ESTADÍSTICA --> A la vez: CALCULA y RELLENA
 		periodos = estadisticasPrecioPorAntiguedadYPeriodo.keySet();
 		Integer periodoActual;
 		Iterator<Integer> itPeriodo = periodos.iterator();
+
+		HashMap<String, String> mapaParamsPrecio, mapaParamsVolumen;
 
 		while (itPeriodo.hasNext()) {
 			periodoActual = itPeriodo.next();
@@ -223,21 +227,35 @@ public class ConstructorElaborados {
 				estadisticasPrecio = estadisticasPrecioPorAntiguedad.get(antiguedad);
 				estadisticasVolumen = estadisticasVolumenPorAntiguedad.get(antiguedad);
 				antiguedadHistoricaMaxima = antiguedad + periodoActual;
-				// Se cogen s�lo los datos con la antig�edad dentro del rango a analizar
+				// Se cogen sólo los datos con la antiguedad dentro del rango a analizar
 				if (antiguedadHistoricaMaxima < datosEmpresaEntrada.size()) {
 					parametros = datosEmpresaEntrada.get(antiguedad);
-					// COSTE DE COMPUTACI�N
+					// COSTE DE COMPUTACION
 					// <<<<<<<<-------
-					parametros.putAll(estadisticasPrecio.getParametros(periodoActual,
-							FINAL_NOMBRES_PARAMETROS_ELABORADOS._PRECIO.toString(), Boolean.FALSE));
-					parametros.putAll(estadisticasVolumen.getParametros(periodoActual,
-							FINAL_NOMBRES_PARAMETROS_ELABORADOS._VOLUMEN.toString(), Boolean.FALSE));
+
+					if (periodoActual == 21 && antiguedad == 72 && empresa.equals("PIH")) {
+						MY_LOGGER.info("PIH -> vela 72 -> CURTOSIS_21_PRECIO ...");
+						int y = 0;
+					}
+
+					mapaParamsPrecio = estadisticasPrecio.getParametros(periodoActual,
+							FINAL_NOMBRES_PARAMETROS_ELABORADOS._PRECIO.toString(), Boolean.FALSE);
+
+					mapaParamsVolumen = estadisticasVolumen.getParametros(periodoActual,
+							FINAL_NOMBRES_PARAMETROS_ELABORADOS._VOLUMEN.toString(), Boolean.FALSE);
+
+					parametros.putAll(mapaParamsPrecio);
+					parametros.putAll(mapaParamsVolumen);
+
 					// <<<<<<<------
 				} else {
-					// Para los datos de antig�edad excesiva, salgo del bucle
+					// Para los datos de antiguedad excesiva, salgo del bucle
 					break;
 				}
-				// ADICI�N DE PAR�METROS ELABORADOS AL HASHMAP
+				// ADICION DE PARAMETROS ELABORADOS AL HASHMAP
+				MY_LOGGER.debug("Anhadimos " + parametros.size() + " items a la antiguedad (vela) " + antiguedad
+						+ " de la empresa " + empresa);
+
 				datosEmpresaFinales.put(antiguedad, parametros);
 			}
 		}
@@ -256,7 +274,9 @@ public class ConstructorElaborados {
 		HashMap<String, String> datosAntiguedad, datosAntiguedadX;
 		Iterator<Integer> itAntiguedadTarget = datosEmpresaEntrada.keySet().iterator();
 		HashMap<Integer, String> antiguedadYTarget = new HashMap<Integer, String>();
+
 		while (itAntiguedadTarget.hasNext()) {
+
 			antiguedad = itAntiguedadTarget.next();
 			antiguedadM = antiguedad + M;
 			if (antiguedad > M) {
@@ -266,8 +286,8 @@ public class ConstructorElaborados {
 					target = TARGET_INVALIDO;
 					break;
 				} else {
-					// Si el precio actual ha subido S% tras X velas viejas, y si despu�s, durante
-					// todas las M velas nuevas, no ha ca�do m�s de R%, entonces Target=1
+					// Si el precio actual ha subido S% tras X velas viejas, y si despues, durante
+					// todas las M velas nuevas, no ha caido mas de R%, entonces Target=1
 					datosAntiguedad = datosEmpresaEntrada.get(antiguedad);
 					datosAntiguedadX = datosEmpresaEntrada.get(antiguedadX);
 					if (Double.valueOf(datosAntiguedad.get("close")) >= (Double.valueOf(datosAntiguedadX.get("close"))
@@ -284,7 +304,7 @@ public class ConstructorElaborados {
 							}
 						}
 						if (mCumplida) {
-							// La S s� se cumple, y la M tambi�n en todo el rango
+							// La S sí se cumple, y la M tambien en todo el rango
 							target = "1";
 						}
 					} else {
@@ -293,14 +313,14 @@ public class ConstructorElaborados {
 					}
 				}
 			} else {
-				// La antig�edad es demasiado reciente para ver si es estable en M
+				// La antiguedad es demasiado reciente para ver si es estable en M
 				target = TARGET_INVALIDO;
 			}
 			antiguedadYTarget.put(antiguedad, target);
 		}
 
-		// Se rellena el target en los datos de entrada tras el an�lisis, al final de
-		// todos los par�metros
+		// Se rellena el target en los datos de entrada tras el analisis, al final de
+		// todos los parametros
 		Iterator<Integer> itAntiguedadDatos = datosEmpresaFinales.keySet().iterator();
 		ordenNombresParametrosSalida.put(ordenNombresParametrosSalida.size(), "TARGET");
 		while (itAntiguedadDatos.hasNext()) {
