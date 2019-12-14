@@ -4,9 +4,14 @@ import pandas as pd
 from pathlib import Path
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
+import matplotlib.pyplot as plt
+from sklearn.svm import SVC
+from sklearn.model_selection import StratifiedKFold
+from sklearn.feature_selection import RFECV
 
 print("---- CAPA 5 - Selección de variables/ Reducción de dimensiones (para cada subgrupo) -------")
-print("URL: https://scikit-learn.org/stable/modules/unsupervised_reduction.html")
+print("URL PCA: https://scikit-learn.org/stable/modules/unsupervised_reduction.html")
+print("URL Feature Selection: https://scikit-learn.org/stable/modules/feature_selection.html")
 ##################################################
 print("PARAMETROS: ")
 dir_entrada = sys.argv[1]
@@ -46,9 +51,27 @@ def normalizarYReducirFeaturesDeFichero(pathEntrada, pathSalida, varianzaAcumula
   print("Features NORMALIZADAS (sample):")
   print(featuresFicheroNorm)
 
-  print("REDUCCION DE DIMENSIONES: algoritmo PCA")
-  print("Usando PCA, cogemos las features que tengan un impacto agregado sobre el X% de la varianza del target. Descartamos el resto.")
+  print("**** REDUCCION DE DIMENSIONES*****")
 
+  print("** Recursive Feature Elimination (RFE) (que se parece a la técnica Step-wise) **")
+  # Create the RFE object and compute a cross-validated score.
+  svc = SVC(kernel="linear")
+  # The "accuracy" scoring is proportional to the number of correct
+  # classifications
+  rfecv = RFECV(estimator=svc, step=1, cv=StratifiedKFold(2), scoring='accuracy')
+  rfecv.fit(featuresFicheroNorm, targetsFichero)
+  print("Optimal number of features : %d" % rfecv.n_features_)
+
+
+  # Plot number of features VS. cross-validation scores
+  plt.figure()
+  plt.xlabel("Number of features selected")
+  plt.ylabel("Cross validation score (nb of correct classifications)")
+  plt.plot(range(1, len(rfecv.grid_scores_) + 1), rfecv.grid_scores_)
+  plt.show()
+
+  print("** PCA (Principal Components Algorithm) **")
+  print("Usando PCA, cogemos las features que tengan un impacto agregado sobre el X% de la varianza del target. Descartamos el resto.")
   modelo_pca_subgrupo = PCA(n_components=varianzaAcumuladaDeseada, svd_solver='full')
   print(modelo_pca_subgrupo)
   featuresFicheroNormReducidas = modelo_pca_subgrupo.fit_transform(featuresFicheroNorm)
