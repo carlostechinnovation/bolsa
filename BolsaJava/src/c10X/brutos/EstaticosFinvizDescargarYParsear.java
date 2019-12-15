@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -75,23 +76,42 @@ public class EstaticosFinvizDescargarYParsear {
 				.descargarNasdaqEstaticosSoloLocal1();
 
 		String rutaHtmlBruto;
+		long msegEspera = -1;
 
 		for (int i = 0; i < Math.min(numMaxEmpresas, nasdaqEstaticos1.size()); i++) {
 
 			mapaExtraidos.clear();
 
-			String urlFinvizEmpresa = "https://finviz.com/quote.ashx?t=" + nasdaqEstaticos1.get(i).symbol;
+			String empresa = nasdaqEstaticos1.get(i).symbol;
 
-			MY_LOGGER.info("URL --> " + urlFinvizEmpresa);
-			rutaHtmlBruto = dirBruto + "bruto_FINVIZ_BORRAR1_" + BrutosUtils.MERCADO_NQ + "_"
-					+ nasdaqEstaticos1.get(i).symbol + ".html";
-			descargarPaginaFinviz(rutaHtmlBruto, true, urlFinvizEmpresa);
-			parsearFinviz1(nasdaqEstaticos1.get(i).symbol, rutaHtmlBruto, mapaExtraidos);
+			String urlFinvizEmpresa = "https://finviz.com/quote.ashx?t=" + empresa;
+			rutaHtmlBruto = dirBruto + BrutosUtils.FINVIZ + "_" + BrutosUtils.MERCADO_NQ + "_" + empresa + ".html";
 
-			if (mapaExtraidos.size() > 0) {
-				String rutaCsvBruto = dirBrutoCsv + BrutosUtils.FINVIZ + "_" + BrutosUtils.MERCADO_NQ + "_"
-						+ nasdaqEstaticos1.get(i).symbol + ".csv";
-				volcarEnCSV(BrutosUtils.MERCADO_NQ, nasdaqEstaticos1.get(i).symbol, mapaExtraidos, rutaCsvBruto);
+			MY_LOGGER.info("URL | destino --> " + urlFinvizEmpresa + " | " + rutaHtmlBruto);
+			msegEspera = (long) (BrutosUtils.ESPERA_ALEATORIA_MSEG_MIN
+					+ Math.random() * 1000 * BrutosUtils.ESPERA_ALEATORIA_SEG_MAX);
+			Thread.sleep(msegEspera);
+			boolean descargaBien = descargarPaginaFinviz(rutaHtmlBruto, true, urlFinvizEmpresa);
+
+			if (descargaBien) {
+				parsearFinviz1(empresa, rutaHtmlBruto, mapaExtraidos);
+
+				if (mapaExtraidos.size() > 0) {
+					String rutaCsvBruto = dirBrutoCsv + BrutosUtils.FINVIZ + "_" + BrutosUtils.MERCADO_NQ + "_"
+							+ nasdaqEstaticos1.get(i).symbol + ".csv";
+					volcarEnCSV(BrutosUtils.MERCADO_NQ, nasdaqEstaticos1.get(i).symbol, mapaExtraidos, rutaCsvBruto);
+				}
+
+			} else {
+//				Files.write(Paths.get(BrutosUtils.DESCONOCIDOS_CSV), (empresa + "\n").getBytes(),
+//						StandardOpenOption.APPEND);
+
+				File outputFile = new File(BrutosUtils.DESCONOCIDOS_CSV);
+				FileWriter out = new FileWriter(outputFile, true); // append
+				out.write(empresa);
+				out.write("\n");
+				out.close();
+
 			}
 		}
 

@@ -131,7 +131,7 @@ public class CrearDatasetsSubgrupos {
 				indicePrimeraFilaDeDatos = a.iterator().next();
 			}
 			parametros = datosEmpresaEntrada.get(indicePrimeraFilaDeDatos); // PRIMERA FILA
-			Long marketCapValor = Long.valueOf(parametros.get("Market Cap"));
+			Float marketCapValor = Float.valueOf(parametros.get("Market Cap"));
 
 			// CLASIFICACIÓN DEL TIPO DE EMPRESA
 			if (marketCapValor < marketCap_nano_max)

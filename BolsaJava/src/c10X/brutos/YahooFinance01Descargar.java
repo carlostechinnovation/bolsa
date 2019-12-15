@@ -50,7 +50,8 @@ public class YahooFinance01Descargar {
 			directorioOut = args[1];
 		}
 
-		List<EstaticoNasdaqModelo> nasdaqEstaticos1 = EstaticosNasdaqDescargarYParsear.descargarNasdaqEstaticosSoloLocal1();
+		List<EstaticoNasdaqModelo> nasdaqEstaticos1 = EstaticosNasdaqDescargarYParsear
+				.descargarNasdaqEstaticosSoloLocal1();
 		descargarNasdaqDinamicos01(nasdaqEstaticos1, numMaxEmpresas, directorioOut);
 
 		MY_LOGGER.info("FIN");
@@ -81,13 +82,14 @@ public class YahooFinance01Descargar {
 
 		for (int i = 0; i < nasdaqEstaticos1.size(); i++) {
 
-			if (i <= numMaxEmpresas) {
+			if (i < numMaxEmpresas) {
 				ticker = nasdaqEstaticos1.get(i).symbol;
 
 				String pathOut = directorioOut + BrutosUtils.YAHOOFINANCE + "_" + mercado + "_" + ticker + ".txt";
 				String URL_yahoo_ticker = "https://query1.finance.yahoo.com/v8/finance/chart/" + ticker + "?symbol="
 						+ ticker + "&range=6mo&interval=60m";
 
+				MY_LOGGER.info("Empresa numero = " + (i + 1));
 				MY_LOGGER.info("pathOut=" + pathOut);
 				MY_LOGGER.info("URL_yahoo_ticker=" + URL_yahoo_ticker);
 

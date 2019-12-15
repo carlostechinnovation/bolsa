@@ -29,9 +29,11 @@ mkdir -p "${DIR_BRUTOS_CSV}"
 ############## java -Djava.util.logging.SimpleFormatter.format='%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n' -jar ${PATH_JAR} --class 'c10X.brutos.EstaticosNasdaqDescargarYParsear' '${DIR_BRUTOS}' '${DIR_BRUTOS_CSV}' 2>>${PATH_LOG} 1>>${PATH_LOG}
 
 echo -e "Descargando de YAHOO FINANCE..." >> ${LOG_MASTER}
+rm -R "${DIR_BRUTOS}YF*.csv"
 java -Djava.util.logging.SimpleFormatter.format='%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n' -jar ${PATH_JAR} --class 'c10X.brutos.YahooFinance01Descargar' '2' '${DIR_BRUTOS}' '${DIR_BRUTOS_CSV}' 2>>${PATH_LOG} 1>>${PATH_LOG}
 
 echo -e "Limpieza de YAHOO FINANCE..." >> ${LOG_MASTER}
+rm -R "${DIR_BRUTOS}YF*.csv"
 java -Djava.util.logging.SimpleFormatter.format='%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n' -jar ${PATH_JAR} --class 'c10X.brutos.YahooFinance02Parsear' '${DIR_BRUTOS}' '${DIR_BRUTOS_CSV}' 2>>${PATH_LOG} 1>>${PATH_LOG}
 
 echo -e "Descargando de FINVIZ..." >> ${LOG_MASTER}

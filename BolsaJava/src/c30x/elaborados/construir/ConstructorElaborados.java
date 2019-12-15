@@ -233,11 +233,6 @@ public class ConstructorElaborados {
 					// COSTE DE COMPUTACION
 					// <<<<<<<<-------
 
-					if (periodoActual == 21 && antiguedad == 72 && empresa.equals("PIH")) {
-						MY_LOGGER.info("PIH -> vela 72 -> CURTOSIS_21_PRECIO ...");
-						int y = 0;
-					}
-
 					mapaParamsPrecio = estadisticasPrecio.getParametros(periodoActual,
 							FINAL_NOMBRES_PARAMETROS_ELABORADOS._PRECIO.toString(), Boolean.FALSE);
 

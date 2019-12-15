@@ -84,12 +84,34 @@ public class EstaticosNasdaqDescargarYParsear {
 	public static List<EstaticoNasdaqModelo> descargarNasdaqEstaticosSoloLocal1() {
 
 		MY_LOGGER.info("descargarNasdaqEstaticos1...");
-		String csvFile = "src/main/resources/nasdaq_tickers.csv";
-		MY_LOGGER.info("Cargando NASDAQ-TICKERS de: " + csvFile);
 
+		MY_LOGGER.info("Empresas de las que ya sabemos que falta info en alguna de las fuentes de datos: "
+				+ BrutosUtils.DESCONOCIDOS_CSV);
+		List<String> desconocidos = new ArrayList<String>();
+		try {
+			File file = new File(BrutosUtils.DESCONOCIDOS_CSV);
+			FileReader fr = new FileReader(file);
+			BufferedReader br = new BufferedReader(fr);
+
+			String line = "";
+
+			while ((line = br.readLine()) != null) {
+				if (line != null && !line.isEmpty()) {
+					desconocidos.add(line);
+				}
+			}
+			br.close();
+
+			MY_LOGGER.info("DESCONOCIDOS leidos: " + desconocidos.size());
+
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+		}
+
+		MY_LOGGER.info("Cargando NASDAQ-TICKERS de: " + BrutosUtils.NASDAQ_TICKERS_CSV);
 		List<EstaticoNasdaqModelo> out = new ArrayList<EstaticoNasdaqModelo>();
 		try {
-			File file = new File(csvFile);
+			File file = new File(BrutosUtils.NASDAQ_TICKERS_CSV);
 			FileReader fr = new FileReader(file);
 			BufferedReader br = new BufferedReader(fr);
 
@@ -110,10 +132,17 @@ public class EstaticosNasdaqDescargarYParsear {
 					primeraLinea = false;
 
 				} else {
-					tempArr = lineaLimpia.split("\\|");
-					out.add(new EstaticoNasdaqModelo(tempArr[0], tempArr[1], tempArr[2], tempArr[3], tempArr[4],
-							tempArr[5], tempArr[6], tempArr[7]));
 
+					tempArr = lineaLimpia.split("\\|");
+
+					if (desconocidos.contains(tempArr[0])) {
+						MY_LOGGER.info("Empresa de la que sabemos que desconocemos datos en alguna de las fuentes: "
+								+ tempArr[0]);
+					} else {
+
+						out.add(new EstaticoNasdaqModelo(tempArr[0], tempArr[1], tempArr[2], tempArr[3], tempArr[4],
+								tempArr[5], tempArr[6], tempArr[7]));
+					}
 				}
 			}
 			br.close();
@@ -313,7 +342,7 @@ public class EstaticosNasdaqDescargarYParsear {
 	}
 
 	/**
-	 * Parsea un trozo concreto de la p�gina NASDAQ-OLD - Summary
+	 * Parsea un trozo concreto de la pagina NASDAQ-OLD - Summary
 	 * 
 	 * @param in
 	 * @param mapaExtraidos
