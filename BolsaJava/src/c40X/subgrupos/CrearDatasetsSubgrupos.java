@@ -186,7 +186,7 @@ public class CrearDatasetsSubgrupos {
 				// tipo
 				pathFicheros = empresasPorTipo.get(tipo);
 				ficheroOut = directorioOut + tipo + ".csv";
-				ficheroListadoOut = directorioOut + "Listado-" + tipo + ".csv";
+				ficheroListadoOut = directorioOut + "Listado-" + tipo + ".empresas";
 				MY_LOGGER.info("Fichero a escribir: " + ficheroOut);
 				csvWriter = new FileWriter(ficheroOut);
 				writerListadoEmpresas = new FileWriter(ficheroListadoOut);
