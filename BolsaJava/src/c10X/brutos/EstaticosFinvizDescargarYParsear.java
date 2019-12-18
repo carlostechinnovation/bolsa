@@ -234,6 +234,7 @@ public class EstaticosFinvizDescargarYParsear {
 			extraerInfoDeFila("Debt/Eq", t, mapaExtraidos, BrutosUtils.ESCALA_UNO);
 
 		}
+
 	}
 
 	/**

@@ -84,13 +84,16 @@ echo -e "Subgrupos ya generados" >> ${LOG_MASTER}
 ############  PARA CADA SUBGRUPO ###############################################################
 DIR_MODELOS="/bolsa/modelos/"
 DIR_SUBGRUPOS_REDUCIDOS="${DIR_SUBGRUPOS}reducidos/"
+DIR_SUBGRUPOS_IMG="${DIR_SUBGRUPOS}img/"
 
 for path_csv_subgrupo in "${DIR_SUBGRUPOS}"/*
 do
 	echo "Analizando subgrupo cuyo dataset de entrada es: ${path_csv_subgrupo}"
+	mkdir -p "${DIR_SUBGRUPOS_REDUCIDOS}"
+	mkdir -p "${DIR_SUBGRUPOS_IMG}"
 	
 	echo -e "-------- PARA CADA SUBGRUPO: SELECCIÓN DE VARIABLES -------------" >> ${LOG_MASTER}
-	python "${PYTHON_SCRIPTS}bolsa/C5NormalizarYReducirDatasetSubgrupo.py" "${path_csv_subgrupo}" "${DIR_SUBGRUPOS_REDUCIDOS}"
+	python "${PYTHON_SCRIPTS}bolsa/C5NormalizarYReducirDatasetSubgrupo.py" "${path_csv_subgrupo}" "${DIR_SUBGRUPOS_REDUCIDOS}"  "${DIR_SUBGRUPOS_IMG}"
 	
 	echo -e "-------- PARA CADA SUBGRUPO: CREACIÓN DE MODELOS (entrenamiento, test, validación) -------------" >> ${LOG_MASTER}
 	

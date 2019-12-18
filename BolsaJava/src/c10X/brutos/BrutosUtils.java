@@ -57,28 +57,26 @@ public class BrutosUtils {
 
 					Float numero;
 
+					// Lo convierto a tanto por uno siempre
 					if (in.contains("K")) {
 						out = in.replace("K", "").trim();
-						numero = Float.valueOf(out);
-						numero = (numero * 1000F);
+						numero = (Float.valueOf(out) * 1000F);
 					} else if (in.contains("M")) {
 						out = in.replace("M", "").trim();
 						numero = Float.valueOf(out) * 1000000F;
 					} else if (in.contains("B")) {
 						out = in.replace("B", "").trim();
-						numero = Float.valueOf(out);
-						numero = (numero * 1000000000F);
+						numero = (Float.valueOf(out) * 1000000000F);
 					} else {
 						numero = Float.valueOf(out);
 					}
 
-					if (escala != null) {
-						if (escala.equals(ESCALA_M)) {
-							numero = Float.valueOf(out) / 1000000F;
-							out = df.format(numero);
-						} else {
-							out = df.format(numero);
-						}
+					// Si se necesita, se escala y se lleva a salida OUT
+					if (escala != null && escala.equals(ESCALA_M)) {
+						numero = Float.valueOf(numero) / 1000000F;
+						out = df.format(numero);
+					} else {
+						out = df.format(numero);
 					}
 
 				}

@@ -25,9 +25,12 @@ print("URL Feature Selection: https://scikit-learn.org/stable/modules/feature_se
 print("PARAMETROS: ")
 dir_entrada = sys.argv[1]
 path_dir_salida = sys.argv[2]
+path_dir_img = sys.argv[3]
 varianza=0.90
+modoDebug = True  #En modo debug se pintan los dibujos. En otro caso, se evita calculo innecesario
 print("dir_entrada = %s" % dir_entrada)
 print("path_dir_salida = %s" % path_dir_salida)
+print("path_dir_img = %s" % path_dir_img)
 
 ######################## FUNCIONES ###########
 def leerFeaturesyTarget(pathEntrada, modoDebug):
@@ -216,7 +219,6 @@ def reducirFeaturesYGuardar(featuresFicheroNorm, targetsFichero, pathSalidaFeatu
 
 ################## MAIN ########################################
 print("Recorremos los CSVs que hay en el DIRECTORIO...")
-modoDebug = False  #En modo debug se pintan los dibujos. En otro caso, se evita calculo innecesario
 for entry in os.listdir(dir_entrada):
   path_absoluto_fichero = os.path.join(dir_entrada, entry)
 
