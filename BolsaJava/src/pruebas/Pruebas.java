@@ -1,8 +1,11 @@
 package pruebas;
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * @author casa
@@ -34,6 +37,15 @@ public class Pruebas {
 		String fechaStr = cadenaconAntiguedad.substring(indexPrimerPipe + 1);
 		System.out.println(antiguedad);
 		System.out.println(fechaStr);
+
+		Locale locale = new Locale("en", "UK");
+		DecimalFormat df2 = (DecimalFormat) NumberFormat.getNumberInstance(locale);
+		df2.applyPattern("#0.#######");
+		Float numeroF1 = 9.75F;
+		Float numeroF2 = Float.valueOf(numeroF1) / 1000000F;
+		String numStr3 = df2.format(numeroF2);
+		System.out.println("Entrada=" + numeroF1 + " --> Salida=" + numStr3);
+
 	}
 
 }

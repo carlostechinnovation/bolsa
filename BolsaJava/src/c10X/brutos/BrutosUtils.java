@@ -25,12 +25,15 @@ public class BrutosUtils {
 	public static final int NUM_EMPRESAS_PRUEBAS = 30;
 
 	public static final String NULO = "null";
+	public static final String ESCALA_UNO = "uno";
+	public static final String ESCALA_M = "millones";
 
 	/**
 	 * @param in
+	 * @param escala Numero en escala "uno" o en "millones"
 	 * @return
 	 */
-	public static String tratamientoLigero(String in) {
+	public static String tratamientoLigero(String in, String escala) {
 
 		String out = NULO;
 
@@ -57,21 +60,29 @@ public class BrutosUtils {
 					if (in.contains("K")) {
 						out = in.replace("K", "").trim();
 						numero = Float.valueOf(out);
-						numero = (numero / 1000F);
+						numero = (numero * 1000F);
 					} else if (in.contains("M")) {
 						out = in.replace("M", "").trim();
-						numero = Float.valueOf(out);
+						numero = Float.valueOf(out) * 1000000F;
 					} else if (in.contains("B")) {
 						out = in.replace("B", "").trim();
 						numero = Float.valueOf(out);
-						numero = (numero * 1000F);
+						numero = (numero * 1000000000F);
 					} else {
-						numero = Float.valueOf(out) / 1000000F;
+						numero = Float.valueOf(out);
 					}
 
-					out = df.format(numero);
+					if (escala != null) {
+						if (escala.equals(ESCALA_M)) {
+							numero = Float.valueOf(out) / 1000000F;
+							out = df.format(numero);
+						} else {
+							out = df.format(numero);
+						}
+					}
 
 				}
+
 			}
 		}
 

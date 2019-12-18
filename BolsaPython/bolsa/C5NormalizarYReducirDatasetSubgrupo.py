@@ -29,6 +29,7 @@ print("path_dir_salida = %s" % path_dir_salida)
 
 ######################## FUNCIONES ###########
 def leerFeaturesyTarget(pathEntrada, modoDebug):
+  print("----- leerFeaturesyTarget ------")
   print("Entrada --> " + pathEntrada)
 
   path_dataset_sin_extension = os.path.splitext(pathEntrada)[0]
@@ -67,7 +68,7 @@ def leerFeaturesyTarget(pathEntrada, modoDebug):
   #ENTRADA: features (+ target)
   featuresFichero = entradaFeaturesYTarget4.drop('TARGET', axis=1)
   #featuresFichero = featuresFichero[1:] #quitamos la cabecera
-  targetsFichero = entradaFeaturesYTarget4[['TARGET']]
+  targetsFichero = (entradaFeaturesYTarget4[['TARGET']] == 1)  # Convierto de int a boolean
 
   print("FEATURES (sample):")
   print(featuresFichero.head())
@@ -92,6 +93,7 @@ def leerFeaturesyTarget(pathEntrada, modoDebug):
 
 
 def normalizarFeatures(featuresFichero, path_dataset_sin_extension, modoDebug):
+  print("----- normalizarFeatures ------")
   print("featuresFichero:" + str(featuresFichero.shape[0]) + " x " + str(featuresFichero.shape[1]))
   print("path_dataset_sin_extension:" + path_dataset_sin_extension)
 
@@ -127,8 +129,19 @@ def normalizarFeatures(featuresFichero, path_dataset_sin_extension, modoDebug):
 
   return featuresFicheroNorm2
 
+def comprobarSuficientesCasos(featuresFicheroNorm, targetsFichero, modoDebug):
+  print("----- comprobarSuficientesCasos ------")
+  print("featuresFicheroNorm:" + str(featuresFicheroNorm.shape[0]) + " x " + str(featuresFicheroNorm.shape[1]))
+  print("targetsFichero:" + str(targetsFichero.shape[0]) + " x " + str(targetsFichero.shape[1]))
 
-def reducirFeatures(featuresFicheroNorm, targetsFichero, pathSalidaFeatures, pathSalidaTargets, varianzaAcumuladaDeseada, path_dataset_sin_extension, modoDebug):
+  y_unicos = np.unique(targetsFichero)
+  print("Clases encontradas en el target: ")
+  print(y_unicos)
+
+
+
+def reducirFeaturesYGuardar(featuresFicheroNorm, targetsFichero, pathSalidaFeatures, pathSalidaTargets, varianzaAcumuladaDeseada, path_dataset_sin_extension, modoDebug):
+  print("----- reducirFeaturesYGuardar ------")
   print("featuresFicheroNorm:" + str(featuresFicheroNorm.shape[0]) + " x " + str(featuresFicheroNorm.shape[1]))
   print("targetsFichero:" + str(targetsFichero.shape[0]) + " x " + str(targetsFichero.shape[1]))
   print("pathSalidaFeatures --> " + pathSalidaFeatures)
@@ -155,22 +168,21 @@ def reducirFeatures(featuresFicheroNorm, targetsFichero, pathSalidaFeatures, pat
   print(sorted_ranks_with_idx)
 
   print("Las features elegidas son:")
-  featuresFicheroNorm_rfe = featuresFicheroNorm[:, rfecv_modelo.support_]
-  print(featuresFicheroNorm_rfe)
+  #featuresFicheroNorm_rfe = featuresFicheroNorm[:, rfecv_modelo.support_]
+  #print(featuresFicheroNorm_rfe)
 
-  if modoDebug:
-    # Plot number of features VS. cross-validation scores
-    path_dibujo_rfecv = path_dataset_sin_extension + "_RFECV" ".png"
-    plt.figure()
-    plt.xlabel("Number of features selected")
-    plt.ylabel("Cross validation score (nb of correct classifications)")
-    plt.plot(range(1, len(rfecv_modelo.grid_scores_) + 1), rfecv_modelo.grid_scores_)
-    plt.title("RFECV", fontsize=10)
-    plt.savefig(path_dibujo_rfecv, bbox_inches='tight')
-    # Limpiando dibujo:
-    plt.clf()
-    plt.cla()
-    plt.close()
+  # Plot number of features VS. cross-validation scores
+  path_dibujo_rfecv = path_dataset_sin_extension + "_RFECV" ".png"
+  plt.figure()
+  plt.xlabel("Number of features selected")
+  plt.ylabel("Cross validation score (nb of correct classifications)")
+  plt.plot(range(1, len(rfecv_modelo.grid_scores_) + 1), rfecv_modelo.grid_scores_)
+  plt.title("RFECV", fontsize=10)
+  plt.savefig(path_dibujo_rfecv, bbox_inches='tight')
+  # Limpiando dibujo:
+  plt.clf()
+  plt.cla()
+  plt.close()
 
   #print("** PCA (Principal Components Algorithm) **")
   #print("Usando PCA, cogemos las features que tengan un impacto agregado sobre el X% de la varianza del target. Descartamos el resto.")
@@ -197,8 +209,11 @@ for entry in os.listdir(dir_entrada):
     pathSalidaTargets = path_dir_salida + id_subgrupo + "_TARGETS.csv"
     featuresFichero, targetsFichero, path_dataset_sin_extension = leerFeaturesyTarget(path_absoluto_fichero, modoDebug)
     featuresFicheroNorm = normalizarFeatures(featuresFichero, path_dataset_sin_extension, modoDebug)
-    reducirFeatures(featuresFicheroNorm, targetsFichero, pathSalidaFeatures, pathSalidaTargets, varianza, path_dataset_sin_extension, modoDebug)
+    comprobarSuficientesCasos(featuresFicheroNorm, targetsFichero, modoDebug)
+    reducirFeaturesYGuardar(featuresFicheroNorm, targetsFichero, pathSalidaFeatures, pathSalidaTargets, varianza, path_dataset_sin_extension, modoDebug)
 
 
 ############################################################
 print("------------ FIN ----------------")
+
+

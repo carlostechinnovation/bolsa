@@ -225,13 +225,13 @@ public class EstaticosFinvizDescargarYParsear {
 
 		for (Element t : tablas) {
 
-			extraerInfoDeFila("P/E", t, mapaExtraidos);
-			extraerInfoDeFila("Insider Own", t, mapaExtraidos);
-			extraerInfoDeFila("Market Cap", t, mapaExtraidos);
-			extraerInfoDeFila("Inst Own", t, mapaExtraidos);
-			extraerInfoDeFila("Dividend %", t, mapaExtraidos);
-			extraerInfoDeFila("Employees", t, mapaExtraidos);
-			extraerInfoDeFila("Debt/Eq", t, mapaExtraidos);
+			extraerInfoDeFila("P/E", t, mapaExtraidos, BrutosUtils.ESCALA_UNO);
+			extraerInfoDeFila("Insider Own", t, mapaExtraidos, BrutosUtils.ESCALA_UNO);
+			extraerInfoDeFila("Market Cap", t, mapaExtraidos, BrutosUtils.ESCALA_M);
+			extraerInfoDeFila("Inst Own", t, mapaExtraidos, BrutosUtils.ESCALA_UNO);
+			extraerInfoDeFila("Dividend %", t, mapaExtraidos, BrutosUtils.ESCALA_UNO);
+			extraerInfoDeFila("Employees", t, mapaExtraidos, BrutosUtils.ESCALA_UNO);
+			extraerInfoDeFila("Debt/Eq", t, mapaExtraidos, BrutosUtils.ESCALA_UNO);
 
 		}
 	}
@@ -241,7 +241,8 @@ public class EstaticosFinvizDescargarYParsear {
 	 * @param t
 	 * @param mapaExtraidos
 	 */
-	private static void extraerInfoDeFila(String datoBuscado, Element t, Map<String, String> mapaExtraidos) {
+	private static void extraerInfoDeFila(String datoBuscado, Element t, Map<String, String> mapaExtraidos,
+			String escala) {
 
 		int i = 0;
 		if (t.toString().contains(">" + datoBuscado + "<")) {
@@ -251,7 +252,7 @@ public class EstaticosFinvizDescargarYParsear {
 				if (parejas.get(i).toString().contains(">" + datoBuscado + "<")) {
 
 					Element dato = parejas.get(i + 1).children().get(0);
-					String datoString = BrutosUtils.tratamientoLigero(dato.text());
+					String datoString = BrutosUtils.tratamientoLigero(dato.text(), escala);
 
 					mapaExtraidos.put(datoBuscado, datoString);
 					break;

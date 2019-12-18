@@ -175,7 +175,7 @@ public class YahooFinance02Parsear {
 			}
 
 		} else {
-			MY_LOGGER.warn("Fichero de entrada no existe: " + pathBruto + " Continúa...");
+			MY_LOGGER.warn("Fichero de entrada no existe: " + pathBruto + " Continï¿½a...");
 		}
 		return pathBrutoCsv;
 	}
@@ -248,18 +248,29 @@ public class YahooFinance02Parsear {
 					cad = String.valueOf(numVelas - i - 1);
 					cad += "|" + df.format(new Date(msegDesde1970));
 				} else {
+
+					if (empresa.equals("ACAM")) {
+						Object algo = listaPreciosHigh.get(i);
+						MY_LOGGER.info("VELA=" + i + " --> HIGH=" + algo);
+					}
+
 					cad = mercado + "|" + empresa;
 					cad += "|" + df.format(new Date(msegDesde1970));
 					cad += "|" + BrutosUtils.tratamientoLigero(
-							listaVolumenes.get(i) == null ? BrutosUtils.NULO : listaVolumenes.get(i).toString());
+							listaVolumenes.get(i) == null ? BrutosUtils.NULO : listaVolumenes.get(i).toString(),
+							BrutosUtils.ESCALA_M);
 					cad += "|" + BrutosUtils.tratamientoLigero(
-							listaPreciosHigh.get(i) == null ? BrutosUtils.NULO : listaPreciosHigh.get(i).toString());
+							listaPreciosHigh.get(i) == null ? BrutosUtils.NULO : listaPreciosHigh.get(i).toString(),
+							BrutosUtils.ESCALA_UNO);
 					cad += "|" + BrutosUtils.tratamientoLigero(
-							listaPreciosLow.get(i) == null ? BrutosUtils.NULO : listaPreciosLow.get(i).toString());
+							listaPreciosLow.get(i) == null ? BrutosUtils.NULO : listaPreciosLow.get(i).toString(),
+							BrutosUtils.ESCALA_UNO);
 					cad += "|" + BrutosUtils.tratamientoLigero(
-							listaPreciosClose.get(i) == null ? BrutosUtils.NULO : listaPreciosClose.get(i).toString());
+							listaPreciosClose.get(i) == null ? BrutosUtils.NULO : listaPreciosClose.get(i).toString(),
+							BrutosUtils.ESCALA_UNO);
 					cad += "|" + BrutosUtils.tratamientoLigero(
-							listaPreciosOpen.get(i) == null ? BrutosUtils.NULO : listaPreciosOpen.get(i).toString());
+							listaPreciosOpen.get(i) == null ? BrutosUtils.NULO : listaPreciosOpen.get(i).toString(),
+							BrutosUtils.ESCALA_UNO);
 				}
 
 				bw.write(cad);
@@ -306,7 +317,7 @@ public class YahooFinance02Parsear {
 	/**
 	 * Dado un fichero CSV de Yahoo Finance (con precios, etc), rellena las velas
 	 * horarias (antiguedad). Genera las filas HUECO que falten, poniendo PRECIO
-	 * ARRASTRADO (de la última vela conocida) y VOLUMEN CERO.
+	 * ARRASTRADO (de la ï¿½ltima vela conocida) y VOLUMEN CERO.
 	 * 
 	 * @param pathFicheroIn
 	 * @param velas
@@ -376,7 +387,7 @@ public class YahooFinance02Parsear {
 
 				}
 
-				// En FILAS YA EXISTENTES (no son huecos), que tengan datos null, también
+				// En FILAS YA EXISTENTES (no son huecos), que tengan datos null, tambiï¿½n
 				// relleno con precio arrastrado y volumen cero
 				if (ultimaLineaRellenaCompletaConocida != null && filaActualEsCompleta == false) {
 
