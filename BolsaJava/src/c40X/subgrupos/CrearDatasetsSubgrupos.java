@@ -172,6 +172,10 @@ public class CrearDatasetsSubgrupos {
 		Integer numeroParametrosEstaticos = gestorFicheros.getOrdenNombresParametrosLeidos().size();
 		String pipe = "|";
 		Character characterPipe = pipe.charAt(0);
+		String ficheroOut, ficheroListadoOut;
+		ArrayList<String> pathFicheros;
+		FileWriter csvWriter;
+		FileWriter writerListadoEmpresas;
 		while (itTipos.hasNext()) {
 
 			tipo = itTipos.next();
@@ -180,17 +184,24 @@ public class CrearDatasetsSubgrupos {
 			if (numEmpresasPorTipo > 0) {
 				// Hay alguna empresa de este tipo. Creo un CSV común para todas las del mismo
 				// tipo
-				ArrayList<String> pathFicheros = empresasPorTipo.get(tipo);
-				String ficheroOut = directorioOut + tipo + ".csv";
+				pathFicheros = empresasPorTipo.get(tipo);
+				ficheroOut = directorioOut + tipo + ".csv";
+				ficheroListadoOut = directorioOut + "Listado-" + tipo + ".csv";
 				MY_LOGGER.info("Fichero a escribir: " + ficheroOut);
-				FileWriter csvWriter = new FileWriter(ficheroOut);
+				csvWriter = new FileWriter(ficheroOut);
+				writerListadoEmpresas = new FileWriter(ficheroListadoOut);
 
 				for (int i = 0; i < pathFicheros.size(); i++) {
+
 					esPrimeraLinea = Boolean.TRUE;
 					// Se lee el fichero de la empresa a meter en el CSV común
 					pathFichero = pathFicheros.get(i);
 					MY_LOGGER.debug("Fichero a leer para clasificar en subgrupo: " + pathFichero);
 					BufferedReader csvReader = new BufferedReader(new FileReader(pathFichero));
+
+					// Añado la empresa al fichero de listado de empresas
+					writerListadoEmpresas.append(pathFichero + "\n");
+
 					try {
 
 						while ((row = csvReader.readLine()) != null) {
@@ -201,12 +212,14 @@ public class CrearDatasetsSubgrupos {
 							rowTratada = SubgruposUtils.recortaPrimeraParteDeString(characterPipe,
 									numeroParametrosEstaticos, row);
 							MY_LOGGER.debug("Fila escrita: " + rowTratada);
+
 							// La cabecera se toma de la primera línea del primer fichero
 							if (i == 0 && esPrimeraLinea) {
 								// En la primera línea está la cabecera de parámetros
 								// Se valida que el nombre recibido es igual que el usado en la constructora, y
 								// en dicho orden
 								csvWriter.append(rowTratada);
+
 							}
 							if (!esPrimeraLinea) {
 								// Para todos los ficheros, se escriben las filas 2 y siguientes
@@ -223,6 +236,8 @@ public class CrearDatasetsSubgrupos {
 				}
 				csvWriter.flush();
 				csvWriter.close();
+				writerListadoEmpresas.flush();
+				writerListadoEmpresas.close();
 			}
 		}
 
