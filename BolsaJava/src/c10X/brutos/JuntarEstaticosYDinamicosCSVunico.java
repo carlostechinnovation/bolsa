@@ -52,8 +52,8 @@ public class JuntarEstaticosYDinamicosCSVunico {
 
 		for (EstaticoNasdaqModelo enm : nasdaqEstaticos1) {
 
-			String finvizEstaticos = BrutosUtils.DIR_BRUTOS_CSV + BrutosUtils.FINVIZ + "_" + BrutosUtils.MERCADO_NQ
-					+ "_" + enm.symbol + ".csv";
+			String finvizEstaticos = BrutosUtils.DIR_BRUTOS + BrutosUtils.FINVIZ + "_" + BrutosUtils.MERCADO_NQ + "_"
+					+ enm.symbol + ".csv";
 			File fileEstat = new File(finvizEstaticos);
 
 			String yahooFinanceDinamicos = BrutosUtils.DIR_BRUTOS_CSV + BrutosUtils.YAHOOFINANCE + "_"
@@ -83,6 +83,10 @@ public class JuntarEstaticosYDinamicosCSVunico {
 
 		String estaticosCabecera = "Insider Own|Debt/Eq|P/E|Dividend %|Employees|Inst Own|Market Cap";
 		String estaticosDatos = "";
+
+		if (enm.symbol.equals("ACAM")) {
+			int x = 0;
+		}
 
 		while ((actual = br.readLine()) != null) {
 			if (primeraLinea == false) {

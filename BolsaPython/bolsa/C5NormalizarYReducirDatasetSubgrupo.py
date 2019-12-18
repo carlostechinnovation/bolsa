@@ -7,13 +7,15 @@ from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
 from sklearn.svm import SVC
 from sklearn.model_selection import StratifiedKFold
-from sklearn.feature_selection import RFECV
+from sklearn.feature_selection import RFECV, RFE
 from sklearn import metrics
 import numpy as np
 from sklearn import linear_model
 import seaborn as sns
 from sklearn.ensemble import IsolationForest
 from sklearn.externals.joblib import dump, load
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
 
 
 print("---- CAPA 5 - Selección de variables/ Reducción de dimensiones (para cada subgrupo) -------")
@@ -155,43 +157,61 @@ def reducirFeaturesYGuardar(featuresFicheroNorm, targetsFichero, pathSalidaFeatu
   # Create the RFE object and compute a cross-validated score.
   svc_model = SVC(kernel="linear")
   # The "accuracy" scoring is proportional to the number of correct classifications
-  rfecv_modelo = RFECV(estimator=svc_model, step=1, min_features_to_select = 3, cv=StratifiedKFold(4), scoring='accuracy', verbose = 0, n_jobs = 4)
+  rfecv_modelo = RFECV(estimator=svc_model, step=1, min_features_to_select=3, cv=StratifiedKFold(4), scoring='accuracy', verbose = 0, n_jobs = 4)
   rfecv_modelo.fit(featuresFicheroNorm, targetsFichero)
   print("Numero original de features: %d" % featuresFicheroNorm.shape[1])
   print("Numero optimo de features: %d" % rfecv_modelo.n_features_)
-
   print("Mascara de features elegidas:")
   print(rfecv_modelo.support_)
-  feature_ranks_with_idx = enumerate(rfecv_modelo.support_)
-  sorted_ranks_with_idx = sorted(feature_ranks_with_idx, key=lambda x: x[1])
-  print("sorted_ranks_with_idx:")
-  print(sorted_ranks_with_idx)
-
-  print("Las features elegidas son:")
-  #featuresFicheroNorm_rfe = featuresFicheroNorm[:, rfecv_modelo.support_]
-  #print(featuresFicheroNorm_rfe)
+  print("Ranking:")
+  print(rfecv_modelo.ranking_)
 
   # Plot number of features VS. cross-validation scores
-  path_dibujo_rfecv = path_dataset_sin_extension + "_RFECV" ".png"
-  plt.figure()
-  plt.xlabel("Number of features selected")
-  plt.ylabel("Cross validation score (nb of correct classifications)")
-  plt.plot(range(1, len(rfecv_modelo.grid_scores_) + 1), rfecv_modelo.grid_scores_)
-  plt.title("RFECV", fontsize=10)
-  plt.savefig(path_dibujo_rfecv, bbox_inches='tight')
-  # Limpiando dibujo:
-  plt.clf()
-  plt.cla()
-  plt.close()
+  if modoDebug:
+    path_dibujo_rfecv = path_dataset_sin_extension + "_RFECV" ".png"
+    plt.figure()
+    plt.xlabel("Number of features selected")
+    plt.ylabel("Cross validation score (nb of correct classifications)")
+    plt.plot(range(1, len(rfecv_modelo.grid_scores_) + 1), rfecv_modelo.grid_scores_)
+    plt.title("RFECV", fontsize=10)
+    plt.savefig(path_dibujo_rfecv, bbox_inches='tight')
+    # Limpiando dibujo:
+    plt.clf()
+    plt.cla()
+    plt.close()
 
-  #print("** PCA (Principal Components Algorithm) **")
-  #print("Usando PCA, cogemos las features que tengan un impacto agregado sobre el X% de la varianza del target. Descartamos el resto.")
-  #modelo_pca_subgrupo = PCA(n_components=varianzaAcumuladaDeseada, svd_solver='full')
-  #print(modelo_pca_subgrupo)
-  #featuresFicheroNorm_pca = modelo_pca_subgrupo.fit_transform(featuresFicheroNorm)
-  #print(featuresFicheroNorm_pca)
-  #print('Dimensiones del dataframe reducido: ' + str(featuresFicheroNorm_pca.shape[0]) + ' x ' + str(featuresFicheroNorm_pca.shape[1]))
-  #print("Las features están ya normalizadas y reducidas. DESCRIBIMOS lo que hemos hecho y GUARDAMOS el dataset.")
+  print("Las features elegidas son (aplicamos la mascara al dataframe de features):")
+  columnas = featuresFicheroNorm.columns
+  #print(columnas)
+  numColumnas = columnas.shape[0]
+  print("numColumnas="+str(numColumnas))
+
+  columnasSeleccionadas =[]
+  for i in range(numColumnas):
+      if(rfecv_modelo.support_[i] == True):
+          columnasSeleccionadas.append(columnas[i])
+
+  print("Las columnas seleccionadas son:")
+  print(columnasSeleccionadas)
+  featuresFicheroNormElegidas = featuresFicheroNorm[columnasSeleccionadas]
+  print(featuresFicheroNormElegidas)
+
+  ####################### NO LO USAMOS pero lo dejo aqui ########
+  if modoDebug:
+      print("** PCA (Principal Components Algorithm) **")
+      print("Usando PCA, cogemos las features que tengan un impacto agregado sobre el X% de la varianza del target. Descartamos el resto.")
+      modelo_pca_subgrupo = PCA(n_components=varianzaAcumuladaDeseada, svd_solver='full')
+      print(modelo_pca_subgrupo)
+      featuresFicheroNorm_pca = modelo_pca_subgrupo.fit_transform(featuresFicheroNorm)
+      print(featuresFicheroNorm_pca)
+      print('Dimensiones del dataframe reducido: ' + str(featuresFicheroNorm_pca.shape[0]) + ' x ' + str(featuresFicheroNorm_pca.shape[1]))
+      print("Las features están ya normalizadas y reducidas. DESCRIBIMOS lo que hemos hecho y GUARDAMOS el dataset.")
+
+
+  ### Guardar a fichero
+  print("Escribiendo las features a CSV...")
+  featuresFicheroNormElegidas.to_csv(pathSalidaFeatures, index=False, sep='|')
+  targetsFichero.to_csv(pathSalidaTargets, index=False, sep='|')
 
 
 ################## MAIN ########################################

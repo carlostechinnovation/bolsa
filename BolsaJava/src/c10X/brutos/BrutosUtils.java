@@ -39,7 +39,7 @@ public class BrutosUtils {
 
 		Locale locale = new Locale("en", "UK");
 		DecimalFormat df = (DecimalFormat) NumberFormat.getNumberInstance(locale);
-		df.applyPattern("#0.#");
+		df.applyPattern("#0.######");
 
 		if (in != null) {
 			out = in.trim();

@@ -11,3 +11,7 @@ print(digits.target)
 
 print("----------- PCA:  REDUCCION DE DIMENSIONES ----------")
 
+
+
+
+
