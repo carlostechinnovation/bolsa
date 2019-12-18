@@ -96,8 +96,7 @@ do
 	python "${PYTHON_SCRIPTS}bolsa/C5NormalizarYReducirDatasetSubgrupo.py" "${path_csv_subgrupo}" "${DIR_SUBGRUPOS_REDUCIDOS}"  "${DIR_SUBGRUPOS_IMG}"
 	
 	echo -e "-------- PARA CADA SUBGRUPO: CREACIÓN DE MODELOS (entrenamiento, test, validación) -------------" >> ${LOG_MASTER}
-	
-	python "${PYTHON_SCRIPTS}bolsa/C6CreadorModelosDeSubgrupo.py" "${path_csv_subgrupo}" "${DIR_MODELOS}"
+	python "${PYTHON_SCRIPTS}bolsa/C6CreadorModelosDeSubgrupo.py" "${DIR_SUBGRUPOS_REDUCIDOS}" "${DIR_MODELOS}"
 	
 	echo -e "-------- PARA CADA SUBGRUPO: EVALUACIÓN DE MODELOS (ROC, R2...); GUARDAR MODELO GANADOR -------------" >> ${LOG_MASTER}
 	python "${PYTHON_SCRIPTS}bolsa/C7EvaluadorModelosDeSubgrupo.py"

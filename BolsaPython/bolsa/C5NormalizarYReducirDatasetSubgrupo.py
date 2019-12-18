@@ -145,12 +145,11 @@ def comprobarSuficientesCasos(featuresFicheroNorm, targetsFichero, modoDebug):
 
 
 
-def reducirFeaturesYGuardar(featuresFicheroNorm, targetsFichero, pathSalidaFeatures, pathSalidaTargets, varianzaAcumuladaDeseada, path_dataset_sin_extension, modoDebug):
+def reducirFeaturesYGuardar(featuresFicheroNorm, targetsFichero, pathSalidaFeaturesyTargets, varianzaAcumuladaDeseada, path_dataset_sin_extension, modoDebug):
   print("----- reducirFeaturesYGuardar ------")
   print("featuresFicheroNorm:" + str(featuresFicheroNorm.shape[0]) + " x " + str(featuresFicheroNorm.shape[1]))
   print("targetsFichero:" + str(targetsFichero.shape[0]) + " x " + str(targetsFichero.shape[1]))
-  print("pathSalidaFeatures --> " + pathSalidaFeatures)
-  print("pathSalidaTargets --> " + pathSalidaTargets)
+  print("pathSalidaFeaturesyTargets --> " + pathSalidaFeaturesyTargets)
   print("varianzaAcumuladaDeseada (PCA) --> " + str(varianzaAcumuladaDeseada))
   print("path_dataset_sin_extension --> " + path_dataset_sin_extension)
 
@@ -213,8 +212,8 @@ def reducirFeaturesYGuardar(featuresFicheroNorm, targetsFichero, pathSalidaFeatu
 
   ### Guardar a fichero
   print("Escribiendo las features a CSV...")
-  featuresFicheroNormElegidas.to_csv(pathSalidaFeatures, index=False, sep='|')
-  targetsFichero.to_csv(pathSalidaTargets, index=False, sep='|')
+  featuresytargets = pd.concat([featuresFicheroNormElegidas, targetsFichero], axis=1, join='inner')
+  featuresytargets.to_csv(pathSalidaFeaturesyTargets, index=False, sep='|')
 
 
 ################## MAIN ########################################
@@ -227,12 +226,11 @@ for entry in os.listdir(dir_entrada):
     id_subgrupo = Path(entry).stem
     print("id_subgrupo=" + id_subgrupo)
     pathEntrada = os.path.abspath(entry)
-    pathSalidaFeatures = path_dir_salida + id_subgrupo + ".csv"
-    pathSalidaTargets = path_dir_salida + id_subgrupo + "_TARGETS.csv"
+    pathSalidaFeaturesyTargets = path_dir_salida + id_subgrupo + ".csv"
     featuresFichero, targetsFichero, path_dataset_sin_extension = leerFeaturesyTarget(path_absoluto_fichero, modoDebug)
     featuresFicheroNorm = normalizarFeatures(featuresFichero, path_dataset_sin_extension, modoDebug)
     comprobarSuficientesCasos(featuresFicheroNorm, targetsFichero, modoDebug)
-    reducirFeaturesYGuardar(featuresFicheroNorm, targetsFichero, pathSalidaFeatures, pathSalidaTargets, varianza, path_dataset_sin_extension, modoDebug)
+    reducirFeaturesYGuardar(featuresFicheroNorm, targetsFichero, pathSalidaFeaturesyTargets, varianza, path_dataset_sin_extension, modoDebug)
 
 
 ############################################################
