@@ -33,12 +33,13 @@ print("path_dir_salida = %s" % path_dir_salida)
 print("path_dir_img = %s" % path_dir_img)
 
 ######################## FUNCIONES ###########
-def leerFeaturesyTarget(pathEntrada, modoDebug):
+def leerFeaturesyTarget(pathEntrada, path_dir_img, modoDebug):
   print("----- leerFeaturesyTarget ------")
   print("Entrada --> " + pathEntrada)
 
   path_dataset_sin_extension = os.path.splitext(pathEntrada)[0]
-  print("path_dataset_sin_extension --> " + path_dataset_sin_extension)
+  id_subgrupo = Path(path_dataset_sin_extension).stem
+  print("id_subgrupo=" + id_subgrupo)
 
   pathModeloOutliers = path_dataset_sin_extension + "_OUTLIERS.model"
   print("pathModeloOutliers --> " + pathModeloOutliers)
@@ -83,7 +84,7 @@ def leerFeaturesyTarget(pathEntrada, modoDebug):
   if modoDebug:
     print("FUNCIONES DE DENSIDAD (sin nulos, pero antes de normalizar):")
     for column in featuresFichero:
-      path_dibujo = path_dataset_sin_extension+"_"+column+".png"
+      path_dibujo = path_dir_img + id_subgrupo+"_"+column+".png"
       print("Guardando distrib de col: " + column + " en fichero: " + path_dibujo)
       datos_columna = featuresFichero[column]
       sns.distplot(datos_columna, kde=False, color='red', bins=10)
@@ -121,7 +122,7 @@ def normalizarFeatures(featuresFichero, path_dataset_sin_extension, modoDebug):
   if modoDebug:
     print("FUNCIONES DE DENSIDAD (normalizadas):")
     for column in featuresFicheroNorm2:
-        path_dibujo = (path_dataset_sin_extension + "_" + column + "_NORM.png")
+        path_dibujo = path_dir_img + id_subgrupo + "_" + column + "_NORM.png"
         print("Guardando distrib de col normalizada: " + column + " en fichero: " + path_dibujo)
         datos_columna = featuresFicheroNorm2[column]
         sns.distplot(datos_columna, kde=False, color='red', bins=10)
@@ -227,7 +228,7 @@ for entry in os.listdir(dir_entrada):
     print("id_subgrupo=" + id_subgrupo)
     pathEntrada = os.path.abspath(entry)
     pathSalidaFeaturesyTargets = path_dir_salida + id_subgrupo + ".csv"
-    featuresFichero, targetsFichero, path_dataset_sin_extension = leerFeaturesyTarget(path_absoluto_fichero, modoDebug)
+    featuresFichero, targetsFichero, path_dataset_sin_extension = leerFeaturesyTarget(path_absoluto_fichero, path_dir_img, modoDebug)
     featuresFicheroNorm = normalizarFeatures(featuresFichero, path_dataset_sin_extension, modoDebug)
     comprobarSuficientesCasos(featuresFicheroNorm, targetsFichero, modoDebug)
     reducirFeaturesYGuardar(featuresFicheroNorm, targetsFichero, pathSalidaFeaturesyTargets, varianza, path_dataset_sin_extension, modoDebug)

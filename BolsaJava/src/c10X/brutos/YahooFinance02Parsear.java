@@ -221,65 +221,63 @@ public class YahooFinance02Parsear {
 			JSONArray listaPreciosClose = (JSONArray) quote2.get("close");
 			JSONArray listaPreciosOpen = (JSONArray) quote2.get("open");
 
-			MY_LOGGER.info("Tamanios --> " + listaVolumenes.size() + "|" + listaPreciosHigh.size() + "|"
-					+ listaPreciosLow.size() + "|" + listaPreciosClose.size() + "|" + listaPreciosOpen.size());
+			if (listaVolumenes != null) {
 
-			// ---------------------------- ESCRITURA ---------------
-			MY_LOGGER.debug("Escritura...");
-			File fout = new File(pathBrutoCsvSalida);
-			FileOutputStream fos = new FileOutputStream(fout, false);
-			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
+				MY_LOGGER.info("Tamanios --> " + listaVolumenes.size() + "|" + listaPreciosHigh.size() + "|"
+						+ listaPreciosLow.size() + "|" + listaPreciosClose.size() + "|" + listaPreciosOpen.size());
 
-			// Cabecera
-			String cabecera = soloVelas ? "antiguedad|anio|mes|dia|hora|minuto"
-					: "mercado|empresa|antiguedad|anio|mes|dia|hora|minuto|volumen|high|low|close|open";
-			bw.write(cabecera);
-			bw.newLine();
+				// ---------------------------- ESCRITURA ---------------
+				MY_LOGGER.debug("Escritura...");
+				File fout = new File(pathBrutoCsvSalida);
+				FileOutputStream fos = new FileOutputStream(fout, false);
+				BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
 
-			int i = 0;
+				// Cabecera
+				String cabecera = soloVelas ? "antiguedad|anio|mes|dia|hora|minuto"
+						: "mercado|empresa|antiguedad|anio|mes|dia|hora|minuto|volumen|high|low|close|open";
+				bw.write(cabecera);
+				bw.newLine();
 
-			String cad;
-			int numVelas = listaVolumenes.size();
-			for (i = 0; i < numVelas; i++) {
+				int i = 0;
 
-				long msegDesde1970 = (long) tiemposEnSegundosDesde1970.get(i) * 1000L;
+				String cad;
+				int numVelas = listaVolumenes.size();
+				for (i = 0; i < numVelas; i++) {
 
-				if (soloVelas) {
-					cad = String.valueOf(numVelas - i - 1);
-					cad += "|" + df.format(new Date(msegDesde1970));
-				} else {
+					long msegDesde1970 = (long) tiemposEnSegundosDesde1970.get(i) * 1000L;
 
-					if (empresa.equals("ACAM")) {
-						Object algo = listaPreciosHigh.get(i);
-						MY_LOGGER.info("VELA=" + i + " --> HIGH=" + algo);
+					if (soloVelas) {
+						cad = String.valueOf(numVelas - i - 1);
+						cad += "|" + df.format(new Date(msegDesde1970));
+					} else {
+
+						cad = mercado + "|" + empresa;
+						cad += "|" + df.format(new Date(msegDesde1970));
+						cad += "|" + BrutosUtils.tratamientoLigero(
+								listaVolumenes.get(i) == null ? BrutosUtils.NULO : listaVolumenes.get(i).toString(),
+								BrutosUtils.ESCALA_M);
+						cad += "|" + BrutosUtils.tratamientoLigero(
+								listaPreciosHigh.get(i) == null ? BrutosUtils.NULO : listaPreciosHigh.get(i).toString(),
+								BrutosUtils.ESCALA_UNO);
+						cad += "|" + BrutosUtils.tratamientoLigero(
+								listaPreciosLow.get(i) == null ? BrutosUtils.NULO : listaPreciosLow.get(i).toString(),
+								BrutosUtils.ESCALA_UNO);
+						cad += "|" + BrutosUtils.tratamientoLigero(listaPreciosClose.get(i) == null ? BrutosUtils.NULO
+								: listaPreciosClose.get(i).toString(), BrutosUtils.ESCALA_UNO);
+						cad += "|" + BrutosUtils.tratamientoLigero(
+								listaPreciosOpen.get(i) == null ? BrutosUtils.NULO : listaPreciosOpen.get(i).toString(),
+								BrutosUtils.ESCALA_UNO);
 					}
 
-					cad = mercado + "|" + empresa;
-					cad += "|" + df.format(new Date(msegDesde1970));
-					cad += "|" + BrutosUtils.tratamientoLigero(
-							listaVolumenes.get(i) == null ? BrutosUtils.NULO : listaVolumenes.get(i).toString(),
-							BrutosUtils.ESCALA_M);
-					cad += "|" + BrutosUtils.tratamientoLigero(
-							listaPreciosHigh.get(i) == null ? BrutosUtils.NULO : listaPreciosHigh.get(i).toString(),
-							BrutosUtils.ESCALA_UNO);
-					cad += "|" + BrutosUtils.tratamientoLigero(
-							listaPreciosLow.get(i) == null ? BrutosUtils.NULO : listaPreciosLow.get(i).toString(),
-							BrutosUtils.ESCALA_UNO);
-					cad += "|" + BrutosUtils.tratamientoLigero(
-							listaPreciosClose.get(i) == null ? BrutosUtils.NULO : listaPreciosClose.get(i).toString(),
-							BrutosUtils.ESCALA_UNO);
-					cad += "|" + BrutosUtils.tratamientoLigero(
-							listaPreciosOpen.get(i) == null ? BrutosUtils.NULO : listaPreciosOpen.get(i).toString(),
-							BrutosUtils.ESCALA_UNO);
+					bw.write(cad);
+					bw.newLine();
 				}
 
-				bw.write(cad);
-				bw.newLine();
+				bw.close();
+
+				out = true;
+
 			}
-
-			bw.close();
-
-			out = true;
 
 		} catch (IOException e) {
 			MY_LOGGER.error(e.getMessage());
@@ -338,6 +336,8 @@ public class YahooFinance02Parsear {
 		boolean primeraLinea = true;
 		boolean filaActualEsCompleta = false;
 
+		long num = 1;
+
 		while ((actual = br.readLine()) != null) {
 
 			filaActualEsCompleta = false; // default
@@ -353,36 +353,43 @@ public class YahooFinance02Parsear {
 				ultimaLineaRellenaCompletaConocida = filaActualEsCompleta ? actual : ultimaLineaRellenaCompletaConocida;
 
 				String[] actualArray = actual.split("\\|");
-				Integer velaActual = velas.get(actualArray[2] + "|" + actualArray[3] + "|" + actualArray[4] + "|"
-						+ actualArray[5] + "|" + actualArray[6]);
+				String claveActual = actualArray[2] + "|" + actualArray[3] + "|" + actualArray[4] + "|" + actualArray[5]
+						+ "|" + actualArray[6];
+				Integer velaActual = velas.get(claveActual);
 
 				if (anterior != null && ultimaLineaRellenaCompletaConocida != null) {
 					String[] anteriorArray = actual.split("\\|");
-					velaAnterior = velas.get(anteriorArray[2] + "|" + anteriorArray[3] + "|" + anteriorArray[4] + "|"
-							+ anteriorArray[5] + "|" + anteriorArray[6]);
+					String claveAnterior = anteriorArray[2] + "|" + anteriorArray[3] + "|" + anteriorArray[4] + "|"
+							+ anteriorArray[5] + "|" + anteriorArray[6];
+					velaAnterior = velas.get(claveAnterior);
 
 					// Si entre la vela anterior y la actual faltan filas, las CREO con precio
 					// arrastrado y volumen cero
 
 					String[] completaAnteriorArray = ultimaLineaRellenaCompletaConocida.split("\\|");
 
-					for (int numVelaHueco = (velaAnterior + 1); numVelaHueco < velaActual; numVelaHueco++) {
-						String corregida = actualArray[0];// mercado
-						corregida += "|" + actualArray[1];// empresa
-						corregida += "|" + String.valueOf(numVelaHueco);// antiguedad (vela)
-						corregida += "|" + actualArray[2];// anio
-						corregida += "|" + actualArray[3];// mes
-						corregida += "|" + actualArray[4];// dia
-						corregida += "|" + actualArray[5];// hora
-						corregida += "|" + actualArray[6];// minuto
-						corregida += "|" + "0";// CORRIJO volumen: pongo un CERO
-						corregida += "|" + completaAnteriorArray[8];// CORRIJO high
-						corregida += "|" + completaAnteriorArray[9];// CORRIJO low
-						corregida += "|" + completaAnteriorArray[10];// CORRIJO close
-						corregida += "|" + completaAnteriorArray[11];// CORRIJO open
+					if (velaActual != null && velaAnterior != null) {
 
-						// FILA CORREGIDA
-						lista.add(corregida);
+						for (int numVelaHueco = (velaAnterior + 1); numVelaHueco < velaActual; numVelaHueco++) {
+
+							String corregida = actualArray[0];// mercado
+							corregida += "|" + actualArray[1];// empresa
+							corregida += "|" + String.valueOf(numVelaHueco);// antiguedad (vela)
+							corregida += "|" + actualArray[2];// anio
+							corregida += "|" + actualArray[3];// mes
+							corregida += "|" + actualArray[4];// dia
+							corregida += "|" + actualArray[5];// hora
+							corregida += "|" + actualArray[6];// minuto
+							corregida += "|" + "0";// CORRIJO volumen: pongo un CERO
+							corregida += "|" + completaAnteriorArray[8];// CORRIJO high
+							corregida += "|" + completaAnteriorArray[9];// CORRIJO low
+							corregida += "|" + completaAnteriorArray[10];// CORRIJO close
+							corregida += "|" + completaAnteriorArray[11];// CORRIJO open
+
+							// FILA CORREGIDA
+							lista.add(corregida);
+						}
+
 					}
 
 				}

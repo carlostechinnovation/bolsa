@@ -97,7 +97,7 @@ public class GestorFicheros {
 			final String pathFichero, final Boolean leeSoloCabeceraYUnaFila) throws Exception, IOException {
 
 		Boolean esPrimeraLinea = Boolean.TRUE;
-		MY_LOGGER.debug("Fichero leído: " + pathFichero);
+		MY_LOGGER.info("Fichero leído: " + pathFichero);
 		HashMap<String, HashMap<Integer, HashMap<String, String>>> datosSalida = new HashMap<String, HashMap<Integer, HashMap<String, String>>>();
 		String row, empresa = "";
 		String[] data;
@@ -115,7 +115,7 @@ public class GestorFicheros {
 			while ((row = csvReader.readLine()) != null) {
 				MY_LOGGER.debug("Fila leída: " + row);
 				if (esPrimeraLinea) {
-					// En la primera l�nea est� la cabecera de par�metros
+					// En la primera linea esta la cabecera de parametros
 					// Se valida que el nombre recibido es igual que el usado en la constructora, y
 					// en dicho orden
 					data = row.split("\\|");
@@ -127,16 +127,23 @@ public class GestorFicheros {
 									"El orden de los par�metros le�dos (sólo se tratan los NO ELABORADOS) en el fichero no es el que espera el gestor de ficheros");
 					}
 					esPrimeraLinea = Boolean.FALSE;
+
 				} else {
+
 					data = row.split("\\|");
 					empresa = data[0];
 					datosParametrosEmpresa = new HashMap<String, String>();
-					// Se excluyen los 2 primeros elementos
-					for (int i = 2; i < ordenNombresParametrosLeidos.size(); i++) {
-						datosParametrosEmpresa.put(ordenNombresParametrosLeidos.get(i), data[i]);
+
+					if (!data[1].equals("null")) {
+
+						// Se excluyen los 2 primeros elementos
+						for (int i = 2; i < ordenNombresParametrosLeidos.size(); i++) {
+							datosParametrosEmpresa.put(ordenNombresParametrosLeidos.get(i), data[i]);
+						}
+
+						// Se guarda la antiguedad
+						datosEmpresa.put(Integer.parseInt(data[1]), datosParametrosEmpresa);
 					}
-					// Se guarda la antig�edad
-					datosEmpresa.put(Integer.parseInt(data[1]), datosParametrosEmpresa);
 
 					if (leeSoloCabeceraYUnaFila) {
 						break;

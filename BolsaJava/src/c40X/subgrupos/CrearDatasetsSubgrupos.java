@@ -131,22 +131,29 @@ public class CrearDatasetsSubgrupos {
 				indicePrimeraFilaDeDatos = a.iterator().next();
 			}
 			parametros = datosEmpresaEntrada.get(indicePrimeraFilaDeDatos); // PRIMERA FILA
-			Float marketCapValor = Float.valueOf(parametros.get("Market Cap"));
+			String mcStr = parametros.get("Market Cap");
 
-			// CLASIFICACIÓN DEL TIPO DE EMPRESA
-			if (marketCapValor < marketCap_nano_max)
-				pathEmpresasTipo6.add(ficheroGestionado.getAbsolutePath());
-			else if (marketCapValor < marketCap_micro_max)
-				pathEmpresasTipo5.add(ficheroGestionado.getAbsolutePath());
-			else if (marketCapValor < marketCap_small_max)
-				pathEmpresasTipo4.add(ficheroGestionado.getAbsolutePath());
-			else if (marketCapValor < marketCap_mid_max)
-				pathEmpresasTipo3.add(ficheroGestionado.getAbsolutePath());
-			else if (marketCapValor < marketCap_large_max)
-				pathEmpresasTipo2.add(ficheroGestionado.getAbsolutePath());
-			else
-				pathEmpresasTipo1.add(ficheroGestionado.getAbsolutePath());
+			if (mcStr != null && !mcStr.isEmpty() && !"-".equals(mcStr)) {
 
+				Float marketCapValor = Float.valueOf(mcStr);
+
+				// CLASIFICACIÓN DEL TIPO DE EMPRESA
+				if (marketCapValor < marketCap_nano_max)
+					pathEmpresasTipo6.add(ficheroGestionado.getAbsolutePath());
+				else if (marketCapValor < marketCap_micro_max)
+					pathEmpresasTipo5.add(ficheroGestionado.getAbsolutePath());
+				else if (marketCapValor < marketCap_small_max)
+					pathEmpresasTipo4.add(ficheroGestionado.getAbsolutePath());
+				else if (marketCapValor < marketCap_mid_max)
+					pathEmpresasTipo3.add(ficheroGestionado.getAbsolutePath());
+				else if (marketCapValor < marketCap_large_max)
+					pathEmpresasTipo2.add(ficheroGestionado.getAbsolutePath());
+				else
+					pathEmpresasTipo1.add(ficheroGestionado.getAbsolutePath());
+
+			} else {
+				MY_LOGGER.warn(ficheroGestionado.getAbsolutePath() + " -> Market Cap: " + mcStr);
+			}
 		}
 
 		// Almacenamiento del tipo de empresa en la lista

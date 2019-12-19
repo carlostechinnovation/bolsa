@@ -18,7 +18,7 @@ public class ConstructorElaborados {
 
 	static Logger MY_LOGGER = Logger.getLogger(ConstructorElaborados.class);
 
-	// META-PARAMETRIZACI�N
+	// META-PARAMETRIZACION
 	// Periodo de la vela de entrada
 	public final static String T_velaEntrada = "H";
 	// x d�as
@@ -26,12 +26,12 @@ public class ConstructorElaborados {
 	public final static Integer[] periodosHParaParametros = new Integer[] { 3 * HORAS_AL_DIA, 7 * HORAS_AL_DIA,
 			20 * HORAS_AL_DIA, 50 * HORAS_AL_DIA };
 
-	// Par�metros del TARGET (subida del S% en precio de close, tras X velas, y no
-	// cae m�s de un R% dentro de las siguientes M velas posteriores)
-	public final static Integer S = 20;
+	// Parametros del TARGET (subida del S% en precio de close, tras X velas, y no
+	// cae mas de un R% dentro de las siguientes M velas posteriores)
+	public final static Integer S = 10;
 	public final static Integer X = 4 * HORAS_AL_DIA;
-	public final static Integer R = 10;
-	public final static Integer M = 2 * HORAS_AL_DIA;
+	public final static Integer R = 5;
+	public final static Integer M = 4 * HORAS_AL_DIA;
 
 	// IMPORTANTE: se asume que los datos est�n ordenados de menor a mayor
 	// antig�edad, y agrupados por empresa
@@ -80,8 +80,7 @@ public class ConstructorElaborados {
 			datosEntrada = gestorFicheros
 					.leeSoloParametrosNoElaboradosFicheroDeSoloUnaEmpresa(ficheroGestionado.getPath(), Boolean.FALSE);
 			destino = directorioSalida + "/" + ficheroGestionado.getName();
-			MY_LOGGER.info("Fichero entrada: " + ficheroGestionado.getAbsolutePath());
-			MY_LOGGER.info("Fichero salida:  " + destino);
+			MY_LOGGER.info("Ficheros entrada|salida -> " + ficheroGestionado.getAbsolutePath() + " | " + destino);
 			ordenNombresParametros = gestorFicheros.getOrdenNombresParametrosLeidos();
 			anadirParametrosElaboradosDeSoloUnaEmpresa(datosEntrada, ordenNombresParametros);
 			gestorFicheros.creaFicheroDeSoloUnaEmpresa(datosEntrada, ordenNombresParametros, destino);
