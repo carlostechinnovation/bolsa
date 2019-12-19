@@ -15,6 +15,8 @@ from sklearn.metrics import average_precision_score
 from sklearn.metrics import precision_recall_curve
 from sklearn.metrics import plot_precision_recall_curve
 import matplotlib.pyplot as plt
+from sklearn.metrics import plot_confusion_matrix
+from sklearn.utils import resample
 
 print("---- CAPA 6 - Crear almacenar y evaluar varios modelos (para cada subgrupo) -------")
 print("Tipo de problema: CLASIFICACION BINOMIAL (target es boolean)")
@@ -22,11 +24,16 @@ print("Tipo de problema: CLASIFICACION BINOMIAL (target es boolean)")
 print ("PARAMETROS: ")
 dir_csvs_entrada = sys.argv[1]
 pathModelos = sys.argv[2]
+modoDebug = True  #En modo debug se pintan los dibujos. En otro caso, se evita calculo innecesario
 print ("dir_csvs_entrada: %s" % dir_csvs_entrada)
 print ("pathModelos: %s" % pathModelos)
 
+# GANADOR DEL SUBGRUPO (acumuladores)
+ganador_nombreModelo = "NINGUNO"
+ganador_area_bajo_roc = 0
 
-print("Recorremos los CSVs que hay en el DIRECTORIO...")
+
+print("Recorremos los CSVs (subgrupos) que hay en el DIRECTORIO...")
 for entry in os.listdir(dir_csvs_entrada):
   print("entry: " + entry)
   path_absoluto_fichero = os.path.join(dir_csvs_entrada, entry)
@@ -37,11 +44,27 @@ for entry in os.listdir(dir_csvs_entrada):
     id_subgrupo = Path(entry).stem
     print("id_subgrupo=" + id_subgrupo)
     pathEntrada = os.path.abspath(entry)
-    print("Cargar datos (CSV reducido) de fichero: " + pathEntrada)
+    print("Cargar datos (CSV reducido) de fichero: " + path_absoluto_fichero)
     inputFeaturesyTarget = pd.read_csv(path_absoluto_fichero, sep='|')
+    print("inputFeaturesyTarget: " + str(inputFeaturesyTarget.shape[0]) + " x " + str(inputFeaturesyTarget.shape[1]))
+
+    print("BALANCEAR los casos positivos y negativos, haciendo downsampling de la clase mayoritaria...")
+    print("URL: https://elitedatascience.com/imbalanced-classes")
+    ift_mayoritaria = inputFeaturesyTarget[inputFeaturesyTarget.TARGET == False] #En este caso los mayoritarios son los False
+    ift_minoritaria = inputFeaturesyTarget[inputFeaturesyTarget.TARGET == True]
+    print("ift_mayoritaria:" + str(ift_mayoritaria.shape[0]) + " x " + str(ift_mayoritaria.shape[1]))
+    print("ift_minoritaria:" + str(ift_minoritaria.shape[0]) + " x " + str(ift_minoritaria.shape[1]))
+    num_muestras_minoria = ift_minoritaria.shape[0]
+    print("num_muestras_minoria: " + str(num_muestras_minoria))
+    ift_mayoritaria_downsampled = resample(ift_mayoritaria, replace=False, n_samples=num_muestras_minoria, random_state=123)
+
+    ift_balanceadas = pd.concat([ift_mayoritaria_downsampled, ift_minoritaria]) # Juntar ambas clases ya BALANCEADAS
+    print("Las clases ya están balanceadas:")
+    ift_balanceadas.TARGET.value_counts()
+
 
     print("DIVIDIR EL DATASET DE ENTRADA EN 3 PARTES: TRAIN (60%), TEST (20%), VALIDACION (20%)...")
-    ds_train, ds_test, ds_validacion = np.split(inputFeaturesyTarget.sample(frac=1), [int(.6 * len(inputFeaturesyTarget)), int(.8 * len(inputFeaturesyTarget))])
+    ds_train, ds_test, ds_validacion = np.split(ift_balanceadas.sample(frac=1), [int(.6 * len(ift_balanceadas)), int(.8 * len(ift_balanceadas))])
     print("TRAIN --> " + str(ds_train.shape[0]) + " x " + str(ds_train.shape[1]))
     print("TEST --> " + str(ds_test.shape[0]) + " x " + str(ds_test.shape[1]))
     print("VALIDACION --> " + str(ds_validacion.shape[0]) + " x " + str(ds_validacion.shape[1]))
@@ -72,27 +95,43 @@ for entry in os.listdir(dir_csvs_entrada):
     s = pickle.dump(modelo, open(pathModelo, 'wb'))
     modelo_loaded = pickle.load(open(pathModelo, 'rb'))
     ds_test_t_pred = modelo_loaded.predict(ds_test_f)  # PREDICCION de los targets de TEST (los compararemos con los que tenemos)
-    print(nombreModelo + ".roc_auc_score = " + str(round(roc_auc_score(ds_test_t, ds_test_t_pred), 4)))
+    area_bajo_roc = roc_auc_score(ds_test_t, ds_test_t_pred)
+    if area_bajo_roc > ganador_area_bajo_roc:
+        ganador_area_bajo_roc = area_bajo_roc
+        ganador_nombreModelo = nombreModelo
+    print(nombreModelo + ".roc_auc_score = " + str(round(area_bajo_roc, 4)))
     average_precision = average_precision_score(ds_test_t, ds_test_t_pred)
     print('Average precision-recall score: {0:0.2f}'.format(average_precision))
     #disp = plot_precision_recall_curve(modelo_loaded, ds_test_f, ds_test_t)
     #disp.ax_.set_title('2-class Precision-Recall curve: AP={0:0.2f}'.format(average_precision))
 
-    # EVALUACION DE MODELOS - Curva ROC: https://scikit-learn.org/stable/modules/generated/sklearn.metrics.roc_curve.html
-    fpr_modelo, tpr_modelo, _ = roc_curve(ds_test_t, ds_test_t_pred)
-    path_dibujo = pathModelos + str(id_subgrupo) + "_"+nombreModelo+"_roc.png"
-    plt.figure(1)
-    plt.plot([0, 1], [0, 1], 'k--')
-    plt.plot(fpr_modelo, tpr_modelo, label=nombreModelo)
-    plt.xlabel('False positive rate')
-    plt.ylabel('True positive rate')
-    plt.title(nombreModelo + ' - Curva ROC', fontsize=10)
-    plt.legend(loc='best')
-    plt.savefig(path_dibujo, bbox_inches='tight')
-    #Limpiando dibujo:
-    plt.clf()
-    plt.cla()
-    plt.close()
+    if modoDebug:
+        print("Curva ROC...")
+        # EVALUACION DE MODELOS - Curva ROC: https://scikit-learn.org/stable/modules/generated/sklearn.metrics.roc_curve.html
+        fpr_modelo, tpr_modelo, _ = roc_curve(ds_test_t, ds_test_t_pred)
+        path_dibujo = pathModelos + str(id_subgrupo) + "_"+nombreModelo+"_roc.png"
+        plt.figure(1)
+        plt.plot([0, 1], [0, 1], 'k--')
+        plt.plot(fpr_modelo, tpr_modelo, label=nombreModelo)
+        plt.xlabel('False positive rate')
+        plt.ylabel('True positive rate')
+        plt.title(nombreModelo + ' - Curva ROC', fontsize=10)
+        plt.legend(loc='best')
+        plt.savefig(path_dibujo, bbox_inches='tight')
+        #Limpiando dibujo:
+        plt.clf()
+        plt.cla()
+        plt.close()
+
+        print("Matriz de confusion...")
+        path_dibujo = pathModelos + str(id_subgrupo) + "_"+nombreModelo+"_matriz_conf.png"
+        disp = plot_confusion_matrix(modelo_loaded, ds_test_f, ds_test_t, cmap=plt.cm.Blues, normalize=None)
+        print(disp.confusion_matrix)
+        plt.savefig(path_dibujo, bbox_inches='tight')
+        #Limpiando dibujo:
+        plt.clf()
+        plt.cla()
+        plt.close()
 
 
     print("** REGRESION LOGISTICA (para Clasificacion) **")
@@ -104,25 +143,42 @@ for entry in os.listdir(dir_csvs_entrada):
     s = pickle.dump(modelo, open(pathModelo, 'wb'))
     modelo_loaded = pickle.load(open(pathModelo, 'rb'))
     ds_test_t_pred = modelo_loaded.predict(ds_test_f) # PREDICCION de los targets de TEST (los compararemos con los que tenemos)
-    print(nombreModelo + ".roc_auc_score = " + str(round(roc_auc_score(ds_test_t, ds_test_t_pred), 4)))
+    area_bajo_roc = roc_auc_score(ds_test_t, ds_test_t_pred)
+    if area_bajo_roc > ganador_area_bajo_roc:
+        ganador_area_bajo_roc = area_bajo_roc
+        ganador_nombreModelo = nombreModelo
+    print(nombreModelo + ".roc_auc_score = " + str(round(area_bajo_roc, 4)))
     average_precision = average_precision_score(ds_test_t, ds_test_t_pred)
     print('Average precision-recall score: {0:0.2f}'.format(average_precision))
 
-    # EVALUACION DE MODELOS - Curva ROC: https://scikit-learn.org/stable/modules/generated/sklearn.metrics.roc_curve.html
-    fpr_modelo, tpr_modelo, _ = roc_curve(ds_test_t, ds_test_t_pred)
-    path_dibujo = pathModelos + str(id_subgrupo) + "_" + nombreModelo + "_roc.png"
-    plt.figure(1)
-    plt.plot([0, 1], [0, 1], 'k--')
-    plt.plot(fpr_modelo, tpr_modelo, label=nombreModelo)
-    plt.xlabel('False positive rate')
-    plt.ylabel('True positive rate')
-    plt.title(nombreModelo + ' - Curva ROC', fontsize=10)
-    plt.legend(loc='best')
-    plt.savefig(path_dibujo, bbox_inches='tight')
-    #Limpiando dibujo:
-    plt.clf()
-    plt.cla()
-    plt.close()
+    if modoDebug:
+      print("Curva ROC...")
+      # EVALUACION DE MODELOS - Curva ROC: https://scikit-learn.org/stable/modules/generated/sklearn.metrics.roc_curve.html
+      fpr_modelo, tpr_modelo, _ = roc_curve(ds_test_t, ds_test_t_pred)
+      path_dibujo = pathModelos + str(id_subgrupo) + "_" + nombreModelo + "_roc.png"
+      plt.figure(1)
+      plt.plot([0, 1], [0, 1], 'k--')
+      plt.plot(fpr_modelo, tpr_modelo, label=nombreModelo)
+      plt.xlabel('False positive rate')
+      plt.ylabel('True positive rate')
+      plt.title(nombreModelo + ' - Curva ROC', fontsize=10)
+      plt.legend(loc='best')
+      plt.savefig(path_dibujo, bbox_inches='tight')
+      # Limpiando dibujo:
+      plt.clf()
+      plt.cla()
+      plt.close()
+
+      print("Matriz de confusion...")
+      path_dibujo = pathModelos + str(id_subgrupo) + "_" + nombreModelo + "_matriz_conf.png"
+      disp = plot_confusion_matrix(modelo_loaded, ds_test_f, ds_test_t, cmap=plt.cm.Blues, normalize=None)
+      print(disp.confusion_matrix)
+      plt.savefig(path_dibujo, bbox_inches='tight')
+      # Limpiando dibujo:
+      plt.clf()
+      plt.cla()
+      plt.close()
+
 
     print("** RANDOM FOREST (para Clasificacion) **")
     # URL:
@@ -133,9 +189,42 @@ for entry in os.listdir(dir_csvs_entrada):
     s = pickle.dump(modelo, open(pathModelo, 'wb'))
     modelo_loaded = pickle.load(open(pathModelo, 'rb'))
     ds_test_t_pred = modelo_loaded.predict(ds_test_f) # PREDICCION de los targets de TEST (los compararemos con los que tenemos)
-    print(nombreModelo + ".roc_auc_score = " + str(round(roc_auc_score(ds_test_t, ds_test_t_pred), 4)))
+    area_bajo_roc = roc_auc_score(ds_test_t, ds_test_t_pred)
+    if area_bajo_roc > ganador_area_bajo_roc:
+        ganador_area_bajo_roc = area_bajo_roc
+        ganador_nombreModelo = nombreModelo
+    print(nombreModelo + ".roc_auc_score = " + str(round(area_bajo_roc, 4)))
     average_precision = average_precision_score(ds_test_t, ds_test_t_pred)
     print('Average precision-recall score: {0:0.2f}'.format(average_precision))
+
+    if modoDebug:
+        print("Curva ROC...")
+        # EVALUACION DE MODELOS - Curva ROC: https://scikit-learn.org/stable/modules/generated/sklearn.metrics.roc_curve.html
+        fpr_modelo, tpr_modelo, _ = roc_curve(ds_test_t, ds_test_t_pred)
+        path_dibujo = pathModelos + str(id_subgrupo) + "_"+nombreModelo+"_roc.png"
+        plt.figure(1)
+        plt.plot([0, 1], [0, 1], 'k--')
+        plt.plot(fpr_modelo, tpr_modelo, label=nombreModelo)
+        plt.xlabel('False positive rate')
+        plt.ylabel('True positive rate')
+        plt.title(nombreModelo + ' - Curva ROC', fontsize=10)
+        plt.legend(loc='best')
+        plt.savefig(path_dibujo, bbox_inches='tight')
+        #Limpiando dibujo:
+        plt.clf()
+        plt.cla()
+        plt.close()
+
+        print("Matriz de confusion...")
+        path_dibujo = pathModelos + str(id_subgrupo) + "_"+nombreModelo+"_matriz_conf.png"
+        disp = plot_confusion_matrix(modelo_loaded, ds_test_f, ds_test_t, cmap=plt.cm.Blues, normalize=None)
+        print(disp.confusion_matrix)
+        plt.savefig(path_dibujo, bbox_inches='tight')
+        #Limpiando dibujo:
+        plt.clf()
+        plt.cla()
+        plt.close()
+
 
     print("** RED NEURONAL (para Clasificacion) **")
     # URL:
@@ -146,9 +235,45 @@ for entry in os.listdir(dir_csvs_entrada):
     s = pickle.dump(modelo, open(pathModelo, 'wb'))
     modelo_loaded = pickle.load(open(pathModelo, 'rb'))
     ds_test_t_pred = modelo_loaded.predict(ds_test_f) # PREDICCION de los targets de TEST (los compararemos con los que tenemos)
-    print(nombreModelo + ".roc_auc_score = " + str(round(roc_auc_score(ds_test_t, ds_test_t_pred), 4)))
+    area_bajo_roc = roc_auc_score(ds_test_t, ds_test_t_pred)
+    if area_bajo_roc > ganador_area_bajo_roc:
+        ganador_area_bajo_roc = area_bajo_roc
+        ganador_nombreModelo = nombreModelo
+    print(nombreModelo + ".roc_auc_score = " + str(round(area_bajo_roc, 4)))
     average_precision = average_precision_score(ds_test_t, ds_test_t_pred)
     print('Average precision-recall score: {0:0.2f}'.format(average_precision))
+
+    if modoDebug:
+        print("Curva ROC...")
+        # EVALUACION DE MODELOS - Curva ROC: https://scikit-learn.org/stable/modules/generated/sklearn.metrics.roc_curve.html
+        fpr_modelo, tpr_modelo, _ = roc_curve(ds_test_t, ds_test_t_pred)
+        path_dibujo = pathModelos + str(id_subgrupo) + "_"+nombreModelo+"_roc.png"
+        plt.figure(1)
+        plt.plot([0, 1], [0, 1], 'k--')
+        plt.plot(fpr_modelo, tpr_modelo, label=nombreModelo)
+        plt.xlabel('False positive rate')
+        plt.ylabel('True positive rate')
+        plt.title(nombreModelo + ' - Curva ROC', fontsize=10)
+        plt.legend(loc='best')
+        plt.savefig(path_dibujo, bbox_inches='tight')
+        #Limpiando dibujo:
+        plt.clf()
+        plt.cla()
+        plt.close()
+
+        print("Matriz de confusion...")
+        path_dibujo = pathModelos + str(id_subgrupo) + "_"+nombreModelo+"_matriz_conf.png"
+        disp = plot_confusion_matrix(modelo_loaded, ds_test_f, ds_test_t, cmap=plt.cm.Blues, normalize=None)
+        print(disp.confusion_matrix)
+        plt.savefig(path_dibujo, bbox_inches='tight')
+        #Limpiando dibujo:
+        plt.clf()
+        plt.cla()
+        plt.close()
+
+
+  print("********* GANADOR *************")
+  print("El modelo ganador es " + ganador_nombreModelo +" con un area_bajo_ROC de " + str(round(ganador_area_bajo_roc, 4)))
 
 
 ################## MAIN ########################################

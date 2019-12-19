@@ -87,12 +87,14 @@ public class CrearDatasetsSubgrupos {
 
 		HashMap<Integer, HashMap<String, String>> datosEmpresaEntrada = new HashMap<Integer, HashMap<String, String>>();
 		// Tipos de empresa
+		// Tipo 0: TODAS
 		// Tipo 1: MARKETCAP=MEGA
 		// Tipo 2: MARKETCAP=LARGA
 		// Tipo 3: MARKETCAP=MID
 		// Tipo 4: MARKETCAP=SMALL
 		// Tipo 5: MARKETCAP=MICRO
 		// Tipo 6: MARKETCAP=NANO
+		ArrayList<String> pathEmpresasTipo0 = new ArrayList<String>();
 		ArrayList<String> pathEmpresasTipo1 = new ArrayList<String>();
 		ArrayList<String> pathEmpresasTipo2 = new ArrayList<String>();
 		ArrayList<String> pathEmpresasTipo3 = new ArrayList<String>();
@@ -137,6 +139,8 @@ public class CrearDatasetsSubgrupos {
 
 				Float marketCapValor = Float.valueOf(mcStr);
 
+				pathEmpresasTipo0.add(ficheroGestionado.getAbsolutePath()); // subgrupo default
+
 				// CLASIFICACIÓN DEL TIPO DE EMPRESA
 				if (marketCapValor < marketCap_nano_max)
 					pathEmpresasTipo6.add(ficheroGestionado.getAbsolutePath());
@@ -158,6 +162,7 @@ public class CrearDatasetsSubgrupos {
 
 		// Almacenamiento del tipo de empresa en la lista
 		empresasPorTipo = new HashMap<Integer, ArrayList<String>>();
+		empresasPorTipo.put(0, pathEmpresasTipo0);
 		empresasPorTipo.put(1, pathEmpresasTipo1);
 		empresasPorTipo.put(2, pathEmpresasTipo2);
 		empresasPorTipo.put(3, pathEmpresasTipo3);
