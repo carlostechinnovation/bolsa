@@ -105,6 +105,8 @@ for entry in os.listdir(dir_csvs_entrada):
     modelo_loaded = pickle.load(open(pathModelo, 'rb'))
     ds_test_t_pred = modelo_loaded.predict(ds_test_f) # PREDICCION de los targets de TEST (los compararemos con los que tenemos)
     print(nombreModelo + ".roc_auc_score = " + str(round(roc_auc_score(ds_test_t, ds_test_t_pred), 4)))
+    average_precision = average_precision_score(ds_test_t, ds_test_t_pred)
+    print('Average precision-recall score: {0:0.2f}'.format(average_precision))
 
     # EVALUACION DE MODELOS - Curva ROC: https://scikit-learn.org/stable/modules/generated/sklearn.metrics.roc_curve.html
     fpr_modelo, tpr_modelo, _ = roc_curve(ds_test_t, ds_test_t_pred)
@@ -132,6 +134,8 @@ for entry in os.listdir(dir_csvs_entrada):
     modelo_loaded = pickle.load(open(pathModelo, 'rb'))
     ds_test_t_pred = modelo_loaded.predict(ds_test_f) # PREDICCION de los targets de TEST (los compararemos con los que tenemos)
     print(nombreModelo + ".roc_auc_score = " + str(round(roc_auc_score(ds_test_t, ds_test_t_pred), 4)))
+    average_precision = average_precision_score(ds_test_t, ds_test_t_pred)
+    print('Average precision-recall score: {0:0.2f}'.format(average_precision))
 
     print("** RED NEURONAL (para Clasificacion) **")
     # URL:
@@ -143,6 +147,8 @@ for entry in os.listdir(dir_csvs_entrada):
     modelo_loaded = pickle.load(open(pathModelo, 'rb'))
     ds_test_t_pred = modelo_loaded.predict(ds_test_f) # PREDICCION de los targets de TEST (los compararemos con los que tenemos)
     print(nombreModelo + ".roc_auc_score = " + str(round(roc_auc_score(ds_test_t, ds_test_t_pred), 4)))
+    average_precision = average_precision_score(ds_test_t, ds_test_t_pred)
+    print('Average precision-recall score: {0:0.2f}'.format(average_precision))
 
 
 ################## MAIN ########################################
