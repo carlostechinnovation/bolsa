@@ -11,6 +11,9 @@ from sklearn.neural_network import MLPClassifier
 import pickle
 from sklearn.metrics import roc_auc_score
 from sklearn.metrics import roc_curve
+from sklearn.metrics import average_precision_score
+from sklearn.metrics import precision_recall_curve
+from sklearn.metrics import plot_precision_recall_curve
 import matplotlib.pyplot as plt
 
 print("---- CAPA 6 - Crear almacenar y evaluar varios modelos (para cada subgrupo) -------")
@@ -43,84 +46,102 @@ for entry in os.listdir(dir_csvs_entrada):
     print("TEST --> " + str(ds_test.shape[0]) + " x " + str(ds_test.shape[1]))
     print("VALIDACION --> " + str(ds_validacion.shape[0]) + " x " + str(ds_validacion.shape[1]))
 
-    print("Separamos FEATURES y TARGETS, de los 3 datasets...")
-    ds_train_f = ds_train.drop('TARGET', axis=1)
-    ds_train_t = ds_train[['TARGET']]
-    ds_test_f = ds_test.drop('TARGET', axis=1)
-    ds_test_t = ds_test[['TARGET']]
-    ds_validac_f = ds_validacion.drop('TARGET', axis=1)
-    ds_validac_t = ds_validacion[['TARGET']]
-
-    print("Crear CARPETA para guardar los MODELOS...")
-    dir_modelos_subgrupo = pathModelos + str(id_subgrupo)
-    print("dir_modelos_subgrupo: " + dir_modelos_subgrupo+"/")
-    if os.path.exists(dir_modelos_subgrupo):  # Borrar si existe
-        os.rmdir(dir_modelos_subgrupo)
-    if not os.path.exists(dir_modelos_subgrupo):  # Crear carpeta
-        os.mkdir(dir_modelos_subgrupo)
+    print("Separamos FEATURES y TARGETS, de los 3 dataframes...")
+    ds_train_f = ds_train.drop('TARGET', axis=1).to_numpy()
+    ds_train_t = ds_train[['TARGET']].to_numpy()
+    ds_test_f = ds_test.drop('TARGET', axis=1).to_numpy()
+    ds_test_t = ds_test[['TARGET']].to_numpy()
+    ds_validac_f = ds_validacion.drop('TARGET', axis=1).to_numpy()
+    ds_validac_t = ds_validacion[['TARGET']].to_numpy()
 
     print("---------------- MODELOS con varias configuraciones (hiperparametros) --------")
+
+    print("MODELOS: " + "https://scikit-learn.org/stable/supervised_learning.html")
+    print("EVALUACION de los modelos con: " + "https://scikit-learn.org/stable/modules/model_evaluation.html#classification-metrics")
+    print("EVALUACION con curva precision-recall: " + "https://scikit-learn.org/stable/auto_examples/model_selection/plot_precision_recall.html")
+
 
     print("** SVC (SVM para Clasificacion) **")
     # URL: https://scikit-learn.org/stable/modules/svm.html
     nombreModelo="svc"
-    pathModelo = dir_modelos_subgrupo + "_svc.modelo"
+    pathModelo = pathModelos + str(id_subgrupo) + "_"+nombreModelo+".modelo"
     modelo = svm.SVC(C=1.0, kernel='rbf', degree=3, gamma='scale', coef0=0.0, shrinking=True, probability=False,
                      tol=0.001, cache_size=200, class_weight=None, verbose=False, max_iter=-1,
                      decision_function_shape='ovr', break_ties=False, random_state=None)
-    modelo.fit(ds_train_f, ds_train_t)
+    modelo.fit(ds_train_f, ds_train_t)  # ENTRENAMIENTO (TRAIN)
     s = pickle.dump(modelo, open(pathModelo, 'wb'))
     modelo_loaded = pickle.load(open(pathModelo, 'rb'))
-    ds_test_t_pred = modelo_loaded.predict(ds_test_f)
-    print(nombreModelo + ".score = " + str(round(modelo_loaded.score(ds_test_f, ds_test_t_pred), 4)))
+    ds_test_t_pred = modelo_loaded.predict(ds_test_f)  # PREDICCION de los targets de TEST (los compararemos con los que tenemos)
     print(nombreModelo + ".roc_auc_score = " + str(round(roc_auc_score(ds_test_t, ds_test_t_pred), 4)))
-    fpr_modelo, tpr_modelo, _ = roc_curve(ds_test_t_pred, ds_test_t_pred)
+    average_precision = average_precision_score(ds_test_t, ds_test_t_pred)
+    print('Average precision-recall score: {0:0.2f}'.format(average_precision))
+    #disp = plot_precision_recall_curve(modelo_loaded, ds_test_f, ds_test_t)
+    #disp.ax_.set_title('2-class Precision-Recall curve: AP={0:0.2f}'.format(average_precision))
 
     # EVALUACION DE MODELOS - Curva ROC: https://scikit-learn.org/stable/modules/generated/sklearn.metrics.roc_curve.html
+    fpr_modelo, tpr_modelo, _ = roc_curve(ds_test_t, ds_test_t_pred)
+    path_dibujo = pathModelos + str(id_subgrupo) + "_"+nombreModelo+"_roc.png"
     plt.figure(1)
     plt.plot([0, 1], [0, 1], 'k--')
     plt.plot(fpr_modelo, tpr_modelo, label=nombreModelo)
     plt.xlabel('False positive rate')
     plt.ylabel('True positive rate')
-    plt.title('ROC curve')
+    plt.title(nombreModelo + ' - Curva ROC', fontsize=10)
     plt.legend(loc='best')
-    plt.show()
+    plt.savefig(path_dibujo, bbox_inches='tight')
+    #Limpiando dibujo:
+    plt.clf()
+    plt.cla()
+    plt.close()
 
 
     print("** REGRESION LOGISTICA (para Clasificacion) **")
     # URL:
     nombreModelo = "logreg"
-    pathModelo = dir_modelos_subgrupo + "_logreg.modelo"
+    pathModelo = pathModelos + str(id_subgrupo) + "_"+nombreModelo+".modelo"
     modelo = LogisticRegression(random_state=0, solver='lbfgs', multi_class='ovr')
-    modelo.fit(ds_train_f, ds_train_t)
+    modelo.fit(ds_train_f, ds_train_t)  # ENTRENAMIENTO (TRAIN)
     s = pickle.dump(modelo, open(pathModelo, 'wb'))
     modelo_loaded = pickle.load(open(pathModelo, 'rb'))
-    ds_test_t_pred = modelo_loaded.predict(ds_test_f)
-    print(nombreModelo + ".score = " + str(round(modelo_loaded.score(ds_test_f, ds_test_t_pred), 4)))
+    ds_test_t_pred = modelo_loaded.predict(ds_test_f) # PREDICCION de los targets de TEST (los compararemos con los que tenemos)
     print(nombreModelo + ".roc_auc_score = " + str(round(roc_auc_score(ds_test_t, ds_test_t_pred), 4)))
+
+    # EVALUACION DE MODELOS - Curva ROC: https://scikit-learn.org/stable/modules/generated/sklearn.metrics.roc_curve.html
+    fpr_modelo, tpr_modelo, _ = roc_curve(ds_test_t, ds_test_t_pred)
+    path_dibujo = pathModelos + str(id_subgrupo) + "_" + nombreModelo + "_roc.png"
+    plt.figure(1)
+    plt.plot([0, 1], [0, 1], 'k--')
+    plt.plot(fpr_modelo, tpr_modelo, label=nombreModelo)
+    plt.xlabel('False positive rate')
+    plt.ylabel('True positive rate')
+    plt.title(nombreModelo + ' - Curva ROC', fontsize=10)
+    plt.legend(loc='best')
+    plt.savefig(path_dibujo, bbox_inches='tight')
+    #Limpiando dibujo:
+    plt.clf()
+    plt.cla()
+    plt.close()
 
     print("** RANDOM FOREST (para Clasificacion) **")
     # URL:
     nombreModelo = "rf"
-    pathModelo = dir_modelos_subgrupo + "_rf.modelo"
+    pathModelo = pathModelos + str(id_subgrupo) + "_"+nombreModelo+".modelo"
     modelo = RandomForestClassifier(n_estimators=100, max_depth=2, random_state=0)
-    modelo.fit(ds_train_f, ds_train_t)
+    modelo.fit(ds_train_f, ds_train_t)  # ENTRENAMIENTO (TRAIN)
     s = pickle.dump(modelo, open(pathModelo, 'wb'))
     modelo_loaded = pickle.load(open(pathModelo, 'rb'))
-    ds_test_t_pred = modelo_loaded.predict(ds_test_f)
-    print(nombreModelo + ".score = " + str(round(modelo_loaded.score(ds_test_f, ds_test_t_pred), 4)))
+    ds_test_t_pred = modelo_loaded.predict(ds_test_f) # PREDICCION de los targets de TEST (los compararemos con los que tenemos)
     print(nombreModelo + ".roc_auc_score = " + str(round(roc_auc_score(ds_test_t, ds_test_t_pred), 4)))
 
     print("** RED NEURONAL (para Clasificacion) **")
     # URL:
     nombreModelo = "nn"
-    pathModelo = dir_modelos_subgrupo + "_nn.modelo"
+    pathModelo = pathModelos + str(id_subgrupo) + "_"+nombreModelo+".modelo"
     modelo = MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(5, 2), random_state=1)
-    modelo.fit(ds_train_f, ds_train_t)
+    modelo.fit(ds_train_f, ds_train_t)  # ENTRENAMIENTO (TRAIN)
     s = pickle.dump(modelo, open(pathModelo, 'wb'))
     modelo_loaded = pickle.load(open(pathModelo, 'rb'))
-    ds_test_t_pred = modelo_loaded.predict(ds_test_f)
-    print(nombreModelo + ".score = " + str(round(modelo_loaded.score(ds_test_f, ds_test_t_pred), 4)))
+    ds_test_t_pred = modelo_loaded.predict(ds_test_f) # PREDICCION de los targets de TEST (los compararemos con los que tenemos)
     print(nombreModelo + ".roc_auc_score = " + str(round(roc_auc_score(ds_test_t, ds_test_t_pred), 4)))
 
 
