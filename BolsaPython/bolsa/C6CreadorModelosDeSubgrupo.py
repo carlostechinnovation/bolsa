@@ -17,6 +17,9 @@ from sklearn.metrics import plot_precision_recall_curve
 import matplotlib.pyplot as plt
 from sklearn.metrics import plot_confusion_matrix
 from sklearn.utils import resample
+from sklearn.model_selection import GridSearchCV
+from sklearn.calibration import CalibratedClassifierCV
+
 
 print("---- CAPA 6 - Crear almacenar y evaluar varios modelos (para cada subgrupo) -------")
 print("Tipo de problema: CLASIFICACION BINOMIAL (target es boolean)")
@@ -32,14 +35,9 @@ print ("dirModelos: %s" % dirModelos)
 ################# FUNCIONES ########################################
 def ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_train_t, modoDebug):
 
-    print("** SVC (SVM para Clasificacion) **")
-    # URL: https://scikit-learn.org/stable/modules/svm.html
-    nombreModelo = "svc"
-    pathModelo = dirModelos + str(id_subgrupo) + "_" + nombreModelo + ".modelo"
-    modelo = svm.SVC(C=1.0, kernel='rbf', degree=3, gamma='scale', coef0=0.0, shrinking=True, probability=False,
-                     tol=0.001, cache_size=200, class_weight=None, verbose=False, max_iter=-1,
-                     decision_function_shape='ovr', break_ties=False, random_state=None)
+    print("** " + nombreModelo + " **")
     modelo.fit(ds_train_f, ds_train_t)  # ENTRENAMIENTO (TRAIN)
+    print("Se guarda el modelo " + nombreModelo + " en: " + pathModelo)
     s = pickle.dump(modelo, open(pathModelo, 'wb'))
 
 
@@ -185,6 +183,21 @@ for entry in os.listdir(dir_csvs_entrada):
     if area_bajo_roc > ganador_area_bajo_roc:
         ganador_area_bajo_roc = area_bajo_roc
         ganador_nombreModelo = nombreModelo
+
+    ####### HYPERPARAMETROS: GRID de parametros #######
+    print("HYPERPARAMETROS - URL: https://scikit-learn.org/stable/modules/grid_search.html")
+    nombreModelo = "rf_grid"
+    pathModelo = dirModelos + str(id_subgrupo) + "_" + nombreModelo + ".modelo"
+    calibrated_forest = CalibratedClassifierCV(base_estimator=RandomForestClassifier(n_estimators=10))
+    param_grid = {'base_estimator__max_depth': [2, 4, 6, 8]}
+    modelo = GridSearchCV(calibrated_forest, param_grid, cv=5)
+    ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_train_t, modoDebug)
+    area_bajo_roc = cargarModeloyUsarlo(dirModelos, pathModelo, ds_test_f, ds_test_t, modoDebug)
+    print(type(area_bajo_roc))
+    if area_bajo_roc > ganador_area_bajo_roc:
+        ganador_area_bajo_roc = area_bajo_roc
+        ganador_nombreModelo = nombreModelo
+
 
 
   print("********* GANADOR *************")
