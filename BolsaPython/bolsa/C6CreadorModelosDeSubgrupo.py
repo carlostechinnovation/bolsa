@@ -23,11 +23,70 @@ print("Tipo de problema: CLASIFICACION BINOMIAL (target es boolean)")
 
 print ("PARAMETROS: ")
 dir_csvs_entrada = sys.argv[1]
-pathModelos = sys.argv[2]
+dirModelos = sys.argv[2]
 modoDebug = True  #En modo debug se pintan los dibujos. En otro caso, se evita calculo innecesario
 print ("dir_csvs_entrada: %s" % dir_csvs_entrada)
-print ("pathModelos: %s" % pathModelos)
+print ("dirModelos: %s" % dirModelos)
 
+
+################# FUNCIONES ########################################
+def ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_train_t, modoDebug):
+
+    print("** SVC (SVM para Clasificacion) **")
+    # URL: https://scikit-learn.org/stable/modules/svm.html
+    nombreModelo = "svc"
+    pathModelo = dirModelos + str(id_subgrupo) + "_" + nombreModelo + ".modelo"
+    modelo = svm.SVC(C=1.0, kernel='rbf', degree=3, gamma='scale', coef0=0.0, shrinking=True, probability=False,
+                     tol=0.001, cache_size=200, class_weight=None, verbose=False, max_iter=-1,
+                     decision_function_shape='ovr', break_ties=False, random_state=None)
+    modelo.fit(ds_train_f, ds_train_t)  # ENTRENAMIENTO (TRAIN)
+    s = pickle.dump(modelo, open(pathModelo, 'wb'))
+
+
+def cargarModeloyUsarlo(dirModelos, pathModelo, ds_test_f, ds_test_t, modoDebug):
+
+    modelo_loaded = pickle.load(open(pathModelo, 'rb'))
+    ds_test_t_pred = modelo_loaded.predict(ds_test_f)  # PREDICCION de los targets de TEST (los compararemos con los que tenemos)
+    area_bajo_roc = roc_auc_score(ds_test_t, ds_test_t_pred)
+
+    print(nombreModelo + ".roc_auc_score = " + str(round(area_bajo_roc, 4)))
+    average_precision = average_precision_score(ds_test_t, ds_test_t_pred)
+    print('Average precision-recall score: {0:0.2f}'.format(average_precision))
+
+    if modoDebug:
+        print("Curva ROC...")
+        # EVALUACION DE MODELOS - Curva ROC: https://scikit-learn.org/stable/modules/generated/sklearn.metrics.roc_curve.html
+        fpr_modelo, tpr_modelo, _ = roc_curve(ds_test_t, ds_test_t_pred)
+        path_dibujo = dirModelos + str(id_subgrupo) + "_" + nombreModelo + "_roc.png"
+        plt.figure(1)
+        plt.plot([0, 1], [0, 1], 'k--')
+        plt.plot(fpr_modelo, tpr_modelo, label=nombreModelo)
+        plt.xlabel('False positive rate')
+        plt.ylabel('True positive rate')
+        plt.title(nombreModelo + ' - Curva ROC', fontsize=10)
+        plt.legend(loc='best')
+        plt.savefig(path_dibujo, bbox_inches='tight')
+        # Limpiando dibujo:
+        plt.clf()
+        plt.cla()
+        plt.close()
+
+        print("Matriz de confusion...")
+        path_dibujo = dirModelos + str(id_subgrupo) + "_" + nombreModelo + "_matriz_conf.png"
+        disp = plot_confusion_matrix(modelo_loaded, ds_test_f, ds_test_t, cmap=plt.cm.Blues, normalize=None)
+        disp.ax_.set_title(nombreModelo)
+        print(disp.confusion_matrix)
+        plt.savefig(path_dibujo, bbox_inches='tight')
+        # Limpiando dibujo:
+        plt.clf()
+        plt.cla()
+        plt.close()
+
+    return area_bajo_roc
+
+
+
+################# MAIN ########################################
 # GANADOR DEL SUBGRUPO (acumuladores)
 ganador_nombreModelo = "NINGUNO"
 ganador_area_bajo_roc = 0
@@ -84,201 +143,52 @@ for entry in os.listdir(dir_csvs_entrada):
     print("EVALUACION con curva precision-recall: " + "https://scikit-learn.org/stable/auto_examples/model_selection/plot_precision_recall.html")
 
 
-    print("** SVC (SVM para Clasificacion) **")
-    # URL: https://scikit-learn.org/stable/modules/svm.html
-    nombreModelo="svc"
-    pathModelo = pathModelos + str(id_subgrupo) + "_"+nombreModelo+".modelo"
+    nombreModelo = "svc"
+    pathModelo = dirModelos + str(id_subgrupo) + "_" + nombreModelo + ".modelo"
     modelo = svm.SVC(C=1.0, kernel='rbf', degree=3, gamma='scale', coef0=0.0, shrinking=True, probability=False,
                      tol=0.001, cache_size=200, class_weight=None, verbose=False, max_iter=-1,
                      decision_function_shape='ovr', break_ties=False, random_state=None)
-    modelo.fit(ds_train_f, ds_train_t)  # ENTRENAMIENTO (TRAIN)
-    s = pickle.dump(modelo, open(pathModelo, 'wb'))
-    modelo_loaded = pickle.load(open(pathModelo, 'rb'))
-    ds_test_t_pred = modelo_loaded.predict(ds_test_f)  # PREDICCION de los targets de TEST (los compararemos con los que tenemos)
-    area_bajo_roc = roc_auc_score(ds_test_t, ds_test_t_pred)
+    ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_train_t, modoDebug)
+    area_bajo_roc = cargarModeloyUsarlo(dirModelos, pathModelo, ds_test_f, ds_test_t, modoDebug)
+    print(type(area_bajo_roc))
     if area_bajo_roc > ganador_area_bajo_roc:
         ganador_area_bajo_roc = area_bajo_roc
         ganador_nombreModelo = nombreModelo
-    print(nombreModelo + ".roc_auc_score = " + str(round(area_bajo_roc, 4)))
-    average_precision = average_precision_score(ds_test_t, ds_test_t_pred)
-    print('Average precision-recall score: {0:0.2f}'.format(average_precision))
-    #disp = plot_precision_recall_curve(modelo_loaded, ds_test_f, ds_test_t)
-    #disp.ax_.set_title('2-class Precision-Recall curve: AP={0:0.2f}'.format(average_precision))
-
-    if modoDebug:
-        print("Curva ROC...")
-        # EVALUACION DE MODELOS - Curva ROC: https://scikit-learn.org/stable/modules/generated/sklearn.metrics.roc_curve.html
-        fpr_modelo, tpr_modelo, _ = roc_curve(ds_test_t, ds_test_t_pred)
-        path_dibujo = pathModelos + str(id_subgrupo) + "_"+nombreModelo+"_roc.png"
-        plt.figure(1)
-        plt.plot([0, 1], [0, 1], 'k--')
-        plt.plot(fpr_modelo, tpr_modelo, label=nombreModelo)
-        plt.xlabel('False positive rate')
-        plt.ylabel('True positive rate')
-        plt.title(nombreModelo + ' - Curva ROC', fontsize=10)
-        plt.legend(loc='best')
-        plt.savefig(path_dibujo, bbox_inches='tight')
-        #Limpiando dibujo:
-        plt.clf()
-        plt.cla()
-        plt.close()
-
-        print("Matriz de confusion...")
-        path_dibujo = pathModelos + str(id_subgrupo) + "_"+nombreModelo+"_matriz_conf.png"
-        disp = plot_confusion_matrix(modelo_loaded, ds_test_f, ds_test_t, cmap=plt.cm.Blues, normalize=None)
-        print(disp.confusion_matrix)
-        plt.savefig(path_dibujo, bbox_inches='tight')
-        #Limpiando dibujo:
-        plt.clf()
-        plt.cla()
-        plt.close()
 
 
-    print("** REGRESION LOGISTICA (para Clasificacion) **")
-    # URL:
     nombreModelo = "logreg"
-    pathModelo = pathModelos + str(id_subgrupo) + "_"+nombreModelo+".modelo"
+    pathModelo = dirModelos + str(id_subgrupo) + "_" + nombreModelo + ".modelo"
     modelo = LogisticRegression(random_state=0, solver='lbfgs', multi_class='ovr')
-    modelo.fit(ds_train_f, ds_train_t)  # ENTRENAMIENTO (TRAIN)
-    s = pickle.dump(modelo, open(pathModelo, 'wb'))
-    modelo_loaded = pickle.load(open(pathModelo, 'rb'))
-    ds_test_t_pred = modelo_loaded.predict(ds_test_f) # PREDICCION de los targets de TEST (los compararemos con los que tenemos)
-    area_bajo_roc = roc_auc_score(ds_test_t, ds_test_t_pred)
+    ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_train_t, modoDebug)
+    area_bajo_roc = cargarModeloyUsarlo(dirModelos, pathModelo, ds_test_f, ds_test_t, modoDebug)
+    print(type(area_bajo_roc))
     if area_bajo_roc > ganador_area_bajo_roc:
         ganador_area_bajo_roc = area_bajo_roc
         ganador_nombreModelo = nombreModelo
-    print(nombreModelo + ".roc_auc_score = " + str(round(area_bajo_roc, 4)))
-    average_precision = average_precision_score(ds_test_t, ds_test_t_pred)
-    print('Average precision-recall score: {0:0.2f}'.format(average_precision))
 
-    if modoDebug:
-      print("Curva ROC...")
-      # EVALUACION DE MODELOS - Curva ROC: https://scikit-learn.org/stable/modules/generated/sklearn.metrics.roc_curve.html
-      fpr_modelo, tpr_modelo, _ = roc_curve(ds_test_t, ds_test_t_pred)
-      path_dibujo = pathModelos + str(id_subgrupo) + "_" + nombreModelo + "_roc.png"
-      plt.figure(1)
-      plt.plot([0, 1], [0, 1], 'k--')
-      plt.plot(fpr_modelo, tpr_modelo, label=nombreModelo)
-      plt.xlabel('False positive rate')
-      plt.ylabel('True positive rate')
-      plt.title(nombreModelo + ' - Curva ROC', fontsize=10)
-      plt.legend(loc='best')
-      plt.savefig(path_dibujo, bbox_inches='tight')
-      # Limpiando dibujo:
-      plt.clf()
-      plt.cla()
-      plt.close()
-
-      print("Matriz de confusion...")
-      path_dibujo = pathModelos + str(id_subgrupo) + "_" + nombreModelo + "_matriz_conf.png"
-      disp = plot_confusion_matrix(modelo_loaded, ds_test_f, ds_test_t, cmap=plt.cm.Blues, normalize=None)
-      print(disp.confusion_matrix)
-      plt.savefig(path_dibujo, bbox_inches='tight')
-      # Limpiando dibujo:
-      plt.clf()
-      plt.cla()
-      plt.close()
-
-
-    print("** RANDOM FOREST (para Clasificacion) **")
-    # URL:
     nombreModelo = "rf"
-    pathModelo = pathModelos + str(id_subgrupo) + "_"+nombreModelo+".modelo"
+    pathModelo = dirModelos + str(id_subgrupo) + "_" + nombreModelo + ".modelo"
     modelo = RandomForestClassifier(n_estimators=100, max_depth=2, random_state=0)
-    modelo.fit(ds_train_f, ds_train_t)  # ENTRENAMIENTO (TRAIN)
-    s = pickle.dump(modelo, open(pathModelo, 'wb'))
-    modelo_loaded = pickle.load(open(pathModelo, 'rb'))
-    ds_test_t_pred = modelo_loaded.predict(ds_test_f) # PREDICCION de los targets de TEST (los compararemos con los que tenemos)
-    area_bajo_roc = roc_auc_score(ds_test_t, ds_test_t_pred)
+    ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_train_t, modoDebug)
+    area_bajo_roc = cargarModeloyUsarlo(dirModelos, pathModelo, ds_test_f, ds_test_t, modoDebug)
+    print(type(area_bajo_roc))
     if area_bajo_roc > ganador_area_bajo_roc:
         ganador_area_bajo_roc = area_bajo_roc
         ganador_nombreModelo = nombreModelo
-    print(nombreModelo + ".roc_auc_score = " + str(round(area_bajo_roc, 4)))
-    average_precision = average_precision_score(ds_test_t, ds_test_t_pred)
-    print('Average precision-recall score: {0:0.2f}'.format(average_precision))
 
-    if modoDebug:
-        print("Curva ROC...")
-        # EVALUACION DE MODELOS - Curva ROC: https://scikit-learn.org/stable/modules/generated/sklearn.metrics.roc_curve.html
-        fpr_modelo, tpr_modelo, _ = roc_curve(ds_test_t, ds_test_t_pred)
-        path_dibujo = pathModelos + str(id_subgrupo) + "_"+nombreModelo+"_roc.png"
-        plt.figure(1)
-        plt.plot([0, 1], [0, 1], 'k--')
-        plt.plot(fpr_modelo, tpr_modelo, label=nombreModelo)
-        plt.xlabel('False positive rate')
-        plt.ylabel('True positive rate')
-        plt.title(nombreModelo + ' - Curva ROC', fontsize=10)
-        plt.legend(loc='best')
-        plt.savefig(path_dibujo, bbox_inches='tight')
-        #Limpiando dibujo:
-        plt.clf()
-        plt.cla()
-        plt.close()
-
-        print("Matriz de confusion...")
-        path_dibujo = pathModelos + str(id_subgrupo) + "_"+nombreModelo+"_matriz_conf.png"
-        disp = plot_confusion_matrix(modelo_loaded, ds_test_f, ds_test_t, cmap=plt.cm.Blues, normalize=None)
-        print(disp.confusion_matrix)
-        plt.savefig(path_dibujo, bbox_inches='tight')
-        #Limpiando dibujo:
-        plt.clf()
-        plt.cla()
-        plt.close()
-
-
-    print("** RED NEURONAL (para Clasificacion) **")
-    # URL:
     nombreModelo = "nn"
-    pathModelo = pathModelos + str(id_subgrupo) + "_"+nombreModelo+".modelo"
+    pathModelo = dirModelos + str(id_subgrupo) + "_" + nombreModelo + ".modelo"
     modelo = MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(5, 2), random_state=1)
-    modelo.fit(ds_train_f, ds_train_t)  # ENTRENAMIENTO (TRAIN)
-    s = pickle.dump(modelo, open(pathModelo, 'wb'))
-    modelo_loaded = pickle.load(open(pathModelo, 'rb'))
-    ds_test_t_pred = modelo_loaded.predict(ds_test_f) # PREDICCION de los targets de TEST (los compararemos con los que tenemos)
-    area_bajo_roc = roc_auc_score(ds_test_t, ds_test_t_pred)
+    ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_train_t, modoDebug)
+    area_bajo_roc = cargarModeloyUsarlo(dirModelos, pathModelo, ds_test_f, ds_test_t, modoDebug)
+    print(type(area_bajo_roc))
     if area_bajo_roc > ganador_area_bajo_roc:
         ganador_area_bajo_roc = area_bajo_roc
         ganador_nombreModelo = nombreModelo
-    print(nombreModelo + ".roc_auc_score = " + str(round(area_bajo_roc, 4)))
-    average_precision = average_precision_score(ds_test_t, ds_test_t_pred)
-    print('Average precision-recall score: {0:0.2f}'.format(average_precision))
-
-    if modoDebug:
-        print("Curva ROC...")
-        # EVALUACION DE MODELOS - Curva ROC: https://scikit-learn.org/stable/modules/generated/sklearn.metrics.roc_curve.html
-        fpr_modelo, tpr_modelo, _ = roc_curve(ds_test_t, ds_test_t_pred)
-        path_dibujo = pathModelos + str(id_subgrupo) + "_"+nombreModelo+"_roc.png"
-        plt.figure(1)
-        plt.plot([0, 1], [0, 1], 'k--')
-        plt.plot(fpr_modelo, tpr_modelo, label=nombreModelo)
-        plt.xlabel('False positive rate')
-        plt.ylabel('True positive rate')
-        plt.title(nombreModelo + ' - Curva ROC', fontsize=10)
-        plt.legend(loc='best')
-        plt.savefig(path_dibujo, bbox_inches='tight')
-        #Limpiando dibujo:
-        plt.clf()
-        plt.cla()
-        plt.close()
-
-        print("Matriz de confusion...")
-        path_dibujo = pathModelos + str(id_subgrupo) + "_"+nombreModelo+"_matriz_conf.png"
-        disp = plot_confusion_matrix(modelo_loaded, ds_test_f, ds_test_t, cmap=plt.cm.Blues, normalize=None)
-        print(disp.confusion_matrix)
-        plt.savefig(path_dibujo, bbox_inches='tight')
-        #Limpiando dibujo:
-        plt.clf()
-        plt.cla()
-        plt.close()
 
 
   print("********* GANADOR *************")
   print("El modelo ganador es " + ganador_nombreModelo +" con un area_bajo_ROC de " + str(round(ganador_area_bajo_roc, 4)))
-
-
-################## MAIN ########################################
-print("PENDIENTE...")
-
 
 
 ############################################################
