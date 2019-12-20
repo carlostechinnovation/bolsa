@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.log4j.BasicConfigurator;
@@ -146,6 +147,13 @@ public class JuntarEstaticosYDinamicosCSVunico {
 			writer.print("");// VACIAMOS CONTENIDO
 			writer.close();
 		}
+
+		// -------- HACEMOS REVERSE DE LOS DATOS, poniendo primero los datos más
+		// recientes (optimiza los pasos siguientes en rendimiento, pero no afecta a los
+		// modelos porque son casos independientes) ----
+		Collections.reverse(dinamicosDatos);
+
+//------- ESCRITURA a fichero
 		FileOutputStream fos = new FileOutputStream(fjuntos, false);
 		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
 
