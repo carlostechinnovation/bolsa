@@ -33,12 +33,15 @@ print ("dirModelos: %s" % dirModelos)
 
 
 ################# FUNCIONES ########################################
-def ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_train_t, modoDebug):
+def ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_train_t, modeloEsGrid, modoDebug):
 
     print("** " + nombreModelo + " **")
     modelo.fit(ds_train_f, ds_train_t)  # ENTRENAMIENTO (TRAIN)
     print("Se guarda el modelo " + nombreModelo + " en: " + pathModelo)
-    s = pickle.dump(modelo, open(pathModelo, 'wb'))
+    if modeloEsGrid:
+        s = pickle.dump(modelo.best_estimator_, open(pathModelo, 'wb'))
+    else:
+        s = pickle.dump(modelo, open(pathModelo, 'wb'))
 
 
 def cargarModeloyUsarlo(dirModelos, pathModelo, ds_test_f, ds_test_t, modoDebug):
@@ -128,11 +131,11 @@ for entry in os.listdir(dir_csvs_entrada):
 
     print("Separamos FEATURES y TARGETS, de los 3 dataframes...")
     ds_train_f = ds_train.drop('TARGET', axis=1).to_numpy()
-    ds_train_t = ds_train[['TARGET']].to_numpy()
+    ds_train_t = ds_train[['TARGET']].to_numpy().ravel()
     ds_test_f = ds_test.drop('TARGET', axis=1).to_numpy()
-    ds_test_t = ds_test[['TARGET']].to_numpy()
+    ds_test_t = ds_test[['TARGET']].to_numpy().ravel()
     ds_validac_f = ds_validacion.drop('TARGET', axis=1).to_numpy()
-    ds_validac_t = ds_validacion[['TARGET']].to_numpy()
+    ds_validac_t = ds_validacion[['TARGET']].to_numpy().ravel()
 
     print("---------------- MODELOS con varias configuraciones (hiperparametros) --------")
 
@@ -146,7 +149,7 @@ for entry in os.listdir(dir_csvs_entrada):
     modelo = svm.SVC(C=1.0, kernel='rbf', degree=3, gamma='scale', coef0=0.0, shrinking=True, probability=False,
                      tol=0.001, cache_size=200, class_weight=None, verbose=False, max_iter=-1,
                      decision_function_shape='ovr', break_ties=False, random_state=None)
-    ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_train_t, modoDebug)
+    ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_train_t, False, modoDebug)
     area_bajo_roc = cargarModeloyUsarlo(dirModelos, pathModelo, ds_test_f, ds_test_t, modoDebug)
     print(type(area_bajo_roc))
     if area_bajo_roc > ganador_area_bajo_roc:
@@ -157,7 +160,7 @@ for entry in os.listdir(dir_csvs_entrada):
     nombreModelo = "logreg"
     pathModelo = dirModelos + str(id_subgrupo) + "_" + nombreModelo + ".modelo"
     modelo = LogisticRegression(random_state=0, solver='lbfgs', multi_class='ovr')
-    ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_train_t, modoDebug)
+    ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_train_t, False, modoDebug)
     area_bajo_roc = cargarModeloyUsarlo(dirModelos, pathModelo, ds_test_f, ds_test_t, modoDebug)
     print(type(area_bajo_roc))
     if area_bajo_roc > ganador_area_bajo_roc:
@@ -167,7 +170,7 @@ for entry in os.listdir(dir_csvs_entrada):
     nombreModelo = "rf"
     pathModelo = dirModelos + str(id_subgrupo) + "_" + nombreModelo + ".modelo"
     modelo = RandomForestClassifier(n_estimators=100, max_depth=2, random_state=0)
-    ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_train_t, modoDebug)
+    ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_train_t, False, modoDebug)
     area_bajo_roc = cargarModeloyUsarlo(dirModelos, pathModelo, ds_test_f, ds_test_t, modoDebug)
     print(type(area_bajo_roc))
     if area_bajo_roc > ganador_area_bajo_roc:
@@ -177,7 +180,7 @@ for entry in os.listdir(dir_csvs_entrada):
     nombreModelo = "nn"
     pathModelo = dirModelos + str(id_subgrupo) + "_" + nombreModelo + ".modelo"
     modelo = MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(5, 2), random_state=1)
-    ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_train_t, modoDebug)
+    ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_train_t, False, modoDebug)
     area_bajo_roc = cargarModeloyUsarlo(dirModelos, pathModelo, ds_test_f, ds_test_t, modoDebug)
     print(type(area_bajo_roc))
     if area_bajo_roc > ganador_area_bajo_roc:
@@ -190,17 +193,15 @@ for entry in os.listdir(dir_csvs_entrada):
     pathModelo = dirModelos + str(id_subgrupo) + "_" + nombreModelo + ".modelo"
     calibrated_forest = CalibratedClassifierCV(base_estimator=RandomForestClassifier(n_estimators=10))
     param_grid = {'base_estimator__max_depth': [2, 4, 6, 8]}
-    modelo = GridSearchCV(calibrated_forest, param_grid, cv=5)
-    ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_train_t, modoDebug)
+    modelo = GridSearchCV(calibrated_forest, param_grid, n_jobs=-1, refit = True, cv = 5, pre_dispatch = '2*n_jobs', return_train_score = False)
+    ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_train_t, True, modoDebug)
     area_bajo_roc = cargarModeloyUsarlo(dirModelos, pathModelo, ds_test_f, ds_test_t, modoDebug)
     print(type(area_bajo_roc))
     if area_bajo_roc > ganador_area_bajo_roc:
         ganador_area_bajo_roc = area_bajo_roc
         ganador_nombreModelo = nombreModelo
 
-
-
-  print("********* GANADOR *************")
+    print("********* GANADOR *************")
   print("El modelo ganador es " + ganador_nombreModelo +" con un area_bajo_ROC de " + str(round(ganador_area_bajo_roc, 4)))
 
 
