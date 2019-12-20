@@ -160,7 +160,7 @@ def reducirFeaturesYGuardar(featuresFicheroNorm, targetsFichero, pathSalidaFeatu
   # Create the RFE object and compute a cross-validated score.
   svc_model = SVC(kernel="linear")
   # The "accuracy" scoring is proportional to the number of correct classifications
-  rfecv_modelo = RFECV(estimator=svc_model, step=1, min_features_to_select=3, cv=StratifiedKFold(3), scoring='accuracy', verbose=0, n_jobs=8)
+  rfecv_modelo = RFECV(estimator=svc_model, step=1, min_features_to_select=3, cv=StratifiedKFold(3), scoring='accuracy', verbose=1, n_jobs=8)
   rfecv_modelo.fit(featuresFicheroNorm, targetsFichero)
   print("Numero original de features: %d" % featuresFicheroNorm.shape[1])
   print("Numero optimo de features: %d" % rfecv_modelo.n_features_)
