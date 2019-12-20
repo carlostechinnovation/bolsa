@@ -28,7 +28,7 @@ public class ConstructorElaborados {
 
 	// Parametros del TARGET (subida del S% en precio de close, tras X velas, y no
 	// cae mas de un R% dentro de las siguientes M velas posteriores)
-	public final static Integer S = 20;
+	public final static Integer S = 10;
 	public final static Integer X = 4 * HORAS_AL_DIA;
 	public final static Integer R = 5;
 	public final static Integer M = 1 * HORAS_AL_DIA;
