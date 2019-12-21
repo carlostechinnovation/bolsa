@@ -174,8 +174,8 @@ public class CrearDatasetsSubgruposKMeans {
 			}
 			// Se calcula la cobertura del target
 			coberturaEmpresasPorCluster = estadisticas.getMean();
-			MY_LOGGER.debug("COBERTURA DEL cluster " + i + ": " + coberturaEmpresasPorCluster);
-			System.out.println("COBERTURA DEL cluster " + i + ": " + coberturaEmpresasPorCluster);
+			MY_LOGGER.debug("COBERTURA DEL cluster " + i + ": " + coberturaEmpresasPorCluster * 100);
+			System.out.println("COBERTURA DEL cluster " + i + ": " + coberturaEmpresasPorCluster * 100);
 
 			// Para generar un fichero de dataset del cluster, la cobertura debe ser mayor
 			// que un x%
