@@ -18,7 +18,7 @@ from sklearn.utils import resample
 from sklearn.model_selection import GridSearchCV
 from sklearn.calibration import CalibratedClassifierCV
 
-
+print("-------------------------------------------------------------------------------------------------")
 print("---- CAPA 6 - Crear almacenar y evaluar varios modelos (para cada subgrupo) -------")
 print("Tipo de problema: CLASIFICACION BINOMIAL (target es boolean)")
 
@@ -26,6 +26,7 @@ print ("PARAMETROS: ")
 dir_csvs_entrada = sys.argv[1]
 dirModelos = sys.argv[2]
 modoDebug = True  #En modo debug se pintan los dibujos. En otro caso, se evita calculo innecesario
+umbralCasosSuficientesClasePositiva = 100
 print ("dir_csvs_entrada: %s" % dir_csvs_entrada)
 print ("dirModelos: %s" % dirModelos)
 
@@ -96,12 +97,13 @@ ganador_grid_mejores_parametros=[]
 
 print("Recorremos los CSVs (subgrupos) que hay en el DIRECTORIO...")
 for entry in os.listdir(dir_csvs_entrada):
+  print("-------------------------------------------------------------------------------------------------")
   print("entry: " + entry)
   path_absoluto_fichero = os.path.join(dir_csvs_entrada, entry)
   print("path_absoluto_fichero: " + path_absoluto_fichero)
 
   if (entry.endswith('.csv') and os.path.isfile(path_absoluto_fichero) and os.stat(path_absoluto_fichero).st_size > 0 ):
-    print("-------------------------------------------------------------------------------------------------")
+
     id_subgrupo = Path(entry).stem
     print("id_subgrupo=" + id_subgrupo)
     pathEntrada = os.path.abspath(entry)
@@ -115,17 +117,23 @@ for entry in os.listdir(dir_csvs_entrada):
     ift_minoritaria = inputFeaturesyTarget[inputFeaturesyTarget.TARGET == True]
     print("ift_mayoritaria:" + str(ift_mayoritaria.shape[0]) + " x " + str(ift_mayoritaria.shape[1]))
     print("ift_minoritaria:" + str(ift_minoritaria.shape[0]) + " x " + str(ift_minoritaria.shape[1]))
+    print("Tasa de desbalanceo entre clases = " + str(ift_mayoritaria.shape[0]) + "/" + str(ift_minoritaria.shape[0]) + " = " + str(ift_mayoritaria.shape[0]/ift_minoritaria.shape[0]))
     num_muestras_minoria = ift_minoritaria.shape[0]
+
+    casosInsuficientes = (num_muestras_minoria < umbralCasosSuficientesClasePositiva)
+    if(casosInsuficientes):
+        print("Numero de casos en clase minoritaria es INSUFICIENTE. Así que abandonamos este dataset y seguimos")
+        continue  # Sigue dentro del bucle for, con el siguiente fichero CSV
+
     print("num_muestras_minoria: " + str(num_muestras_minoria))
     ift_mayoritaria_downsampled = resample(ift_mayoritaria, replace=False, n_samples=num_muestras_minoria, random_state=123)
 
     ift_balanceadas = pd.concat([ift_mayoritaria_downsampled, ift_minoritaria]) # Juntar ambas clases ya BALANCEADAS
     print("Las clases ya están balanceadas:")
-    ift_balanceadas.TARGET.value_counts()
+    print("ift_balanceadas:" + str(ift_balanceadas.shape[0]) + " x " + str(ift_balanceadas.shape[1]))
 
-
-    print("DIVIDIR EL DATASET DE ENTRADA EN 3 PARTES: TRAIN (60%), TEST (20%), VALIDACION (20%)...")
-    ds_train, ds_test, ds_validacion = np.split(ift_balanceadas.sample(frac=1), [int(.6 * len(ift_balanceadas)), int(.8 * len(ift_balanceadas))])
+    print("DIVIDIR EL DATASET DE ENTRADA EN 3 PARTES: TRAIN (70%), TEST (20%), VALIDACION (10%)...")
+    ds_train, ds_test, ds_validacion = np.split(ift_balanceadas.sample(frac=1), [int(.7 * len(ift_balanceadas)), int(.9 * len(ift_balanceadas))])
     print("TRAIN --> " + str(ds_train.shape[0]) + " x " + str(ds_train.shape[1]))
     print("TEST --> " + str(ds_test.shape[0]) + " x " + str(ds_test.shape[1]))
     print("VALIDACION --> " + str(ds_validacion.shape[0]) + " x " + str(ds_validacion.shape[1]))
@@ -240,11 +248,10 @@ for entry in os.listdir(dir_csvs_entrada):
         ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
 
 
-
-
-  print("********* GANADOR *************")
-  print("El modelo ganador es " + ganador_nombreModelo + " con un area_bajo_ROC de " + str(round(ganador_area_bajo_roc, 4)) +" y con estos hiperparametros: ")
-  print(ganador_grid_mejores_parametros)
+    print("********* GANADOR de subgrupo " + id_subgrupo + " *************")
+    print("Modelo ganador es " + ganador_nombreModelo + " con un area_bajo_ROC de " + str(round(ganador_area_bajo_roc, 4)) +" y con estos hiperparametros: ")
+    print(ganador_grid_mejores_parametros)
+    pathModeloGanadorDeSubgrupo = dirModelos + str(id_subgrupo) + "_" + nombreModelo + ".modelo"
 
 
 ############################################################

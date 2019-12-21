@@ -27,12 +27,14 @@ dir_entrada = sys.argv[1]
 path_dir_salida = sys.argv[2]
 path_dir_img = sys.argv[3]
 varianza=0.90
-modoDebug = True  #En modo debug se pintan los dibujos. En otro caso, se evita calculo innecesario
+modoDebug = False  #En modo debug se pintan los dibujos. En otro caso, se evita calculo innecesario
 print("dir_entrada = %s" % dir_entrada)
 print("path_dir_salida = %s" % path_dir_salida)
 print("path_dir_img = %s" % path_dir_img)
 
-######################## FUNCIONES ###########
+
+######################## FUNCIONES #######################################################
+
 def leerFeaturesyTarget(pathEntrada, path_dir_img, modoDebug):
   print("----- leerFeaturesyTarget ------")
   print("Entrada --> " + pathEntrada)
@@ -66,7 +68,6 @@ def leerFeaturesyTarget(pathEntrada, path_dir_img, modoDebug):
   outliers_indices = detector_outliers.predict(entradaFeaturesYTarget3) #Si vale -1 es un outlier!!!
   entradaFeaturesYTarget4 = entradaFeaturesYTarget3[np.where(outliers_indices == 1, True, False)]
   print("entradaFeaturesYTarget4 (sin outliers):" + str(entradaFeaturesYTarget4.shape[0]) + " x " + str(entradaFeaturesYTarget4.shape[1]))
-
 
   print("Mostramos las 5 primeras filas:")
   print(entradaFeaturesYTarget4.head())
@@ -135,15 +136,16 @@ def normalizarFeatures(featuresFichero, path_dataset_sin_extension, modoDebug):
 
   return featuresFicheroNorm2
 
-def comprobarSuficientesCasos(featuresFicheroNorm, targetsFichero, modoDebug):
-  print("----- comprobarSuficientesCasos ------")
+
+def comprobarSuficientesClasesTarget(featuresFicheroNorm, targetsFichero, modoDebug):
+  print("----- comprobarSuficientesClasesTarget ------")
   print("featuresFicheroNorm:" + str(featuresFicheroNorm.shape[0]) + " x " + str(featuresFicheroNorm.shape[1]))
   print("targetsFichero:" + str(targetsFichero.shape[0]) + " x " + str(targetsFichero.shape[1]))
 
   y_unicos = np.unique(targetsFichero)
   print("Clases encontradas en el target: ")
   print(y_unicos)
-
+  return y_unicos.size
 
 
 def reducirFeaturesYGuardar(featuresFicheroNorm, targetsFichero, pathSalidaFeaturesyTargets, varianzaAcumuladaDeseada, path_dataset_sin_extension, modoDebug):
@@ -160,14 +162,14 @@ def reducirFeaturesYGuardar(featuresFicheroNorm, targetsFichero, pathSalidaFeatu
   # Create the RFE object and compute a cross-validated score.
   svc_model = SVC(kernel="linear")
   # The "accuracy" scoring is proportional to the number of correct classifications
-  rfecv_modelo = RFECV(estimator=svc_model, step=1, min_features_to_select=3, cv=StratifiedKFold(3), scoring='accuracy', verbose=1, n_jobs=8)
+  rfecv_modelo = RFECV(estimator=svc_model, step=1, min_features_to_select=3, cv=StratifiedKFold(3), scoring='accuracy', verbose=0, n_jobs=8)
   rfecv_modelo.fit(featuresFicheroNorm, targetsFichero)
   print("Numero original de features: %d" % featuresFicheroNorm.shape[1])
   print("Numero optimo de features: %d" % rfecv_modelo.n_features_)
-  print("Mascara de features elegidas:")
-  print(rfecv_modelo.support_)
-  print("Ranking:")
-  print(rfecv_modelo.ranking_)
+  #print("Mascara de features elegidas:")
+  #print(rfecv_modelo.support_)
+  #print("Ranking:")
+  #print(rfecv_modelo.ranking_)
 
   # Plot number of features VS. cross-validation scores
   if modoDebug:
@@ -183,12 +185,8 @@ def reducirFeaturesYGuardar(featuresFicheroNorm, targetsFichero, pathSalidaFeatu
     plt.cla()
     plt.close()
 
-  print("Las features elegidas son (aplicamos la mascara al dataframe de features):")
   columnas = featuresFicheroNorm.columns
-  #print(columnas)
   numColumnas = columnas.shape[0]
-  print("numColumnas="+str(numColumnas))
-
   columnasSeleccionadas =[]
   for i in range(numColumnas):
       if(rfecv_modelo.support_[i] == True):
@@ -217,7 +215,8 @@ def reducirFeaturesYGuardar(featuresFicheroNorm, targetsFichero, pathSalidaFeatu
   featuresytargets.to_csv(pathSalidaFeaturesyTargets, index=False, sep='|')
 
 
-################## MAIN ########################################
+################## MAIN ###########################################################
+
 print("Recorremos los CSVs que hay en el DIRECTORIO...")
 for entry in os.listdir(dir_entrada):
   path_absoluto_fichero = os.path.join(dir_entrada, entry)
@@ -230,11 +229,13 @@ for entry in os.listdir(dir_entrada):
     pathSalidaFeaturesyTargets = path_dir_salida + id_subgrupo + ".csv"
     featuresFichero, targetsFichero, path_dataset_sin_extension = leerFeaturesyTarget(path_absoluto_fichero, path_dir_img, modoDebug)
     featuresFicheroNorm = normalizarFeatures(featuresFichero, path_dataset_sin_extension, modoDebug)
-    comprobarSuficientesCasos(featuresFicheroNorm, targetsFichero, modoDebug)
-    reducirFeaturesYGuardar(featuresFicheroNorm, targetsFichero, pathSalidaFeaturesyTargets, varianza, path_dataset_sin_extension, modoDebug)
+    numclases = comprobarSuficientesClasesTarget(featuresFicheroNorm, targetsFichero, modoDebug)
 
+    if(numclases <= 1):
+        print("El subgrupo " + str(id_subgrupo) + " solo tiene " + str(numclases) + " clases en el target. Abortamos.")
+    else:
+        reducirFeaturesYGuardar(featuresFicheroNorm, targetsFichero, pathSalidaFeaturesyTargets, varianza, path_dataset_sin_extension, modoDebug)
 
-############################################################
 print("------------ FIN ----------------")
 
 
