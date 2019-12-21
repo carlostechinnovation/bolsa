@@ -12,7 +12,9 @@ import java.util.Set;
 
 import org.apache.commons.math3.ml.clustering.CentroidCluster;
 import org.apache.commons.math3.ml.clustering.KMeansPlusPlusClusterer;
-import org.apache.commons.math3.ml.distance.DistanceMeasure;
+import org.apache.commons.math3.ml.clustering.KMeansPlusPlusClusterer.EmptyClusterStrategy;
+import org.apache.commons.math3.ml.distance.EuclideanDistance;
+import org.apache.commons.math3.random.JDKRandomGenerator;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -24,14 +26,15 @@ public class CrearDatasetsSubgruposKMeans {
 
 	static Logger MY_LOGGER = Logger.getLogger(CrearDatasetsSubgrupos.class);
 
+	
 	public static void main(String[] args) throws Exception {
 
 		MY_LOGGER.info("INICIO");
 		BasicConfigurator.configure();
 		MY_LOGGER.setLevel(Level.INFO);
 
-		String directorioIn = ElaboradosUtils.DIR_ELABORADOS_KMEANS; // DEFAULT
-		String directorioOut = SubgruposUtils.DIR_SUBGRUPOS_KMEANS; // DEFAULT
+		String directorioIn = ElaboradosUtils.DIR_ELABORADOS; // DEFAULT
+		String directorioOut = SubgruposUtils.DIR_SUBGRUPOS; // DEFAULT
 
 		if (args.length == 0) {
 			MY_LOGGER.info("Sin parametros de entrada. Rellenamos los DEFAULT...");
@@ -110,7 +113,8 @@ public class CrearDatasetsSubgruposKMeans {
 		// we use KMeans++ with 6 clusters and 10000 iterations maximum.
 		// we did not specify a distance measure; the default (euclidean distance) is
 		// used.
-		KMeansPlusPlusClusterer<EmpresaWrapper> clusterer = new KMeansPlusPlusClusterer<EmpresaWrapper>(6, 10000);
+		KMeansPlusPlusClusterer<EmpresaWrapper> clusterer = new KMeansPlusPlusClusterer<EmpresaWrapper>(6, 10000,
+				new EuclideanDistance(), new JDKRandomGenerator(), EmptyClusterStrategy.LARGEST_VARIANCE);
 		List<CentroidCluster<EmpresaWrapper>> clusterResults = clusterer.cluster(clusterInput);
 
 		// output the clusters
