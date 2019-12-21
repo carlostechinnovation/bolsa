@@ -60,7 +60,7 @@ cp '${DIR_BRUTOS_CSV}*' '${DIR_LIMPIOS}'
 
 ################################################################################################
 echo -e "-------- VARIABLES ELABORADAS -------------" >> ${LOG_MASTER}
-DIR_ELABORADOS="/bolsa/pasado/elaborados/"
+DIR_ELABORADOS="/bolsa/pasado/elaboradosKMEANS/"
 mkdir -p "${DIR_ELABORADOS}"
 
 echo -e "Calculando elaborados y target..." >> ${LOG_MASTER}
@@ -71,7 +71,7 @@ echo -e "Elaborados (incluye la variable elaborada TARGET) ya calculados" >> ${L
 
 ################################################################################################
 echo -e "-------- SUBGRUPOS -------------" >> ${LOG_MASTER}
-DIR_SUBGRUPOS="/bolsa/pasado/datasets/"
+DIR_SUBGRUPOS="/bolsa/pasado/datasetsKMEANS/"
 mkdir -p "${DIR_SUBGRUPOS}"
 
 echo -e "Calculando subgrupos..." >> ${LOG_MASTER}
