@@ -36,19 +36,21 @@ public class CrearDatasetsSubgruposKMeans {
 		String directorioIn = ElaboradosUtils.DIR_ELABORADOS; // DEFAULT
 		String directorioOut = SubgruposUtils.DIR_SUBGRUPOS; // DEFAULT
 		String coberturaMinima = SubgruposUtils.MIN_COBERTURA_CLUSTER; // DEFAULT
+		String minEmpresasPorCluster = SubgruposUtils.MIN_EMPRESAS_POR_CLUSTER; // DEFAULT
 
 		if (args.length == 0) {
 			MY_LOGGER.info("Sin parametros de entrada. Rellenamos los DEFAULT...");
-		} else if (args.length != 3) {
+		} else if (args.length != 4) {
 			MY_LOGGER.error("Parametros de entrada incorrectos!!");
 			System.exit(-1);
 		} else {
 			directorioIn = args[0];
 			directorioOut = args[1];
 			coberturaMinima = args[2];
+			minEmpresasPorCluster = args[3];
 		}
 
-		crearSubgruposYNormalizar(directorioIn, directorioOut, coberturaMinima);
+		crearSubgruposYNormalizar(directorioIn, directorioOut, coberturaMinima, minEmpresasPorCluster);
 
 		MY_LOGGER.info("FIN");
 
@@ -61,8 +63,8 @@ public class CrearDatasetsSubgruposKMeans {
 	 * @param directorioOut
 	 * @throws Exception
 	 */
-	public static void crearSubgruposYNormalizar(String directorioIn, String directorioOut, String coberturaMinima)
-			throws Exception {
+	public static void crearSubgruposYNormalizar(String directorioIn, String directorioOut, String coberturaMinima,
+			String minEmpresasPorCluster) throws Exception {
 
 		// Debo leer el parámetro que me interese: de momento el market cap. En el
 		// futuro sería conveniente separar por sector y liquidez (volumen medio de 6
@@ -184,8 +186,12 @@ public class CrearDatasetsSubgruposKMeans {
 						+ " no llega al mínimo: " + coberturaMinima + "%. NO SE GENERA DATASET");
 				System.out.println("El cluster " + i + ", con cobertura: " + coberturaEmpresasPorCluster * 100 + "%"
 						+ " no llega al mínimo: " + coberturaMinima + "%. NO SE GENERA DATASET");
+			} else if (empresasConTarget.keySet().size() < Integer.valueOf(minEmpresasPorCluster)) {
+				MY_LOGGER.debug("El cluster " + i + ", tiene: " + empresasConTarget.keySet().size()
+						+ " empresas, pero el mínimo debe ser: " + minEmpresasPorCluster + ". NO SE GENERA DATASET");
+				System.out.println("El cluster " + i + ", tiene: " + empresasConTarget.keySet().size()
+						+ " empresas, pero el mínimo debe ser: " + minEmpresasPorCluster + ". NO SE GENERA DATASET");
 			} else {
-
 				// Creo un CSV común para todas las del mismo tipo
 				ficheroOut = directorioOut + i + ".csv";
 				ficheroListadoOut = directorioOut + "Listado-" + i + ".empresas";
