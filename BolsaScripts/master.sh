@@ -72,7 +72,7 @@ echo -e "Elaborados (incluye la variable elaborada TARGET) ya calculados" >> ${L
 ################################################################################################
 echo -e "-------- SUBGRUPOS -------------" >> ${LOG_MASTER}
 DIR_SUBGRUPOS="/bolsa/pasado/datasets/"
-MIN_COBERTURA_CLUSTER=70
+MIN_COBERTURA_CLUSTER=80
 mkdir -p "${DIR_SUBGRUPOS}"
 mkdir -p "${MIN_COBERTURA_CLUSTER}"
 

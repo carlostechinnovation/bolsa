@@ -4,7 +4,7 @@ public class SubgruposUtils {
 
 	public static final String DIR_SUBGRUPOS = "/bolsa/pasado/datasets/";
 	//Cobertura mínima en tanto por 100
-	public static final String MIN_COBERTURA_CLUSTER="70";
+	public static final String MIN_COBERTURA_CLUSTER="80";
 	
 	/**
 	 * 

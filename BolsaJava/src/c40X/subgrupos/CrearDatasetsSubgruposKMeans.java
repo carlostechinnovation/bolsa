@@ -174,16 +174,16 @@ public class CrearDatasetsSubgruposKMeans {
 			}
 			// Se calcula la cobertura del target
 			coberturaEmpresasPorCluster = estadisticas.getMean();
-			MY_LOGGER.debug("COBERTURA DEL cluster " + i + ": " + coberturaEmpresasPorCluster * 100);
-			System.out.println("COBERTURA DEL cluster " + i + ": " + coberturaEmpresasPorCluster * 100);
+			MY_LOGGER.debug("COBERTURA DEL cluster " + i + ": " + coberturaEmpresasPorCluster * 100 + "%");
+			System.out.println("COBERTURA DEL cluster " + i + ": " + coberturaEmpresasPorCluster * 100 + "%");
 
 			// Para generar un fichero de dataset del cluster, la cobertura debe ser mayor
 			// que un x%
 			if (coberturaEmpresasPorCluster * 100 < Double.valueOf(coberturaMinima)) {
-				MY_LOGGER.debug("El cluster " + i + ", con cobertura: " + coberturaEmpresasPorCluster * 100
-						+ " no llega al mínimo: " + coberturaMinima + "%");
-				System.out.println("El cluster " + i + ", con cobertura: " + coberturaEmpresasPorCluster * 100
-						+ " no llega al mínimo: " + coberturaMinima + "%");
+				MY_LOGGER.debug("El cluster " + i + ", con cobertura: " + coberturaEmpresasPorCluster * 100 + "%"
+						+ " no llega al mínimo: " + coberturaMinima + "%. NO SE GENERA DATASET");
+				System.out.println("El cluster " + i + ", con cobertura: " + coberturaEmpresasPorCluster * 100 + "%"
+						+ " no llega al mínimo: " + coberturaMinima + "%. NO SE GENERA DATASET");
 			} else {
 
 				// Creo un CSV común para todas las del mismo tipo
