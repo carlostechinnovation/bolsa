@@ -3,7 +3,8 @@ package c40X.subgrupos;
 public class SubgruposUtils {
 
 	public static final String DIR_SUBGRUPOS = "/bolsa/pasado/datasets/";
-
+	public static final String DIR_SUBGRUPOS_KMEANS = "/bolsa/pasado/datasetsKMEANS/";
+	
 	/**
 	 * 
 	 * @param caracterABuscar

@@ -115,7 +115,7 @@ public class GestorFicheros {
 			while ((row = csvReader.readLine()) != null) {
 				MY_LOGGER.debug("Fila leída: " + row);
 				if (esPrimeraLinea) {
-					// En la primera linea esta la cabecera de parametros
+					// En la primera línea está la cabecera de parametros
 					// Se valida que el nombre recibido es igual que el usado en la constructora, y
 					// en dicho orden
 					data = row.split("\\|");
@@ -148,6 +148,75 @@ public class GestorFicheros {
 					if (leeSoloCabeceraYUnaFila) {
 						break;
 					}
+				}
+			}
+
+		} finally {
+			csvReader.close();
+		}
+		// Se guarda la empresa
+		datosSalida.put(empresa, datosEmpresa);
+
+		return datosSalida;
+	}
+
+	/**
+	 * 
+	 * @param pathFichero
+	 * @return
+	 * @throws Exception
+	 * @throws IOException
+	 */
+	public HashMap<String, HashMap<Integer, HashMap<String, String>>> leeTodosLosParametrosFicheroDeSoloUnaEmpresaYFilaMasReciente(
+			final String pathFichero) throws Exception, IOException {
+
+		Boolean esPrimeraLinea = Boolean.TRUE;
+		MY_LOGGER.info("Fichero leído: " + pathFichero);
+		HashMap<String, HashMap<Integer, HashMap<String, String>>> datosSalida = new HashMap<String, HashMap<Integer, HashMap<String, String>>>();
+		String row, empresa = "";
+		String[] data;
+		HashMap<Integer, HashMap<String, String>> datosEmpresa = new HashMap<Integer, HashMap<String, String>>();
+		HashMap<String, String> datosParametrosEmpresa;
+
+		File csvFile = new File(pathFichero);
+		if (!csvFile.isFile()) {
+			throw new FileNotFoundException("Fichero no válido: " + pathFichero);
+		}
+
+		BufferedReader csvReader = new BufferedReader(new FileReader(pathFichero));
+		HashMap<Integer, String> parametrosNombresConOrden = new HashMap<Integer, String>();
+		HashMap<Integer, String> parametrosValoresConOrden = new HashMap<Integer, String>();
+		try {
+			while ((row = csvReader.readLine()) != null) {
+				MY_LOGGER.debug("Fila leída: " + row);
+				if (esPrimeraLinea) {
+					// En la primera línea está la cabecera de parametros
+					data = row.split("\\|");
+
+					// Se guardan los parámetros con su orden
+					for (int i = 0; i < data.length; i++) {
+						parametrosNombresConOrden.put(i, data[i]);
+					}
+
+					esPrimeraLinea = Boolean.FALSE;
+
+				} else {
+					data = row.split("\\|");
+					for (int i = 0; i < data.length; i++) {
+						parametrosValoresConOrden.put(i, data[i]);
+					}
+					empresa = data[0];
+					datosParametrosEmpresa = new HashMap<String, String>();
+
+					// Se excluyen los dos primeros elementos
+					for (int i = 2; i < parametrosNombresConOrden.size(); i++) {
+						datosParametrosEmpresa.put(parametrosNombresConOrden.get(i), parametrosValoresConOrden.get(i));
+					}
+					// Se guarda la antiguedad
+					datosEmpresa.put(Integer.parseInt(data[1]), datosParametrosEmpresa);
+
+					// No se sigue leyendo el fichero
+					break;
 				}
 			}
 
@@ -211,12 +280,6 @@ public class GestorFicheros {
 				if (nombreParametro == "empresa" || nombreParametro == "antiguedad") {
 					// no se hace nada
 				} else {
-
-					if (empresa.equals("PIH") && antiguedad == 72 && nombreParametro.equals("CURTOSIS_21_PRECIO")) {
-
-						MY_LOGGER.info("PIH -> vela 72 -> CURTOSIS_21_PRECIO ...");
-						int x = 0;
-					}
 
 					// Se a�aden el resto de parametros
 					elementoAAnadir = "|" + parametrosEmpresa.get(nombreParametro);
