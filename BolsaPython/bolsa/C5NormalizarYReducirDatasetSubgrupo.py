@@ -2,6 +2,13 @@ import sys
 import os
 import pandas as pd
 from pathlib import Path
+
+from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
+from sklearn.gaussian_process import GaussianProcessClassifier
+from sklearn.gaussian_process.kernels import RBF
+from sklearn.naive_bayes import GaussianNB
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.neural_network import MLPClassifier
 from sklearn.preprocessing import StandardScaler, RobustScaler, PowerTransformer, QuantileTransformer
 from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
@@ -12,11 +19,11 @@ from sklearn import metrics
 import numpy as np
 from sklearn import linear_model
 import seaborn as sns
-from sklearn.ensemble import IsolationForest
+from sklearn.ensemble import IsolationForest, RandomForestClassifier, AdaBoostClassifier
 from sklearn.externals.joblib import dump, load
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
-
+from sklearn.tree import DecisionTreeClassifier
 
 print("---- CAPA 5 - Selección de variables/ Reducción de dimensiones (para cada subgrupo) -------")
 print("URL PCA: https://scikit-learn.org/stable/modules/unsupervised_reduction.html")
@@ -161,6 +168,27 @@ def reducirFeaturesYGuardar(featuresFicheroNorm, targetsFichero, pathSalidaFeatu
   print("** Recursive Feature Elimination (RFE) (que se parece a la técnica Step-wise) **")
   # Create the RFE object and compute a cross-validated score.
   svc_model = SVC(kernel="linear")
+
+  # Confusion matrix y reporte
+  print('CLASIFICADORES -FUERA DEL HILO DE EJECUCIÓN- LUIS')
+  classifiers = [
+    SVC(kernel="linear"),
+    AdaBoostClassifier(n_estimators=50, learning_rate=1.),
+    RandomForestClassifier(max_depth=5, n_estimators=10, max_features=1)]
+  for clasificador in classifiers:
+    rfecv = RFECV(estimator=clasificador, step=1, min_features_to_select=3, cv=StratifiedKFold(3), scoring='accuracy', verbose=0, n_jobs=8)
+    rfecv.fit(featuresFicheroNorm, targetsFichero)
+    print('Accuracy del clasificador: {:.2f}'
+          .format(rfecv.score(featuresFicheroNorm, targetsFichero)))
+    print("Optimal number of features : %d" % rfecv.n_features_)
+    # Plot number of features VS. cross-validation scores
+    plt.figure()
+    plt.xlabel("Number of features selected")
+    plt.ylabel("Cross validation score (nb of correct classifications)")
+    plt.plot(range(1, len(rfecv.grid_scores_) + 1), rfecv.grid_scores_)
+    plt.show()
+  print(' FIN - LUIS')
+
   # The "accuracy" scoring is proportional to the number of correct classifications
   rfecv_modelo = RFECV(estimator=svc_model, step=1, min_features_to_select=3, cv=StratifiedKFold(3), scoring='accuracy', verbose=0, n_jobs=8)
   rfecv_modelo.fit(featuresFicheroNorm, targetsFichero)
