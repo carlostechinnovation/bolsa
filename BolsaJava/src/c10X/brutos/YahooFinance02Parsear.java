@@ -52,15 +52,17 @@ public class YahooFinance02Parsear {
 
 		String directorioIn = BrutosUtils.DIR_BRUTOS; // DEFAULT
 		String directorioOut = BrutosUtils.DIR_BRUTOS_CSV; // DEFAULT
+		String modo = "P"; // DEFAULT (pasado)
 
 		if (args.length == 0) {
 			MY_LOGGER.info("Sin parametros de entrada. Rellenamos los DEFAULT...");
-		} else if (args.length != 2) {
+		} else if (args.length != 3) {
 			MY_LOGGER.error("Parametros de entrada incorrectos!!");
 			System.exit(-1);
 		} else {
 			directorioIn = args[0];
 			directorioOut = args[1];
+			modo = args[2];
 		}
 
 		// EMPRESAS NASDAQ
@@ -69,10 +71,11 @@ public class YahooFinance02Parsear {
 
 		// VELAS (tomando una empresa buena, que tendra todo relleno)
 		Map<String, Integer> velas = new HashMap<String, Integer>();
-		extraerVelasReferencia(velas, directorioIn, directorioOut);
+		extraerVelasReferencia(velas, directorioIn, directorioOut, "P");// coger todas las velas pasadas de la empresa
+																		// de referencia
 
 		// DATOS DINAMICOS DE TODAS LAS EMPRESAS
-		parsearDinamicos01(nasdaqEstaticos1, directorioIn, directorioOut, false);
+		parsearDinamicos01(nasdaqEstaticos1, directorioIn, directorioOut, false, modo);
 		rellenarVelasDiariasHuecoyAntiguedad02(nasdaqEstaticos1, directorioOut, velas);
 
 		MY_LOGGER.info("FIN");
@@ -84,16 +87,17 @@ public class YahooFinance02Parsear {
 	 * @param velas
 	 * @param directorioIn
 	 * @param directorioOut
+	 * @param modo
 	 * @throws IOException
 	 */
-	public static void extraerVelasReferencia(Map<String, Integer> velas, String directorioIn, String directorioOut)
-			throws IOException {
+	public static void extraerVelasReferencia(Map<String, Integer> velas, String directorioIn, String directorioOut,
+			String modo) throws IOException {
 
 		String mercadoReferencia = BrutosUtils.MERCADO_NQ;
 		String valorReferencia = "AAPL";
 
 		String ficheroConVelasYTiempos = parsearDinamicosEmpresa01(mercadoReferencia, valorReferencia, directorioIn,
-				directorioOut, true);
+				directorioOut, true, modo);
 
 		// --------- Leer fichero -------------
 		File file = new File(ficheroConVelasYTiempos);
@@ -122,11 +126,12 @@ public class YahooFinance02Parsear {
 	 * @param directorioIn
 	 * @param directorioOut
 	 * @param soloVelas
+	 * @param modo
 	 * @return
 	 * @throws IOException
 	 */
 	public static List<String> parsearDinamicos01(List<EstaticoNasdaqModelo> nasdaqEstaticos1, String directorioIn,
-			String directorioOut, Boolean soloVelas) throws IOException {
+			String directorioOut, Boolean soloVelas, String modo) throws IOException {
 
 		MY_LOGGER.info("parsearNasdaqDinamicos01 --> " + directorioIn + "|" + directorioOut);
 
@@ -137,7 +142,7 @@ public class YahooFinance02Parsear {
 
 		for (int i = 0; i < nasdaqEstaticos1.size(); i++) {
 			ficherosSalida.add(parsearDinamicosEmpresa01(mercado, nasdaqEstaticos1.get(i).symbol, directorioIn,
-					directorioOut, soloVelas));
+					directorioOut, soloVelas, modo));
 
 		}
 		return ficherosSalida;
@@ -149,11 +154,12 @@ public class YahooFinance02Parsear {
 	 * @param directorioIn
 	 * @param directorioOut
 	 * @param soloVelas
+	 * @param modo
 	 * @return
 	 * @throws IOException
 	 */
 	public static String parsearDinamicosEmpresa01(String mercado, String ticker, String directorioIn,
-			String directorioOut, Boolean soloVelas) throws IOException {
+			String directorioOut, Boolean soloVelas, String modo) throws IOException {
 
 		Boolean out = false;
 		String pathBruto;
@@ -167,7 +173,7 @@ public class YahooFinance02Parsear {
 		if (Files.exists(Paths.get(pathBruto))) {
 			Files.deleteIfExists(Paths.get(pathBrutoCsv)); // Borramos el fichero de salida si existe
 
-			out = parsearJson(mercado, ticker, pathBruto, pathBrutoCsv, soloVelas);
+			out = parsearJson(mercado, ticker, pathBruto, pathBrutoCsv, soloVelas, modo);
 
 			if (out.booleanValue() == false) {
 				MY_LOGGER.error(
@@ -189,10 +195,11 @@ public class YahooFinance02Parsear {
 	 * @param pathBrutoEntrada
 	 * @param pathBrutoCsvSalida
 	 * @param soloVelas
+	 * @param modo
 	 * @return
 	 */
 	public static Boolean parsearJson(String mercado, String empresa, String pathBrutoEntrada,
-			String pathBrutoCsvSalida, Boolean soloVelas) {
+			String pathBrutoCsvSalida, Boolean soloVelas, String modo) {
 
 		MY_LOGGER.info("parsearJson... --> " + pathBrutoEntrada + "|" + pathBrutoCsvSalida);
 		Boolean out = false;
@@ -269,8 +276,12 @@ public class YahooFinance02Parsear {
 								BrutosUtils.ESCALA_UNO);
 					}
 
-					bw.write(cad);
-					bw.newLine();
+					// Escribir todas las velas del pasado o, si estamos preparando el futuro, solo
+					// la ultima vela (la vigente, la más reciente conocida)
+					if (modo.equals("P") || (modo.equals("F") && i == numVelas - 1)) {
+						bw.write(cad);
+						bw.newLine();
+					}
 				}
 
 				bw.close();

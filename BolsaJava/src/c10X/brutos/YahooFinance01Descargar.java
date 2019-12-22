@@ -27,10 +27,9 @@ public class YahooFinance01Descargar {
 
 	/**
 	 * @param args
-	 * @throws IOException
-	 * @throws InterruptedException
+	 * @throws Exception
 	 */
-	public static void main(String[] args) throws IOException, InterruptedException {
+	public static void main(String[] args) throws Exception {
 
 		MY_LOGGER.info("INICIO");
 
@@ -39,20 +38,22 @@ public class YahooFinance01Descargar {
 
 		Integer numMaxEmpresas = BrutosUtils.NUM_EMPRESAS_PRUEBAS; // DEFAULT
 		String directorioOut = BrutosUtils.DIR_BRUTOS; // DEFAULT
+		String modo = "P"; // DEFAULT (pasado)
 
 		if (args.length == 0) {
 			MY_LOGGER.info("Sin parametros de entrada. Rellenamos los DEFAULT...");
-		} else if (args.length != 2) {
+		} else if (args.length != 3) {
 			MY_LOGGER.error("Parametros de entrada incorrectos!!");
 			System.exit(-1);
 		} else {
 			numMaxEmpresas = Integer.valueOf(args[0]);
 			directorioOut = args[1];
+			modo = args[2];
 		}
 
 		List<EstaticoNasdaqModelo> nasdaqEstaticos1 = EstaticosNasdaqDescargarYParsear
 				.descargarNasdaqEstaticosSoloLocal1();
-		descargarNasdaqDinamicos01(nasdaqEstaticos1, numMaxEmpresas, directorioOut);
+		descargarNasdaqDinamicos01(nasdaqEstaticos1, numMaxEmpresas, directorioOut, modo);
 
 		MY_LOGGER.info("FIN");
 	}
@@ -63,12 +64,12 @@ public class YahooFinance01Descargar {
 	 * @param nasdaqEstaticos1
 	 * @param numMaxEmpresas
 	 * @param directorioOut
+	 * @param modo             P (pasado), F (Futuro)
 	 * @return
-	 * @throws IOException
-	 * @throws InterruptedException
+	 * @throws Exception
 	 */
 	public static Boolean descargarNasdaqDinamicos01(List<EstaticoNasdaqModelo> nasdaqEstaticos1,
-			Integer numMaxEmpresas, String directorioOut) throws IOException, InterruptedException {
+			Integer numMaxEmpresas, String directorioOut, String modo) throws Exception {
 
 		MY_LOGGER.info("descargarNasdaqDinamicos01 --> " + numMaxEmpresas + "|" + directorioOut);
 
@@ -86,8 +87,7 @@ public class YahooFinance01Descargar {
 				ticker = nasdaqEstaticos1.get(i).symbol;
 
 				String pathOut = directorioOut + BrutosUtils.YAHOOFINANCE + "_" + mercado + "_" + ticker + ".txt";
-				String URL_yahoo_ticker = "https://query1.finance.yahoo.com/v8/finance/chart/" + ticker + "?symbol="
-						+ ticker + "&range=6mo&interval=60m";
+				String URL_yahoo_ticker = getUrlYahooFinance(ticker, modo);
 
 				MY_LOGGER.info("Empresa numero = " + (i + 1));
 				MY_LOGGER.info("pathOut=" + pathOut);
@@ -196,6 +196,26 @@ public class YahooFinance01Descargar {
 		}
 
 		return out;
+	}
+
+	/**
+	 * @param ticker
+	 * @param modo   P (pasado), F (Futuro)
+	 * @return
+	 * @throws Exception
+	 */
+	public static String getUrlYahooFinance(String ticker, String modo) throws Exception {
+		String url = "https://query1.finance.yahoo.com/v8/finance/chart/" + ticker + "?symbol=" + ticker;
+
+		if (modo.equals(BrutosUtils.PASADO)) {
+			url += "&range=6mo&interval=60m";
+		} else if (modo.equals(BrutosUtils.FUTURO)) {
+			url += "&range=1d&interval=60m";
+		} else {
+			throw new Exception("Modo pasado/futuro no explicito. Saliendo...");
+		}
+		return url;
+
 	}
 
 }

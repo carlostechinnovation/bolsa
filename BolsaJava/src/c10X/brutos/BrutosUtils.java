@@ -22,11 +22,14 @@ public class BrutosUtils {
 
 	public static final int ESPERA_ALEATORIA_MSEG_MIN = 200;
 	public static final int ESPERA_ALEATORIA_SEG_MAX = 2;
-	public static final int NUM_EMPRESAS_PRUEBAS = 100;
+	public static final int NUM_EMPRESAS_PRUEBAS = 1;
 
 	public static final String NULO = "null";
 	public static final String ESCALA_UNO = "uno";
 	public static final String ESCALA_M = "millones";
+
+	public static final String PASADO = "P";
+	public static final String FUTURO = "F";
 
 	/**
 	 * @param in

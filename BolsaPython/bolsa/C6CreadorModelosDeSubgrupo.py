@@ -209,7 +209,7 @@ for entry in os.listdir(dir_csvs_entrada):
     nombreModelo = "svc_grid"
     pathModelo = dirModelos + str(id_subgrupo) + "_" + nombreModelo + ".modelo"
     modelo_base = svm.SVC()
-    hiperparametros = [{'kernel': ['rbf'], 'gamma': [1e-3, 1e-4], 'C': [1, 10, 100, 1000]}, {'kernel': ['linear'], 'C': [1, 10, 100, 1000]}]
+    hiperparametros = [{'kernel': ['rbf'], 'C': [1, 10, 100]}, {'kernel': ['linear'], 'C': [1, 10, 100]}]
     modelos_grid = GridSearchCV(modelo_base, hiperparametros, n_jobs=-1, refit=True, cv=5, pre_dispatch='2*n_jobs', return_train_score=False)
     modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelos_grid, pathModelo, ds_train_f, ds_train_t, True, modoDebug)
     area_bajo_roc = cargarModeloyUsarlo(dirModelos, pathModelo, ds_test_f, ds_test_t, modoDebug)
@@ -251,7 +251,7 @@ for entry in os.listdir(dir_csvs_entrada):
     print("********* GANADOR de subgrupo " + id_subgrupo + " *************")
     print("Modelo ganador es " + ganador_nombreModelo + " con un area_bajo_ROC de " + str(round(ganador_area_bajo_roc, 4)) +" y con estos hiperparametros: ")
     print(ganador_grid_mejores_parametros)
-    pathModeloGanadorDeSubgrupo = dirModelos + str(id_subgrupo) + "_" + nombreModelo + ".modelo"
+    pathModeloGanadorDeSubgrupo = dirModelos + str(id_subgrupo) + "_ganador" + ".modelo"
 
 
 ############################################################
