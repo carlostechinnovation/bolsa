@@ -21,6 +21,7 @@ import c30x.elaborados.construir.GestorFicheros;
  * Crea los datasets (CSV) de cada subgrupo
  *
  */
+@Deprecated
 public class CrearDatasetsSubgrupos {
 
 	static Logger MY_LOGGER = Logger.getLogger(CrearDatasetsSubgrupos.class);

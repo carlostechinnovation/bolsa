@@ -298,6 +298,49 @@ public class GestorFicheros {
 	}
 
 	/**
+	 * Devuelve un mapa de empresas, con clave=(pathFichero, hayTargetUNO), donde el
+	 * value es si al menos existe una fila con target=1.
+	 * 
+	 * @param pathFicherosEmpresas
+	 * @return
+	 * @throws Exception
+	 * @throws IOException
+	 */
+	public HashMap<String, Boolean> compruebaEmpresasConTarget(final ArrayList<String> pathFicherosEmpresas)
+			throws Exception, IOException {
+
+		HashMap<String, Boolean> empresasConTarget = new HashMap<String, Boolean>();
+		Boolean empresaTieneTargetUno;
+		String[] data;
+		String row;
+		BufferedReader csvReader;
+		for (String pathFichero : pathFicherosEmpresas) {
+			empresaTieneTargetUno = Boolean.FALSE;
+			File csvFile = new File(pathFichero);
+			if (!csvFile.isFile()) {
+				throw new FileNotFoundException("Fichero no válido: " + pathFichero);
+			}
+			csvReader = new BufferedReader(new FileReader(pathFichero));
+			try {
+				while ((row = csvReader.readLine()) != null) {
+					data = row.split("\\|");
+					// Se asume que el último parámetro del fichero es el target
+					if (data[data.length - 1].contains("1")) {
+						// Si se encuentra al menos una línea con target=1, lo anotamos y salimos
+						empresaTieneTargetUno = Boolean.TRUE;
+						break;
+					}
+				}
+			} finally {
+				csvReader.close();
+			}
+			// Se guarda la empresa
+			empresasConTarget.put(pathFichero, empresaTieneTargetUno);
+		}
+		return empresasConTarget;
+	}
+
+	/**
 	 * @return the ordenNombresParametrosLeidos
 	 */
 	public HashMap<Integer, String> getOrdenNombresParametrosLeidos() {

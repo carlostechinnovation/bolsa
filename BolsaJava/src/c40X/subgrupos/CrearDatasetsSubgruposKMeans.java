@@ -20,13 +20,16 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import c30x.elaborados.construir.ElaboradosUtils;
+import c30x.elaborados.construir.Estadisticas;
 import c30x.elaborados.construir.GestorFicheros;
 
+/**
+ *
+ */
 public class CrearDatasetsSubgruposKMeans {
 
-	static Logger MY_LOGGER = Logger.getLogger(CrearDatasetsSubgrupos.class);
+	static Logger MY_LOGGER = Logger.getLogger(CrearDatasetsSubgruposKMeans.class);
 
-	
 	public static void main(String[] args) throws Exception {
 
 		MY_LOGGER.info("INICIO");
@@ -35,18 +38,22 @@ public class CrearDatasetsSubgruposKMeans {
 
 		String directorioIn = ElaboradosUtils.DIR_ELABORADOS; // DEFAULT
 		String directorioOut = SubgruposUtils.DIR_SUBGRUPOS; // DEFAULT
+		String coberturaMinima = SubgruposUtils.MIN_COBERTURA_CLUSTER; // DEFAULT
+		String minEmpresasPorCluster = SubgruposUtils.MIN_EMPRESAS_POR_CLUSTER; // DEFAULT
 
 		if (args.length == 0) {
 			MY_LOGGER.info("Sin parametros de entrada. Rellenamos los DEFAULT...");
-		} else if (args.length != 2) {
+		} else if (args.length != 4) {
 			MY_LOGGER.error("Parametros de entrada incorrectos!!");
 			System.exit(-1);
 		} else {
 			directorioIn = args[0];
 			directorioOut = args[1];
+			coberturaMinima = args[2];
+			minEmpresasPorCluster = args[3];
 		}
 
-		crearSubgruposYNormalizar(directorioIn, directorioOut);
+		crearSubgruposYNormalizar(directorioIn, directorioOut, coberturaMinima, minEmpresasPorCluster);
 
 		MY_LOGGER.info("FIN");
 
@@ -57,9 +64,12 @@ public class CrearDatasetsSubgruposKMeans {
 	 * 
 	 * @param directorioIn
 	 * @param directorioOut
+	 * @param coberturaMinima
+	 * @param minEmpresasPorCluster
 	 * @throws Exception
 	 */
-	public static void crearSubgruposYNormalizar(String directorioIn, String directorioOut) throws Exception {
+	public static void crearSubgruposYNormalizar(String directorioIn, String directorioOut, String coberturaMinima,
+			String minEmpresasPorCluster) throws Exception {
 
 		// Debo leer el parámetro que me interese: de momento el market cap. En el
 		// futuro sería conveniente separar por sector y liquidez (volumen medio de 6
@@ -109,10 +119,7 @@ public class CrearDatasetsSubgruposKMeans {
 
 		}
 
-		// initialize a new clustering algorithm.
-		// we use KMeans++ with 6 clusters and 10000 iterations maximum.
-		// we did not specify a distance measure; the default (euclidean distance) is
-		// used.
+		// Clustering: algoritmo KMeans++
 		KMeansPlusPlusClusterer<EmpresaWrapper> clusterer = new KMeansPlusPlusClusterer<EmpresaWrapper>(6, 10000,
 				new EuclideanDistance(), new JDKRandomGenerator(), EmptyClusterStrategy.LARGEST_VARIANCE);
 		List<CentroidCluster<EmpresaWrapper>> clusterResults = clusterer.cluster(clusterInput);
@@ -120,17 +127,16 @@ public class CrearDatasetsSubgruposKMeans {
 		// output the clusters
 		for (int i = 0; i < clusterResults.size(); i++) {
 			MY_LOGGER.debug("Cluster " + i);
-			System.out.println("------------------------------Cluster " + i);
+			MY_LOGGER.debug("------------------------------Cluster " + i);
 			for (EmpresaWrapper empresaLeida : clusterResults.get(i).getPoints()) {
 				MY_LOGGER.debug("Empresa " + empresaLeida.getFichero().getAbsolutePath() + " con ValorClustering= "
 						+ empresaLeida.getValorClustering());
-				System.out.println("Empresa " + empresaLeida.getFichero().getAbsolutePath() + " con ValorClustering= "
+				MY_LOGGER.debug("Empresa " + empresaLeida.getFichero().getAbsolutePath() + " con ValorClustering= "
 						+ empresaLeida.getValorClustering());
 			}
 		}
 
 		// Se crea un CSV para cada subgrupo
-		CentroidCluster<EmpresaWrapper> centroid;
 		EmpresaWrapper empresa;
 		String row, rowTratada;
 		Boolean esPrimeraLinea;
@@ -141,68 +147,114 @@ public class CrearDatasetsSubgruposKMeans {
 		String ficheroOut, ficheroListadoOut;
 		FileWriter csvWriter;
 		FileWriter writerListadoEmpresas;
+		Double coberturaEmpresasPorCluster;
+		Estadisticas estadisticas;
+		String pathEmpresa;
+		HashMap<String, Boolean> empresasConTarget;
+		Iterator<String> itEmpresas;
 		for (int i = 0; i < clusterResults.size(); i++) {
 
-			centroid = clusterResults.get(i);
-			// Creo un CSV común para todas las del mismo tipo
-			ficheroOut = directorioOut + i + ".csv";
-			ficheroListadoOut = directorioOut + "Listado-" + i + ".empresas";
-			MY_LOGGER.info("Fichero a escribir: " + ficheroOut);
-			csvWriter = new FileWriter(ficheroOut);
-			writerListadoEmpresas = new FileWriter(ficheroListadoOut);
-			List<EmpresaWrapper> empresas = centroid.getPoints();
-
-			for (int z = 0; z < empresas.size(); z++) {
-
-				esPrimeraLinea = Boolean.TRUE;
-				// Se lee el fichero de la empresa a meter en el CSV común
-				empresa = empresas.get(z);
-				MY_LOGGER
-						.debug("Fichero a leer para clasificar en subgrupo: " + empresa.getFichero().getAbsolutePath());
-				BufferedReader csvReader = new BufferedReader(new FileReader(empresa.getFichero().getAbsolutePath()));
-
-				// Añado la empresa al fichero de listado de empresas
-				writerListadoEmpresas.append(empresa.getFichero().getAbsolutePath() + "\n");
-
-				try {
-
-					while ((row = csvReader.readLine()) != null) {
-						MY_LOGGER.debug("Fila leída: " + row);
-						// Se eliminan los parámetros estáticos de la fila
-						// Para cada fila de datos o de cabecera, de longitud variable, se eliminan los
-						// datos estáticos
-						rowTratada = SubgruposUtils.recortaPrimeraParteDeString(characterPipe, numParametrosEstaticos,
-								row);
-						MY_LOGGER.debug("Fila escrita: " + rowTratada);
-
-						// La cabecera se toma de la primera línea del primer fichero
-						if (z == 0 && esPrimeraLinea) {
-							// En la primera línea está la cabecera de parámetros
-							// Se valida que el nombre recibido es igual que el usado en la constructora, y
-							// en dicho orden
-							csvWriter.append(rowTratada);
-
-						}
-						if (!esPrimeraLinea) {
-							// Para todos los ficheros, se escriben las filas 2 y siguientes
-							csvWriter.append("\n" + rowTratada);
-						}
-						// Para las siguientes filas del fichero
-						esPrimeraLinea = Boolean.FALSE;
-					}
-
-				} finally {
-					csvReader.close();
-				}
+			// Antes se comprobará, en cada cluster, qué porcentaje hay de empresas con al
+			// menos una vela con target=1,
+			// respecto del total de empresas del cluster (esto se llama Cobertura).
+			// Sólo se guardarán los clusters con cobertura mayor que una cantidad mínima.
+			List<EmpresaWrapper> empresas = clusterResults.get(i).getPoints();
+			ArrayList<String> pathFicherosEmpresas = new ArrayList<String>();
+			for (EmpresaWrapper wrapper : empresas) {
+				pathFicherosEmpresas.add(wrapper.getFichero().getAbsolutePath());
 
 			}
-			csvWriter.flush();
-			csvWriter.close();
-			writerListadoEmpresas.flush();
-			writerListadoEmpresas.close();
-		}
+			empresasConTarget = gestorFicheros.compruebaEmpresasConTarget(pathFicherosEmpresas);
+			itEmpresas = empresasConTarget.keySet().iterator();
+			estadisticas = new Estadisticas();
+			while (itEmpresas.hasNext()) {
+				pathEmpresa = itEmpresas.next();
+				if (empresasConTarget.get(pathEmpresa)) {
+					estadisticas.addValue(1);
+				} else {
+					estadisticas.addValue(0);
+				}
+				MY_LOGGER.debug(
+						"Empresa: " + pathEmpresa + " ¿tiene algún target=1? " + empresasConTarget.get(pathEmpresa));
+				System.out.println(
+						"Empresa: " + pathEmpresa + " ¿tiene algún target=1? " + empresasConTarget.get(pathEmpresa));
+			}
+			// Se calcula la cobertura del target
+			coberturaEmpresasPorCluster = estadisticas.getMean();
+			MY_LOGGER.debug("COBERTURA DEL cluster " + i + ": " + coberturaEmpresasPorCluster * 100 + "%");
+			System.out.println("COBERTURA DEL cluster " + i + ": " + coberturaEmpresasPorCluster * 100 + "%");
 
-		// Se normaliza los datasets de cada subgrupo
+			// Para generar un fichero de dataset del cluster, la cobertura debe ser mayor
+			// que un x%
+			if (coberturaEmpresasPorCluster * 100 < Double.valueOf(coberturaMinima)) {
+				MY_LOGGER.debug("El cluster " + i + ", con cobertura: " + coberturaEmpresasPorCluster * 100 + "%"
+						+ " no llega al mínimo: " + coberturaMinima + "%. NO SE GENERA DATASET");
+				System.out.println("El cluster " + i + ", con cobertura: " + coberturaEmpresasPorCluster * 100 + "%"
+						+ " no llega al mínimo: " + coberturaMinima + "%. NO SE GENERA DATASET");
+			} else if (empresasConTarget.keySet().size() < Integer.valueOf(minEmpresasPorCluster)) {
+				MY_LOGGER.debug("El cluster " + i + ", tiene: " + empresasConTarget.keySet().size()
+						+ " empresas, pero el mínimo debe ser: " + minEmpresasPorCluster + ". NO SE GENERA DATASET");
+				System.out.println("El cluster " + i + ", tiene: " + empresasConTarget.keySet().size()
+						+ " empresas, pero el mínimo debe ser: " + minEmpresasPorCluster + ". NO SE GENERA DATASET");
+			} else {
+				// Creo un CSV común para todas las del mismo tipo
+				ficheroOut = directorioOut + i + ".csv";
+				ficheroListadoOut = directorioOut + "Listado-" + i + ".empresas";
+				MY_LOGGER.info("Fichero a escribir: " + ficheroOut);
+				csvWriter = new FileWriter(ficheroOut);
+				writerListadoEmpresas = new FileWriter(ficheroListadoOut);
+
+				for (int z = 0; z < empresas.size(); z++) {
+
+					esPrimeraLinea = Boolean.TRUE;
+					// Se lee el fichero de la empresa a meter en el CSV común
+					empresa = empresas.get(z);
+					MY_LOGGER.debug(
+							"Fichero a leer para clasificar en subgrupo: " + empresa.getFichero().getAbsolutePath());
+					BufferedReader csvReader = new BufferedReader(
+							new FileReader(empresa.getFichero().getAbsolutePath()));
+
+					// Añado la empresa al fichero de listado de empresas
+					writerListadoEmpresas.append(empresa.getFichero().getAbsolutePath() + "\n");
+
+					try {
+
+						while ((row = csvReader.readLine()) != null) {
+							MY_LOGGER.debug("Fila leída: " + row);
+							// Se eliminan los parámetros estáticos de la fila
+							// Para cada fila de datos o de cabecera, de longitud variable, se eliminan los
+							// datos estáticos
+							rowTratada = SubgruposUtils.recortaPrimeraParteDeString(characterPipe,
+									numParametrosEstaticos, row);
+							MY_LOGGER.debug("Fila escrita: " + rowTratada);
+
+							// La cabecera se toma de la primera línea del primer fichero
+							if (z == 0 && esPrimeraLinea) {
+								// En la primera línea está la cabecera de parámetros
+								// Se valida que el nombre recibido es igual que el usado en la constructora, y
+								// en dicho orden
+								csvWriter.append(rowTratada);
+
+							}
+							if (!esPrimeraLinea) {
+								// Para todos los ficheros, se escriben las filas 2 y siguientes
+								csvWriter.append("\n" + rowTratada);
+							}
+							// Para las siguientes filas del fichero
+							esPrimeraLinea = Boolean.FALSE;
+						}
+
+					} finally {
+						csvReader.close();
+					}
+
+				}
+				csvWriter.flush();
+				csvWriter.close();
+				writerListadoEmpresas.flush();
+				writerListadoEmpresas.close();
+			}
+		}
 
 	}
 
