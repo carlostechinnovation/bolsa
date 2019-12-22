@@ -1,7 +1,7 @@
 package c10X.brutos;
 
 /**
- * Datos estáticos del NASDAQ
+ * Datos estaticos del NASDAQ
  *
  */
 public class EstaticoNasdaqModelo {
