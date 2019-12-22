@@ -314,7 +314,10 @@ public class GestorFicheros {
 		String[] data;
 		String row;
 		BufferedReader csvReader;
+		Integer totalUnos, totalCeros;
 		for (String pathFichero : pathFicherosEmpresas) {
+			totalUnos = 0;
+			totalCeros = 0;
 			empresaTieneTargetUno = Boolean.FALSE;
 			File csvFile = new File(pathFichero);
 			if (!csvFile.isFile()) {
@@ -328,9 +331,17 @@ public class GestorFicheros {
 					if (data[data.length - 1].contains("1")) {
 						// Si se encuentra al menos una lÃ­nea con target=1, lo anotamos y salimos
 						empresaTieneTargetUno = Boolean.TRUE;
-						break;
+
+						// Se comenta la siguiente línea, para contar el total de unos y ceros, aunque
+						// es más pesado
+//						break;
+						totalUnos++;
+					} else {
+						totalCeros++;
 					}
 				}
+				System.out.println("---TARGETs-->: " + pathFichero + " con TotalTargetsUNO = " + totalUnos
+						+ " y TotalTargetsCERO = " + totalCeros);
 			} finally {
 				csvReader.close();
 			}
