@@ -20,9 +20,9 @@ import c40X.subgrupos.CrearDatasetsSubgruposKMeans;
 /**
  * Clase PRINCIPAL
  */
-public class Main {
+public class Principal {
 
-	static Logger MY_LOGGER = Logger.getLogger(Main.class);
+	static Logger MY_LOGGER = Logger.getLogger(Principal.class);
 
 	/**
 	 * Punto de entrada a este JAR
