@@ -251,7 +251,7 @@ public class YahooFinance02Parsear {
 				int numVelas = listaVolumenes.size();
 				for (i = 0; i < numVelas; i++) {
 
-					long msegDesde1970 = (long) tiemposEnSegundosDesde1970.get(i) * 1000L;
+					long msegDesde1970 = (Long) tiemposEnSegundosDesde1970.get(i) * 1000L;
 
 					if (soloVelas) {
 						cad = String.valueOf(numVelas - i - 1);

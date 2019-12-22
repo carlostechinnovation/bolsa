@@ -45,7 +45,6 @@ public class LimpiarCSVBrutosTemporales {
 		File dirBrutoCsv = new File(BrutosUtils.DIR_BRUTOS_CSV);
 		String[] listaBorrables = dirBrutoCsv.list(new FilenameFilter() {
 
-			@Override
 			public boolean accept(File dir, String name) {
 
 				boolean temporalNasdaqOld = name.startsWith(BrutosUtils.NASDAQOLD + "_") && name.endsWith(".csv");
