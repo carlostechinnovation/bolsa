@@ -24,7 +24,7 @@ import c30x.elaborados.construir.Estadisticas;
 import c30x.elaborados.construir.GestorFicheros;
 
 /**
- *
+ * Crear los datasets de SUBGRUPOS usando KMeans (Clustering, no supervisado).
  */
 public class CrearDatasetsSubgruposKMeans {
 

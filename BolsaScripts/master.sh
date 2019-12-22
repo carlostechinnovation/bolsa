@@ -19,21 +19,24 @@ MIN_COBERTURA_CLUSTER=70
 MIN_EMPRESAS_POR_CLUSTER=10
 
 #################### DIRECTORIOS ###############################################################
+DIR_CODIGOS="C:\DATOS\GITHUB_REPOS\bolsa\"
+PATH_SCRIPTS="${DIR_CODIGOS}BolsaScripts/"
+PYTHON_SCRIPTS="${DIR_CODIGOS}BolsaPython/"
+PATH_JAR="${DIR_CODIGOS}BolsaJava/target/bolsajava-1.0.jar"
+
 DIR_BASE="/bolsa/"
-LOG_MASTER="${DIR_BASE}${ID_EJECUCION}_bolsa_coordinador_${MODO}.log"
-PATH_SCRIPTS="C:\DATOS\GITHUB_REPOS\bolsa\BolsaScripts/"
-PYTHON_SCRIPTS="C:\DATOS\GITHUB_REPOS\bolsa\BolsaPython/"
-PATH_JAR="C:\DATOS\GITHUB_REPOS\bolsa\BolsaJava/target/bolsajava-1.0.jar"
-DIR_BRUTOS="/bolsa/${DIR_TIEMPO}/brutos/"
-DIR_BRUTOS_CSV="/bolsa/${DIR_TIEMPO}/brutos_csv/"
-DIR_LIMPIOS="/bolsa/${DIR_TIEMPO}/limpios/"
-DIR_ELABORADOS="/bolsa/${DIR_TIEMPO}/elaborados/"
-DIR_SUBGRUPOS="/bolsa/${DIR_TIEMPO}/datasets/"
-DIR_MODELOS="/bolsa/modelos/"
+DIR_LOGS="${DIR_BASE}logs/"
+DIR_BRUTOS="${DIR_BASE}${DIR_TIEMPO}/brutos/"
+DIR_BRUTOS_CSV="${DIR_BASE}${DIR_TIEMPO}/brutos_csv/"
+DIR_LIMPIOS="${DIR_BASE}${DIR_TIEMPO}/limpios/"
+DIR_ELABORADOS="${DIR_BASE}${DIR_TIEMPO}/elaborados/"
+DIR_SUBGRUPOS="${DIR_BASE}${DIR_TIEMPO}/datasets/"
+DIR_MODELOS="${DIR_BASE}modelos/"
 DIR_SUBGRUPOS_REDUCIDOS="${DIR_SUBGRUPOS}reducidos/"
 DIR_SUBGRUPOS_IMG="${DIR_SUBGRUPOS}img/"
 
 mkdir -p "${DIR_BASE}"
+mkdir -p "${DIR_LOGS}"
 mkdir -p "${DIR_BRUTOS}"
 mkdir -p "${DIR_BRUTOS_CSV}"
 rm -R "${DIR_BRUTOS}YF*.txt"
@@ -41,10 +44,12 @@ rm -R "${DIR_BRUTOS}YF*.csv"
 mkdir -p "${DIR_LIMPIOS}"
 mkdir -p "${DIR_ELABORADOS}"
 mkdir -p "${DIR_SUBGRUPOS}"
+mkdir -p "${DIR_MODELOS}"
 
 
 ############### LOGS ########################################################
-rm -f "${DIR_BASE}../../${ID_EJECUCION}_bolsa_log4j.log"
+rm -f "${DIR_LOGS}log4j.log"
+LOG_MASTER="${DIR_LOGS}${ID_EJECUCION}_bolsa_coordinador_${MODO}.log"
 rm -f "${LOG_MASTER}"
 
 
@@ -55,11 +60,9 @@ echo -e "-------- DATOS BRUTOS -------------" >> ${LOG_MASTER}
 ############## java -Djava.util.logging.SimpleFormatter.format='%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n' -jar ${PATH_JAR} --class 'c10X.brutos.EstaticosNasdaqDescargarYParsear' '${DIR_BRUTOS}' '${DIR_BRUTOS_CSV}' 2>>${PATH_LOG} 1>>${PATH_LOG}
 
 echo -e "DINAMICOS - Descargando de YAHOO FINANCE..." >> ${LOG_MASTER}
-
 java -Djava.util.logging.SimpleFormatter.format='%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n' -jar ${PATH_JAR} --class 'c10X.brutos.YahooFinance01Descargar' '2' '${DIR_BRUTOS}' '${DIR_BRUTOS_CSV}' 'P' 2>>${PATH_LOG} 1>>${PATH_LOG}
 
 echo -e "DINAMICOS - Limpieza de YAHOO FINANCE..." >> ${LOG_MASTER}
-
 java -Djava.util.logging.SimpleFormatter.format='%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n' -jar ${PATH_JAR} --class 'c10X.brutos.YahooFinance02Parsear' '${DIR_BRUTOS}' '${DIR_BRUTOS_CSV}' 'P' 2>>${PATH_LOG} 1>>${PATH_LOG}
 
 echo -e "ESTATICOS - Descargando de FINVIZ (igual para Pasado o Futuro, salvo el directorio)..." >> ${LOG_MASTER}
@@ -96,8 +99,6 @@ echo -e "-------- SUBGRUPOS -------------" >> ${LOG_MASTER}
 
 echo -e "Calculando subgrupos..." >> ${LOG_MASTER}
 java -Djava.util.logging.SimpleFormatter.format='%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n' -jar ${PATH_JAR} --class 'c40X.subgrupos.CrearDatasetsSubgruposKMeans' '${DIR_ELABORADOS}' '${DIR_SUBGRUPOS}' '${MIN_COBERTURA_CLUSTER}' '${MIN_EMPRESAS_POR_CLUSTER}' 2>>${PATH_LOG} 1>>${PATH_LOG}
-
-echo -e "Subgrupos ya generados" >> ${LOG_MASTER}
 
 
 ############  PARA CADA SUBGRUPO ###############################################################

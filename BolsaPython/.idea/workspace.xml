@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="22edbd2f-b3d9-42f0-a7dd-659033ab601a" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/c40X/subgrupos/CrearDatasetsSubgruposKMeans.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/c40X/subgrupos/CrearDatasetsSubgruposKMeans.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bolsa/C6CreadorModelosDeSubgrupo.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/C6CreadorModelosDeSubgrupo.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -154,11 +154,11 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Python.C5SeleccionDeVariablesDeSubgrupo" />
       <item itemvalue="Python.01_introduccion" />
-      <item itemvalue="Python.03_modelos_clasificacion" />
-      <item itemvalue="Python.C6CreadorModelosDeSubgrupo" />
       <item itemvalue="Python.02_pca" />
+      <item itemvalue="Python.03_modelos_clasificacion" />
+      <item itemvalue="Python.C5SeleccionDeVariablesDeSubgrupo" />
+      <item itemvalue="Python.C6CreadorModelosDeSubgrupo" />
     </list>
     <recent_temporary>
       <list>
@@ -253,26 +253,26 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="424" y="6" key="CommitChangelistDialog2/0.0.1536.824@0.0.1536.824" timestamp="1575807574777" />
-    <state width="1515" height="168" key="GridCell.Tab.0.bottom" timestamp="1576952549360">
+    <state width="1515" height="168" key="GridCell.Tab.0.bottom" timestamp="1577006434440">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state width="1899" height="393" key="GridCell.Tab.0.bottom/-1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1576878186445" />
-    <state width="1515" height="168" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1576952549360" />
-    <state width="1515" height="168" key="GridCell.Tab.0.center" timestamp="1576952549360">
+    <state width="1515" height="168" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1577006434440" />
+    <state width="1515" height="168" key="GridCell.Tab.0.center" timestamp="1577006434440">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state width="1899" height="393" key="GridCell.Tab.0.center/-1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1576878186445" />
-    <state width="1515" height="168" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1576952549360" />
-    <state width="1515" height="168" key="GridCell.Tab.0.left" timestamp="1576952549360">
+    <state width="1515" height="168" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1577006434440" />
+    <state width="1515" height="168" key="GridCell.Tab.0.left" timestamp="1577006434440">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state width="1899" height="393" key="GridCell.Tab.0.left/-1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1576878186445" />
-    <state width="1515" height="168" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1576952549360" />
-    <state width="1515" height="168" key="GridCell.Tab.0.right" timestamp="1576952549360">
+    <state width="1515" height="168" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1577006434440" />
+    <state width="1515" height="168" key="GridCell.Tab.0.right" timestamp="1577006434440">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state width="1899" height="393" key="GridCell.Tab.0.right/-1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1576878186445" />
-    <state width="1515" height="168" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1576952549360" />
+    <state width="1515" height="168" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1577006434440" />
     <state width="1899" height="393" key="GridCell.Tab.1.bottom" timestamp="1576878186446">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
