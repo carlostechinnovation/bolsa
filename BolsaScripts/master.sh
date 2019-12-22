@@ -19,10 +19,12 @@ MIN_COBERTURA_CLUSTER=70
 MIN_EMPRESAS_POR_CLUSTER=10
 
 #################### DIRECTORIOS ###############################################################
-DIR_CODIGOS="C:\DATOS\GITHUB_REPOS\bolsa\"
+#DIR_CODIGOS="C:\DATOS\GITHUB_REPOS\bolsa\"
+DIR_CODIGOS="/home/carloslinux/Desktop/GIT_BOLSA/"
 PATH_SCRIPTS="${DIR_CODIGOS}BolsaScripts/"
 PYTHON_SCRIPTS="${DIR_CODIGOS}BolsaPython/"
-PATH_JAR="${DIR_CODIGOS}BolsaJava/target/bolsajava-1.0.jar"
+DIR_JAVA="${DIR_CODIGOS}BolsaJava/"
+PATH_JAR="${DIR_JAVA}target/bolsajava-1.0.jar"
 
 DIR_BASE="/bolsa/"
 DIR_LOGS="${DIR_BASE}logs/"
@@ -52,6 +54,9 @@ rm -f "${DIR_LOGS}log4j.log"
 LOG_MASTER="${DIR_LOGS}${ID_EJECUCION}_bolsa_coordinador_${MODO}.log"
 rm -f "${LOG_MASTER}"
 
+############### COMPILAR JAR ########################################################
+cd "${DIR_JAVA}"
+mvn clean  package -e
 
 ################################################################################################
 echo -e "-------- DATOS BRUTOS -------------" >> ${LOG_MASTER}
@@ -123,6 +128,11 @@ do
 	
 	
 done
+
+################################################################################################
+
+############### BORRAR JAR ########################################################
+rm -Rf "${DIR_JAVA}target/"
 
 ################################################################################################
 
