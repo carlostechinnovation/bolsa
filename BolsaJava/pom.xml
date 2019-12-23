@@ -5,6 +5,7 @@
 	<groupId>bolsa</groupId>
 	<artifactId>bolsajava</artifactId>
 	<version>1.0</version>
+	<packaging>jar</packaging>
 	<name>BolsaJava</name>
 	<description>Bolsa parte hecha en Java</description>
 
@@ -45,38 +46,26 @@
 
 	</dependencies>
 
-	<build>
-		<sourceDirectory>src</sourceDirectory>
-		<plugins>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.0</version>
-				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
-					<archive>
-						<manifest>
-							<addClasspath>true</addClasspath>
-							<mainClass>coordinador.Main</mainClass>
-						</manifest>
-					</archive>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<configuration>
-					<archive>
-						<manifest>
-							<addClasspath>true</addClasspath>
-							<mainClass>coordinador.Principal</mainClass>
-						</manifest>
-					</archive>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+<build>
+    <sourceDirectory>src</sourceDirectory>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+		<version>2.6</version>
+        <configuration>
+			<source>1.7</source>
+			<target>1.7</target>
+			<archive>
+				<manifest>
+					<addClasspath>true</addClasspath>
+					<mainClass>coordinador.Principal</mainClass>
+				</manifest>
+			</archive>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
 
 </project>
