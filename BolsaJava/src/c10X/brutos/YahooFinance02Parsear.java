@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Reader;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.DateFormat;
@@ -181,7 +182,7 @@ public class YahooFinance02Parsear {
 			}
 
 		} else {
-			MY_LOGGER.warn("Fichero de entrada no existe: " + pathBruto + " Contin�a...");
+			MY_LOGGER.warn("Fichero de entrada no existe: " + pathBruto + " Continua...");
 		}
 		return pathBrutoCsv;
 	}
@@ -205,11 +206,21 @@ public class YahooFinance02Parsear {
 		Boolean out = false;
 		JSONParser parser = new JSONParser();
 
-		try (Reader reader = new FileReader(pathBrutoEntrada)) {
+		String contenido = "";
+
+		try {
+			List<String> lines = Files.readAllLines(Paths.get(pathBrutoEntrada), Charset.defaultCharset());
+
+			for (String cad : lines) {
+				contenido += cad;
+			}
 
 			// ---------------------------- LECTURA ------------------
 			MY_LOGGER.debug("Lectura...");
-			JSONObject primerJson = (JSONObject) parser.parse(reader);
+
+			JSONObject primerJson = (JSONObject) parser.parse(contenido);
+
+//			JSONObject primerJson = (JSONObject) parser.parse(reader);
 
 			Map<String, JSONObject> mapaChart = (HashMap<String, JSONObject>) primerJson.get("chart");
 			Object resultValor = mapaChart.get("result");
