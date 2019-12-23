@@ -332,9 +332,9 @@ public class GestorFicheros {
 						// Si se encuentra al menos una lÃ­nea con target=1, lo anotamos y salimos
 						empresaTieneTargetUno = Boolean.TRUE;
 
-						// Se comenta la siguiente línea, para contar el total de unos y ceros, aunque
-						// es más pesado
-//						break;
+						// Se comenta la siguiente linea, para contar el total de unos y ceros, aunque
+						// es mas pesado
+						// break;
 						totalUnos++;
 					} else {
 						totalCeros++;
