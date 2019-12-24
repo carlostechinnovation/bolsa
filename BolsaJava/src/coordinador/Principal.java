@@ -42,20 +42,25 @@ public class Principal {
 		} else {
 
 			int numParams = args.length;
+			MY_LOGGER.info("Numero de parametros: " + numParams);
+			for (String param : args) {
+				MY_LOGGER.info("Param: " + param);
+			}
 
 			List<String> args2 = new ArrayList<String>();
-			boolean esPrimerParam = true;
 			String programa = null;
+			int i = 0;
 			for (String item : args) {
-				if (esPrimerParam) {
+				i++;
+				if (i == 1 || i == 2) {
+					programa = item;
+				} else if (i == 3) {
 					programa = item;
 				} else {
 					args2.add(item);
 				}
-
-				esPrimerParam = false;
 			}
-			String[] args2array = (String[]) args2.toArray();
+			String[] args2array = args2.toArray(new String[0]);
 			ejecutarProgramaConParams(programa, args2array);
 		}
 

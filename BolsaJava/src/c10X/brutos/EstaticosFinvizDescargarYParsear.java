@@ -63,12 +63,20 @@ public class EstaticosFinvizDescargarYParsear {
 		if (args.length == 0) {
 			MY_LOGGER.info("Sin parametros de entrada. Rellenamos los DEFAULT...");
 		} else if (args.length != 3) {
-			MY_LOGGER.error("Parametros de entrada incorrectos!!");
+			MY_LOGGER.error("Parametros de entrada incorrectos!! ");
+			int numParams = args.length;
+			MY_LOGGER.error("Numero de parametros: " + numParams);
+			for (String param : args) {
+				MY_LOGGER.error("Param: " + param);
+			}
+
 			System.exit(-1);
 		} else {
+
 			numMaxEmpresas = Integer.valueOf(args[0]);
 			dirBruto = args[1];
 			dirBrutoCsv = args[2];
+			MY_LOGGER.info("PARAMS -> " + numMaxEmpresas + " | " + dirBruto + " | " + dirBrutoCsv);
 		}
 
 		Map<String, String> mapaExtraidos = new HashMap<String, String>();

@@ -44,6 +44,11 @@ public class YahooFinance01Descargar {
 			MY_LOGGER.info("Sin parametros de entrada. Rellenamos los DEFAULT...");
 		} else if (args.length != 3) {
 			MY_LOGGER.error("Parametros de entrada incorrectos!!");
+			int numParams = args.length;
+			MY_LOGGER.info("Numero de parametros: " + numParams);
+			for (String param : args) {
+				MY_LOGGER.info("Param: " + param);
+			}
 			System.exit(-1);
 		} else {
 			numMaxEmpresas = Integer.valueOf(args[0]);

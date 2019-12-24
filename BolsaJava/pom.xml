@@ -68,9 +68,12 @@
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
 					<archive>
 						<manifest>
-							<mainClass>fully.qualified.MainClass</mainClass>
+							<addClasspath>true</addClasspath>
+							<mainClass>coordinador.Principal</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>

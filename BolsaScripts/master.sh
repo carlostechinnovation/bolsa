@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -x
-
 ################ VARIABLES DE EJECUCION #########################################################
 ID_EJECUCION=$( date "+%Y%m%d%H%M%S" )
 echo -e "ID_EJECUCION = "${ID_EJECUCION}
@@ -67,7 +65,7 @@ echo -e "-------- DATOS BRUTOS -------------" >> ${LOG_MASTER}
 ############## java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n" -jar ${PATH_JAR} --class "coordinador.Principal" "c10X.brutos.EstaticosNasdaqDescargarYParsear" "${DIR_BRUTOS}" "${DIR_BRUTOS_CSV}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 
 echo -e "DINAMICOS - Descargando de YAHOO FINANCE..." >> ${LOG_MASTER}
-java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n" -jar ${PATH_JAR} --class "coordinador.Principal" "c10X.brutos.YahooFinance01Descargar" "2" "${DIR_BRUTOS}" "${DIR_BRUTOS_CSV}" "P" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
+java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n" -jar ${PATH_JAR} --class "coordinador.Principal" "c10X.brutos.YahooFinance01Descargar" "2" "${DIR_BRUTOS}" "P" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 
 echo -e "DINAMICOS - Limpieza de YAHOO FINANCE..." >> ${LOG_MASTER}
 java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n" -jar ${PATH_JAR} --class "coordinador.Principal" "c10X.brutos.YahooFinance02Parsear" "${DIR_BRUTOS}" "${DIR_BRUTOS_CSV}" "P" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
@@ -89,7 +87,7 @@ echo -e "-------- DATOS LIMPIOS -------------" >> ${LOG_MASTER}
 #######java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n" -jar ${PATH_JAR} --class "coordinador.Principal" "c30X.elaborados.LimpiarOperaciones" "${DIR_BRUTOS_CSV}" "${DIR_LIMPIOS}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 
 # PENDIENTE: de momento, no limpiamos, pero habrá que hacerlo
-cp ${DIR_BRUTOS_CSV}* ${DIR_LIMPIOS}
+cp "${DIR_BRUTOS_CSV}*" "${DIR_LIMPIOS}"
 
 
 ################################################################################################

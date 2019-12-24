@@ -33,8 +33,17 @@ public class EstaticosNasdaqDescargarYParsear {
 
 	static String ID_SRL = "stockreportslink";
 
-	public EstaticosNasdaqDescargarYParsear() {
+	private static EstaticosNasdaqDescargarYParsear instancia = null;
+
+	private EstaticosNasdaqDescargarYParsear() {
 		super();
+	}
+
+	public static EstaticosNasdaqDescargarYParsear getInstance() {
+		if (instancia == null)
+			instancia = new EstaticosNasdaqDescargarYParsear();
+
+		return instancia;
 	}
 
 	/**
@@ -69,7 +78,8 @@ public class EstaticosNasdaqDescargarYParsear {
 			dirBrutoCsv = args[2];
 		}
 
-		List<EstaticoNasdaqModelo> nasdaqEstaticos1 = descargarNasdaqEstaticosSoloLocal1();
+		// List<EstaticoNasdaqModelo> nasdaqEstaticos1 =
+		// descargarNasdaqEstaticosSoloLocal1();
 		// TODO descargarYparsearNasdaqEstaticos2(nasdaqEstaticos1, dirBruto,
 		// dirBrutoCsv, numMaxEmpresas);
 
