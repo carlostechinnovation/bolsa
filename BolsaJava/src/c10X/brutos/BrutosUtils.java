@@ -22,7 +22,7 @@ public class BrutosUtils {
 
 	public static final int ESPERA_ALEATORIA_MSEG_MIN = 200;
 	public static final int ESPERA_ALEATORIA_SEG_MAX = 2;
-	public static final int NUM_EMPRESAS_PRUEBAS = 1;
+	public static final int NUM_EMPRESAS_PRUEBAS = 60;
 
 	public static final String NULO = "null";
 	public static final String ESCALA_UNO = "uno";
