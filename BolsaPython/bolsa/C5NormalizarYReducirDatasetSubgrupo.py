@@ -33,12 +33,12 @@ print("URL PCA: https://scikit-learn.org/stable/modules/unsupervised_reduction.h
 print("URL Feature Selection: https://scikit-learn.org/stable/modules/feature_selection.html")
 ##################################################
 print("PARAMETROS: ")
-dir_entrada = sys.argv[1]
+entrada_csv_subgrupo = sys.argv[1]
 path_dir_salida = sys.argv[2]
 path_dir_img = sys.argv[3]
 varianza=0.90
 modoDebug = False  #En modo debug se pintan los dibujos. En otro caso, se evita calculo innecesario
-print("dir_entrada = %s" % dir_entrada)
+print("entrada_csv_subgrupo = %s" % entrada_csv_subgrupo)
 print("path_dir_salida = %s" % path_dir_salida)
 print("path_dir_img = %s" % path_dir_img)
 
@@ -334,14 +334,13 @@ def reducirFeaturesYGuardar(featuresFicheroNorm, targetsFichero, pathSalidaFeatu
 ################## MAIN ###########################################################
 
 print("Recorremos los CSVs que hay en el DIRECTORIO...")
-for entry in os.listdir(dir_entrada):
-  path_absoluto_fichero = os.path.join(dir_entrada, entry)
+path_absoluto_fichero = entrada_csv_subgrupo
 
-  if (entry.endswith('.csv') and os.path.isfile(path_absoluto_fichero) and os.stat(path_absoluto_fichero).st_size > 0 ):
+if (path_absoluto_fichero.endswith('.csv') and os.path.isfile(path_absoluto_fichero) and os.stat(path_absoluto_fichero).st_size > 0 ):
     print("-------------------------------------------------------------------------------------------------")
-    id_subgrupo = Path(entry).stem
+    id_subgrupo = Path(path_absoluto_fichero).stem
     print("id_subgrupo=" + id_subgrupo)
-    pathEntrada = os.path.abspath(entry)
+    pathEntrada = os.path.abspath(path_absoluto_fichero)
     pathSalidaFeaturesyTargets = path_dir_salida + id_subgrupo + ".csv"
     featuresFichero, targetsFichero, path_dataset_sin_extension = leerFeaturesyTarget(path_absoluto_fichero, path_dir_img, modoDebug)
     featuresFicheroNorm = normalizarFeatures(featuresFichero, path_dataset_sin_extension, modoDebug)

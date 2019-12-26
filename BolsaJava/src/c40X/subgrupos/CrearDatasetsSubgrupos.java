@@ -27,6 +27,19 @@ public class CrearDatasetsSubgrupos {
 
 	static Logger MY_LOGGER = Logger.getLogger(CrearDatasetsSubgrupos.class);
 
+	private static CrearDatasetsSubgrupos instancia = null;
+
+	private CrearDatasetsSubgrupos() {
+		super();
+	}
+
+	public static CrearDatasetsSubgrupos getInstance() {
+		if (instancia == null)
+			instancia = new CrearDatasetsSubgrupos();
+
+		return instancia;
+	}
+
 	private final static Integer marketCap_large_max = 199999;
 	private final static Integer marketCap_mid_max = 9999;
 	private final static Integer marketCap_small_max = 1999;
@@ -34,10 +47,6 @@ public class CrearDatasetsSubgrupos {
 	private final static Integer marketCap_nano_max = 49;
 
 	private static HashMap<Integer, ArrayList<String>> empresasPorTipo;
-
-	public CrearDatasetsSubgrupos() {
-		super();
-	}
 
 	/**
 	 * @param args

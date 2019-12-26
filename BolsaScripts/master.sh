@@ -88,7 +88,7 @@ echo -e "-------- DATOS LIMPIOS -------------" >> ${LOG_MASTER}
 #######java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n" -jar ${PATH_JAR} --class "coordinador.Principal" "c30X.elaborados.LimpiarOperaciones" "${DIR_BRUTOS_CSV}" "${DIR_LIMPIOS}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 
 # PENDIENTE: de momento, no limpiamos, pero habrá que hacerlo
-cp "${DIR_BRUTOS_CSV}*.csv" "${DIR_LIMPIOS}"
+cp ${DIR_BRUTOS_CSV}*.csv ${DIR_LIMPIOS} 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 
 
 ################################################################################################

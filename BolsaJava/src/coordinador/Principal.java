@@ -18,6 +18,7 @@ import c10X.brutos.YahooFinance01Descargar;
 import c10X.brutos.YahooFinance02Parsear;
 import c20X.limpios.LimpiarOperaciones;
 import c30x.elaborados.construir.ConstructorElaborados;
+import c40X.subgrupos.CrearDatasetsSubgrupos;
 import c40X.subgrupos.CrearDatasetsSubgruposKMeans;
 
 /**
@@ -106,6 +107,9 @@ public class Principal implements Serializable {
 			} else if (programa.equals("c30X.elaborados.ConstructorElaborados")) {
 				ConstructorElaborados.getInstance();
 				ConstructorElaborados.main(params);
+			} else if (programa.equals("c40X.subgrupos.CrearDatasetsSubgrupos")) {
+				CrearDatasetsSubgrupos.getInstance();
+				CrearDatasetsSubgrupos.main(params);
 			} else if (programa.equals("c40X.subgrupos.CrearDatasetsSubgruposKMeans")) {
 				CrearDatasetsSubgruposKMeans.getInstance();
 				CrearDatasetsSubgruposKMeans.main(params);

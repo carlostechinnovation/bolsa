@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="22edbd2f-b3d9-42f0-a7dd-659033ab601a" name="Default Changelist" comment="" />
+    <list default="true" id="22edbd2f-b3d9-42f0-a7dd-659033ab601a" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bolsa/C5NormalizarYReducirDatasetSubgrupo.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/C5NormalizarYReducirDatasetSubgrupo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BolsaScripts/master.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/master.sh" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -156,12 +160,12 @@
     <option name="LAST_COMMIT_MESSAGE" value="Machine Learning - Ejemplo" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="117" y="196" width="1428" height="690" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1577186586184">
+    <state x="117" y="196" width="1428" height="690" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1577400275189">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
     <state x="54" y="169" key="#com.intellij.execution.impl.EditConfigurationsDialog/-1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1576786944833" />
     <state x="43" y="134" width="1428" height="690" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.824@0.0.1536.824" timestamp="1576676029392" />
-    <state x="117" y="196" key="#com.intellij.execution.impl.EditConfigurationsDialog/65.24.1855.1056@65.24.1855.1056" timestamp="1577186586184" />
+    <state x="117" y="196" key="#com.intellij.execution.impl.EditConfigurationsDialog/65.24.1855.1056@65.24.1855.1056" timestamp="1577400275189" />
     <state x="518" y="215" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1576665712837">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -259,6 +263,10 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="431" y="145" width="672" height="678" key="search.everywhere.popup/0.0.1536.824@0.0.1536.824" timestamp="1575807083887" />
+    <state x="722" y="453" key="vcs.readOnlyHandler.ReadOnlyStatusDialog" timestamp="1577400316139">
+      <screen x="65" y="24" width="1855" height="1056" />
+    </state>
+    <state x="722" y="453" key="vcs.readOnlyHandler.ReadOnlyStatusDialog/65.24.1855.1056@65.24.1855.1056" timestamp="1577400316139" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
