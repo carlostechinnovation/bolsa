@@ -2,7 +2,9 @@ import sys
 import os
 import pandas as pd
 from pathlib import Path
+from random import sample, choice
 
+from sklearn.covariance import EllipticEnvelope
 from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 from sklearn.gaussian_process import GaussianProcessClassifier
 from sklearn.gaussian_process.kernels import RBF
@@ -24,6 +26,7 @@ from sklearn.externals.joblib import dump, load
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.utils import resample
 
 print("---- CAPA 5 - Selección de variables/ Reducción de dimensiones (para cada subgrupo) -------")
 print("URL PCA: https://scikit-learn.org/stable/modules/unsupervised_reduction.html")
@@ -69,7 +72,7 @@ def leerFeaturesyTarget(pathEntrada, path_dir_img, modoDebug):
 
   # Limpiar OUTLIERS
   # URL: https://scikit-learn.org/stable/modules/outlier_detection.html
-  detector_outliers = IsolationForest(n_estimators=10, warm_start=True)
+  detector_outliers = IsolationForest(contamination='auto', random_state=42)
   detector_outliers.fit(entradaFeaturesYTarget3)  # fit 10 trees
   dump(detector_outliers, pathModeloOutliers, compress=True) # Luego basta cargarlo así --> detector_outliers=load(pathModeloOutliers)
   outliers_indices = detector_outliers.predict(entradaFeaturesYTarget3) #Si vale -1 es un outlier!!!
@@ -79,10 +82,60 @@ def leerFeaturesyTarget(pathEntrada, path_dir_img, modoDebug):
   print("Mostramos las 5 primeras filas:")
   print(entradaFeaturesYTarget4.head())
 
-  #ENTRADA: features (+ target)
-  featuresFichero = entradaFeaturesYTarget4.drop('TARGET', axis=1)
-  #featuresFichero = featuresFichero[1:] #quitamos la cabecera
-  targetsFichero = (entradaFeaturesYTarget4[['TARGET']] == 1)  # Convierto de int a boolean
+  # ENTRADA: features (+ target)
+
+  compatibleParaMuchasEmpresas=True
+
+  #INICIO CARLOS
+  if compatibleParaMuchasEmpresas==False:
+    featuresFichero = entradaFeaturesYTarget4.drop('TARGET', axis=1)
+    # featuresFichero = featuresFichero[1:] #quitamos la cabecera
+    targetsFichero = (entradaFeaturesYTarget4[['TARGET']] == 1)  # Convierto de int a boolean
+
+
+  #FIN CARLOS
+
+
+
+# INICIO LUIS (RESAMPLING para reducir los datos -útil para miles de empresas, pero puede quedar sobreentrenado, si borro casi todas las minoritarias-)
+  else:
+    print("BALANCEAR los casos positivos y negativos, haciendo downsampling de la clase mayoritaria...")
+    print("URL: https://elitedatascience.com/imbalanced-classes")
+    ift_minoritaria = entradaFeaturesYTarget4[entradaFeaturesYTarget4.TARGET == True]
+
+    # Se seleccionan tantos target=0 (mayoritaria) como entradas tengo de Target=1 (minoritaria). Se cogeuna muestra de 2xminoritarias, para asegurar que cogemos suficientes valores con target=0. Luego ya nos quedamos sólo con un tamaño mayoriaria=minoritaria
+    ift_mayoritaria=pd.DataFrame(index=ift_minoritaria.index.copy(), columns=ift_minoritaria.columns)
+    ift_mayoritaria=entradaFeaturesYTarget4.loc[np.random.choice(entradaFeaturesYTarget4.index, 2*ift_minoritaria.shape[0])]
+    ift_mayoritaria = ift_mayoritaria[ift_mayoritaria.TARGET == False]
+    ift_mayoritaria=ift_mayoritaria.head(ift_minoritaria.shape[0])
+
+    print("ift_mayoritaria:" + str(ift_mayoritaria.shape[0]) + " x " + str(ift_mayoritaria.shape[1]))
+    print("ift_minoritaria:" + str(ift_minoritaria.shape[0]) + " x " + str(ift_minoritaria.shape[1]))
+    print("Tasa de desbalanceo entre clases = " + str(ift_mayoritaria.shape[0]) + "/" + str(
+        ift_minoritaria.shape[0]) + " = " + str(ift_mayoritaria.shape[0] / ift_minoritaria.shape[0]))
+    num_muestras_minoria = ift_minoritaria.shape[0]
+
+    print("num_muestras_minoria: " + str(num_muestras_minoria))
+
+    # Juntar ambas clases ya BALANCEADAS. Primero vacío el dataset
+    ift_mayoritaria.reset_index(drop=True, inplace=True)
+    ift_minoritaria.reset_index(drop=True, inplace=True)
+
+    entradaFeaturesYTarget5=ift_mayoritaria.append(ift_minoritaria)
+
+    print("Las clases ya están balanceadas:")
+    print("ift_balanceadas:" + str(entradaFeaturesYTarget5.shape[0]) + " x " + str(entradaFeaturesYTarget5.shape[1]))
+
+    # Se realiza SHUFFLE para mezclar filas con Target True y False, y reseteo los índices
+    entradaFeaturesYTarget5=entradaFeaturesYTarget5.sample(frac=1)
+    entradaFeaturesYTarget5.reset_index(drop=True, inplace=True)
+
+    featuresFichero = entradaFeaturesYTarget5.drop('TARGET', axis=1)
+    targetsFichero = entradaFeaturesYTarget5[['TARGET']]
+    targetsFichero=(targetsFichero[['TARGET']] == 1)  # Convierto de int a boolean
+
+  #FIN LUIS
+
 
   print("FEATURES (sample):")
   print(featuresFichero.head())
@@ -167,27 +220,54 @@ def reducirFeaturesYGuardar(featuresFicheroNorm, targetsFichero, pathSalidaFeatu
 
   print("** Recursive Feature Elimination (RFE) (que se parece a la técnica Step-wise) **")
   # Create the RFE object and compute a cross-validated score.
-  svc_model = SVC(kernel="linear")
 
-  # Confusion matrix y reporte
-  print('CLASIFICADORES -FUERA DEL HILO DE EJECUCIÓN- LUIS')
-  classifiers = [
-    SVC(kernel="linear"),
-    AdaBoostClassifier(n_estimators=50, learning_rate=1.),
-    RandomForestClassifier(max_depth=5, n_estimators=10, max_features=1)]
-  for clasificador in classifiers:
-    rfecv = RFECV(estimator=clasificador, step=1, min_features_to_select=3, cv=StratifiedKFold(3), scoring='accuracy', verbose=0, n_jobs=8)
-    rfecv.fit(featuresFicheroNorm, targetsFichero)
-    print('Accuracy del clasificador: {:.2f}'
-          .format(rfecv.score(featuresFicheroNorm, targetsFichero)))
-    print("Optimal number of features : %d" % rfecv.n_features_)
-    # Plot number of features VS. cross-validation scores
-    plt.figure()
-    plt.xlabel("Number of features selected")
-    plt.ylabel("Cross validation score (nb of correct classifications)")
-    plt.plot(range(1, len(rfecv.grid_scores_) + 1), rfecv.grid_scores_)
-    plt.show()
-  print(' FIN - LUIS')
+  # Comparación de clasificadores
+  print('CLASIFICADORES -DENTRO DEL HILO DE EJECUCIÓN- LUIS')
+  print('Se analiza el accuracy de varios tipos de clasificadores...')
+
+  # OPCIÓN NO USADA: Si quisiera probar varios clasificadores
+  probarVariosClasificadores=False
+
+  svc_model = SVC(kernel="linear")
+  if probarVariosClasificadores:
+    classifiers = [
+      SVC(kernel="linear"),
+      AdaBoostClassifier(n_estimators=50, learning_rate=1.),
+      RandomForestClassifier(n_estimators=100,
+                             criterion="gini",
+                             max_depth=None,
+                            min_samples_split=2,
+                            min_samples_leaf=1,
+                            min_weight_fraction_leaf=0.,
+                            max_features="auto",
+                            max_leaf_nodes=None,
+                            min_impurity_decrease=0.,
+                            min_impurity_split=None,
+                            bootstrap=True,
+                            oob_score=False,
+                            n_jobs=None,
+                            random_state=None,
+                            verbose=0,
+                            warm_start=False,
+                            class_weight=None,
+                            ccp_alpha=0.0,
+                            max_samples=None)]
+
+    scoreAnterior = 0
+    numFeaturesAnterior=9999
+    for clasificadorActual in classifiers:
+      rfecv = RFECV(estimator=clasificadorActual, step=1, min_features_to_select=3, cv=StratifiedKFold(3), scoring='accuracy', verbose=0, n_jobs=8)
+      rfecv.fit(featuresFicheroNorm, targetsFichero)
+      print('Accuracy del clasificadorActual: {:.2f}'
+            .format(rfecv.score(featuresFicheroNorm, targetsFichero)))
+      print("Optimal number of features : %d" % rfecv.n_features_)
+
+      if scoreAnterior<rfecv.score(featuresFicheroNorm, targetsFichero):
+          if numFeaturesAnterior>rfecv.n_features_:
+              print("Se cambia el clasificador elegido")
+              svc_model=clasificadorActual
+              scoreAnterior=rfecv.score(featuresFicheroNorm, targetsFichero)
+              numFeaturesAnterior=rfecv.n_features_
 
   # The "accuracy" scoring is proportional to the number of correct classifications
   rfecv_modelo = RFECV(estimator=svc_model, step=1, min_features_to_select=3, cv=StratifiedKFold(3), scoring='accuracy', verbose=0, n_jobs=8)
@@ -236,12 +316,20 @@ def reducirFeaturesYGuardar(featuresFicheroNorm, targetsFichero, pathSalidaFeatu
       print('Dimensiones del dataframe reducido: ' + str(featuresFicheroNorm_pca.shape[0]) + ' x ' + str(featuresFicheroNorm_pca.shape[1]))
       print("Las features están ya normalizadas y reducidas. DESCRIBIMOS lo que hemos hecho y GUARDAMOS el dataset.")
 
-
   ### Guardar a fichero
   print("Escribiendo las features a CSV...")
-  featuresytargets = pd.concat([featuresFicheroNormElegidas, targetsFichero], axis=1, join='inner')
+  print("Muestro las features + targets antes de juntarlas...")
+  print("FEATURES (sample):")
+  print(featuresFicheroNormElegidas.head())
+  print("TARGETS (sample):")
+  print(targetsFichero.head())
+
+  featuresytargets = pd.concat([featuresFicheroNormElegidas.reset_index(drop=True), targetsFichero.reset_index(drop=True)], axis=1)
   featuresytargets.to_csv(pathSalidaFeaturesyTargets, index=False, sep='|')
 
+  print("Muestro las features + targets despues de juntarlas...")
+  print("FEATURES+TARGETS juntas (sample):")
+  print(featuresytargets.head())
 
 ################## MAIN ###########################################################
 

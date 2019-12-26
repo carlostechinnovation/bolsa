@@ -9,7 +9,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.neural_network import MLPClassifier
 import pickle
-from sklearn.metrics import roc_auc_score, confusion_matrix, classification_report
+from sklearn.metrics import roc_auc_score, confusion_matrix, classification_report, recall_score
 from sklearn.metrics import roc_curve
 from sklearn.metrics import average_precision_score
 import matplotlib.pyplot as plt
@@ -54,6 +54,8 @@ def cargarModeloyUsarlo(dirModelos, pathModelo, ds_test_f, ds_test_t, modoDebug)
     print(nombreModelo + ".roc_auc_score = " + str(round(area_bajo_roc, 4)))
     average_precision = average_precision_score(ds_test_t, ds_test_t_pred)
     print('Average precision-recall score: {0:0.2f}'.format(average_precision))
+    recall=recall_score(ds_test_t, ds_test_t_pred, average='binary', pos_label=1)
+    print('Average recall score: {0:0.2f}'.format(recall))
 
     if modoDebug:
         print("Curva ROC...")
@@ -256,5 +258,4 @@ for entry in os.listdir(dir_csvs_entrada):
 
 ############################################################
 print("------------ FIN ----------------")
-
 

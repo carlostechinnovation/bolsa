@@ -17,8 +17,8 @@ public class EmpresaWrapper implements Clusterable {
 		HashMap<Integer, HashMap<String, String>> datosAux = empresa.getDatosEmpresaEntrada();
 		// Por simplicidad, para seleccionar las posiciones para calcular el clustering
 		// (distancias entre empresas),
-		// tomo sólo los datos de antigüedad=0
-		HashMap<String, String> parametrosAux = datosAux.get(0);
+		// tomo sólo los datos de antigüedad=1 (la fila de antigüedad = 0 suele estar en un periodo incompleto de tiempo)
+		HashMap<String, String> parametrosAux = datosAux.get(1);
 
 //        De entre estos parámetros, debo escoger MANUALMENTE los que creo que son más útiles para clusterizar las empresas
 //        empresa|antiguedad|mercado|anio|mes|dia|hora|minuto|volumen|high|low|close|open|Insider Own|Debt/Eq|

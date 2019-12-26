@@ -167,8 +167,8 @@ public class GestorFicheros {
 	 * @throws Exception
 	 * @throws IOException
 	 */
-	public HashMap<String, HashMap<Integer, HashMap<String, String>>> leeTodosLosParametrosFicheroDeSoloUnaEmpresaYFilaMasReciente(
-			final String pathFichero) throws Exception, IOException {
+	public HashMap<String, HashMap<Integer, HashMap<String, String>>> leeTodosLosParametrosFicheroDeSoloUnaEmpresaYNFilasDeDatosRecientes(
+			final String pathFichero, final Integer n) throws Exception, IOException {
 
 		Boolean esPrimeraLinea = Boolean.TRUE;
 		MY_LOGGER.info("Fichero leído: " + pathFichero);
@@ -186,6 +186,9 @@ public class GestorFicheros {
 		BufferedReader csvReader = new BufferedReader(new FileReader(pathFichero));
 		HashMap<Integer, String> parametrosNombresConOrden = new HashMap<Integer, String>();
 		HashMap<Integer, String> parametrosValoresConOrden = new HashMap<Integer, String>();
+
+		// Filas de datos (no de cabecera) a leer
+		Integer filasDatosALeer = n;
 		try {
 			while ((row = csvReader.readLine()) != null) {
 				MY_LOGGER.debug("Fila leída: " + row);
@@ -215,8 +218,10 @@ public class GestorFicheros {
 					// Se guarda la antiguedad
 					datosEmpresa.put(Integer.parseInt(data[1]), datosParametrosEmpresa);
 
-					// No se sigue leyendo el fichero
-					break;
+					// Si ya se han leído todas, no se sigue leyendo el fichero
+					filasDatosALeer--;
+					if (filasDatosALeer == 0)
+						break;
 				}
 			}
 

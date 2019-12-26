@@ -17,7 +17,7 @@ else
 	exit -1
 fi;
 
-MIN_COBERTURA_CLUSTER=70
+MIN_COBERTURA_CLUSTER=60
 MIN_EMPRESAS_POR_CLUSTER=10
 
 #################### DIRECTORIOS ###############################################################

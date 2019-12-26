@@ -91,10 +91,10 @@ public class CrearDatasetsSubgruposKMeans {
 			datosEntrada = new HashMap<String, HashMap<Integer, HashMap<String, String>>>();
 			ficheroGestionado = iterator.next();
 			MY_LOGGER.info("Fichero entrada: " + ficheroGestionado.getAbsolutePath());
-			// Sólo leo la cabecera y la primera línea de datos, con antigüedad=0. Así
+			// Sólo leo la cabecera y las dos primeras líneas de datos, con antigüedad=0. Así
 			// optimizo la lectura
 			datosEntrada = gestorFicheros
-					.leeTodosLosParametrosFicheroDeSoloUnaEmpresaYFilaMasReciente(ficheroGestionado.getPath());
+					.leeTodosLosParametrosFicheroDeSoloUnaEmpresaYNFilasDeDatosRecientes(ficheroGestionado.getPath(), 2);
 
 			String empresa = "";
 			Set<String> empresas = datosEntrada.keySet();
