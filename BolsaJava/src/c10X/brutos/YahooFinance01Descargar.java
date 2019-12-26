@@ -3,26 +3,38 @@ package c10X.brutos;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
-import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.apache.log4j.PatternLayout;
+import org.apache.log4j.helpers.NullEnumeration;
 
 /**
  * Descarga de datos de Yahoo Finance
  *
  */
-public class YahooFinance01Descargar {
+public class YahooFinance01Descargar implements Serializable {
 
 	static Logger MY_LOGGER = Logger.getLogger(YahooFinance01Descargar.class);
 
-	public YahooFinance01Descargar() {
+	private static YahooFinance01Descargar instancia = null;
+
+	private YahooFinance01Descargar() {
 		super();
+	}
+
+	public static YahooFinance01Descargar getInstance() {
+		if (instancia == null)
+			instancia = new YahooFinance01Descargar();
+
+		return instancia;
 	}
 
 	/**
@@ -31,10 +43,12 @@ public class YahooFinance01Descargar {
 	 */
 	public static void main(String[] args) throws Exception {
 
-		MY_LOGGER.info("INICIO");
-
-		BasicConfigurator.configure();
+		Object appendersAcumulados = Logger.getRootLogger().getAllAppenders();
+		if (appendersAcumulados instanceof NullEnumeration) {
+			MY_LOGGER.addAppender(new ConsoleAppender(new PatternLayout(PatternLayout.TTCC_CONVERSION_PATTERN)));
+		}
 		MY_LOGGER.setLevel(Level.INFO);
+		MY_LOGGER.info("INICIO");
 
 		Integer numMaxEmpresas = BrutosUtils.NUM_EMPRESAS_PRUEBAS; // DEFAULT
 		String directorioOut = BrutosUtils.DIR_BRUTOS; // DEFAULT
@@ -44,13 +58,21 @@ public class YahooFinance01Descargar {
 			MY_LOGGER.info("Sin parametros de entrada. Rellenamos los DEFAULT...");
 		} else if (args.length != 3) {
 			MY_LOGGER.error("Parametros de entrada incorrectos!!");
+			int numParams = args.length;
+			MY_LOGGER.info("Numero de parametros: " + numParams);
+			for (String param : args) {
+				MY_LOGGER.info("Param: " + param);
+			}
 			System.exit(-1);
+
 		} else {
 			numMaxEmpresas = Integer.valueOf(args[0]);
 			directorioOut = args[1];
 			modo = args[2];
+			MY_LOGGER.info("Parametros de entrada -> " + numMaxEmpresas + " | " + directorioOut + " | " + modo);
 		}
 
+		EstaticosNasdaqDescargarYParsear.getInstance();
 		List<EstaticoNasdaqModelo> nasdaqEstaticos1 = EstaticosNasdaqDescargarYParsear
 				.descargarNasdaqEstaticosSoloLocal1();
 		descargarNasdaqDinamicos01(nasdaqEstaticos1, numMaxEmpresas, directorioOut, modo);

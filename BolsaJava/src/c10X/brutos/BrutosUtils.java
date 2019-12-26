@@ -1,12 +1,13 @@
 package c10X.brutos;
 
 import java.io.File;
+import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
 
-public class BrutosUtils {
+public class BrutosUtils implements Serializable {
 
 	public static final String DIR_BRUTOS = "/bolsa/pasado/brutos/";
 	public static final String DIR_BRUTOS_CSV = "/bolsa/pasado/brutos_csv/";
@@ -22,7 +23,6 @@ public class BrutosUtils {
 
 	public static final int ESPERA_ALEATORIA_MSEG_MIN = 200;
 	public static final int ESPERA_ALEATORIA_SEG_MAX = 2;
-	public static final int NUM_EMPRESAS_PRUEBAS = 1000;
 
 	public static final String NULO = "null";
 	public static final String ESCALA_UNO = "uno";

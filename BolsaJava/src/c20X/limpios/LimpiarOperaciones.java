@@ -2,24 +2,35 @@ package c20X.limpios;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.apache.log4j.PatternLayout;
+import org.apache.log4j.helpers.NullEnumeration;
 
 import c10X.brutos.BrutosUtils;
 import c30x.elaborados.construir.Estadisticas;
 
-public class LimpiarOperaciones {
+public class LimpiarOperaciones implements Serializable {
 
 	static Logger MY_LOGGER = Logger.getLogger(LimpiarOperaciones.class);
+	private static LimpiarOperaciones instancia = null;
 
-	public LimpiarOperaciones() {
+	private LimpiarOperaciones() {
 		super();
+	}
+
+	public static LimpiarOperaciones getInstance() {
+		if (instancia == null)
+			instancia = new LimpiarOperaciones();
+
+		return instancia;
 	}
 
 	/**
@@ -28,9 +39,12 @@ public class LimpiarOperaciones {
 	 */
 	public static void main(String[] args) throws IOException {
 
-		MY_LOGGER.info("INICIO");
-		BasicConfigurator.configure();
+		Object appendersAcumulados = Logger.getRootLogger().getAllAppenders();
+		if (appendersAcumulados instanceof NullEnumeration) {
+			MY_LOGGER.addAppender(new ConsoleAppender(new PatternLayout(PatternLayout.TTCC_CONVERSION_PATTERN)));
+		}
 		MY_LOGGER.setLevel(Level.INFO);
+		MY_LOGGER.info("INICIO");
 
 		String directorioIn = BrutosUtils.DIR_BRUTOS_CSV; // DEFAULT
 		String directorioOut = LimpiosUtils.DIR_LIMPIOS; // DEFAULT

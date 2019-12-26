@@ -11,7 +11,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.apache.log4j.PatternLayout;
+import org.apache.log4j.helpers.NullEnumeration;
 
 public class GestorFicheros {
 
@@ -21,6 +25,13 @@ public class GestorFicheros {
 	private HashMap<Integer, String> ordenNombresParametrosLeidos;
 
 	public void main(String[] args) throws Exception {
+
+		Object appendersAcumulados = Logger.getRootLogger().getAllAppenders();
+		if (appendersAcumulados instanceof NullEnumeration) {
+			MY_LOGGER.addAppender(new ConsoleAppender(new PatternLayout(PatternLayout.TTCC_CONVERSION_PATTERN)));
+		}
+		MY_LOGGER.setLevel(Level.INFO);
+		MY_LOGGER.info("INICIO");
 
 		HashMap<String, HashMap<Integer, HashMap<String, String>>> datos = new HashMap<String, HashMap<Integer, HashMap<String, String>>>();
 		final File dirEntrada = new File("/bolsa/pasado/limpios/");
@@ -46,6 +57,7 @@ public class GestorFicheros {
 	 * 
 	 */
 	public GestorFicheros() {
+
 		ordenNombresParametrosLeidos = new HashMap<Integer, String>();
 		ordenNombresParametrosLeidos.put(0, "empresa");
 		ordenNombresParametrosLeidos.put(1, "antiguedad");
@@ -124,7 +136,7 @@ public class GestorFicheros {
 					for (int i = 0; i < Math.min(data.length, ordenNombresParametrosLeidos.size()); i++) {
 						if (ordenNombresParametrosLeidos.get(i).compareTo(data[i]) != 0)
 							throw new Exception(
-									"El orden de los par�metros le�dos (sólo se tratan los NO ELABORADOS) en el fichero no es el que espera el gestor de ficheros");
+									"El orden de los parametros leidos (sólo se tratan los NO ELABORADOS) en el fichero no es el que espera el gestor de ficheros");
 					}
 					esPrimeraLinea = Boolean.FALSE;
 

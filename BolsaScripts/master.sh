@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -x
-
 ################ VARIABLES DE EJECUCION #########################################################
 ID_EJECUCION=$( date "+%Y%m%d%H%M%S" )
 echo -e "ID_EJECUCION = "${ID_EJECUCION}
@@ -26,7 +24,7 @@ DIR_CODIGOS="/home/carloslinux/Desktop/GIT_BOLSA/"
 PATH_SCRIPTS="${DIR_CODIGOS}BolsaScripts/"
 PYTHON_SCRIPTS="${DIR_CODIGOS}BolsaPython/"
 DIR_JAVA="${DIR_CODIGOS}BolsaJava/"
-PATH_JAR="${DIR_JAVA}target/bolsajava-1.0.jar"
+PATH_JAR="${DIR_JAVA}target/bolsajava-1.0-jar-with-dependencies.jar"
 
 DIR_BASE="/bolsa/"
 DIR_LOGS="${DIR_BASE}logs/"
@@ -57,8 +55,9 @@ LOG_MASTER="${DIR_LOGS}${ID_EJECUCION}_bolsa_coordinador_${MODO}.log"
 rm -f "${LOG_MASTER}"
 
 ############### COMPILAR JAR ########################################################
+echo -e "Compilando JAVA en un JAR..." >> ${LOG_MASTER}
 cd "${DIR_JAVA}"
-mvn clean package -e
+mvn clean compile assembly:single
 
 ################################################################################################
 echo -e "-------- DATOS BRUTOS -------------" >> ${LOG_MASTER}
@@ -67,7 +66,7 @@ echo -e "-------- DATOS BRUTOS -------------" >> ${LOG_MASTER}
 ############## java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n" -jar ${PATH_JAR} --class "coordinador.Principal" "c10X.brutos.EstaticosNasdaqDescargarYParsear" "${DIR_BRUTOS}" "${DIR_BRUTOS_CSV}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 
 echo -e "DINAMICOS - Descargando de YAHOO FINANCE..." >> ${LOG_MASTER}
-java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n" -jar ${PATH_JAR} --class "coordinador.Principal" "c10X.brutos.YahooFinance01Descargar" "2" "${DIR_BRUTOS}" "${DIR_BRUTOS_CSV}" "P" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
+java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n" -jar ${PATH_JAR} --class "coordinador.Principal" "c10X.brutos.YahooFinance01Descargar" "2" "${DIR_BRUTOS}" "P" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 
 echo -e "DINAMICOS - Limpieza de YAHOO FINANCE..." >> ${LOG_MASTER}
 java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n" -jar ${PATH_JAR} --class "coordinador.Principal" "c10X.brutos.YahooFinance02Parsear" "${DIR_BRUTOS}" "${DIR_BRUTOS_CSV}" "P" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
@@ -89,7 +88,7 @@ echo -e "-------- DATOS LIMPIOS -------------" >> ${LOG_MASTER}
 #######java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n" -jar ${PATH_JAR} --class "coordinador.Principal" "c30X.elaborados.LimpiarOperaciones" "${DIR_BRUTOS_CSV}" "${DIR_LIMPIOS}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 
 # PENDIENTE: de momento, no limpiamos, pero habrá que hacerlo
-cp "${DIR_BRUTOS_CSV}*" "${DIR_LIMPIOS}"
+cp "${DIR_BRUTOS_CSV}*.csv" "${DIR_LIMPIOS}"
 
 
 ################################################################################################
@@ -105,7 +104,8 @@ echo -e "Elaborados (incluye la variable elaborada TARGET) ya calculados" >> ${L
 echo -e "-------- SUBGRUPOS -------------" >> ${LOG_MASTER}
 
 echo -e "Calculando subgrupos..." >> ${LOG_MASTER}
-java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n" -jar ${PATH_JAR} --class "coordinador.Principal" "c40X.subgrupos.CrearDatasetsSubgruposKMeans" "${DIR_ELABORADOS}" "${DIR_SUBGRUPOS}" "${MIN_COBERTURA_CLUSTER}" "${MIN_EMPRESAS_POR_CLUSTER}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
+java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n" -jar ${PATH_JAR} --class "coordinador.Principal" "c40X.subgrupos.CrearDatasetsSubgrupos" "${DIR_ELABORADOS}" "${DIR_SUBGRUPOS}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
+#java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n" -jar ${PATH_JAR} --class "coordinador.Principal" "c40X.subgrupos.CrearDatasetsSubgruposKMeans" "${DIR_ELABORADOS}" "${DIR_SUBGRUPOS}" "${MIN_COBERTURA_CLUSTER}" "${MIN_EMPRESAS_POR_CLUSTER}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 
 
 ############  PARA CADA SUBGRUPO ###############################################################
@@ -117,16 +117,16 @@ do
 	mkdir -p "${DIR_SUBGRUPOS_IMG}"
 	
 	echo -e "-------- PARA CADA SUBGRUPO: SELECCIÓN DE VARIABLES -------------" >> ${LOG_MASTER}
-	python "${PYTHON_SCRIPTS}bolsa/C5NormalizarYReducirDatasetSubgrupo.py" "${path_csv_subgrupo}" "${DIR_SUBGRUPOS_REDUCIDOS}"  "${DIR_SUBGRUPOS_IMG}"
+	python3 "${PYTHON_SCRIPTS}bolsa/C5NormalizarYReducirDatasetSubgrupo.py" "${path_csv_subgrupo}" "${DIR_SUBGRUPOS_REDUCIDOS}"  "${DIR_SUBGRUPOS_IMG}"
 	
 	echo -e "-------- PARA CADA SUBGRUPO: CREACIÓN DE MODELOS (entrenamiento, test, validación) -------------" >> ${LOG_MASTER}
-	python "${PYTHON_SCRIPTS}bolsa/C6CreadorModelosDeSubgrupo.py" "${DIR_SUBGRUPOS_REDUCIDOS}" "${DIR_MODELOS}"
+	python3 "${PYTHON_SCRIPTS}bolsa/C6CreadorModelosDeSubgrupo.py" "${DIR_SUBGRUPOS_REDUCIDOS}" "${DIR_MODELOS}"
 	
 	echo -e "-------- PARA CADA SUBGRUPO: EVALUACIÓN DE MODELOS (ROC, R2...); GUARDAR MODELO GANADOR -------------" >> ${LOG_MASTER}
-	python "${PYTHON_SCRIPTS}bolsa/C7EvaluadorModelosDeSubgrupo.py"
+	python3 "${PYTHON_SCRIPTS}bolsa/C7EvaluadorModelosDeSubgrupo.py"
 	
 	echo -e "-------- PARA CADA SUBGRUPO: VALIDACIÓN MANUAL DE MODELO GANADOR (rentabilidad, etc) -------------" >> ${LOG_MASTER}
-	python "${PYTHON_SCRIPTS}bolsa/C8OtrasValidacionesManuales.py"
+	python3 "${PYTHON_SCRIPTS}bolsa/C8OtrasValidacionesManuales.py"
 	
 	
 done

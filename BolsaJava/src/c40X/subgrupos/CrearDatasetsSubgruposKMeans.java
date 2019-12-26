@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -15,9 +16,11 @@ import org.apache.commons.math3.ml.clustering.KMeansPlusPlusClusterer;
 import org.apache.commons.math3.ml.clustering.KMeansPlusPlusClusterer.EmptyClusterStrategy;
 import org.apache.commons.math3.ml.distance.EuclideanDistance;
 import org.apache.commons.math3.random.JDKRandomGenerator;
-import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.apache.log4j.PatternLayout;
+import org.apache.log4j.helpers.NullEnumeration;
 
 import c30x.elaborados.construir.ElaboradosUtils;
 import c30x.elaborados.construir.Estadisticas;
@@ -26,15 +29,31 @@ import c30x.elaborados.construir.GestorFicheros;
 /**
  * Crear los datasets de SUBGRUPOS usando KMeans (Clustering, no supervisado).
  */
-public class CrearDatasetsSubgruposKMeans {
+public class CrearDatasetsSubgruposKMeans implements Serializable {
 
 	static Logger MY_LOGGER = Logger.getLogger(CrearDatasetsSubgruposKMeans.class);
 
+	private static CrearDatasetsSubgruposKMeans instancia = null;
+
+	private CrearDatasetsSubgruposKMeans() {
+		super();
+	}
+
+	public static CrearDatasetsSubgruposKMeans getInstance() {
+		if (instancia == null)
+			instancia = new CrearDatasetsSubgruposKMeans();
+
+		return instancia;
+	}
+
 	public static void main(String[] args) throws Exception {
 
-		MY_LOGGER.info("INICIO");
-		BasicConfigurator.configure();
+		Object appendersAcumulados = Logger.getRootLogger().getAllAppenders();
+		if (appendersAcumulados instanceof NullEnumeration) {
+			MY_LOGGER.addAppender(new ConsoleAppender(new PatternLayout(PatternLayout.TTCC_CONVERSION_PATTERN)));
+		}
 		MY_LOGGER.setLevel(Level.INFO);
+		MY_LOGGER.info("INICIO");
 
 		String directorioIn = ElaboradosUtils.DIR_ELABORADOS; // DEFAULT
 		String directorioOut = SubgruposUtils.DIR_SUBGRUPOS; // DEFAULT

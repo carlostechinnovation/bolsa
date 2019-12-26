@@ -6,9 +6,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.apache.log4j.PatternLayout;
+import org.apache.log4j.helpers.NullEnumeration;
 
 /**
  * Juntar ESTATICOS + DINAMICOS
@@ -18,8 +20,17 @@ public class LimpiarCSVBrutosTemporales {
 
 	static Logger MY_LOGGER = Logger.getLogger(LimpiarCSVBrutosTemporales.class);
 
-	public LimpiarCSVBrutosTemporales() {
+	private static LimpiarCSVBrutosTemporales instancia = null;
+
+	private LimpiarCSVBrutosTemporales() {
 		super();
+	}
+
+	public static LimpiarCSVBrutosTemporales getInstance() {
+		if (instancia == null)
+			instancia = new LimpiarCSVBrutosTemporales();
+
+		return instancia;
 	}
 
 	/**
@@ -28,9 +39,12 @@ public class LimpiarCSVBrutosTemporales {
 	 */
 	public static void main(String[] args) throws IOException {
 
-		MY_LOGGER.info("INICIO");
-		BasicConfigurator.configure();
+		Object appendersAcumulados = Logger.getRootLogger().getAllAppenders();
+		if (appendersAcumulados instanceof NullEnumeration) {
+			MY_LOGGER.addAppender(new ConsoleAppender(new PatternLayout(PatternLayout.TTCC_CONVERSION_PATTERN)));
+		}
 		MY_LOGGER.setLevel(Level.INFO);
+		MY_LOGGER.info("INICIO");
 
 		nucleo();
 		MY_LOGGER.info("FIN");

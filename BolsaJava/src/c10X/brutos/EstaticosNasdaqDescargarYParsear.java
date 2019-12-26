@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.Charset;
@@ -15,9 +16,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.apache.log4j.PatternLayout;
+import org.apache.log4j.helpers.NullEnumeration;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -27,14 +30,24 @@ import org.jsoup.select.Elements;
  * Datos ESTATICOS
  *
  */
-public class EstaticosNasdaqDescargarYParsear {
+public class EstaticosNasdaqDescargarYParsear implements Serializable {
 
 	static Logger MY_LOGGER = Logger.getLogger(EstaticosNasdaqDescargarYParsear.class);
 
 	static String ID_SRL = "stockreportslink";
 
-	public EstaticosNasdaqDescargarYParsear() {
+	private static EstaticosNasdaqDescargarYParsear instancia = null;
+
+	private EstaticosNasdaqDescargarYParsear() {
 		super();
+	}
+
+	public static EstaticosNasdaqDescargarYParsear getInstance() {
+		MY_LOGGER.info("getInstance...");
+		if (instancia == null)
+			instancia = new EstaticosNasdaqDescargarYParsear();
+
+		return instancia;
 	}
 
 	/**
@@ -44,10 +57,12 @@ public class EstaticosNasdaqDescargarYParsear {
 	 */
 	public static void main(String[] args) throws IOException, InterruptedException {
 
-		MY_LOGGER.info("INICIO");
-
-		BasicConfigurator.configure();
+		Object appendersAcumulados = Logger.getRootLogger().getAllAppenders();
+		if (appendersAcumulados instanceof NullEnumeration) {
+			MY_LOGGER.addAppender(new ConsoleAppender(new PatternLayout(PatternLayout.TTCC_CONVERSION_PATTERN)));
+		}
 		MY_LOGGER.setLevel(Level.INFO);
+		MY_LOGGER.info("INICIO");
 
 		Integer numMaxEmpresas = BrutosUtils.NUM_EMPRESAS_PRUEBAS; // DEFAULT
 		String dirBruto = BrutosUtils.DIR_BRUTOS; // DEFAULT
@@ -69,7 +84,8 @@ public class EstaticosNasdaqDescargarYParsear {
 			dirBrutoCsv = args[2];
 		}
 
-		List<EstaticoNasdaqModelo> nasdaqEstaticos1 = descargarNasdaqEstaticosSoloLocal1();
+		// List<EstaticoNasdaqModelo> nasdaqEstaticos1 =
+		// descargarNasdaqEstaticosSoloLocal1();
 		// TODO descargarYparsearNasdaqEstaticos2(nasdaqEstaticos1, dirBruto,
 		// dirBrutoCsv, numMaxEmpresas);
 
