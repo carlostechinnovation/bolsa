@@ -55,6 +55,7 @@ LOG_MASTER="${DIR_LOGS}${ID_EJECUCION}_bolsa_coordinador_${MODO}.log"
 rm -f "${LOG_MASTER}"
 
 ############### COMPILAR JAR ########################################################
+echo -e "Compilando JAVA en un JAR..." >> ${LOG_MASTER}
 cd "${DIR_JAVA}"
 mvn clean compile assembly:single
 
