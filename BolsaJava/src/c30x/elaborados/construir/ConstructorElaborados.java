@@ -1,27 +1,43 @@
 package c30x.elaborados.construir;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.apache.log4j.PatternLayout;
+import org.apache.log4j.helpers.NullEnumeration;
 
 import c20X.limpios.LimpiosUtils;
 import c30x.elaborados.construir.Estadisticas.FINAL_NOMBRES_PARAMETROS_ELABORADOS;
 
-public class ConstructorElaborados {
+public class ConstructorElaborados implements Serializable {
 
 	static Logger MY_LOGGER = Logger.getLogger(ConstructorElaborados.class);
+
+	private static ConstructorElaborados instancia = null;
+
+	private ConstructorElaborados() {
+		super();
+	}
+
+	public static ConstructorElaborados getInstance() {
+		if (instancia == null)
+			instancia = new ConstructorElaborados();
+
+		return instancia;
+	}
 
 	// META-PARAMETRIZACION
 	// Periodo de la vela de entrada
 	public final static String T_velaEntrada = "H";
-	// x d�as
+	// x dias
 	public final static Integer HORAS_AL_DIA = 7;
 	public final static Integer[] periodosHParaParametros = new Integer[] { 3 * HORAS_AL_DIA, 7 * HORAS_AL_DIA,
 			20 * HORAS_AL_DIA, 50 * HORAS_AL_DIA };
@@ -33,8 +49,8 @@ public class ConstructorElaborados {
 	public final static Integer R = 5;
 	public final static Integer M = 1 * HORAS_AL_DIA;
 
-	// IMPORTANTE: se asume que los datos est�n ordenados de menor a mayor
-	// antig�edad, y agrupados por empresa
+	// IMPORTANTE: se asume que los datos estan ordenados de menor a mayor
+	// antiguedad, y agrupados por empresa
 
 	final static String TARGET_INVALIDO = "null";
 
@@ -44,10 +60,12 @@ public class ConstructorElaborados {
 	 */
 	public static void main(String[] args) throws Exception {
 
-		MY_LOGGER.info("INICIO");
-
-		BasicConfigurator.configure();
+		Object appendersAcumulados = Logger.getRootLogger().getAllAppenders();
+		if (appendersAcumulados instanceof NullEnumeration) {
+			MY_LOGGER.addAppender(new ConsoleAppender(new PatternLayout(PatternLayout.TTCC_CONVERSION_PATTERN)));
+		}
 		MY_LOGGER.setLevel(Level.INFO);
+		MY_LOGGER.info("INICIO");
 
 		String directorioIn = LimpiosUtils.DIR_LIMPIOS; // DEFAULT
 		String directorioOut = ElaboradosUtils.DIR_ELABORADOS; // DEFAULT

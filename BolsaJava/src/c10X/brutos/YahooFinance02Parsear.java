@@ -8,6 +8,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -19,9 +20,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.apache.log4j.PatternLayout;
+import org.apache.log4j.helpers.NullEnumeration;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -30,13 +33,22 @@ import org.json.simple.parser.ParseException;
 /**
  * Parsear datos de Yahoo Finance
  */
-public class YahooFinance02Parsear {
+public class YahooFinance02Parsear implements Serializable {
 
 	static Logger MY_LOGGER = Logger.getLogger(YahooFinance02Parsear.class);
 	static DateFormat df = new SimpleDateFormat("yyyy|MM|dd|HH|mm");
 
-	public YahooFinance02Parsear() {
+	private static YahooFinance02Parsear instancia = null;
+
+	private YahooFinance02Parsear() {
 		super();
+	}
+
+	public static YahooFinance02Parsear getInstance() {
+		if (instancia == null)
+			instancia = new YahooFinance02Parsear();
+
+		return instancia;
 	}
 
 	/**
@@ -45,10 +57,12 @@ public class YahooFinance02Parsear {
 	 */
 	public static void main(String[] args) throws IOException {
 
-		MY_LOGGER.info("INICIO");
-
-		BasicConfigurator.configure();
+		Object appendersAcumulados = Logger.getRootLogger().getAllAppenders();
+		if (appendersAcumulados instanceof NullEnumeration) {
+			MY_LOGGER.addAppender(new ConsoleAppender(new PatternLayout(PatternLayout.TTCC_CONVERSION_PATTERN)));
+		}
 		MY_LOGGER.setLevel(Level.INFO);
+		MY_LOGGER.info("INICIO");
 
 		String directorioIn = BrutosUtils.DIR_BRUTOS; // DEFAULT
 		String directorioOut = BrutosUtils.DIR_BRUTOS_CSV; // DEFAULT

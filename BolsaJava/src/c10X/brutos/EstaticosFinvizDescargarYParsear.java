@@ -17,9 +17,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.apache.log4j.PatternLayout;
+import org.apache.log4j.helpers.NullEnumeration;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -35,8 +37,17 @@ public class EstaticosFinvizDescargarYParsear {
 
 	static String ID_SRL = "stockreportslink";
 
-	public EstaticosFinvizDescargarYParsear() {
+	private static EstaticosFinvizDescargarYParsear instancia = null;
+
+	private EstaticosFinvizDescargarYParsear() {
 		super();
+	}
+
+	public static EstaticosFinvizDescargarYParsear getInstance() {
+		if (instancia == null)
+			instancia = new EstaticosFinvizDescargarYParsear();
+
+		return instancia;
 	}
 
 	/**
@@ -46,24 +57,21 @@ public class EstaticosFinvizDescargarYParsear {
 	 */
 	public static void main(String[] args) throws IOException, InterruptedException {
 
-		MY_LOGGER.info("INICIO");
-
-		BasicConfigurator.configure();
+		Object appendersAcumulados = Logger.getRootLogger().getAllAppenders();
+		if (appendersAcumulados instanceof NullEnumeration) {
+			MY_LOGGER.addAppender(new ConsoleAppender(new PatternLayout(PatternLayout.TTCC_CONVERSION_PATTERN)));
+		}
 		MY_LOGGER.setLevel(Level.INFO);
+		MY_LOGGER.info("INICIO");
 
 		Integer numMaxEmpresas = BrutosUtils.NUM_EMPRESAS_PRUEBAS; // DEFAULT
 		String dirBruto = BrutosUtils.DIR_BRUTOS; // DEFAULT
 		String dirBrutoCsv = BrutosUtils.DIR_BRUTOS_CSV; // DEFAULT
 
-		if (args.length != 0) {
-			MY_LOGGER.error("Parametros de entrada incorrectos!!");
-			System.exit(-1);
-		}
-
 		if (args.length == 0) {
 			MY_LOGGER.info("Sin parametros de entrada. Rellenamos los DEFAULT...");
 		} else if (args.length != 3) {
-			MY_LOGGER.error("Parametros de entrada incorrectos!! ");
+			MY_LOGGER.error("Parametros de entrada incorrectos!! --> " + args.length);
 			int numParams = args.length;
 			MY_LOGGER.error("Numero de parametros: " + numParams);
 			for (String param : args) {
@@ -71,8 +79,8 @@ public class EstaticosFinvizDescargarYParsear {
 			}
 
 			System.exit(-1);
-		} else {
 
+		} else {
 			numMaxEmpresas = Integer.valueOf(args[0]);
 			dirBruto = args[1];
 			dirBrutoCsv = args[2];

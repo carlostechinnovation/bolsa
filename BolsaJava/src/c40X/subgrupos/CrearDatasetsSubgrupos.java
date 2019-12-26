@@ -10,9 +10,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.apache.log4j.PatternLayout;
+import org.apache.log4j.helpers.NullEnumeration;
 
 import c30x.elaborados.construir.ElaboradosUtils;
 import c30x.elaborados.construir.GestorFicheros;
@@ -21,7 +23,6 @@ import c30x.elaborados.construir.GestorFicheros;
  * Crea los datasets (CSV) de cada subgrupo
  *
  */
-@Deprecated
 public class CrearDatasetsSubgrupos {
 
 	static Logger MY_LOGGER = Logger.getLogger(CrearDatasetsSubgrupos.class);
@@ -44,9 +45,12 @@ public class CrearDatasetsSubgrupos {
 	 */
 	public static void main(String[] args) throws Exception {
 
-		MY_LOGGER.info("INICIO");
-		BasicConfigurator.configure();
+		Object appendersAcumulados = Logger.getRootLogger().getAllAppenders();
+		if (appendersAcumulados instanceof NullEnumeration) {
+			MY_LOGGER.addAppender(new ConsoleAppender(new PatternLayout(PatternLayout.TTCC_CONVERSION_PATTERN)));
+		}
 		MY_LOGGER.setLevel(Level.INFO);
+		MY_LOGGER.info("INICIO");
 
 		String directorioIn = ElaboradosUtils.DIR_ELABORADOS; // DEFAULT
 		String directorioOut = SubgruposUtils.DIR_SUBGRUPOS; // DEFAULT
