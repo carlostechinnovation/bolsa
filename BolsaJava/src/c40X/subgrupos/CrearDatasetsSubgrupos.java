@@ -202,6 +202,7 @@ public class CrearDatasetsSubgrupos {
 		ArrayList<String> pathFicheros;
 		FileWriter csvWriter;
 		FileWriter writerListadoEmpresas;
+		String antiguedad;
 		while (itTipos.hasNext()) {
 
 			tipo = itTipos.next();
@@ -232,11 +233,14 @@ public class CrearDatasetsSubgrupos {
 
 						while ((row = csvReader.readLine()) != null) {
 							MY_LOGGER.debug("Fila leída: " + row);
-							// Se eliminan los parámetros estáticos de la fila
+							// Se eliminan los parámetros estáticos de la fila, EXCEPTO LA ANTIGÜEDAD (que
+							// será el segundo parámetro)
 							// Para cada fila de datos o de cabecera, de longitud variable, se eliminan los
 							// datos estáticos
-							rowTratada = SubgruposUtils.recortaPrimeraParteDeString(characterPipe,
-									numeroParametrosEstaticos, row);
+							antiguedad = SubgruposUtils.recortaPrimeraParteDeString(characterPipe, 1, row);
+							antiguedad = antiguedad.substring(0, antiguedad.indexOf(characterPipe));
+							rowTratada = antiguedad + characterPipe + SubgruposUtils
+									.recortaPrimeraParteDeString(characterPipe, numeroParametrosEstaticos, row);
 							MY_LOGGER.debug("Fila escrita: " + rowTratada);
 
 							// La cabecera se toma de la primera línea del primer fichero
