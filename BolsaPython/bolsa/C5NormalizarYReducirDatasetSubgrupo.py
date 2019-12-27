@@ -27,6 +27,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.utils import resample
+import pickle
 
 print("---- CAPA 5 - Selección de variables/ Reducción de dimensiones (para cada subgrupo) -------")
 print("URL PCA: https://scikit-learn.org/stable/modules/unsupervised_reduction.html")
@@ -38,6 +39,7 @@ path_dir_salida = sys.argv[2]
 path_dir_img = sys.argv[3]
 modoTiempo = sys.argv[4]
 varianza=0.90
+compatibleParaMuchasEmpresas = True #Si hay muchas empresas, debo hacer ya el undersampling (en vez de capa 6)
 modoDebug = False  #En modo debug se pintan los dibujos. En otro caso, se evita calculo innecesario
 print("entrada_csv_subgrupo = %s" % entrada_csv_subgrupo)
 print("path_dir_salida = %s" % path_dir_salida)
@@ -47,7 +49,7 @@ print("modoTiempo = %s" % modoTiempo)
 
 ######################## FUNCIONES #######################################################
 
-def leerFeaturesyTarget(pathEntrada, path_dir_img, modoDebug):
+def leerFeaturesyTarget(pathEntrada, path_dir_img, compatibleParaMuchasEmpresas, modoDebug):
   print("----- leerFeaturesyTarget ------")
   print("Entrada --> " + pathEntrada)
 
@@ -61,15 +63,17 @@ def leerFeaturesyTarget(pathEntrada, path_dir_img, modoDebug):
   print("Cargar datos (CSV)...")
   entradaFeaturesYTarget = pd.read_csv(filepath_or_buffer=pathEntrada, sep='|')
   num_nulos_por_fila_1 = np.logical_not(entradaFeaturesYTarget.isnull()).sum()
+  print("entradaFeaturesYTarget:" + str(entradaFeaturesYTarget.shape[0]) + " x " + str(entradaFeaturesYTarget.shape[1]))
 
-  print("Borramos las columnas (features) que sean siempre NaN. Tambien, limpiamos las filas que tengan 1 o mas valores NaN porque son huecos que no deberán estar...")
+  print("MISSING VALUES (COLUMNAS) - Borramos las columnas (features) que sean siempre NaN...")
   entradaFeaturesYTarget2 = entradaFeaturesYTarget.dropna(axis=1, how='all') #Borrar COLUMNA si TODOS sus valores tienen NaN
   #num_nulos_por_fila_2 = np.logical_not(entradaFeaturesYTarget2.isnull()).sum()
+  print("entradaFeaturesYTarget2 (columnas nulas borradas):" + str(entradaFeaturesYTarget2.shape[0]) + " x " + str(entradaFeaturesYTarget2.shape[1]))
+
+
+  print("MISSING VALUES (FILAS) - Borramos las FILAS que tengan 1 o mas valores NaN porque son huecos que no deberán estar...")
   entradaFeaturesYTarget3 = entradaFeaturesYTarget2.dropna(axis=0, how='any')  # Borrar FILA si ALGUNO sus valores tienen NaN
   #num_nulos_por_fila_3 = np.logical_not(entradaFeaturesYTarget3.isnull()).sum()
-
-  print("entradaFeaturesYTarget:" + str(entradaFeaturesYTarget.shape[0]) + " x " + str(entradaFeaturesYTarget.shape[1]))
-  print("entradaFeaturesYTarget2 (columnas nulas borradas):" + str(entradaFeaturesYTarget2.shape[0]) + " x " + str(entradaFeaturesYTarget2.shape[1]))
   print("entradaFeaturesYTarget3 (filas algun nulo borradas):" + str(entradaFeaturesYTarget3.shape[0]) + " x " + str(entradaFeaturesYTarget3.shape[1]))
 
   # Limpiar OUTLIERS
@@ -86,20 +90,14 @@ def leerFeaturesyTarget(pathEntrada, path_dir_img, modoDebug):
 
   # ENTRADA: features (+ target)
 
-  compatibleParaMuchasEmpresas=True
-
-  #INICIO CARLOS
+  # Si hay POCAS empresas
   if compatibleParaMuchasEmpresas==False:
     featuresFichero = entradaFeaturesYTarget4.drop('TARGET', axis=1)
     # featuresFichero = featuresFichero[1:] #quitamos la cabecera
     targetsFichero = (entradaFeaturesYTarget4[['TARGET']] == 1)  # Convierto de int a boolean
 
 
-  #FIN CARLOS
-
-
-
-# INICIO LUIS (UNDER-SAMPLING para reducir los datos -útil para miles de empresas, pero puede quedar sobreentrenado, si borro casi todas las minoritarias-)
+  # Si hay MUCHAS empresas (UNDER-SAMPLING para reducir los datos -útil para miles de empresas, pero puede quedar sobreentrenado, si borro casi todas las minoritarias-)
   else:
     print("BALANCEAR los casos positivos y negativos, haciendo downsampling de la clase mayoritaria...")
     print("URL: https://elitedatascience.com/imbalanced-classes")
@@ -136,8 +134,7 @@ def leerFeaturesyTarget(pathEntrada, path_dir_img, modoDebug):
     targetsFichero = entradaFeaturesYTarget5[['TARGET']]
     targetsFichero=(targetsFichero[['TARGET']] == 1)  # Convierto de int a boolean
 
-  #FIN LUIS
-
+  ##################################################
 
   print("FEATURES (sample):")
   print(featuresFichero.head())
@@ -282,6 +279,9 @@ def reducirFeaturesYGuardar(featuresFicheroNorm, targetsFichero, pathSalidaFeatu
   #print("Ranking:")
   #print(rfecv_modelo.ranking_)
 
+  # PENDIENTE guardar modelo reductor de features
+
+
   # Plot number of features VS. cross-validation scores
   if modoDebug:
     path_dibujo_rfecv = path_dataset_sin_extension + "_RFECV" ".png"
@@ -342,7 +342,7 @@ if (entrada_csv_subgrupo.endswith('.csv') and os.path.isfile(entrada_csv_subgrup
     id_subgrupo = Path(entrada_csv_subgrupo).stem
     print("id_subgrupo=" + id_subgrupo)
     pathSalidaFeaturesyTargets = path_dir_salida + id_subgrupo + ".csv"
-    featuresFichero, targetsFichero, path_dataset_sin_extension = leerFeaturesyTarget(entrada_csv_subgrupo, path_dir_img, modoDebug)
+    featuresFichero, targetsFichero, path_dataset_sin_extension = leerFeaturesyTarget(entrada_csv_subgrupo, path_dir_img, compatibleParaMuchasEmpresas, modoDebug)
     featuresFicheroNorm = normalizarFeatures(featuresFichero, path_dataset_sin_extension, modoDebug)
     numclases = comprobarSuficientesClasesTarget(featuresFicheroNorm, targetsFichero, modoDebug)
 

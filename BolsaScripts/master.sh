@@ -118,16 +118,13 @@ do
 	mkdir -p "${DIR_SUBGRUPOS_IMG}"
 	
 	echo -e "Capa 5: elimina MISSING VALUES (NA en columnas y filas), elimina OUTLIERS, balancea clases (undersampling de mayoritaria), calcula IMG funciones de densidad, NORMALIZA las features, comprueba suficientes casos en clase minoritaria, REDUCCION de FEATURES y guarda el CSV REDUCIDO..." >> ${LOG_MASTER}
-	python3 "${PYTHON_SCRIPTS}bolsa/C5NormalizarYReducirDatasetSubgrupo.py" "${path_csv_subgrupo}" "${DIR_SUBGRUPOS_REDUCIDOS}"  "${DIR_SUBGRUPOS_IMG}" "${MODO}"
+	python3 "${PYTHON_SCRIPTS}bolsa/C5NormalizarYReducirDatasetSubgrupo.py" "${path_csv_subgrupo}" "${DIR_SUBGRUPOS_REDUCIDOS}"  "${DIR_SUBGRUPOS_IMG}" "${MODO}" >> ${LOG_MASTER}
 	
 	echo -e "Capa 6 - PASADO ó FUTURO: balancea las clases (aunque ya se hizo en capa 5), divide dataset de entrada (entrenamiento, test, validación), CREA MODELOS (con hyperparámetros)  los evalúa. Guarda el modelo GANADOR de cada subgrupo..." >> ${LOG_MASTER}
-	python3 "${PYTHON_SCRIPTS}bolsa/C6CreadorModelosDeSubgrupo.py" "${DIR_SUBGRUPOS_REDUCIDOS}" "${DIR_MODELOS}" "${MODO}"
+	python3 "${PYTHON_SCRIPTS}bolsa/C6CreadorModelosDeSubgrupo.py" "${DIR_SUBGRUPOS_REDUCIDOS}" "${DIR_MODELOS}" "${MODO}" >> ${LOG_MASTER}
 	
-	echo -e "-------- PARA CADA SUBGRUPO: EVALUACIÓN DE MODELOS (ROC, R2...); GUARDAR MODELO GANADOR -------------" >> ${LOG_MASTER}
-	python3 "${PYTHON_SCRIPTS}bolsa/C7EvaluadorModelosDeSubgrupo.py"
-	
-	echo -e "-------- PARA CADA SUBGRUPO: VALIDACIÓN MANUAL DE MODELO GANADOR (rentabilidad, etc) -------------" >> ${LOG_MASTER}
-	python3 "${PYTHON_SCRIPTS}bolsa/C8OtrasValidacionesManuales.py"
+	echo -e "Capa 7: otras validaciones manuales (rentabilidad a posteriori, etc)..." >> ${LOG_MASTER}
+	python3 "${PYTHON_SCRIPTS}bolsa/C7OtrasValidacionesManuales.py" >> ${LOG_MASTER}
 	
 	
 done
