@@ -131,11 +131,23 @@ if (entrada_csv_subgrupo.endswith('.csv') and os.path.isfile(entrada_csv_subgrup
         print("Las clases ya están balanceadas:")
         print("ift_balanceadas:" + str(ift_balanceadas.shape[0]) + " x " + str(ift_balanceadas.shape[1]))
 
+
+
+
+
+
+
+
         print("DIVIDIR EL DATASET DE ENTRADA EN 3 PARTES: TRAIN (70%), TEST (20%), VALIDACION (10%)...")
         ds_train, ds_test, ds_validacion = np.split(ift_balanceadas.sample(frac=1), [int(.7 * len(ift_balanceadas)), int(.9 * len(ift_balanceadas))])
         print("TRAIN --> " + str(ds_train.shape[0]) + " x " + str(ds_train.shape[1]))
         print("TEST --> " + str(ds_test.shape[0]) + " x " + str(ds_test.shape[1]))
         print("VALIDACION --> " + str(ds_validacion.shape[0]) + " x " + str(ds_validacion.shape[1]))
+
+        # Con las siguientes 3 líneas dejo sólo 1 true y todo lo demás false en el dataframe de test. Asi en la matriz de confusion validamos si el sistema no añade falsos positivos
+        # aux = ds_test[ds_test.TARGET == True]
+        # ds_test = ds_test[ds_test.TARGET == False]
+        # ds_test=ds_test.append(aux.iloc[0])
 
         print("Separamos FEATURES y TARGETS, de los 3 dataframes...")
         ds_train_f = ds_train.drop('TARGET', axis=1).to_numpy()

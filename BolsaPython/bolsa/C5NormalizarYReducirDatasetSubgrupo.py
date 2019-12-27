@@ -228,7 +228,7 @@ def reducirFeaturesYGuardar(featuresFicheroNorm, targetsFichero, pathSalidaFeatu
   # OPCIÓN NO USADA: Si quisiera probar varios clasificadores
   probarVariosClasificadores=False
 
-  svc_model = SVC(kernel="linear")
+  svc_model = AdaBoostClassifier(n_estimators=50, learning_rate=1.)
   if probarVariosClasificadores:
     classifiers = [
       SVC(kernel="linear"),
