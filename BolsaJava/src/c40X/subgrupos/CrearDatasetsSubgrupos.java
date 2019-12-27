@@ -17,6 +17,7 @@ import org.apache.log4j.PatternLayout;
 import org.apache.log4j.helpers.NullEnumeration;
 
 import c30x.elaborados.construir.ElaboradosUtils;
+import c30x.elaborados.construir.Estadisticas;
 import c30x.elaborados.construir.GestorFicheros;
 
 /**
@@ -63,18 +64,22 @@ public class CrearDatasetsSubgrupos {
 
 		String directorioIn = ElaboradosUtils.DIR_ELABORADOS; // DEFAULT
 		String directorioOut = SubgruposUtils.DIR_SUBGRUPOS; // DEFAULT
+		String coberturaMinima = SubgruposUtils.MIN_COBERTURA_CLUSTER; // DEFAULT
+		String minEmpresasPorCluster = SubgruposUtils.MIN_EMPRESAS_POR_CLUSTER; // DEFAULT
 
 		if (args.length == 0) {
 			MY_LOGGER.info("Sin parametros de entrada. Rellenamos los DEFAULT...");
-		} else if (args.length != 2) {
+		} else if (args.length != 4) {
 			MY_LOGGER.error("Parametros de entrada incorrectos!!");
 			System.exit(-1);
 		} else {
 			directorioIn = args[0];
 			directorioOut = args[1];
+			coberturaMinima = args[2];
+			minEmpresasPorCluster = args[3];
 		}
 
-		crearSubgruposYNormalizar(directorioIn, directorioOut);
+		crearSubgruposYNormalizar(directorioIn, directorioOut, coberturaMinima, minEmpresasPorCluster);
 
 		MY_LOGGER.info("FIN");
 	}
@@ -84,9 +89,12 @@ public class CrearDatasetsSubgrupos {
 	 * 
 	 * @param directorioIn
 	 * @param directorioOut
+	 * @param coberturaMinima
+	 * @param minEmpresasPorCluster
 	 * @throws Exception
 	 */
-	public static void crearSubgruposYNormalizar(String directorioIn, String directorioOut) throws Exception {
+	public static void crearSubgruposYNormalizar(String directorioIn, String directorioOut, String coberturaMinima,
+			String minEmpresasPorCluster) throws Exception {
 
 		// Debo leer el parámetro que me interese: de momento el market cap. En el
 		// futuro sería conveniente separar por sector y liquidez (volumen medio de 6
@@ -203,71 +211,123 @@ public class CrearDatasetsSubgrupos {
 		FileWriter csvWriter;
 		FileWriter writerListadoEmpresas;
 		String antiguedad;
+		Double coberturaEmpresasPorCluster;
+		Estadisticas estadisticas;
+		String pathEmpresa;
+		HashMap<String, Boolean> empresasConTarget;
+		Iterator<String> itEmpresas;
 		while (itTipos.hasNext()) {
 
 			tipo = itTipos.next();
 			numEmpresasPorTipo = empresasPorTipo.size();
 
 			if (numEmpresasPorTipo > 0) {
-				// Hay alguna empresa de este tipo. Creo un CSV común para todas las del mismo
-				// tipo
-				pathFicheros = empresasPorTipo.get(tipo);
-				ficheroOut = directorioOut + tipo + ".csv";
-				ficheroListadoOut = directorioOut + "Listado-" + tipo + ".empresas";
-				MY_LOGGER.info("Fichero a escribir: " + ficheroOut);
-				csvWriter = new FileWriter(ficheroOut);
-				writerListadoEmpresas = new FileWriter(ficheroListadoOut);
 
-				for (int i = 0; i < pathFicheros.size(); i++) {
+				// Antes se comprobará, en cada cluster, qué porcentaje hay de empresas con al
+				// menos una vela con target=1,
+				// respecto del total de empresas del cluster (esto se llama Cobertura).
+				// Sólo se guardarán los clusters con cobertura mayor que una cantidad mínima.
 
-					esPrimeraLinea = Boolean.TRUE;
-					// Se lee el fichero de la empresa a meter en el CSV común
-					pathFichero = pathFicheros.get(i);
-					MY_LOGGER.debug("Fichero a leer para clasificar en subgrupo: " + pathFichero);
-					BufferedReader csvReader = new BufferedReader(new FileReader(pathFichero));
+				ArrayList<String> pathFicherosEmpresas = empresasPorTipo.get(tipo);
 
-					// Añado la empresa al fichero de listado de empresas
-					writerListadoEmpresas.append(pathFichero + "\n");
+				empresasConTarget = gestorFicheros.compruebaEmpresasConTarget(pathFicherosEmpresas);
+				itEmpresas = empresasConTarget.keySet().iterator();
+				estadisticas = new Estadisticas();
 
-					try {
+				while (itEmpresas.hasNext()) {
+					pathEmpresa = itEmpresas.next();
+					if (empresasConTarget.get(pathEmpresa)) {
+						estadisticas.addValue(1);
+					} else {
+						estadisticas.addValue(0);
+					}
+					MY_LOGGER.debug("Empresa: " + pathEmpresa + " ¿tiene algún target=1? "
+							+ empresasConTarget.get(pathEmpresa));
+					System.out.println("Empresa: " + pathEmpresa + " ¿tiene algún target=1? "
+							+ empresasConTarget.get(pathEmpresa));
+				}
 
-						while ((row = csvReader.readLine()) != null) {
-							MY_LOGGER.debug("Fila leída: " + row);
-							// Se eliminan los parámetros estáticos de la fila, EXCEPTO LA ANTIGÜEDAD (que
-							// será el segundo parámetro)
-							// Para cada fila de datos o de cabecera, de longitud variable, se eliminan los
-							// datos estáticos
-							antiguedad = SubgruposUtils.recortaPrimeraParteDeString(characterPipe, 1, row);
-							antiguedad = antiguedad.substring(0, antiguedad.indexOf(characterPipe));
-							rowTratada = antiguedad + characterPipe + SubgruposUtils
-									.recortaPrimeraParteDeString(characterPipe, numeroParametrosEstaticos, row);
-							MY_LOGGER.debug("Fila escrita: " + rowTratada);
+				// Se calcula la cobertura del target
+				coberturaEmpresasPorCluster = estadisticas.getMean();
+				MY_LOGGER.debug("COBERTURA DEL cluster " + tipo + ": " + coberturaEmpresasPorCluster * 100 + "%");
+				System.out.println("COBERTURA DEL cluster " + tipo + ": " + coberturaEmpresasPorCluster * 100 + "%");
 
-							// La cabecera se toma de la primera línea del primer fichero
-							if (i == 0 && esPrimeraLinea) {
-								// En la primera línea está la cabecera de parámetros
-								// Se valida que el nombre recibido es igual que el usado en la constructora, y
-								// en dicho orden
-								csvWriter.append(rowTratada);
+				// Para generar un fichero de dataset del cluster, la cobertura debe ser mayor
+				// que un x%
+				if (coberturaEmpresasPorCluster * 100 < Double.valueOf(coberturaMinima)) {
+					MY_LOGGER.debug("El cluster " + tipo + ", con cobertura: " + coberturaEmpresasPorCluster * 100 + "%"
+							+ " no llega al mínimo: " + coberturaMinima + "%. NO SE GENERA DATASET");
+					System.out.println("El cluster " + tipo + ", con cobertura: " + coberturaEmpresasPorCluster * 100
+							+ "%" + " no llega al mínimo: " + coberturaMinima + "%. NO SE GENERA DATASET");
+				} else if (empresasConTarget.keySet().size() < Integer.valueOf(minEmpresasPorCluster)) {
+					MY_LOGGER.debug("El cluster " + tipo + ", tiene: " + empresasConTarget.keySet().size()
+							+ " empresas, pero el mínimo debe ser: " + minEmpresasPorCluster
+							+ ". NO SE GENERA DATASET");
+					System.out.println("El cluster " + tipo + ", tiene: " + empresasConTarget.keySet().size()
+							+ " empresas, pero el mínimo debe ser: " + minEmpresasPorCluster
+							+ ". NO SE GENERA DATASET");
+				} else {
 
+					// Hay alguna empresa de este tipo. Creo un CSV común para todas las del mismo
+					// tipo
+					pathFicheros = empresasPorTipo.get(tipo);
+					ficheroOut = directorioOut + tipo + ".csv";
+					ficheroListadoOut = directorioOut + "Listado-" + tipo + ".empresas";
+					MY_LOGGER.info("Fichero a escribir: " + ficheroOut);
+					csvWriter = new FileWriter(ficheroOut);
+					writerListadoEmpresas = new FileWriter(ficheroListadoOut);
+
+					for (int i = 0; i < pathFicheros.size(); i++) {
+
+						esPrimeraLinea = Boolean.TRUE;
+						// Se lee el fichero de la empresa a meter en el CSV común
+						pathFichero = pathFicheros.get(i);
+						MY_LOGGER.debug("Fichero a leer para clasificar en subgrupo: " + pathFichero);
+						BufferedReader csvReader = new BufferedReader(new FileReader(pathFichero));
+
+						// Añado la empresa al fichero de listado de empresas
+						writerListadoEmpresas.append(pathFichero + "\n");
+
+						try {
+
+							while ((row = csvReader.readLine()) != null) {
+								MY_LOGGER.debug("Fila leída: " + row);
+								// Se eliminan los parámetros estáticos de la fila, EXCEPTO LA ANTIGÜEDAD (que
+								// será el segundo parámetro)
+								// Para cada fila de datos o de cabecera, de longitud variable, se eliminan los
+								// datos estáticos
+								antiguedad = SubgruposUtils.recortaPrimeraParteDeString(characterPipe, 1, row);
+								antiguedad = antiguedad.substring(0, antiguedad.indexOf(characterPipe));
+								rowTratada = antiguedad + characterPipe + SubgruposUtils
+										.recortaPrimeraParteDeString(characterPipe, numeroParametrosEstaticos, row);
+								MY_LOGGER.debug("Fila escrita: " + rowTratada);
+
+								// La cabecera se toma de la primera línea del primer fichero
+								if (i == 0 && esPrimeraLinea) {
+									// En la primera línea está la cabecera de parámetros
+									// Se valida que el nombre recibido es igual que el usado en la constructora, y
+									// en dicho orden
+									csvWriter.append(rowTratada);
+
+								}
+								if (!esPrimeraLinea) {
+									// Para todos los ficheros, se escriben las filas 2 y siguientes
+									csvWriter.append("\n" + rowTratada);
+								}
+								// Para las siguientes filas del fichero
+								esPrimeraLinea = Boolean.FALSE;
 							}
-							if (!esPrimeraLinea) {
-								// Para todos los ficheros, se escriben las filas 2 y siguientes
-								csvWriter.append("\n" + rowTratada);
-							}
-							// Para las siguientes filas del fichero
-							esPrimeraLinea = Boolean.FALSE;
+
+						} finally {
+							csvReader.close();
 						}
 
-					} finally {
-						csvReader.close();
 					}
-
+					csvWriter.flush();
+					csvWriter.close();
+					writerListadoEmpresas.flush();
+					writerListadoEmpresas.close();
 				}
-				csvWriter.flush();
-				csvWriter.close();
-				writerListadoEmpresas.flush();
-				writerListadoEmpresas.close();
 			}
 		}
 

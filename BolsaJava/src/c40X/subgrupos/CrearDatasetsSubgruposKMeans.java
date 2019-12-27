@@ -31,6 +31,11 @@ import c30x.elaborados.construir.GestorFicheros;
  */
 public class CrearDatasetsSubgruposKMeans implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	static Logger MY_LOGGER = Logger.getLogger(CrearDatasetsSubgruposKMeans.class);
 
 	private static CrearDatasetsSubgruposKMeans instancia = null;
