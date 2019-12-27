@@ -91,7 +91,13 @@ public class ConstructorElaborados implements Serializable {
 		Iterator<File> iterator = ficherosEntradaEmpresas.iterator();
 		File ficheroGestionado;
 
+		int i = 1;
+
 		while (iterator.hasNext()) {
+
+			MY_LOGGER.info("Empresa numero = " + i);
+			i++;
+
 			gestorFicheros = new GestorFicheros();
 			datosEntrada = new HashMap<String, HashMap<Integer, HashMap<String, String>>>();
 			ficheroGestionado = iterator.next();

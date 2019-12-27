@@ -96,6 +96,7 @@ public class EstaticosFinvizDescargarYParsear {
 
 		for (int i = 0; i < Math.min(numMaxEmpresas, nasdaqEstaticos1.size()); i++) {
 
+			MY_LOGGER.info("Empresa numero = " + (i + 1));
 			mapaExtraidos.clear();
 
 			String empresa = nasdaqEstaticos1.get(i).symbol;

@@ -97,7 +97,7 @@ def leerFeaturesyTarget(pathEntrada, path_dir_img, modoDebug):
 
 
 
-# INICIO LUIS (RESAMPLING para reducir los datos -útil para miles de empresas, pero puede quedar sobreentrenado, si borro casi todas las minoritarias-)
+# INICIO LUIS (UNDER-SAMPLING para reducir los datos -útil para miles de empresas, pero puede quedar sobreentrenado, si borro casi todas las minoritarias-)
   else:
     print("BALANCEAR los casos positivos y negativos, haciendo downsampling de la clase mayoritaria...")
     print("URL: https://elitedatascience.com/imbalanced-classes")
@@ -334,15 +334,12 @@ def reducirFeaturesYGuardar(featuresFicheroNorm, targetsFichero, pathSalidaFeatu
 ################## MAIN ###########################################################
 
 print("Recorremos los CSVs que hay en el DIRECTORIO...")
-path_absoluto_fichero = entrada_csv_subgrupo
 
-if (path_absoluto_fichero.endswith('.csv') and os.path.isfile(path_absoluto_fichero) and os.stat(path_absoluto_fichero).st_size > 0 ):
-    print("-------------------------------------------------------------------------------------------------")
-    id_subgrupo = Path(path_absoluto_fichero).stem
+if (entrada_csv_subgrupo.endswith('.csv') and os.path.isfile(entrada_csv_subgrupo) and os.stat(entrada_csv_subgrupo).st_size > 0 ):
+    id_subgrupo = Path(entrada_csv_subgrupo).stem
     print("id_subgrupo=" + id_subgrupo)
-    pathEntrada = os.path.abspath(path_absoluto_fichero)
     pathSalidaFeaturesyTargets = path_dir_salida + id_subgrupo + ".csv"
-    featuresFichero, targetsFichero, path_dataset_sin_extension = leerFeaturesyTarget(path_absoluto_fichero, path_dir_img, modoDebug)
+    featuresFichero, targetsFichero, path_dataset_sin_extension = leerFeaturesyTarget(entrada_csv_subgrupo, path_dir_img, modoDebug)
     featuresFicheroNorm = normalizarFeatures(featuresFichero, path_dataset_sin_extension, modoDebug)
     numclases = comprobarSuficientesClasesTarget(featuresFicheroNorm, targetsFichero, modoDebug)
 
