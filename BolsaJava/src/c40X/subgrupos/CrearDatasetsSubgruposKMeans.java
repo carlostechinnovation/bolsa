@@ -88,7 +88,9 @@ public class CrearDatasetsSubgruposKMeans implements Serializable {
 	 * 
 	 * @param directorioIn
 	 * @param directorioOut
-	 * @param coberturaMinima
+	 * @param coberturaMinima       PORCENTAJE. En cada dataset, debe haber un
+	 *                              minimo % de empresas con alguna vela de
+	 *                              target=true. Si no, no genero el dataset.
 	 * @param minEmpresasPorCluster
 	 * @throws Exception
 	 */
@@ -115,10 +117,11 @@ public class CrearDatasetsSubgruposKMeans implements Serializable {
 			datosEntrada = new HashMap<String, HashMap<Integer, HashMap<String, String>>>();
 			ficheroGestionado = iterator.next();
 			MY_LOGGER.info("Fichero entrada: " + ficheroGestionado.getAbsolutePath());
-			// Sólo leo la cabecera y las dos primeras líneas de datos, con antigüedad=0. Así
+			// Sólo leo la cabecera y las dos primeras líneas de datos, con antigüedad=0.
+			// Así
 			// optimizo la lectura
-			datosEntrada = gestorFicheros
-					.leeTodosLosParametrosFicheroDeSoloUnaEmpresaYNFilasDeDatosRecientes(ficheroGestionado.getPath(), 2);
+			datosEntrada = gestorFicheros.leeTodosLosParametrosFicheroDeSoloUnaEmpresaYNFilasDeDatosRecientes(
+					ficheroGestionado.getPath(), 2);
 
 			String empresa = "";
 			Set<String> empresas = datosEntrada.keySet();
