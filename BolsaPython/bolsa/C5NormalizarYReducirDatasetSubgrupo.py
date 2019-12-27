@@ -36,11 +36,13 @@ print("PARAMETROS: ")
 entrada_csv_subgrupo = sys.argv[1]
 path_dir_salida = sys.argv[2]
 path_dir_img = sys.argv[3]
+modoTiempo = sys.argv[4]
 varianza=0.90
 modoDebug = False  #En modo debug se pintan los dibujos. En otro caso, se evita calculo innecesario
 print("entrada_csv_subgrupo = %s" % entrada_csv_subgrupo)
 print("path_dir_salida = %s" % path_dir_salida)
 print("path_dir_img = %s" % path_dir_img)
+print("modoTiempo = %s" % modoTiempo)
 
 
 ######################## FUNCIONES #######################################################
@@ -208,13 +210,14 @@ def comprobarSuficientesClasesTarget(featuresFicheroNorm, targetsFichero, modoDe
   return y_unicos.size
 
 
-def reducirFeaturesYGuardar(featuresFicheroNorm, targetsFichero, pathSalidaFeaturesyTargets, varianzaAcumuladaDeseada, path_dataset_sin_extension, modoDebug):
+def reducirFeaturesYGuardar(featuresFicheroNorm, targetsFichero, pathSalidaFeaturesyTargets, varianzaAcumuladaDeseada, path_dataset_sin_extension, modoTiempo, modoDebug):
   print("----- reducirFeaturesYGuardar ------")
   print("featuresFicheroNorm:" + str(featuresFicheroNorm.shape[0]) + " x " + str(featuresFicheroNorm.shape[1]))
   print("targetsFichero:" + str(targetsFichero.shape[0]) + " x " + str(targetsFichero.shape[1]))
   print("pathSalidaFeaturesyTargets --> " + pathSalidaFeaturesyTargets)
   print("varianzaAcumuladaDeseada (PCA) --> " + str(varianzaAcumuladaDeseada))
   print("path_dataset_sin_extension --> " + path_dataset_sin_extension)
+  print("modoTiempo:" + modoTiempo)
 
   print("**** REDUCCION DE DIMENSIONES*****")
 
@@ -222,7 +225,7 @@ def reducirFeaturesYGuardar(featuresFicheroNorm, targetsFichero, pathSalidaFeatu
   # Create the RFE object and compute a cross-validated score.
 
   # Comparación de clasificadores
-  print('CLASIFICADORES -DENTRO DEL HILO DE EJECUCIÓN- LUIS')
+  print('CLASIFICADORES - DENTRO DEL HILO DE EJECUCIÓN- LUIS')
   print('Se analiza el accuracy de varios tipos de clasificadores...')
 
   # OPCIÓN NO USADA: Si quisiera probar varios clasificadores
@@ -262,8 +265,8 @@ def reducirFeaturesYGuardar(featuresFicheroNorm, targetsFichero, pathSalidaFeatu
             .format(rfecv.score(featuresFicheroNorm, targetsFichero)))
       print("Optimal number of features : %d" % rfecv.n_features_)
 
-      if scoreAnterior<rfecv.score(featuresFicheroNorm, targetsFichero):
-          if numFeaturesAnterior>rfecv.n_features_:
+      if scoreAnterior < rfecv.score(featuresFicheroNorm, targetsFichero):
+          if numFeaturesAnterior > rfecv.n_features_:
               print("Se cambia el clasificador elegido")
               svc_model=clasificadorActual
               scoreAnterior=rfecv.score(featuresFicheroNorm, targetsFichero)
@@ -346,7 +349,7 @@ if (entrada_csv_subgrupo.endswith('.csv') and os.path.isfile(entrada_csv_subgrup
     if(numclases <= 1):
         print("El subgrupo " + str(id_subgrupo) + " solo tiene " + str(numclases) + " clases en el target. Abortamos.")
     else:
-        reducirFeaturesYGuardar(featuresFicheroNorm, targetsFichero, pathSalidaFeaturesyTargets, varianza, path_dataset_sin_extension, modoDebug)
+        reducirFeaturesYGuardar(featuresFicheroNorm, targetsFichero, pathSalidaFeaturesyTargets, varianza, path_dataset_sin_extension, modoTiempo, modoDebug)
 
 print("------------ FIN ----------------")
 
