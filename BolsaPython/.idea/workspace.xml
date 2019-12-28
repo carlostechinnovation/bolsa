@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="22edbd2f-b3d9-42f0-a7dd-659033ab601a" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bolsa/C5NormalizarYReducirDatasetSubgrupo.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/C5NormalizarYReducirDatasetSubgrupo.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bolsa/C7OtrasValidacionesManuales.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/C7PredecirFuturo.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ejemplos/pruebas.py" beforeDir="false" afterPath="$PROJECT_DIR$/ejemplos/pruebas.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaScripts/master.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/master.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -185,12 +181,12 @@
     <option name="LAST_COMMIT_MESSAGE" value="Machine Learning - Ejemplo" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="334" y="278" width="1323" height="678" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1577553575964">
+    <state x="334" y="278" width="1323" height="678" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1577554948405">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
     <state x="54" y="169" key="#com.intellij.execution.impl.EditConfigurationsDialog/-1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1576786944833" />
     <state x="43" y="134" width="1428" height="690" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.824@0.0.1536.824" timestamp="1576676029392" />
-    <state x="334" y="278" width="1323" height="678" key="#com.intellij.execution.impl.EditConfigurationsDialog/65.24.1855.1056@65.24.1855.1056" timestamp="1577553575964" />
+    <state x="334" y="278" width="1323" height="678" key="#com.intellij.execution.impl.EditConfigurationsDialog/65.24.1855.1056@65.24.1855.1056" timestamp="1577554948405" />
     <state x="518" y="215" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1576665712837">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -299,13 +295,6 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/bolsa/C6CreadorModelosDeSubgrupo.py</url>
-          <line>115</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
       <default-breakpoints>
         <breakpoint type="python-exception">
           <properties notifyOnTerminate="true" exception="BaseException">

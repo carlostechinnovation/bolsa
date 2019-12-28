@@ -52,27 +52,47 @@ public class JuntarEstaticosYDinamicosCSVunico {
 		MY_LOGGER.setLevel(Level.INFO);
 		MY_LOGGER.info("INICIO");
 
-		nucleo();
+		String dirBrutoCsv = BrutosUtils.DIR_BRUTOS_CSV; // DEFAULT
+
+		if (args.length == 0) {
+			MY_LOGGER.info("Sin parametros de entrada. Rellenamos los DEFAULT...");
+		} else if (args.length != 1) {
+			MY_LOGGER.error("Parametros de entrada incorrectos!! --> " + args.length);
+			int numParams = args.length;
+			MY_LOGGER.error("Numero de parametros: " + numParams);
+			for (String param : args) {
+				MY_LOGGER.error("Param: " + param);
+			}
+
+			System.exit(-1);
+
+		} else {
+			dirBrutoCsv = args[2];
+			MY_LOGGER.info("PARAMS -> " + dirBrutoCsv);
+		}
+
+		nucleo(dirBrutoCsv);
 		MY_LOGGER.info("FIN");
 
 	}
 
 	/**
+	 * @param dirBrutoCsv
 	 * @throws IOException
 	 */
-	public static void nucleo() throws IOException {
+	public static void nucleo(String dirBrutoCsv) throws IOException {
 
 		List<EstaticoNasdaqModelo> nasdaqEstaticos1 = EstaticosNasdaqDescargarYParsear
 				.descargarNasdaqEstaticosSoloLocal1();
 
 		for (EstaticoNasdaqModelo enm : nasdaqEstaticos1) {
 
-			String finvizEstaticos = BrutosUtils.DIR_BRUTOS_CSV + BrutosUtils.FINVIZ + "_" + BrutosUtils.MERCADO_NQ
-					+ "_" + enm.symbol + ".csv";
+			String finvizEstaticos = dirBrutoCsv + BrutosUtils.FINVIZ + "_" + BrutosUtils.MERCADO_NQ + "_" + enm.symbol
+					+ ".csv";
 			File fileEstat = new File(finvizEstaticos);
 
-			String yahooFinanceDinamicos = BrutosUtils.DIR_BRUTOS_CSV + BrutosUtils.YAHOOFINANCE + "_"
-					+ BrutosUtils.MERCADO_NQ + "_" + enm.symbol + ".csv";
+			String yahooFinanceDinamicos = dirBrutoCsv + BrutosUtils.YAHOOFINANCE + "_" + BrutosUtils.MERCADO_NQ + "_"
+					+ enm.symbol + ".csv";
 			File fileDin = new File(yahooFinanceDinamicos);
 
 			if (fileEstat.exists() && fileDin.exists()) {
