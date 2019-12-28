@@ -100,7 +100,7 @@ public class JuntarEstaticosYDinamicosCSVunico {
 			File fileDin = new File(yahooFinanceDinamicos);
 
 			if (fileEstat.exists() && fileDin.exists()) {
-				nucleoEmpresa(enm, fileEstat, fileDin, desplazamientoAntiguedad);
+				nucleoEmpresa(dirBrutoCsv, enm, fileEstat, fileDin, desplazamientoAntiguedad);
 			}
 
 		}
@@ -112,7 +112,7 @@ public class JuntarEstaticosYDinamicosCSVunico {
 	 * @param fileDin
 	 * @throws IOException
 	 */
-	public static void nucleoEmpresa(EstaticoNasdaqModelo enm, File fileEstat, File fileDin,
+	public static void nucleoEmpresa(String dirBrutoCsv, EstaticoNasdaqModelo enm, File fileEstat, File fileDin,
 			Integer desplazamientoAntiguedad) throws IOException {
 
 		// --------- Variables ESTATICAS -------------
@@ -194,7 +194,7 @@ public class JuntarEstaticosYDinamicosCSVunico {
 		br.close();
 
 		// ---------- JUNTOS -----------------------
-		String juntos = BrutosUtils.DIR_BRUTOS_CSV + BrutosUtils.MERCADO_NQ + "_" + enm.symbol + ".csv";
+		String juntos = dirBrutoCsv + BrutosUtils.MERCADO_NQ + "_" + enm.symbol + ".csv";
 		File fjuntos = new File(juntos);
 		if (fjuntos.exists()) {
 			PrintWriter writer = new PrintWriter(fjuntos);
