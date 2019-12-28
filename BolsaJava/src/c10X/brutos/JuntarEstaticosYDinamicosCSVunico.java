@@ -100,7 +100,7 @@ public class JuntarEstaticosYDinamicosCSVunico {
 			File fileDin = new File(yahooFinanceDinamicos);
 
 			if (fileEstat.exists() && fileDin.exists()) {
-//				nucleoEmpresa(enm, fileEstat, fileDin, desplazamientoAntiguedad);
+				nucleoEmpresa(enm, fileEstat, fileDin, desplazamientoAntiguedad);
 			}
 
 		}
