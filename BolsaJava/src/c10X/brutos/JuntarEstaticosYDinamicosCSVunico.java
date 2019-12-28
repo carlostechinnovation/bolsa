@@ -52,11 +52,13 @@ public class JuntarEstaticosYDinamicosCSVunico {
 		MY_LOGGER.setLevel(Level.INFO);
 		MY_LOGGER.info("INICIO");
 
-		String dirBrutoCsv = BrutosUtils.DIR_BRUTOS_CSV; // DEFAULT
+		// DEFAULT
+		String dirBrutoCsv = BrutosUtils.DIR_BRUTOS_CSV;
+		Integer desplazamientoAntiguedad = BrutosUtils.DESPLAZAMIENTO_ANTIGUEDAD;
 
 		if (args.length == 0) {
 			MY_LOGGER.info("Sin parametros de entrada. Rellenamos los DEFAULT...");
-		} else if (args.length != 1) {
+		} else if (args.length != 2) {
 			MY_LOGGER.error("Parametros de entrada incorrectos!! --> " + args.length);
 			int numParams = args.length;
 			MY_LOGGER.error("Numero de parametros: " + numParams);
@@ -68,10 +70,12 @@ public class JuntarEstaticosYDinamicosCSVunico {
 
 		} else {
 			dirBrutoCsv = args[2];
+			desplazamientoAntiguedad = Integer.valueOf(args[3]);
 			MY_LOGGER.info("PARAMS -> " + dirBrutoCsv);
+			MY_LOGGER.info("PARAMS -> " + desplazamientoAntiguedad);
 		}
 
-		nucleo(dirBrutoCsv);
+		nucleo(dirBrutoCsv, desplazamientoAntiguedad);
 		MY_LOGGER.info("FIN");
 
 	}
@@ -80,7 +84,7 @@ public class JuntarEstaticosYDinamicosCSVunico {
 	 * @param dirBrutoCsv
 	 * @throws IOException
 	 */
-	public static void nucleo(String dirBrutoCsv) throws IOException {
+	public static void nucleo(String dirBrutoCsv, Integer desplazamientoAntiguedad) throws IOException {
 
 		List<EstaticoNasdaqModelo> nasdaqEstaticos1 = EstaticosNasdaqDescargarYParsear
 				.descargarNasdaqEstaticosSoloLocal1();
@@ -96,7 +100,7 @@ public class JuntarEstaticosYDinamicosCSVunico {
 			File fileDin = new File(yahooFinanceDinamicos);
 
 			if (fileEstat.exists() && fileDin.exists()) {
-				nucleoEmpresa(enm, fileEstat, fileDin);
+//				nucleoEmpresa(enm, fileEstat, fileDin, desplazamientoAntiguedad);
 			}
 
 		}
@@ -108,7 +112,8 @@ public class JuntarEstaticosYDinamicosCSVunico {
 	 * @param fileDin
 	 * @throws IOException
 	 */
-	public static void nucleoEmpresa(EstaticoNasdaqModelo enm, File fileEstat, File fileDin) throws IOException {
+	public static void nucleoEmpresa(EstaticoNasdaqModelo enm, File fileEstat, File fileDin,
+			Integer desplazamientoAntiguedad) throws IOException {
 
 		// --------- Variables ESTATICAS -------------
 		FileReader fr = new FileReader(fileEstat);
@@ -149,25 +154,40 @@ public class JuntarEstaticosYDinamicosCSVunico {
 
 		String dinamicosCabecera = "empresa|antiguedad|mercado|anio|mes|dia|hora|minuto|volumen|high|low|close|open";
 
+		Integer antiguedadDesplazada;
+
+		String dinamicosFilaExtraida;
+
 		while ((actual = br.readLine()) != null) {
 			if (primeraLinea == false) {
 
 				String[] partes = actual.split("\\|");
-				String dinamicosFilaExtraida = partes[1];// empresa
-				dinamicosFilaExtraida += "|" + partes[2];// antiguedad
-				dinamicosFilaExtraida += "|" + partes[0];// mercado
-				dinamicosFilaExtraida += "|" + partes[3]; // anio
-				dinamicosFilaExtraida += "|" + partes[4];
-				dinamicosFilaExtraida += "|" + partes[5];
-				dinamicosFilaExtraida += "|" + partes[6];
-				dinamicosFilaExtraida += "|" + partes[7];
-				dinamicosFilaExtraida += "|" + partes[8];
-				dinamicosFilaExtraida += "|" + partes[9];
-				dinamicosFilaExtraida += "|" + partes[10];
-				dinamicosFilaExtraida += "|" + partes[11];
-				dinamicosFilaExtraida += "|" + partes[12];
 
-				dinamicosDatos.add(dinamicosFilaExtraida);
+				antiguedadDesplazada = Integer.valueOf(partes[2]) - desplazamientoAntiguedad;
+
+				// Sólo se añade la antigüedad, cuando la resta con el desplazamiento es mayor o
+				// igual que cero. Siempre la antigüedad escrita en el CSV comenzará en 0, con
+				// el tiempo desplazado
+
+				if (antiguedadDesplazada >= 0) {
+
+					dinamicosFilaExtraida = partes[1];// empresa
+					dinamicosFilaExtraida += "|" + antiguedadDesplazada.toString();// antiguedad desplazada
+					dinamicosFilaExtraida += "|" + partes[0];// mercado
+					dinamicosFilaExtraida += "|" + partes[3]; // anio
+					dinamicosFilaExtraida += "|" + partes[4];
+					dinamicosFilaExtraida += "|" + partes[5];
+					dinamicosFilaExtraida += "|" + partes[6];
+					dinamicosFilaExtraida += "|" + partes[7];
+					dinamicosFilaExtraida += "|" + partes[8];
+					dinamicosFilaExtraida += "|" + partes[9];
+					dinamicosFilaExtraida += "|" + partes[10];
+					dinamicosFilaExtraida += "|" + partes[11];
+					dinamicosFilaExtraida += "|" + partes[12];
+
+					dinamicosDatos.add(dinamicosFilaExtraida);
+				}
+
 			}
 			primeraLinea = false;
 		}
