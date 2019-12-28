@@ -24,7 +24,7 @@ DIR_TIEMPO="futuro" #pasado o futuro
 NUM_MAX_EMPRESAS_DESCARGADAS=100
 MIN_COBERTURA_CLUSTER=60
 MIN_EMPRESAS_POR_CLUSTER=10
-DESPLAZAMIENTO_ANTIGUEDAD=10
+DESPLAZAMIENTO_ANTIGUEDAD=0
 
 #################### DIRECTORIOS ###############################################################
 DIR_CODIGOS="/home/carloslinux/Desktop/GIT_BOLSA/"
