@@ -279,11 +279,7 @@ public class CrearDatasetsSubgrupos implements Serializable {
 					String dirSubgrupoOut = directorioOut + "SG_" + tipo + "/";
 					MY_LOGGER.info("Creando la carpeta del subgrupo con ID=" + tipo + " en: " + dirSubgrupoOut);
 					File dirSubgrupoOutFile = new File(dirSubgrupoOut);
-					boolean dirCreadoBien = dirSubgrupoOutFile.mkdir();
-					if (!dirCreadoBien) {
-						MY_LOGGER.error("Error al crear la carpeta: " + dirSubgrupoOut);
-						throw new Exception("Error al crear la carpeta: " + dirSubgrupoOut);
-					}
+					dirSubgrupoOutFile.mkdir();
 
 					ficheroOut = dirSubgrupoOut + "COMPLETO.csv";
 					ficheroListadoOut = dirSubgrupoOut + "EMPRESAS.txt";

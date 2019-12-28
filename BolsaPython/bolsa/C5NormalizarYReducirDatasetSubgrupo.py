@@ -66,11 +66,14 @@ def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmp
   num_nulos_por_fila_1 = np.logical_not(entradaFeaturesYTarget.isnull()).sum()
   print("entradaFeaturesYTarget:" + str(entradaFeaturesYTarget.shape[0]) + " x " + str(entradaFeaturesYTarget.shape[1]))
 
+  ################# Borrado de columnas nulas enteras ##########
   print("MISSING VALUES (COLUMNAS) - Borramos las columnas (features) que sean siempre NaN...")
   entradaFeaturesYTarget2 = entradaFeaturesYTarget.dropna(axis=1, how='all') #Borrar COLUMNA si TODOS sus valores tienen NaN
   #num_nulos_por_fila_2 = np.logical_not(entradaFeaturesYTarget2.isnull()).sum()
   print("entradaFeaturesYTarget2 (columnas nulas borradas):" + str(entradaFeaturesYTarget2.shape[0]) + " x " + str(entradaFeaturesYTarget2.shape[1]))
 
+
+  ################# Borrado de filas que tengan algun hueco (tratamiento espacial para el futuro con sus columnas: TARGET y otras) #####
   if modoTiempo == "futuro":
       # Quedarnos solo con las velas con antiguedad=0 (futuras)
       entradaFeaturesYTarget2b = entradaFeaturesYTarget2[entradaFeaturesYTarget2.antiguedad == 0]
@@ -91,8 +94,9 @@ def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmp
       entradaFeaturesYTarget3 = entradaFeaturesYTarget2.dropna(axis=0, how='any')  # Borrar FILA si ALGUNO sus valores tienen NaN
       #num_nulos_por_fila_3 = np.logical_not(entradaFeaturesYTarget3.isnull()).sum()
       print("entradaFeaturesYTarget3 (filas algun nulo borradas):" + str(entradaFeaturesYTarget3.shape[0]) + " x " + str(entradaFeaturesYTarget3.shape[1]))
-  elif modoTiempo == "F":
-      print("MISSING VALUES (FILAS) - Para el FUTURO; el target es NULO. No borramos...")
+
+  elif modoTiempo == "futuro":
+      print("MISSING VALUES (FILAS) - Para el FUTURO; el target es NULO siempre, pero borramos las filas que tengan ademas otros NULOS...")
       entradaFeaturesYTarget3 = entradaFeaturesYTarget2
       print("entradaFeaturesYTarget3 (filas futuras sin haber borrado nulos):" + str(entradaFeaturesYTarget3.shape[0]) + " x " + str(entradaFeaturesYTarget3.shape[1]))
 
@@ -113,7 +117,7 @@ def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmp
       entradaFeaturesYTarget4 = entradaFeaturesYTarget3[np.where(outliers_indices == 1, True, False)]
       print("entradaFeaturesYTarget4 (sin outliers):" + str(entradaFeaturesYTarget4.shape[0]) + " x " + str(entradaFeaturesYTarget4.shape[1]))
 
-  elif modoTiempo == "futuro": # Para el futuro no podemos quitar OUTLIERS porque la funcion no acepta nulos!!!
+  elif modoTiempo == "futuro":  # Para el futuro no podemos quitar OUTLIERS porque la funcion no acepta nulos!!!
       entradaFeaturesYTarget4 = entradaFeaturesYTarget3
 
   print("Mostramos las 5 primeras filas de entradaFeaturesYTarget4:")
@@ -122,7 +126,7 @@ def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmp
   # ENTRADA: features (+ target)
 
   # Si hay POCAS empresas
-  if compatibleParaMuchasEmpresas is False or modoTiempo == "F":
+  if compatibleParaMuchasEmpresas is False or modoTiempo == "futuro":
     featuresFichero = entradaFeaturesYTarget4.drop('TARGET', axis=1)
     # featuresFichero = featuresFichero[1:] #quitamos la cabecera
     targetsFichero = (entradaFeaturesYTarget4[['TARGET']] == 1)  # Convierto de int a boolean
@@ -189,7 +193,7 @@ def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmp
   return featuresFichero, targetsFichero
 
 
-def normalizarFeatures(featuresFichero, path_modelo_normalizador, modoTiempo, modoDebug):
+def normalizarFeatures(featuresFichero, path_modelo_normalizador, dir_subgrupo_img, modoTiempo, modoDebug):
   print("----- normalizarFeatures ------")
   print("NORMALIZACION: hacemos que todas las features tengan distribución gaussiana media 0 y varianza 1. El target no se toca.")
   print("PARAMS --> " + path_modelo_normalizador + "|" + modoTiempo + "|" + str(modoDebug))
@@ -215,7 +219,7 @@ def normalizarFeatures(featuresFichero, path_modelo_normalizador, modoTiempo, mo
   if modoDebug:
     print("FUNCIONES DE DENSIDAD (normalizadas):")
     for column in featuresFicheroNorm2:
-        path_dibujo = path_dir_img + column + "_NORM.png"
+        path_dibujo = dir_subgrupo_img + column + "_NORM.png"
         print("Guardando distrib de col normalizada: " + column + " en fichero: " + path_dibujo)
         datos_columna = featuresFicheroNorm2[column]
         sns.distplot(datos_columna, kde=False, color='red', bins=10)
@@ -360,7 +364,7 @@ print("################## MAIN #################################################
 if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.stat(pathCsvCompleto).st_size > 0:
 
     featuresFichero, targetsFichero = leerFeaturesyTarget(pathCsvCompleto, dir_subgrupo_img, compatibleParaMuchasEmpresas, pathModeloOutliers, modoTiempo, modoDebug)
-    featuresFicheroNorm = normalizarFeatures(featuresFichero, path_modelo_normalizador, modoTiempo, modoDebug)
+    featuresFicheroNorm = normalizarFeatures(featuresFichero, path_modelo_normalizador, dir_subgrupo_img, modoTiempo, modoDebug)
     numclases = comprobarSuficientesClasesTarget(featuresFicheroNorm, targetsFichero, modoDebug)
 
     if(numclases <= 1):

@@ -20,7 +20,7 @@ crearCarpetaSiNoExisteYVaciarRecursivo() {
 ID_EJECUCION=$( date "+%Y%m%d%H%M%S" )
 echo -e "ID_EJECUCION = "${ID_EJECUCION}
 
-DIR_TIEMPO="pasado" #pasado o futuro
+DIR_TIEMPO="futuro" #pasado o futuro
 NUM_MAX_EMPRESAS_DESCARGADAS=100
 MIN_COBERTURA_CLUSTER=60
 MIN_EMPRESAS_POR_CLUSTER=10
