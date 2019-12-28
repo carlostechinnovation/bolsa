@@ -27,6 +27,11 @@ import c30x.elaborados.construir.GestorFicheros;
  */
 public class CrearDatasetsSubgrupos implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	static Logger MY_LOGGER = Logger.getLogger(CrearDatasetsSubgrupos.class);
 
 	private static CrearDatasetsSubgrupos instancia = null;
@@ -211,7 +216,7 @@ public class CrearDatasetsSubgrupos implements Serializable {
 		ArrayList<String> pathFicheros;
 		FileWriter csvWriter;
 		FileWriter writerListadoEmpresas;
-		String antiguedad;
+		String infoParaValidacionFutura;
 		Double coberturaEmpresasPorCluster;
 		Estadisticas estadisticas;
 		String pathEmpresa;
@@ -302,13 +307,12 @@ public class CrearDatasetsSubgrupos implements Serializable {
 
 							while ((row = csvReader.readLine()) != null) {
 								MY_LOGGER.debug("Fila leída: " + row);
-								// Se eliminan los parámetros estáticos de la fila, EXCEPTO LA ANTIGÜEDAD (que
-								// será el segundo parámetro)
+								// Se eliminan los parámetros estáticos de la fila, EXCEPTO los datos para la validación futura
 								// Para cada fila de datos o de cabecera, de longitud variable, se eliminan los
 								// datos estáticos
-								antiguedad = SubgruposUtils.recortaPrimeraParteDeString(characterPipe, 1, row);
-								antiguedad = antiguedad.substring(0, antiguedad.indexOf(characterPipe));
-								rowTratada = antiguedad + characterPipe + SubgruposUtils
+								Integer indice = SubgruposUtils.indiceDeAparicion(characterPipe, 8, row);
+								infoParaValidacionFutura = row.substring(0, indice);
+								rowTratada = infoParaValidacionFutura + characterPipe + SubgruposUtils
 										.recortaPrimeraParteDeString(characterPipe, numeroParametrosEstaticos, row);
 								MY_LOGGER.debug("Fila escrita: " + rowTratada);
 

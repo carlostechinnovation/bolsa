@@ -30,4 +30,29 @@ public class SubgruposUtils {
 		return salida;
 	}
 
+	/**
+	 * Posición del carácter en el String pasado como parámetro, en el ocurrencia
+	 * indicada como parámetro.
+	 * 
+	 * @param caracterABuscar
+	 * @param numOcurrencias
+	 * @param entrada
+	 * @return
+	 */
+	public static Integer indiceDeAparicion(final Character caracterABuscar, final Integer numOcurrencias,
+			final String entrada) {
+		Integer salida = -1;
+		Integer vecesEncontradas = 0;
+		for (int i = 0; i < entrada.length(); i++) {
+			if (entrada.charAt(i) == caracterABuscar) {
+				vecesEncontradas++;
+			}
+			if (vecesEncontradas == numOcurrencias) {
+				salida = i;
+				break;
+			}
+		}
+		return salida;
+	}
+
 }
