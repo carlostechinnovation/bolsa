@@ -147,7 +147,7 @@ public class ConstructorElaborados implements Serializable {
 
 		// EXTRACCIÓN DE DATOS DE LA EMPRESA
 		datosEmpresaEntrada = datos.get(empresa);
-		MY_LOGGER.debug("Empresa: " + empresa);
+		MY_LOGGER.info("anadirParametrosElaboradosDeSoloUnaEmpresa() -> Empresa: " + empresa);
 
 		HashMap<String, String> parametros = new HashMap<String, String>();
 		Iterator<Integer> itAntiguedad;
@@ -196,6 +196,7 @@ public class ConstructorElaborados implements Serializable {
 				MY_LOGGER.debug("datosEmpresaEntrada.size(): " + datosEmpresaEntrada.size());
 				MY_LOGGER.debug("Antiguedad: " + antiguedad);
 				if (antiguedadHistoricaMaxima < datosEmpresaEntrada.size()) {
+
 					for (int i = 0; i < periodo; i++) {
 						parametros = datosEmpresaEntrada.get(i + antiguedad);
 						MY_LOGGER.debug("i + antiguedad: " + (i + antiguedad));
@@ -208,6 +209,7 @@ public class ConstructorElaborados implements Serializable {
 						MY_LOGGER.debug("(antiguedad: " + antiguedad + ", periodo: " + periodo
 								+ ") Metido para estadísticas: " + auxPrecio);
 					}
+
 				} else {
 					// Para los datos de antiguuedad excesiva, se sale del bucle
 					break;

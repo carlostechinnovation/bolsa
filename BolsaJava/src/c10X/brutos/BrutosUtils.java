@@ -29,8 +29,8 @@ public class BrutosUtils implements Serializable {
 	public static final String ESCALA_UNO = "uno";
 	public static final String ESCALA_M = "millones";
 
-	public static final String PASADO = "P";
-	public static final String FUTURO = "F";
+	public static final String PASADO = "pasado";
+	public static final String FUTURO = "futuro";
 
 	/**
 	 * @param in

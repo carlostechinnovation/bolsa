@@ -52,7 +52,7 @@ public class YahooFinance01Descargar implements Serializable {
 
 		Integer numMaxEmpresas = BrutosUtils.NUM_EMPRESAS_PRUEBAS; // DEFAULT
 		String directorioOut = BrutosUtils.DIR_BRUTOS; // DEFAULT
-		String modo = "P"; // DEFAULT (pasado)
+		String modo = BrutosUtils.PASADO; // DEFAULT
 
 		if (args.length == 0) {
 			MY_LOGGER.info("Sin parametros de entrada. Rellenamos los DEFAULT...");
@@ -86,7 +86,7 @@ public class YahooFinance01Descargar implements Serializable {
 	 * @param nasdaqEstaticos1
 	 * @param numMaxEmpresas
 	 * @param directorioOut
-	 * @param modo             P (pasado), F (Futuro)
+	 * @param modo             pasado o futuro
 	 * @return
 	 * @throws Exception
 	 */
@@ -222,7 +222,7 @@ public class YahooFinance01Descargar implements Serializable {
 
 	/**
 	 * @param ticker
-	 * @param modo   P (pasado), F (Futuro)
+	 * @param modo   pasado o futuro
 	 * @return
 	 * @throws Exception
 	 */
@@ -232,7 +232,7 @@ public class YahooFinance01Descargar implements Serializable {
 		if (modo.equals(BrutosUtils.PASADO)) {
 			url += "&range=6mo&interval=60m";
 		} else if (modo.equals(BrutosUtils.FUTURO)) {
-			url += "&range=1d&interval=60m";
+			url += "&range=6mo&interval=60m";
 		} else {
 			throw new Exception("Modo pasado/futuro no explicito. Saliendo...");
 		}

@@ -1,5 +1,6 @@
 package pruebas;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -45,6 +46,14 @@ public class Pruebas {
 		Float numeroF2 = Float.valueOf(numeroF1) / 1000000F;
 		String numStr3 = df2.format(numeroF2);
 		System.out.println("Entrada=" + numeroF1 + " --> Salida=" + numStr3);
+
+		String dirSubgrupoOut = "/bolsa/pasado/subgrupos/SG_0/";
+		System.out.println("Creando la carpeta del subgrupo con ID=0 en: " + dirSubgrupoOut);
+		File dirSubgrupoOutFile = new File(dirSubgrupoOut);
+		boolean dirCreadoBien = dirSubgrupoOutFile.mkdir();
+		if (!dirCreadoBien) {
+			System.err.println("Error al crear la carpeta: " + dirSubgrupoOut);
+		}
 
 	}
 

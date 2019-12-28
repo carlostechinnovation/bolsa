@@ -22,7 +22,6 @@ import numpy as np
 from sklearn import linear_model
 import seaborn as sns
 from sklearn.ensemble import IsolationForest, RandomForestClassifier, AdaBoostClassifier
-from sklearn.externals.joblib import dump, load
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.tree import DecisionTreeClassifier
@@ -32,36 +31,38 @@ import pickle
 print("---- CAPA 5 - Selección de variables/ Reducción de dimensiones (para cada subgrupo) -------")
 print("URL PCA: https://scikit-learn.org/stable/modules/unsupervised_reduction.html")
 print("URL Feature Selection: https://scikit-learn.org/stable/modules/feature_selection.html")
-##################################################
+
+##################################################################################################
 print("PARAMETROS: ")
-entrada_csv_subgrupo = sys.argv[1]
-path_dir_salida = sys.argv[2]
-path_dir_img = sys.argv[3]
-modoTiempo = sys.argv[4]
-varianza=0.90
-compatibleParaMuchasEmpresas = True #Si hay muchas empresas, debo hacer ya el undersampling (en vez de capa 6)
-modoDebug = False  #En modo debug se pintan los dibujos. En otro caso, se evita calculo innecesario
-print("entrada_csv_subgrupo = %s" % entrada_csv_subgrupo)
-print("path_dir_salida = %s" % path_dir_salida)
-print("path_dir_img = %s" % path_dir_img)
+dir_subgrupo = sys.argv[1]
+modoTiempo = sys.argv[2]
+print("dir_subgrupo = %s" % dir_subgrupo)
 print("modoTiempo = %s" % modoTiempo)
+
+varianza=0.90
+compatibleParaMuchasEmpresas = True  # Si hay muchas empresas, debo hacer ya el undersampling (en vez de capa 6)
+modoDebug = False  # En modo debug se pintan los dibujos. En otro caso, se evita calculo innecesario
+pathCsvCompleto = dir_subgrupo + "COMPLETO.csv"
+dir_subgrupo_img = dir_subgrupo + "img/"
+pathCsvReducido = dir_subgrupo + "REDUCIDO.csv"
+pathModeloOutliers = dir_subgrupo + "DETECTOR_OUTLIERS.tool"
+path_modelo_normalizador = dir_subgrupo + "NORMALIZADOR.tool"
+
+print("pathCsvCompleto = %s" % pathCsvCompleto)
+print("dir_subgrupo_img = %s" % dir_subgrupo_img)
+print("pathCsvReducido = %s" % pathCsvReducido)
+print("pathModeloOutliers = %s" % pathModeloOutliers)
+print("path_modelo_normalizador = %s" % path_modelo_normalizador)
 
 
 ######################## FUNCIONES #######################################################
 
-def leerFeaturesyTarget(pathEntrada, path_dir_img, compatibleParaMuchasEmpresas, modoDebug):
+def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmpresas, pathModeloOutliers, modoTiempo, modoDebug):
   print("----- leerFeaturesyTarget ------")
-  print("Entrada --> " + pathEntrada)
-
-  path_dataset_sin_extension = os.path.splitext(pathEntrada)[0]
-  id_subgrupo = Path(path_dataset_sin_extension).stem
-  print("id_subgrupo=" + id_subgrupo)
-
-  pathModeloOutliers = path_dataset_sin_extension + "_OUTLIERS.model"
-  print("pathModeloOutliers --> " + pathModeloOutliers)
+  print("PARAMS --> " + path_csv_completo + "|" + path_dir_img + "|" + str(compatibleParaMuchasEmpresas) + "|" + pathModeloOutliers + "|" + modoTiempo + "|" + str(modoDebug))
 
   print("Cargar datos (CSV)...")
-  entradaFeaturesYTarget = pd.read_csv(filepath_or_buffer=pathEntrada, sep='|')
+  entradaFeaturesYTarget = pd.read_csv(filepath_or_buffer=path_csv_completo, sep='|')
   num_nulos_por_fila_1 = np.logical_not(entradaFeaturesYTarget.isnull()).sum()
   print("entradaFeaturesYTarget:" + str(entradaFeaturesYTarget.shape[0]) + " x " + str(entradaFeaturesYTarget.shape[1]))
 
@@ -70,34 +71,64 @@ def leerFeaturesyTarget(pathEntrada, path_dir_img, compatibleParaMuchasEmpresas,
   #num_nulos_por_fila_2 = np.logical_not(entradaFeaturesYTarget2.isnull()).sum()
   print("entradaFeaturesYTarget2 (columnas nulas borradas):" + str(entradaFeaturesYTarget2.shape[0]) + " x " + str(entradaFeaturesYTarget2.shape[1]))
 
+  if modoTiempo == "futuro":
+      # Quedarnos solo con las velas con antiguedad=0 (futuras)
+      entradaFeaturesYTarget2b = entradaFeaturesYTarget2[entradaFeaturesYTarget2.antiguedad == 0]
+      print("entradaFeaturesYTarget2b:" + str(entradaFeaturesYTarget2b.shape[0]) + " x " + str(entradaFeaturesYTarget2b.shape[1]))
+      print(entradaFeaturesYTarget2b.head())
 
-  print("MISSING VALUES (FILAS) - Borramos las FILAS que tengan 1 o mas valores NaN porque son huecos que no deberán estar...")
-  entradaFeaturesYTarget3 = entradaFeaturesYTarget2.dropna(axis=0, how='any')  # Borrar FILA si ALGUNO sus valores tienen NaN
-  #num_nulos_por_fila_3 = np.logical_not(entradaFeaturesYTarget3.isnull()).sum()
-  print("entradaFeaturesYTarget3 (filas algun nulo borradas):" + str(entradaFeaturesYTarget3.shape[0]) + " x " + str(entradaFeaturesYTarget3.shape[1]))
+      # Borrar columna ANTIGUEDAD
+      entradaFeaturesYTarget2c = entradaFeaturesYTarget2b.drop('antiguedad', axis=1)
+      print("entradaFeaturesYTarget2c:" + str(entradaFeaturesYTarget2c.shape[0]) + " x " + str(entradaFeaturesYTarget2c.shape[1]))
+      print(entradaFeaturesYTarget2c.head())
+
+      # Reponer el dataframe 2
+      entradaFeaturesYTarget2 = entradaFeaturesYTarget2c
+
+
+  if modoTiempo == "pasado":
+      print("MISSING VALUES (FILAS) - Borramos las FILAS que tengan 1 o mas valores NaN porque son huecos que no deberían estar...")
+      entradaFeaturesYTarget3 = entradaFeaturesYTarget2.dropna(axis=0, how='any')  # Borrar FILA si ALGUNO sus valores tienen NaN
+      #num_nulos_por_fila_3 = np.logical_not(entradaFeaturesYTarget3.isnull()).sum()
+      print("entradaFeaturesYTarget3 (filas algun nulo borradas):" + str(entradaFeaturesYTarget3.shape[0]) + " x " + str(entradaFeaturesYTarget3.shape[1]))
+  elif modoTiempo == "F":
+      print("MISSING VALUES (FILAS) - Para el FUTURO; el target es NULO. No borramos...")
+      entradaFeaturesYTarget3 = entradaFeaturesYTarget2
+      print("entradaFeaturesYTarget3 (filas futuras sin haber borrado nulos):" + str(entradaFeaturesYTarget3.shape[0]) + " x " + str(entradaFeaturesYTarget3.shape[1]))
+
+  print("Mostramos las 5 primeras filas de entradaFeaturesYTarget3:")
+  print(entradaFeaturesYTarget3.head())
 
   # Limpiar OUTLIERS
   # URL: https://scikit-learn.org/stable/modules/outlier_detection.html
-  detector_outliers = IsolationForest(contamination='auto', random_state=42)
-  detector_outliers.fit(entradaFeaturesYTarget3)  # fit 10 trees
-  dump(detector_outliers, pathModeloOutliers, compress=True) # Luego basta cargarlo así --> detector_outliers=load(pathModeloOutliers)
-  outliers_indices = detector_outliers.predict(entradaFeaturesYTarget3) #Si vale -1 es un outlier!!!
-  entradaFeaturesYTarget4 = entradaFeaturesYTarget3[np.where(outliers_indices == 1, True, False)]
-  print("entradaFeaturesYTarget4 (sin outliers):" + str(entradaFeaturesYTarget4.shape[0]) + " x " + str(entradaFeaturesYTarget4.shape[1]))
+  if modoTiempo == "pasado":
+      detector_outliers = IsolationForest(contamination='auto', random_state=42)
+      detector_outliers.fit(entradaFeaturesYTarget3)  # fit 10 trees
+      pickle.dump(detector_outliers, open(pathModeloOutliers, 'wb'))
 
-  print("Mostramos las 5 primeras filas:")
+      # Pasado y futuro:
+      print("Cargando modelo detector de outliers: " + pathModeloOutliers)
+      detector_outliers = pickle.load(open(pathModeloOutliers, 'rb'))
+      outliers_indices = detector_outliers.predict(entradaFeaturesYTarget3) #Si vale -1 es un outlier!!!
+      entradaFeaturesYTarget4 = entradaFeaturesYTarget3[np.where(outliers_indices == 1, True, False)]
+      print("entradaFeaturesYTarget4 (sin outliers):" + str(entradaFeaturesYTarget4.shape[0]) + " x " + str(entradaFeaturesYTarget4.shape[1]))
+
+  elif modoTiempo == "futuro": # Para el futuro no podemos quitar OUTLIERS porque la funcion no acepta nulos!!!
+      entradaFeaturesYTarget4 = entradaFeaturesYTarget3
+
+  print("Mostramos las 5 primeras filas de entradaFeaturesYTarget4:")
   print(entradaFeaturesYTarget4.head())
 
   # ENTRADA: features (+ target)
 
   # Si hay POCAS empresas
-  if compatibleParaMuchasEmpresas==False:
+  if compatibleParaMuchasEmpresas is False or modoTiempo == "F":
     featuresFichero = entradaFeaturesYTarget4.drop('TARGET', axis=1)
     # featuresFichero = featuresFichero[1:] #quitamos la cabecera
     targetsFichero = (entradaFeaturesYTarget4[['TARGET']] == 1)  # Convierto de int a boolean
 
 
-  # Si hay MUCHAS empresas (UNDER-SAMPLING para reducir los datos -útil para miles de empresas, pero puede quedar sobreentrenado, si borro casi todas las minoritarias-)
+  # SOLO PARA EL PASADO Si hay MUCHAS empresas (UNDER-SAMPLING para reducir los datos -útil para miles de empresas, pero puede quedar sobreentrenado, si borro casi todas las minoritarias-)
   else:
     print("BALANCEAR los casos positivos y negativos, haciendo downsampling de la clase mayoritaria...")
     print("URL: https://elitedatascience.com/imbalanced-classes")
@@ -144,7 +175,7 @@ def leerFeaturesyTarget(pathEntrada, path_dir_img, compatibleParaMuchasEmpresas,
   if modoDebug:
     print("FUNCIONES DE DENSIDAD (sin nulos, pero antes de normalizar):")
     for column in featuresFichero:
-      path_dibujo = path_dir_img + id_subgrupo+"_"+column+".png"
+      path_dibujo = path_dir_img + column + ".png"
       print("Guardando distrib de col: " + column + " en fichero: " + path_dibujo)
       datos_columna = featuresFichero[column]
       sns.distplot(datos_columna, kde=False, color='red', bins=10)
@@ -155,20 +186,22 @@ def leerFeaturesyTarget(pathEntrada, path_dir_img, compatibleParaMuchasEmpresas,
       plt.cla()
       plt.close()
 
-  return featuresFichero, targetsFichero, path_dataset_sin_extension
+  return featuresFichero, targetsFichero
 
 
-def normalizarFeatures(featuresFichero, path_dataset_sin_extension, modoDebug):
+def normalizarFeatures(featuresFichero, path_modelo_normalizador, modoTiempo, modoDebug):
   print("----- normalizarFeatures ------")
+  print("NORMALIZACION: hacemos que todas las features tengan distribución gaussiana media 0 y varianza 1. El target no se toca.")
+  print("PARAMS --> " + path_modelo_normalizador + "|" + modoTiempo + "|" + str(modoDebug))
   print("featuresFichero:" + str(featuresFichero.shape[0]) + " x " + str(featuresFichero.shape[1]))
-  print("path_dataset_sin_extension:" + path_dataset_sin_extension)
-
-  path_modelo_normalizador = path_dataset_sin_extension + "_NORM.model"
   print("path_modelo_normalizador:" + path_modelo_normalizador)
 
-  print("NORMALIZACION: hacemos que todas las features tengan distribución gaussiana media 0 y varianza 1. El target no se toca.")
-  modelo_normalizador = PowerTransformer(method='yeo-johnson', standardize=True, copy=True).fit(featuresFichero)
-  dump(modelo_normalizador, path_modelo_normalizador, compress=True)  # Luego basta cargarlo así --> modelo_normalizador=load(path_modelo_normalizador)
+  if modoTiempo == "pasado":
+      modelo_normalizador = PowerTransformer(method='yeo-johnson', standardize=True, copy=True).fit(featuresFichero)
+      pickle.dump(modelo_normalizador, open(path_modelo_normalizador, 'wb')) # Luego basta cargarlo así --> modelo_normalizador=load(path_modelo_normalizador)
+  else:
+      modelo_normalizador = pickle.load(open(path_modelo_normalizador, 'rb'))
+
 
   featuresFicheroNorm = modelo_normalizador.transform(featuresFichero)
 
@@ -182,7 +215,7 @@ def normalizarFeatures(featuresFichero, path_dataset_sin_extension, modoDebug):
   if modoDebug:
     print("FUNCIONES DE DENSIDAD (normalizadas):")
     for column in featuresFicheroNorm2:
-        path_dibujo = path_dir_img + id_subgrupo + "_" + column + "_NORM.png"
+        path_dibujo = path_dir_img + column + "_NORM.png"
         print("Guardando distrib de col normalizada: " + column + " en fichero: " + path_dibujo)
         datos_columna = featuresFicheroNorm2[column]
         sns.distplot(datos_columna, kde=False, color='red', bins=10)
@@ -207,13 +240,13 @@ def comprobarSuficientesClasesTarget(featuresFicheroNorm, targetsFichero, modoDe
   return y_unicos.size
 
 
-def reducirFeaturesYGuardar(featuresFicheroNorm, targetsFichero, pathSalidaFeaturesyTargets, varianzaAcumuladaDeseada, path_dataset_sin_extension, modoTiempo, modoDebug):
+def reducirFeaturesYGuardar(featuresFicheroNorm, targetsFichero, pathCsvReducido, varianzaAcumuladaDeseada, dir_subgrupo_img, modoTiempo, modoDebug):
   print("----- reducirFeaturesYGuardar ------")
   print("featuresFicheroNorm:" + str(featuresFicheroNorm.shape[0]) + " x " + str(featuresFicheroNorm.shape[1]))
   print("targetsFichero:" + str(targetsFichero.shape[0]) + " x " + str(targetsFichero.shape[1]))
-  print("pathSalidaFeaturesyTargets --> " + pathSalidaFeaturesyTargets)
+  print("pathCsvReducido --> " + pathCsvReducido)
   print("varianzaAcumuladaDeseada (PCA) --> " + str(varianzaAcumuladaDeseada))
-  print("path_dataset_sin_extension --> " + path_dataset_sin_extension)
+  print("dir_subgrupo_img --> " + dir_subgrupo_img)
   print("modoTiempo:" + modoTiempo)
 
   print("**** REDUCCION DE DIMENSIONES*****")
@@ -233,25 +266,10 @@ def reducirFeaturesYGuardar(featuresFicheroNorm, targetsFichero, pathSalidaFeatu
     classifiers = [
       SVC(kernel="linear"),
       AdaBoostClassifier(n_estimators=50, learning_rate=1.),
-      RandomForestClassifier(n_estimators=100,
-                             criterion="gini",
-                             max_depth=None,
-                            min_samples_split=2,
-                            min_samples_leaf=1,
-                            min_weight_fraction_leaf=0.,
-                            max_features="auto",
-                            max_leaf_nodes=None,
-                            min_impurity_decrease=0.,
-                            min_impurity_split=None,
-                            bootstrap=True,
-                            oob_score=False,
-                            n_jobs=None,
-                            random_state=None,
-                            verbose=0,
-                            warm_start=False,
-                            class_weight=None,
-                            ccp_alpha=0.0,
-                            max_samples=None)]
+      RandomForestClassifier(n_estimators=100, criterion="gini", max_depth=None, min_samples_split=2, min_samples_leaf=1, min_weight_fraction_leaf=0.,
+                            max_features="auto", max_leaf_nodes=None, min_impurity_decrease=0., min_impurity_split=None,
+                            bootstrap=True, oob_score=False, n_jobs=None, random_state=None, verbose=0, warm_start=False,
+                            class_weight=None, ccp_alpha=0.0, max_samples=None)]
 
     scoreAnterior = 0
     numFeaturesAnterior=9999
@@ -284,7 +302,7 @@ def reducirFeaturesYGuardar(featuresFicheroNorm, targetsFichero, pathSalidaFeatu
 
   # Plot number of features VS. cross-validation scores
   if modoDebug:
-    path_dibujo_rfecv = path_dataset_sin_extension + "_RFECV" ".png"
+    path_dibujo_rfecv = dir_subgrupo_img + "SELECCION_VARIABLES_RFECV" ".png"
     plt.figure()
     plt.xlabel("Number of features selected")
     plt.ylabel("Cross validation score (nb of correct classifications)")
@@ -309,7 +327,7 @@ def reducirFeaturesYGuardar(featuresFicheroNorm, targetsFichero, pathSalidaFeatu
   print(featuresFicheroNormElegidas)
 
   ####################### NO LO USAMOS pero lo dejo aqui ########
-  if modoDebug:
+  if modoDebug and False:
       print("** PCA (Principal Components Algorithm) **")
       print("Usando PCA, cogemos las features que tengan un impacto agregado sobre el X% de la varianza del target. Descartamos el resto.")
       modelo_pca_subgrupo = PCA(n_components=varianzaAcumuladaDeseada, svd_solver='full')
@@ -328,29 +346,27 @@ def reducirFeaturesYGuardar(featuresFicheroNorm, targetsFichero, pathSalidaFeatu
   print(targetsFichero.head())
 
   featuresytargets = pd.concat([featuresFicheroNormElegidas.reset_index(drop=True), targetsFichero.reset_index(drop=True)], axis=1)
-  featuresytargets.to_csv(pathSalidaFeaturesyTargets, index=False, sep='|')
+  featuresytargets.to_csv(pathCsvReducido, index=False, sep='|')
 
   print("Muestro las features + targets despues de juntarlas...")
   print("FEATURES+TARGETS juntas (sample):")
   print(featuresytargets.head())
 
-################## MAIN ###########################################################
 
-print("Recorremos los CSVs que hay en el DIRECTORIO...")
 
-if (entrada_csv_subgrupo.endswith('.csv') and os.path.isfile(entrada_csv_subgrupo) and os.stat(entrada_csv_subgrupo).st_size > 0 ):
-    id_subgrupo = Path(entrada_csv_subgrupo).stem
-    print("id_subgrupo=" + id_subgrupo)
-    pathSalidaFeaturesyTargets = path_dir_salida + id_subgrupo + ".csv"
-    featuresFichero, targetsFichero, path_dataset_sin_extension = leerFeaturesyTarget(entrada_csv_subgrupo, path_dir_img, compatibleParaMuchasEmpresas, modoDebug)
-    featuresFicheroNorm = normalizarFeatures(featuresFichero, path_dataset_sin_extension, modoDebug)
+print("################## MAIN ###########################################################")
+
+
+if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.stat(pathCsvCompleto).st_size > 0:
+
+    featuresFichero, targetsFichero = leerFeaturesyTarget(pathCsvCompleto, dir_subgrupo_img, compatibleParaMuchasEmpresas, pathModeloOutliers, modoTiempo, modoDebug)
+    featuresFicheroNorm = normalizarFeatures(featuresFichero, path_modelo_normalizador, modoTiempo, modoDebug)
     numclases = comprobarSuficientesClasesTarget(featuresFicheroNorm, targetsFichero, modoDebug)
 
     if(numclases <= 1):
-        print("El subgrupo " + str(id_subgrupo) + " solo tiene " + str(numclases) + " clases en el target. Abortamos.")
+        print("El subgrupo solo tiene " + str(numclases) + " clases en el target. Abortamos...")
     else:
-        reducirFeaturesYGuardar(featuresFicheroNorm, targetsFichero, pathSalidaFeaturesyTargets, varianza, path_dataset_sin_extension, modoTiempo, modoDebug)
+        reducirFeaturesYGuardar(featuresFicheroNorm, targetsFichero, pathCsvReducido, varianza, dir_subgrupo_img, modoTiempo, modoDebug)
 
 print("------------ FIN ----------------")
-
 

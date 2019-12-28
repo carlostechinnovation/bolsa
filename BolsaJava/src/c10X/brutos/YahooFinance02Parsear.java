@@ -66,7 +66,7 @@ public class YahooFinance02Parsear implements Serializable {
 
 		String directorioIn = BrutosUtils.DIR_BRUTOS; // DEFAULT
 		String directorioOut = BrutosUtils.DIR_BRUTOS_CSV; // DEFAULT
-		String modo = "P"; // DEFAULT (pasado)
+		String modo = BrutosUtils.PASADO; // DEFAULT
 
 		if (args.length == 0) {
 			MY_LOGGER.info("Sin parametros de entrada. Rellenamos los DEFAULT...");
@@ -90,8 +90,9 @@ public class YahooFinance02Parsear implements Serializable {
 
 		// VELAS (tomando una empresa buena, que tendra todo relleno)
 		Map<String, Integer> velas = new HashMap<String, Integer>();
-		extraerVelasReferencia(velas, directorioIn, directorioOut, "P");// coger todas las velas pasadas de la empresa
-																		// de referencia
+		extraerVelasReferencia(velas, directorioIn, directorioOut, BrutosUtils.PASADO);// coger todas las velas pasadas
+																						// de la empresa
+		// de referencia
 
 		// DATOS DINAMICOS DE TODAS LAS EMPRESAS
 		parsearDinamicos01(nasdaqEstaticos1, directorioIn, directorioOut, false, modo);
@@ -307,7 +308,7 @@ public class YahooFinance02Parsear implements Serializable {
 
 					// Escribir todas las velas del pasado o, si estamos preparando el futuro, solo
 					// la ultima vela (la vigente, la más reciente conocida)
-					if (modo.equals("P") || (modo.equals("F") && i == numVelas - 1)) {
+					if (modo.equals(BrutosUtils.PASADO) || (modo.equals(BrutosUtils.FUTURO) && i == (numVelas - 1))) {
 						bw.write(cad);
 						bw.newLine();
 					}

@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -24,7 +25,7 @@ import c30x.elaborados.construir.GestorFicheros;
  * Crea los datasets (CSV) de cada subgrupo
  *
  */
-public class CrearDatasetsSubgrupos {
+public class CrearDatasetsSubgrupos implements Serializable {
 
 	static Logger MY_LOGGER = Logger.getLogger(CrearDatasetsSubgrupos.class);
 
@@ -216,9 +217,12 @@ public class CrearDatasetsSubgrupos {
 		String pathEmpresa;
 		HashMap<String, Boolean> empresasConTarget;
 		Iterator<String> itEmpresas;
+
 		while (itTipos.hasNext()) {
 
 			tipo = itTipos.next();
+			MY_LOGGER.info("Subgrupo con ID=" + tipo);
+
 			numEmpresasPorTipo = empresasPorTipo.size();
 
 			if (numEmpresasPorTipo > 0) {
@@ -255,15 +259,15 @@ public class CrearDatasetsSubgrupos {
 				// Para generar un fichero de dataset del cluster, la cobertura debe ser mayor
 				// que un x%
 				if (coberturaEmpresasPorCluster * 100 < Double.valueOf(coberturaMinima)) {
-					MY_LOGGER.debug("El cluster " + tipo + ", con cobertura: " + coberturaEmpresasPorCluster * 100 + "%"
+					MY_LOGGER.warn("El cluster " + tipo + ", con cobertura: " + coberturaEmpresasPorCluster * 100 + "%"
 							+ " no llega al mínimo: " + coberturaMinima + "%. NO SE GENERA DATASET");
-					System.out.println("El cluster " + tipo + ", con cobertura: " + coberturaEmpresasPorCluster * 100
+					System.err.println("El cluster " + tipo + ", con cobertura: " + coberturaEmpresasPorCluster * 100
 							+ "%" + " no llega al mínimo: " + coberturaMinima + "%. NO SE GENERA DATASET");
 				} else if (empresasConTarget.keySet().size() < Integer.valueOf(minEmpresasPorCluster)) {
-					MY_LOGGER.debug("El cluster " + tipo + ", tiene: " + empresasConTarget.keySet().size()
+					MY_LOGGER.warn("El cluster " + tipo + ", tiene: " + empresasConTarget.keySet().size()
 							+ " empresas, pero el mínimo debe ser: " + minEmpresasPorCluster
 							+ ". NO SE GENERA DATASET");
-					System.out.println("El cluster " + tipo + ", tiene: " + empresasConTarget.keySet().size()
+					System.err.println("El cluster " + tipo + ", tiene: " + empresasConTarget.keySet().size()
 							+ " empresas, pero el mínimo debe ser: " + minEmpresasPorCluster
 							+ ". NO SE GENERA DATASET");
 				} else {
@@ -271,8 +275,18 @@ public class CrearDatasetsSubgrupos {
 					// Hay alguna empresa de este tipo. Creo un CSV común para todas las del mismo
 					// tipo
 					pathFicheros = empresasPorTipo.get(tipo);
-					ficheroOut = directorioOut + tipo + ".csv";
-					ficheroListadoOut = directorioOut + "Listado-" + tipo + ".empresas";
+
+					String dirSubgrupoOut = directorioOut + "SG_" + tipo + "/";
+					MY_LOGGER.info("Creando la carpeta del subgrupo con ID=" + tipo + " en: " + dirSubgrupoOut);
+					File dirSubgrupoOutFile = new File(dirSubgrupoOut);
+					boolean dirCreadoBien = dirSubgrupoOutFile.mkdir();
+					if (!dirCreadoBien) {
+						MY_LOGGER.error("Error al crear la carpeta: " + dirSubgrupoOut);
+						throw new Exception("Error al crear la carpeta: " + dirSubgrupoOut);
+					}
+
+					ficheroOut = dirSubgrupoOut + "COMPLETO.csv";
+					ficheroListadoOut = dirSubgrupoOut + "EMPRESAS.txt";
 					MY_LOGGER.info("Fichero a escribir: " + ficheroOut);
 					csvWriter = new FileWriter(ficheroOut);
 					writerListadoEmpresas = new FileWriter(ficheroListadoOut);

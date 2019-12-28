@@ -1,26 +1,31 @@
 #!/bin/bash
 
+################## FUNCIONES #############################################################
+crearCarpetaSiNoExisteYVaciar() {
+	param1=${1} 			#directorio
+	echo "Creando carpeta: $param1"
+	mkdir -p "${param1}"
+	rm -f "${param1}*"
+}
+
+crearCarpetaSiNoExisteYVaciarRecursivo() {
+	param1=${1} 			#directorio
+	echo "Creando carpeta: $param1"
+	mkdir -p "${param1}"
+	rm -Rf "${param1}*"
+}
+
+
 ################ VARIABLES DE EJECUCION #########################################################
 ID_EJECUCION=$( date "+%Y%m%d%H%M%S" )
 echo -e "ID_EJECUCION = "${ID_EJECUCION}
 
-MODO="P" #Pasado (P) o Futuro (F)
-DIR_TIEMPO=""
-if [ "${MODO}" = "P" ]; then 
-    DIR_TIEMPO="pasado"
-elif [ "${MODO}" = "F" ]; then
-    DIR_TIEMPO="futuro"
-else
-    echo "Debes elegir el modo: Pasado o Futuro"
-	exit -1
-fi;
-
+DIR_TIEMPO="pasado" #pasado o futuro
 NUM_MAX_EMPRESAS_DESCARGADAS=100
 MIN_COBERTURA_CLUSTER=60
 MIN_EMPRESAS_POR_CLUSTER=10
 
 #################### DIRECTORIOS ###############################################################
-#DIR_CODIGOS="C:\DATOS\GITHUB_REPOS\bolsa\"
 DIR_CODIGOS="/home/carloslinux/Desktop/GIT_BOLSA/"
 PATH_SCRIPTS="${DIR_CODIGOS}BolsaScripts/"
 PYTHON_SCRIPTS="${DIR_CODIGOS}BolsaPython/"
@@ -33,26 +38,22 @@ DIR_BRUTOS="${DIR_BASE}${DIR_TIEMPO}/brutos/"
 DIR_BRUTOS_CSV="${DIR_BASE}${DIR_TIEMPO}/brutos_csv/"
 DIR_LIMPIOS="${DIR_BASE}${DIR_TIEMPO}/limpios/"
 DIR_ELABORADOS="${DIR_BASE}${DIR_TIEMPO}/elaborados/"
-DIR_SUBGRUPOS="${DIR_BASE}${DIR_TIEMPO}/datasets/"
-DIR_MODELOS="${DIR_BASE}modelos/"
-DIR_SUBGRUPOS_REDUCIDOS="${DIR_SUBGRUPOS}reducidos/"
-DIR_SUBGRUPOS_IMG="${DIR_SUBGRUPOS}img/"
+DIR_SUBGRUPOS="${DIR_BASE}${DIR_TIEMPO}/subgrupos/"
+DIR_IMG="img/"
 
-mkdir -p "${DIR_BASE}"
-mkdir -p "${DIR_LOGS}"
-mkdir -p "${DIR_BRUTOS}"
-mkdir -p "${DIR_BRUTOS_CSV}"
-rm -f "${DIR_BRUTOS}YF*.txt"
-rm -f "${DIR_BRUTOS}YF*.csv"
-mkdir -p "${DIR_LIMPIOS}"
-mkdir -p "${DIR_ELABORADOS}"
-mkdir -p "${DIR_SUBGRUPOS}"
-mkdir -p "${DIR_MODELOS}"
+crearCarpetaSiNoExisteYVaciar "${DIR_BASE}"
+crearCarpetaSiNoExisteYVaciar "${DIR_LOGS}"
+crearCarpetaSiNoExisteYVaciar "${DIR_BASE}${DIR_TIEMPO}"
+crearCarpetaSiNoExisteYVaciar "${DIR_BRUTOS}"
+crearCarpetaSiNoExisteYVaciar "${DIR_BRUTOS_CSV}"
+crearCarpetaSiNoExisteYVaciar "${DIR_LIMPIOS}"
+crearCarpetaSiNoExisteYVaciar "${DIR_ELABORADOS}"
+crearCarpetaSiNoExisteYVaciarRecursivo "${DIR_SUBGRUPOS}"
 
 
 ############### LOGS ########################################################
 rm -f "${DIR_LOGS}log4j.log"
-LOG_MASTER="${DIR_LOGS}${ID_EJECUCION}_bolsa_coordinador_${MODO}.log"
+LOG_MASTER="${DIR_LOGS}${ID_EJECUCION}_bolsa_coordinador_${DIR_TIEMPO}.log"
 rm -f "${LOG_MASTER}"
 
 ############### COMPILAR JAR ########################################################
@@ -63,14 +64,11 @@ mvn clean compile assembly:single
 ################################################################################################
 echo -e "-------- DATOS BRUTOS -------------" >> ${LOG_MASTER}
 
-############## echo -e "Descargando de NASDAQ-OLD..." >> ${LOG_MASTER}
-############## java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n" -jar ${PATH_JAR} --class "coordinador.Principal" "c10X.brutos.EstaticosNasdaqDescargarYParsear" "${DIR_BRUTOS}" "${DIR_BRUTOS_CSV}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
-
 echo -e "DINAMICOS - Descargando de YAHOO FINANCE..." >> ${LOG_MASTER}
-java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n" -jar ${PATH_JAR} --class "coordinador.Principal" "c10X.brutos.YahooFinance01Descargar" "${NUM_MAX_EMPRESAS_DESCARGADAS}" "${DIR_BRUTOS}" "${MODO}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
+java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n" -jar ${PATH_JAR} --class "coordinador.Principal" "c10X.brutos.YahooFinance01Descargar" "${NUM_MAX_EMPRESAS_DESCARGADAS}" "${DIR_BRUTOS}" "${DIR_TIEMPO}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 
 echo -e "DINAMICOS - Limpieza de YAHOO FINANCE..." >> ${LOG_MASTER}
-java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n" -jar ${PATH_JAR} --class "coordinador.Principal" "c10X.brutos.YahooFinance02Parsear" "${DIR_BRUTOS}" "${DIR_BRUTOS_CSV}" "${MODO}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
+java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n" -jar ${PATH_JAR} --class "coordinador.Principal" "c10X.brutos.YahooFinance02Parsear" "${DIR_BRUTOS}" "${DIR_BRUTOS_CSV}" "${DIR_TIEMPO}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 
 echo -e "ESTATICOS - Descargando de FINVIZ (igual para Pasado o Futuro, salvo el directorio)..." >> ${LOG_MASTER}
 java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n" -jar ${PATH_JAR} --class "coordinador.Principal" "c10X.brutos.EstaticosFinvizDescargarYParsear" "${NUM_MAX_EMPRESAS_DESCARGADAS}" "${DIR_BRUTOS}" "${DIR_BRUTOS_CSV}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
@@ -105,23 +103,22 @@ echo -e "Elaborados (incluye la variable elaborada TARGET) ya calculados" >> ${L
 echo -e "-------- SUBGRUPOS -------------" >> ${LOG_MASTER}
 
 echo -e "Calculando subgrupos..." >> ${LOG_MASTER}
-java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n" -jar ${PATH_JAR} --class "coordinador.Principal" "c40X.subgrupos.CrearDatasetsSubgrupos" "${DIR_ELABORADOS}" "${DIR_SUBGRUPOS}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
+java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n" -jar ${PATH_JAR} --class "coordinador.Principal" "c40X.subgrupos.CrearDatasetsSubgrupos" "${DIR_ELABORADOS}" "${DIR_SUBGRUPOS}" "${MIN_COBERTURA_CLUSTER}" "${MIN_EMPRESAS_POR_CLUSTER}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 #java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n" -jar ${PATH_JAR} --class "coordinador.Principal" "c40X.subgrupos.CrearDatasetsSubgruposKMeans" "${DIR_ELABORADOS}" "${DIR_SUBGRUPOS}" "${MIN_COBERTURA_CLUSTER}" "${MIN_EMPRESAS_POR_CLUSTER}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 
 
 ############  PARA CADA SUBGRUPO ###############################################################
 
-for path_csv_subgrupo in ${DIR_SUBGRUPOS}*.csv
+for dir_subgrupo in ${DIR_SUBGRUPOS}*
 do
-	echo "-------- Subgrupo con dataset de entrada: ${path_csv_subgrupo} --------" >> ${LOG_MASTER}
-	mkdir -p "${DIR_SUBGRUPOS_REDUCIDOS}"
-	mkdir -p "${DIR_SUBGRUPOS_IMG}"
+	echo "-------- Subgrupo cuya carpeta es: ${dir_subgrupo} --------" >> ${LOG_MASTER}
+	crearCarpetaSiNoExisteYVaciar  "${dir_subgrupo}/${DIR_IMG}"
 	
 	echo -e "Capa 5: elimina MISSING VALUES (NA en columnas y filas), elimina OUTLIERS, balancea clases (undersampling de mayoritaria), calcula IMG funciones de densidad, NORMALIZA las features, comprueba suficientes casos en clase minoritaria, REDUCCION de FEATURES y guarda el CSV REDUCIDO..." >> ${LOG_MASTER}
-	python3 "${PYTHON_SCRIPTS}bolsa/C5NormalizarYReducirDatasetSubgrupo.py" "${path_csv_subgrupo}" "${DIR_SUBGRUPOS_REDUCIDOS}"  "${DIR_SUBGRUPOS_IMG}" "${MODO}" >> ${LOG_MASTER}
+	python3 "${PYTHON_SCRIPTS}bolsa/C5NormalizarYReducirDatasetSubgrupo.py" "${dir_subgrupo}/" "${DIR_TIEMPO}" >> ${LOG_MASTER}
 	
 	echo -e "Capa 6 - PASADO ó FUTURO: balancea las clases (aunque ya se hizo en capa 5), divide dataset de entrada (entrenamiento, test, validación), CREA MODELOS (con hyperparámetros)  los evalúa. Guarda el modelo GANADOR de cada subgrupo..." >> ${LOG_MASTER}
-	python3 "${PYTHON_SCRIPTS}bolsa/C6CreadorModelosDeSubgrupo.py" "${DIR_SUBGRUPOS_REDUCIDOS}" "${DIR_MODELOS}" "${MODO}" >> ${LOG_MASTER}
+	python3 "${PYTHON_SCRIPTS}bolsa/C6CreadorModelosDeSubgrupo.py" "${dir_subgrupo}/" "${DIR_TIEMPO}"  >> ${LOG_MASTER}
 	
 	echo -e "Capa 7: otras validaciones manuales (rentabilidad a posteriori, etc)..." >> ${LOG_MASTER}
 	python3 "${PYTHON_SCRIPTS}bolsa/C7OtrasValidacionesManuales.py" >> ${LOG_MASTER}
@@ -129,10 +126,8 @@ do
 	
 done
 
-################################################################################################
-
 ############### BORRAR JAR ########################################################
-#rm -Rf "${DIR_JAVA}target/"
+rm -Rf "${DIR_JAVA}target/"
 
 ################################################################################################
 
