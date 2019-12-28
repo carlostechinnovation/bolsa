@@ -46,18 +46,38 @@ public class LimpiarCSVBrutosTemporales {
 		MY_LOGGER.setLevel(Level.INFO);
 		MY_LOGGER.info("INICIO");
 
-		nucleo();
+		String dirBrutoCsv = BrutosUtils.DIR_BRUTOS_CSV; // DEFAULT
+
+		if (args.length == 0) {
+			MY_LOGGER.info("Sin parametros de entrada. Rellenamos los DEFAULT...");
+		} else if (args.length != 1) {
+			MY_LOGGER.error("Parametros de entrada incorrectos!! --> " + args.length);
+			int numParams = args.length;
+			MY_LOGGER.error("Numero de parametros: " + numParams);
+			for (String param : args) {
+				MY_LOGGER.error("Param: " + param);
+			}
+
+			System.exit(-1);
+
+		} else {
+			dirBrutoCsv = args[1];
+			MY_LOGGER.info("PARAMS -> " + dirBrutoCsv);
+		}
+		nucleo(dirBrutoCsv);
+
 		MY_LOGGER.info("FIN");
 
 	}
 
 	/**
+	 * @param dirBrutoCsv
 	 * @throws IOException
 	 */
-	public static void nucleo() throws IOException {
+	public static void nucleo(String dirBrutoCsv) throws IOException {
 
-		File dirBrutoCsv = new File(BrutosUtils.DIR_BRUTOS_CSV);
-		String[] listaBorrables = dirBrutoCsv.list(new FilenameFilter() {
+		File dirBrutoCsvFile = new File(dirBrutoCsv);
+		String[] listaBorrables = dirBrutoCsvFile.list(new FilenameFilter() {
 
 			public boolean accept(File dir, String name) {
 
@@ -73,12 +93,12 @@ public class LimpiarCSVBrutosTemporales {
 		});
 
 		for (String pathBorrable : listaBorrables) {
-			MY_LOGGER.info("Borrando temporal: " + BrutosUtils.DIR_BRUTOS_CSV + pathBorrable);
-			Files.deleteIfExists(Paths.get(BrutosUtils.DIR_BRUTOS_CSV + pathBorrable));
+			MY_LOGGER.info("Borrando temporal: " + dirBrutoCsv + pathBorrable);
+			Files.deleteIfExists(Paths.get(dirBrutoCsv + pathBorrable));
 		}
 
 		// VELAS DE NASDAQ
-		String velasNasdaq = BrutosUtils.DIR_BRUTOS_CSV + "VELAS_" + BrutosUtils.MERCADO_NQ + ".csv";
+		String velasNasdaq = dirBrutoCsv + "VELAS_" + BrutosUtils.MERCADO_NQ + ".csv";
 		Files.deleteIfExists(Paths.get(velasNasdaq));
 	}
 

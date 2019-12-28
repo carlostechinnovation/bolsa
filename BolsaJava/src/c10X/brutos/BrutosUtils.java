@@ -10,7 +10,7 @@ import java.util.Locale;
 public class BrutosUtils implements Serializable {
 
 	public static final String DIR_BRUTOS = "/bolsa/pasado/brutos/";
-	public static final String DIR_BRUTOS_CSV = "/bolsa/pasado/brutos_csv/";
+	public static final String DIR_BRUTOS_CSV = "/bolsa/futuro/brutos_csv/";
 	public static final String NASDAQ_TICKERS_CSV = "src/main/resources/nasdaq_tickers.csv";
 	public static final String DESCONOCIDOS_CSV = "src/main/resources/desconocidos.csv";
 

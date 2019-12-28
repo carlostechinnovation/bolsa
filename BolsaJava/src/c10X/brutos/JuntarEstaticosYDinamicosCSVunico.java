@@ -69,7 +69,7 @@ public class JuntarEstaticosYDinamicosCSVunico {
 			System.exit(-1);
 
 		} else {
-			dirBrutoCsv = args[2];
+			dirBrutoCsv = args[1];
 			desplazamientoAntiguedad = Integer.valueOf(args[3]);
 			MY_LOGGER.info("PARAMS -> " + dirBrutoCsv);
 			MY_LOGGER.info("PARAMS -> " + desplazamientoAntiguedad);
