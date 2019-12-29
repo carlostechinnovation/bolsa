@@ -103,10 +103,7 @@ ganador_area_bajo_roc = 0
 ganador_grid_mejores_parametros=[]
 
 
-print("Recorremos los CSVs (subgrupos) que hay en el DIRECTORIO...")
-
-
-if (pathCsvReducido.endswith('.csv') and os.path.isfile(pathCsvReducido) and os.stat(pathCsvReducido).st_size > 0 ):
+if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfile(pathCsvReducido) and os.stat(pathCsvReducido).st_size > 0 ):
 
     inputFeaturesyTarget = pd.read_csv(pathCsvReducido, sep='|')
     print("inputFeaturesyTarget: " + str(inputFeaturesyTarget.shape[0]) + " x " + str(inputFeaturesyTarget.shape[1]))
@@ -261,6 +258,12 @@ if (pathCsvReducido.endswith('.csv') and os.path.isfile(pathCsvReducido) and os.
         pathModeloGanadorDeSubgrupoDestino = pathModeloGanadorDeSubgrupoOrigen + "_ganador"
         copyfile(pathModeloGanadorDeSubgrupoOrigen, pathModeloGanadorDeSubgrupoDestino)
         print("Modelo ganador guardado en: " + pathModeloGanadorDeSubgrupoDestino)
+
+elif (modoTiempo == "futuro" and pathCsvReducido.endswith('.csv') and os.path.isfile(pathCsvReducido) and os.stat(pathCsvReducido).st_size > 0 ):
+    inputFeaturesyTarget = pd.read_csv(pathCsvReducido, sep='|')
+    print("inputFeaturesyTarget: " + str(inputFeaturesyTarget.shape[0]) + " x " + str(inputFeaturesyTarget.shape[1]))
+else:
+    print("Los parametros de entrada son incorrectos o el CSV no existe o esta vacio!!")
 
 
 ############################################################

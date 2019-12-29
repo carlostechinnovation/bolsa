@@ -61,7 +61,7 @@ public class LimpiarCSVBrutosTemporales {
 			System.exit(-1);
 
 		} else {
-			dirBrutoCsv = args[1];
+			dirBrutoCsv = args[0];
 			MY_LOGGER.info("PARAMS -> " + dirBrutoCsv);
 		}
 		nucleo(dirBrutoCsv);

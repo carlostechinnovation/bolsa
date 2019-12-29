@@ -208,7 +208,7 @@ def normalizarFeatures(featuresFichero, path_modelo_normalizador, dir_subgrupo_i
   elif modoTiempo == "futuro":
       modelo_normalizador = pickle.load(open(path_modelo_normalizador, 'rb'))
 
-
+  print("Aplicando normalizacion...")
   featuresFicheroNorm = modelo_normalizador.transform(featuresFichero)
 
   print("Metiendo cabeceras...")

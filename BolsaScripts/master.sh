@@ -3,36 +3,38 @@
 ################## PARAMETROS DE ENTRADA ############################################
 DIR_TIEMPO="${1}" #pasado o futuro
 DESPLAZAMIENTO_ANTIGUEDAD="${2}"  #0, -50 ....
+ES_ENTORNO_VALIDACION="${3}" #0, 1
+
 
 
 ################## FUNCIONES #############################################################
 crearCarpetaSiNoExisteYVaciar() {
 	param1=${1} 			#directorio
 	echo "Creando carpeta: $param1"
-	mkdir -p "${param1}"
-	rm -f "${param1}*"
+	mkdir -p ${param1}
+	rm -f ${param1}*
 }
 
 crearCarpetaSiNoExisteYVaciarRecursivo() {
 	param1=${1} 			#directorio
 	echo "Creando carpeta: $param1"
-	mkdir -p "${param1}"
-	rm -Rf "${param1}*"
+	mkdir -p ${param1}
+	rm -Rf ${param1}*
 }
 
 ################ VARIABLES DE EJECUCION #########################################################
 ID_EJECUCION=$( date "+%Y%m%d%H%M%S" )
 echo -e "ID_EJECUCION = "${ID_EJECUCION}
 
-NUM_MAX_EMPRESAS_DESCARGADAS=1
+NUM_MAX_EMPRESAS_DESCARGADAS=60
 MIN_COBERTURA_CLUSTER=60
 MIN_EMPRESAS_POR_CLUSTER=10
 
 # PARAMETROS DE TARGET MEDIDOS EN VELAS
-S = 10
-X = 28
-R = 5
-M = 7
+S="10"
+X="28"
+R="5"
+M="7"
 
 #################### DIRECTORIOS ###############################################################
 DIR_CODIGOS="/home/carloslinux/Desktop/GIT_BOLSA/"
@@ -40,6 +42,7 @@ PATH_SCRIPTS="${DIR_CODIGOS}BolsaScripts/"
 PYTHON_SCRIPTS="${DIR_CODIGOS}BolsaPython/"
 DIR_JAVA="${DIR_CODIGOS}BolsaJava/"
 PATH_JAR="${DIR_JAVA}target/bolsajava-1.0-jar-with-dependencies.jar"
+PYTHON_MOTOR="/home/carloslinux/Desktop/PROGRAMAS/anaconda3/envs/BolsaPython/bin/python"
 
 DIR_BASE="/bolsa/"
 DIR_LOGS="${DIR_BASE}logs/"
@@ -74,19 +77,19 @@ mvn clean compile assembly:single
 echo -e "-------- DATOS BRUTOS -------------" >> ${LOG_MASTER}
 
 echo -e "DINAMICOS - Descargando de YAHOO FINANCE..." >> ${LOG_MASTER}
-java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n" -jar ${PATH_JAR} --class "coordinador.Principal" "c10X.brutos.YahooFinance01Descargar" "${NUM_MAX_EMPRESAS_DESCARGADAS}" "${DIR_BRUTOS}" "${DIR_TIEMPO}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
+java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n" -jar ${PATH_JAR} --class "coordinador.Principal" "c10X.brutos.YahooFinance01Descargar" "${NUM_MAX_EMPRESAS_DESCARGADAS}" "${DIR_BRUTOS}" "${DIR_TIEMPO}" "${ES_ENTORNO_VALIDACION}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 
 echo -e "DINAMICOS - Limpieza de YAHOO FINANCE..." >> ${LOG_MASTER}
-java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n" -jar ${PATH_JAR} --class "coordinador.Principal" "c10X.brutos.YahooFinance02Parsear" "${DIR_BRUTOS}" "${DIR_BRUTOS_CSV}" "${DIR_TIEMPO}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
+java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n" -jar ${PATH_JAR} --class "coordinador.Principal" "c10X.brutos.YahooFinance02Parsear" "${DIR_BRUTOS}" "${DIR_BRUTOS_CSV}" "${DIR_TIEMPO}" "${ES_ENTORNO_VALIDACION}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 
 echo -e "ESTATICOS - Descargando de FINVIZ (igual para Pasado o Futuro, salvo el directorio)..." >> ${LOG_MASTER}
 java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n" -jar ${PATH_JAR} --class "coordinador.Principal" "c10X.brutos.EstaticosFinvizDescargarYParsear" "${NUM_MAX_EMPRESAS_DESCARGADAS}" "${DIR_BRUTOS}" "${DIR_BRUTOS_CSV}" "${ES_ENTORNO_VALIDACION}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 
 echo -e "ESTATICOS + DINAMICOS: juntando en un CSV único..." >> ${LOG_MASTER}
-java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n" -jar ${PATH_JAR} --class "coordinador.Principal" "c10X.brutos.JuntarEstaticosYDinamicosCSVunico" "${DIR_BRUTOS_CSV}" "${DESPLAZAMIENTO_ANTIGUEDAD}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
+java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n" -jar ${PATH_JAR} --class "coordinador.Principal" "c10X.brutos.JuntarEstaticosYDinamicosCSVunico" "${DIR_BRUTOS_CSV}" "${DESPLAZAMIENTO_ANTIGUEDAD}" "${ES_ENTORNO_VALIDACION}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 
 echo -e "ESTATICOS + DINAMICOS: limpiando CSVs intermedios brutos..." >> ${LOG_MASTER}
-java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n" -jar ${PATH_JAR} --class "coordinador.Principal" "c10X.brutos.LimpiarCSVBrutosTemporales" "${DIR_BRUTOS}" "${DIR_BRUTOS_CSV}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
+java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n" -jar ${PATH_JAR} --class "coordinador.Principal" "c10X.brutos.LimpiarCSVBrutosTemporales" "${DIR_BRUTOS_CSV}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 
 
 ################################################################################################
@@ -124,13 +127,13 @@ do
 	crearCarpetaSiNoExisteYVaciar  "${dir_subgrupo}/${DIR_IMG}"
 	
 	echo -e "Capa 5: elimina MISSING VALUES (NA en columnas y filas), elimina OUTLIERS, balancea clases (undersampling de mayoritaria), calcula IMG funciones de densidad, NORMALIZA las features, comprueba suficientes casos en clase minoritaria, REDUCCION de FEATURES y guarda el CSV REDUCIDO..." >> ${LOG_MASTER}
-	python3 "${PYTHON_SCRIPTS}bolsa/C5NormalizarYReducirDatasetSubgrupo.py" "${dir_subgrupo}/" "${DIR_TIEMPO}" >> ${LOG_MASTER}
+	$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/C5NormalizarYReducirDatasetSubgrupo.py" "${dir_subgrupo}/" "${DIR_TIEMPO}" >> ${LOG_MASTER}
 	
 	echo -e "Capa 6 - PASADO ó FUTURO: balancea las clases (aunque ya se hizo en capa 5), divide dataset de entrada (entrenamiento, test, validación), CREA MODELOS (con hyperparámetros)  los evalúa. Guarda el modelo GANADOR de cada subgrupo..." >> ${LOG_MASTER}
-	python3 "${PYTHON_SCRIPTS}bolsa/C6CreadorModelosDeSubgrupo.py" "${dir_subgrupo}/" "${DIR_TIEMPO}"  >> ${LOG_MASTER}
+	$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/C6CreadorModelosDeSubgrupo.py" "${dir_subgrupo}/" "${DIR_TIEMPO}"  >> ${LOG_MASTER}
 	
 	echo -e "Capa 7: otras validaciones manuales (rentabilidad a posteriori, etc)..." >> ${LOG_MASTER}
-	python3 "${PYTHON_SCRIPTS}bolsa/C7OtrasValidacionesManuales.py" >> ${LOG_MASTER}
+	$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/C7OtrasValidacionesManuales.py" >> ${LOG_MASTER}
 	
 	
 done
