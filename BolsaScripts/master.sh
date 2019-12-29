@@ -4,6 +4,7 @@
 DIR_TIEMPO="${1}" #pasado o futuro
 DESPLAZAMIENTO_ANTIGUEDAD="${2}"  #0, -50 ....
 
+
 ################## FUNCIONES #############################################################
 crearCarpetaSiNoExisteYVaciar() {
 	param1=${1} 			#directorio
