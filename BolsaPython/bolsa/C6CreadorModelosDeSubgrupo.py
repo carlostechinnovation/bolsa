@@ -267,8 +267,12 @@ elif (modoTiempo == "futuro" and pathCsvReducido.endswith('.csv') and os.path.is
     inputFeatures = inputFeaturesyTarget.drop('TARGET', axis=1)
     print(inputFeatures)
 
+    print("Capturamos el indice inicial de filas de entrada:")
+    indiceFilasFuturasTransformadas = inputFeaturesyTarget.index.values
+
     print("MISSING VALUES (FILAS) - Borramos las FILAS que tengan 1 o mas valores NaN porque son huecos que no deberían estar...")
     inputFeatures_sinnulos = inputFeatures.dropna(axis=0, how='any')  # Borrar FILA si ALGUNO sus valores tienen NaN
+    indiceFilasFuturasTransformadas2 = inputFeaturesyTarget.index.values
     inputFeatures_sinnulos = inputFeatures_sinnulos.to_numpy()
     print("inputFeatures_sinnulos (filas algun nulo borradas):" + str(inputFeatures_sinnulos.shape[0]) + " x " + str(inputFeatures_sinnulos.shape[1]))
 
@@ -287,6 +291,14 @@ elif (modoTiempo == "futuro" and pathCsvReducido.endswith('.csv') and os.path.is
     print("Guardando targets PREDICHOS en: " + pathCsvPredichos)
     pathCsvPredichos_df = pd.DataFrame(data=targets_predichos, columns=['TARGET'])
     pathCsvPredichos_df.to_csv(pathCsvPredichos, index=False, sep='|')
+
+    print("Guardando indices de filas de salida respecto de la entrada...")
+    np.savetxt(pathCsvPredichos + "_indices", indiceFilasFuturasTransformadas2, delimiter="|", fmt='%f')
+
+
+    ############### RECONSTRUCCION DEL CSV FINAL IMPORTANTE, viendo los ficheros de indices #################
+    print("Partiendo de COMPLETO.csv llevamos la cuenta de los indices pasando por REDUCIDO.csv y por TARGETS_PREDICHOS.csv para generar el CSV final...")
+    # PENDIENTE
 
 else:
     print("Los parametros de entrada son incorrectos o el CSV no existe o esta vacio!!")
