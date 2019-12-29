@@ -1,5 +1,9 @@
 #!/bin/bash
 
+################## PARAMETROS DE ENTRADA ############################################
+DIR_TIEMPO="${1}" #pasado o futuro
+DESPLAZAMIENTO_ANTIGUEDAD="${2}"  #0, -50 ....
+
 ################## FUNCIONES #############################################################
 crearCarpetaSiNoExisteYVaciar() {
 	param1=${1} 			#directorio
@@ -15,24 +19,19 @@ crearCarpetaSiNoExisteYVaciarRecursivo() {
 	rm -Rf "${param1}*"
 }
 
-
 ################ VARIABLES DE EJECUCION #########################################################
 ID_EJECUCION=$( date "+%Y%m%d%H%M%S" )
 echo -e "ID_EJECUCION = "${ID_EJECUCION}
 
-DIR_TIEMPO="futuro" #pasado o futuro
 NUM_MAX_EMPRESAS_DESCARGADAS=1
 MIN_COBERTURA_CLUSTER=60
 MIN_EMPRESAS_POR_CLUSTER=10
-DESPLAZAMIENTO_ANTIGUEDAD=0
-ES_ENTORNO_VALIDACION=0
 
 # PARAMETROS DE TARGET MEDIDOS EN VELAS
 S = 10
 X = 28
 R = 5
 M = 7
-
 
 #################### DIRECTORIOS ###############################################################
 DIR_CODIGOS="/home/carloslinux/Desktop/GIT_BOLSA/"
