@@ -53,10 +53,11 @@ public class YahooFinance01Descargar implements Serializable {
 		Integer numMaxEmpresas = BrutosUtils.NUM_EMPRESAS_PRUEBAS; // DEFAULT
 		String directorioOut = BrutosUtils.DIR_BRUTOS; // DEFAULT
 		String modo = BrutosUtils.PASADO; // DEFAULT
+		Integer entornoDeValidacion = BrutosUtils.ES_ENTORNO_VALIDACION;// DEFAULT
 
 		if (args.length == 0) {
 			MY_LOGGER.info("Sin parametros de entrada. Rellenamos los DEFAULT...");
-		} else if (args.length != 3) {
+		} else if (args.length != 4) {
 			MY_LOGGER.error("Parametros de entrada incorrectos!!");
 			int numParams = args.length;
 			MY_LOGGER.info("Numero de parametros: " + numParams);
@@ -69,12 +70,14 @@ public class YahooFinance01Descargar implements Serializable {
 			numMaxEmpresas = Integer.valueOf(args[0]);
 			directorioOut = args[1];
 			modo = args[2];
-			MY_LOGGER.info("Parametros de entrada -> " + numMaxEmpresas + " | " + directorioOut + " | " + modo);
+			entornoDeValidacion = Integer.valueOf(args[3]);
+			MY_LOGGER.info("Parametros de entrada -> " + numMaxEmpresas + " | " + directorioOut + " | " + modo + "|"
+					+ entornoDeValidacion);
 		}
 
 		EstaticosNasdaqDescargarYParsear.getInstance();
 		List<EstaticoNasdaqModelo> nasdaqEstaticos1 = EstaticosNasdaqDescargarYParsear
-				.descargarNasdaqEstaticosSoloLocal1();
+				.descargarNasdaqEstaticosSoloLocal1(entornoDeValidacion);
 		descargarNasdaqDinamicos01(nasdaqEstaticos1, numMaxEmpresas, directorioOut, modo);
 
 		MY_LOGGER.info("FIN");

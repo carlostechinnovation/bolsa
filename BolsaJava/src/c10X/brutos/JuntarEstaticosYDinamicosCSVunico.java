@@ -55,10 +55,11 @@ public class JuntarEstaticosYDinamicosCSVunico {
 		// DEFAULT
 		String dirBrutoCsv = BrutosUtils.DIR_BRUTOS_CSV;
 		Integer desplazamientoAntiguedad = BrutosUtils.DESPLAZAMIENTO_ANTIGUEDAD;
+		Integer entornoDeValidacion = BrutosUtils.ES_ENTORNO_VALIDACION;// DEFAULT
 
 		if (args.length == 0) {
 			MY_LOGGER.info("Sin parametros de entrada. Rellenamos los DEFAULT...");
-		} else if (args.length != 2) {
+		} else if (args.length != 3) {
 			MY_LOGGER.error("Parametros de entrada incorrectos!! --> " + args.length);
 			int numParams = args.length;
 			MY_LOGGER.error("Numero de parametros: " + numParams);
@@ -69,13 +70,15 @@ public class JuntarEstaticosYDinamicosCSVunico {
 			System.exit(-1);
 
 		} else {
-			dirBrutoCsv = args[1];
-			desplazamientoAntiguedad = Integer.valueOf(args[3]);
+			dirBrutoCsv = args[0];
+			desplazamientoAntiguedad = Integer.valueOf(args[1]);
+			entornoDeValidacion = Integer.valueOf(args[2]);
 			MY_LOGGER.info("PARAMS -> " + dirBrutoCsv);
 			MY_LOGGER.info("PARAMS -> " + desplazamientoAntiguedad);
+			MY_LOGGER.info("PARAMS -> " + entornoDeValidacion);
 		}
 
-		nucleo(dirBrutoCsv, desplazamientoAntiguedad);
+		nucleo(dirBrutoCsv, desplazamientoAntiguedad, entornoDeValidacion);
 		MY_LOGGER.info("FIN");
 
 	}
@@ -84,10 +87,11 @@ public class JuntarEstaticosYDinamicosCSVunico {
 	 * @param dirBrutoCsv
 	 * @throws IOException
 	 */
-	public static void nucleo(String dirBrutoCsv, Integer desplazamientoAntiguedad) throws IOException {
+	public static void nucleo(String dirBrutoCsv, Integer desplazamientoAntiguedad, final Integer entornoDeValidacion)
+			throws IOException {
 
 		List<EstaticoNasdaqModelo> nasdaqEstaticos1 = EstaticosNasdaqDescargarYParsear
-				.descargarNasdaqEstaticosSoloLocal1();
+				.descargarNasdaqEstaticosSoloLocal1(entornoDeValidacion);
 
 		for (EstaticoNasdaqModelo enm : nasdaqEstaticos1) {
 

@@ -67,10 +67,11 @@ public class YahooFinance02Parsear implements Serializable {
 		String directorioIn = BrutosUtils.DIR_BRUTOS; // DEFAULT
 		String directorioOut = BrutosUtils.DIR_BRUTOS_CSV; // DEFAULT
 		String modo = BrutosUtils.FUTURO; // DEFAULT
+		Integer entornoDeValidacion = BrutosUtils.ES_ENTORNO_VALIDACION;// DEFAULT
 
 		if (args.length == 0) {
 			MY_LOGGER.info("Sin parametros de entrada. Rellenamos los DEFAULT...");
-		} else if (args.length != 3) {
+		} else if (args.length != 4) {
 			MY_LOGGER.error("Parametros de entrada incorrectos!!");
 			int numParams = args.length;
 			MY_LOGGER.info("Numero de parametros: " + numParams);
@@ -82,11 +83,12 @@ public class YahooFinance02Parsear implements Serializable {
 			directorioIn = args[0];
 			directorioOut = args[1];
 			modo = args[2];
+			entornoDeValidacion = Integer.valueOf(args[3]);
 		}
 
 		// EMPRESAS NASDAQ
 		List<EstaticoNasdaqModelo> nasdaqEstaticos1 = EstaticosNasdaqDescargarYParsear
-				.descargarNasdaqEstaticosSoloLocal1();
+				.descargarNasdaqEstaticosSoloLocal1(entornoDeValidacion);
 
 		// VELAS (tomando una empresa buena, que tendra todo relleno)
 		Map<String, Integer> velas = new HashMap<String, Integer>();

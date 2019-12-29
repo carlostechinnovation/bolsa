@@ -67,10 +67,11 @@ public class EstaticosFinvizDescargarYParsear {
 		Integer numMaxEmpresas = BrutosUtils.NUM_EMPRESAS_PRUEBAS; // DEFAULT
 		String dirBruto = BrutosUtils.DIR_BRUTOS; // DEFAULT
 		String dirBrutoCsv = BrutosUtils.DIR_BRUTOS_CSV; // DEFAULT
+		Integer entornoDeValidacion = BrutosUtils.ES_ENTORNO_VALIDACION;// DEFAULT
 
 		if (args.length == 0) {
 			MY_LOGGER.info("Sin parametros de entrada. Rellenamos los DEFAULT...");
-		} else if (args.length != 3) {
+		} else if (args.length != 4) {
 			MY_LOGGER.error("Parametros de entrada incorrectos!! --> " + args.length);
 			int numParams = args.length;
 			MY_LOGGER.error("Numero de parametros: " + numParams);
@@ -84,12 +85,14 @@ public class EstaticosFinvizDescargarYParsear {
 			numMaxEmpresas = Integer.valueOf(args[0]);
 			dirBruto = args[1];
 			dirBrutoCsv = args[2];
-			MY_LOGGER.info("PARAMS -> " + numMaxEmpresas + " | " + dirBruto + " | " + dirBrutoCsv);
+			entornoDeValidacion = Integer.valueOf(args[3]);
+			MY_LOGGER.info("PARAMS -> " + numMaxEmpresas + " | " + dirBruto + " | " + dirBrutoCsv + "|"
+					+ entornoDeValidacion.toString());
 		}
 
 		Map<String, String> mapaExtraidos = new HashMap<String, String>();
 		List<EstaticoNasdaqModelo> nasdaqEstaticos1 = EstaticosNasdaqDescargarYParsear
-				.descargarNasdaqEstaticosSoloLocal1();
+				.descargarNasdaqEstaticosSoloLocal1(entornoDeValidacion);
 
 		String rutaHtmlBruto;
 		long msegEspera = -1;

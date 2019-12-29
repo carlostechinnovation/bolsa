@@ -38,16 +38,10 @@ public class ConstructorElaborados implements Serializable {
 	// Periodo de la vela de entrada
 	public final static String T_velaEntrada = "H";
 	// x dias
-	public final static Integer HORAS_AL_DIA = 7;
-	public final static Integer[] periodosHParaParametros = new Integer[] { 3 * HORAS_AL_DIA, 7 * HORAS_AL_DIA,
-			20 * HORAS_AL_DIA, 50 * HORAS_AL_DIA };
 
-	// Parametros del TARGET (subida del S% en precio de close, tras X velas, y no
-	// cae mas de un R% dentro de las siguientes M velas posteriores)
-	public final static Integer S = 10;
-	public final static Integer X = 4 * HORAS_AL_DIA;
-	public final static Integer R = 5;
-	public final static Integer M = 1 * HORAS_AL_DIA;
+	// Se usan los periodos típicos que suelen usar los robots: 3, 7, 20, 50 días
+	public final static Integer[] periodosHParaParametros = new Integer[] { 3 * ElaboradosUtils.HORAS_AL_DIA,
+			7 * ElaboradosUtils.HORAS_AL_DIA, 20 * ElaboradosUtils.HORAS_AL_DIA, 50 * ElaboradosUtils.HORAS_AL_DIA };
 
 	// IMPORTANTE: se asume que los datos estan ordenados de menor a mayor
 	// antiguedad, y agrupados por empresa
@@ -69,15 +63,23 @@ public class ConstructorElaborados implements Serializable {
 
 		String directorioIn = LimpiosUtils.DIR_LIMPIOS; // DEFAULT
 		String directorioOut = ElaboradosUtils.DIR_ELABORADOS; // DEFAULT
+		Integer S = ElaboradosUtils.S; // DEFAULT
+		Integer X = ElaboradosUtils.X; // DEFAULT
+		Integer R = ElaboradosUtils.R; // DEFAULT
+		Integer M = ElaboradosUtils.M; // DEFAULT
 
 		if (args.length == 0) {
 			MY_LOGGER.info("Sin parametros de entrada. Rellenamos los DEFAULT...");
-		} else if (args.length != 2) {
+		} else if (args.length != 4) {
 			MY_LOGGER.error("Parametros de entrada incorrectos!!");
 			System.exit(-1);
 		} else {
 			directorioIn = args[0];
 			directorioOut = args[1];
+			S = Integer.valueOf(args[2]);
+			X = Integer.valueOf(args[3]);
+			R = Integer.valueOf(args[4]);
+			M = Integer.valueOf(args[5]);
 		}
 
 		File directorioEntrada = new File(directorioIn);
@@ -106,7 +108,7 @@ public class ConstructorElaborados implements Serializable {
 			destino = directorioSalida + "/" + ficheroGestionado.getName();
 			MY_LOGGER.info("Ficheros entrada|salida -> " + ficheroGestionado.getAbsolutePath() + " | " + destino);
 			ordenNombresParametros = gestorFicheros.getOrdenNombresParametrosLeidos();
-			anadirParametrosElaboradosDeSoloUnaEmpresa(datosEntrada, ordenNombresParametros);
+			anadirParametrosElaboradosDeSoloUnaEmpresa(datosEntrada, ordenNombresParametros, S, X, R, M);
 			gestorFicheros.creaFicheroDeSoloUnaEmpresa(datosEntrada, ordenNombresParametros, destino);
 		}
 
@@ -114,13 +116,19 @@ public class ConstructorElaborados implements Serializable {
 	}
 
 	/**
+	 * 
 	 * @param datos
 	 * @param ordenNombresParametros
+	 * @param S
+	 * @param X
+	 * @param R
+	 * @param M
 	 * @throws Exception
 	 */
 	public static void anadirParametrosElaboradosDeSoloUnaEmpresa(
 			HashMap<String, HashMap<Integer, HashMap<String, String>>> datos,
-			HashMap<Integer, String> ordenNombresParametros) throws Exception {
+			HashMap<Integer, String> ordenNombresParametros, Integer S, Integer X, Integer R, Integer M)
+			throws Exception {
 
 		HashMap<String, HashMap<Integer, HashMap<String, String>>> datosSalida = new HashMap<String, HashMap<Integer, HashMap<String, String>>>();
 		HashMap<Integer, HashMap<String, String>> datosEmpresaEntrada = new HashMap<Integer, HashMap<String, String>>();
@@ -372,7 +380,7 @@ public class ConstructorElaborados implements Serializable {
 		} else if (T == "D") {
 			// HAY DÍAS QUE LA BOLSA ABRE SÓLO MEDIA JORNADA, ASÍ QUE ESTO NO ES TOTALMENTE
 			// CORRECTO. Normalmente son 7h al día
-			horas = HORAS_AL_DIA;
+			horas = ElaboradosUtils.HORAS_AL_DIA;
 		} else if (T == "H") {
 			throw new Exception("Tiempo erróneo");
 		}

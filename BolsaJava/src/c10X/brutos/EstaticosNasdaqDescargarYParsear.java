@@ -84,8 +84,7 @@ public class EstaticosNasdaqDescargarYParsear implements Serializable {
 			dirBrutoCsv = args[2];
 		}
 
-		// List<EstaticoNasdaqModelo> nasdaqEstaticos1 =
-		// descargarNasdaqEstaticosSoloLocal1();
+//		List<EstaticoNasdaqModelo> nasdaqEstaticos1 = descargarNasdaqEstaticosSoloLocal1();
 		// TODO descargarYparsearNasdaqEstaticos2(nasdaqEstaticos1, dirBruto,
 		// dirBrutoCsv, numMaxEmpresas);
 
@@ -97,7 +96,7 @@ public class EstaticosNasdaqDescargarYParsear implements Serializable {
 	 * 
 	 * @return Lista de empresas del NASDAQ con algunos datos ESTATICOS
 	 */
-	public static List<EstaticoNasdaqModelo> descargarNasdaqEstaticosSoloLocal1() {
+	public static List<EstaticoNasdaqModelo> descargarNasdaqEstaticosSoloLocal1(final Integer entornoDeValidacion) {
 
 		MY_LOGGER.info("descargarNasdaqEstaticos1...");
 
@@ -124,10 +123,17 @@ public class EstaticosNasdaqDescargarYParsear implements Serializable {
 			ioe.printStackTrace();
 		}
 
-		MY_LOGGER.info("Cargando NASDAQ-TICKERS de: " + BrutosUtils.NASDAQ_TICKERS_CSV);
+		String pathTickers;
+
+		if (entornoDeValidacion == 1)
+			pathTickers = BrutosUtils.NASDAQ_TICKERS_CSV_INVERTIDOS;
+		else
+			pathTickers = BrutosUtils.NASDAQ_TICKERS_CSV;
+
+		MY_LOGGER.info("Cargando NASDAQ-TICKERS de: " + pathTickers);
 		List<EstaticoNasdaqModelo> out = new ArrayList<EstaticoNasdaqModelo>();
 		try {
-			File file = new File(BrutosUtils.NASDAQ_TICKERS_CSV);
+			File file = new File(pathTickers);
 			FileReader fr = new FileReader(file);
 			BufferedReader br = new BufferedReader(fr);
 
