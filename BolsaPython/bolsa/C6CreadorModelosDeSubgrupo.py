@@ -259,9 +259,34 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         copyfile(pathModeloGanadorDeSubgrupoOrigen, pathModeloGanadorDeSubgrupoDestino)
         print("Modelo ganador guardado en: " + pathModeloGanadorDeSubgrupoDestino)
 
+
 elif (modoTiempo == "futuro" and pathCsvReducido.endswith('.csv') and os.path.isfile(pathCsvReducido) and os.stat(pathCsvReducido).st_size > 0 ):
     inputFeaturesyTarget = pd.read_csv(pathCsvReducido, sep='|')
     print("inputFeaturesyTarget: " + str(inputFeaturesyTarget.shape[0]) + " x " + str(inputFeaturesyTarget.shape[1]))
+    print("La columna TARGET que haya en el CSV de entrada no la queremos (es un NULL o False, por defecto), porque la vamos a PREDECIR...")
+    inputFeatures = inputFeaturesyTarget.drop('TARGET', axis=1)
+    print(inputFeatures)
+
+    print("MISSING VALUES (FILAS) - Borramos las FILAS que tengan 1 o mas valores NaN porque son huecos que no deberían estar...")
+    inputFeatures_sinnulos = inputFeatures.dropna(axis=0, how='any')  # Borrar FILA si ALGUNO sus valores tienen NaN
+    inputFeatures_sinnulos = inputFeatures_sinnulos.to_numpy()
+    print("inputFeatures_sinnulos (filas algun nulo borradas):" + str(inputFeatures_sinnulos.shape[0]) + " x " + str(inputFeatures_sinnulos.shape[1]))
+
+    dir_modelo_predictor_ganador = dir_subgrupo.replace("futuro", "pasado")
+    for file in os.listdir(dir_modelo_predictor_ganador):
+        if file.endswith("ganador"):
+            path_modelo_predictor_ganador = os.path.join(dir_modelo_predictor_ganador, file)
+
+    print("Cargar modelo PREDICTOR ganador (de la carpeta del pasado, claro): " + path_modelo_predictor_ganador)
+    modelo_predictor_ganador = pickle.load(open(path_modelo_predictor_ganador, 'rb'))
+
+    print("Predecir:")
+    targets_predichos = modelo_predictor_ganador.predict(inputFeatures_sinnulos)
+    print("targets_predichos: " + str(targets_predichos.shape[0]))
+    print(targets_predichos)
+
+
+
 else:
     print("Los parametros de entrada son incorrectos o el CSV no existe o esta vacio!!")
 
