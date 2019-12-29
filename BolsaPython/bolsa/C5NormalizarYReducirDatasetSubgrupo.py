@@ -45,14 +45,16 @@ modoDebug = False  # En modo debug se pintan los dibujos. En otro caso, se evita
 pathCsvCompleto = dir_subgrupo + "COMPLETO.csv"
 dir_subgrupo_img = dir_subgrupo + "img/"
 pathCsvReducido = dir_subgrupo + "REDUCIDO.csv"
-pathModeloOutliers = dir_subgrupo + "DETECTOR_OUTLIERS.tool"
-path_modelo_normalizador = dir_subgrupo + "NORMALIZADOR.tool"
+pathModeloOutliers = (dir_subgrupo + "DETECTOR_OUTLIERS.tool").replace("futuro", "pasado") # Siempre lo cojo del pasado
+path_modelo_normalizador = (dir_subgrupo + "NORMALIZADOR.tool").replace("futuro", "pasado") # Siempre lo cojo del pasado
+path_modelo_reductor_features = (dir_subgrupo + "REDUCTOR.tool").replace("futuro", "pasado") # Siempre lo cojo del pasado
 
 print("pathCsvCompleto = %s" % pathCsvCompleto)
 print("dir_subgrupo_img = %s" % dir_subgrupo_img)
 print("pathCsvReducido = %s" % pathCsvReducido)
 print("pathModeloOutliers = %s" % pathModeloOutliers)
 print("path_modelo_normalizador = %s" % path_modelo_normalizador)
+print("path_modelo_reductor_features = %s" % path_modelo_reductor_features)
 
 
 ######################## FUNCIONES #######################################################
@@ -80,13 +82,13 @@ def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmp
       print("entradaFeaturesYTarget2b:" + str(entradaFeaturesYTarget2b.shape[0]) + " x " + str(entradaFeaturesYTarget2b.shape[1]))
       print(entradaFeaturesYTarget2b.head())
 
-      # Borrar columna ANTIGUEDAD
-      entradaFeaturesYTarget2c = entradaFeaturesYTarget2b.drop('antiguedad', axis=1)
-      print("entradaFeaturesYTarget2c:" + str(entradaFeaturesYTarget2c.shape[0]) + " x " + str(entradaFeaturesYTarget2c.shape[1]))
-      print(entradaFeaturesYTarget2c.head())
-
       # Reponer el dataframe 2
-      entradaFeaturesYTarget2 = entradaFeaturesYTarget2c
+      entradaFeaturesYTarget2 = entradaFeaturesYTarget2b
+
+  ############ Borrar columnas especiales (informativas): empresa | antiguedad | mercado | anio | mes | dia | hora | minuto ############
+  entradaFeaturesYTarget2 = entradaFeaturesYTarget2.drop('empresa', axis=1).drop('antiguedad', axis=1).drop('mercado', axis=1).drop('anio', axis=1).drop('mes', axis=1).drop('dia', axis=1).drop('hora', axis=1).drop('minuto', axis=1)
+  print("entradaFeaturesYTarget2:" + str(entradaFeaturesYTarget2.shape[0]) + " x " + str(entradaFeaturesYTarget2.shape[1]))
+  print(entradaFeaturesYTarget2.head())
 
 
   if modoTiempo == "pasado":
@@ -203,7 +205,7 @@ def normalizarFeatures(featuresFichero, path_modelo_normalizador, dir_subgrupo_i
   if modoTiempo == "pasado":
       modelo_normalizador = PowerTransformer(method='yeo-johnson', standardize=True, copy=True).fit(featuresFichero)
       pickle.dump(modelo_normalizador, open(path_modelo_normalizador, 'wb')) # Luego basta cargarlo así --> modelo_normalizador=load(path_modelo_normalizador)
-  else:
+  elif modoTiempo == "futuro":
       modelo_normalizador = pickle.load(open(path_modelo_normalizador, 'rb'))
 
 
@@ -244,8 +246,9 @@ def comprobarSuficientesClasesTarget(featuresFicheroNorm, targetsFichero, modoDe
   return y_unicos.size
 
 
-def reducirFeaturesYGuardar(featuresFicheroNorm, targetsFichero, pathCsvReducido, varianzaAcumuladaDeseada, dir_subgrupo_img, modoTiempo, modoDebug):
+def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, targetsFichero, pathCsvReducido, varianzaAcumuladaDeseada, dir_subgrupo_img, modoTiempo, modoDebug):
   print("----- reducirFeaturesYGuardar ------")
+  print("path_modelo_reductor_features --> " + path_modelo_reductor_features)
   print("featuresFicheroNorm:" + str(featuresFicheroNorm.shape[0]) + " x " + str(featuresFicheroNorm.shape[1]))
   print("targetsFichero:" + str(targetsFichero.shape[0]) + " x " + str(targetsFichero.shape[1]))
   print("pathCsvReducido --> " + pathCsvReducido)
@@ -262,47 +265,46 @@ def reducirFeaturesYGuardar(featuresFicheroNorm, targetsFichero, pathCsvReducido
   print('CLASIFICADORES - DENTRO DEL HILO DE EJECUCIÓN- LUIS')
   print('Se analiza el accuracy de varios tipos de clasificadores...')
 
-  # OPCIÓN NO USADA: Si quisiera probar varios clasificadores
-  probarVariosClasificadores=False
+  if modoTiempo == "pasado":
+    # OPCIÓN NO USADA: Si quisiera probar varios clasificadores
+    probarVariosClasificadores=False
 
-  svc_model = AdaBoostClassifier(n_estimators=50, learning_rate=1.)
-  if probarVariosClasificadores:
-    classifiers = [
-      SVC(kernel="linear"),
-      AdaBoostClassifier(n_estimators=50, learning_rate=1.),
-      RandomForestClassifier(n_estimators=100, criterion="gini", max_depth=None, min_samples_split=2, min_samples_leaf=1, min_weight_fraction_leaf=0.,
+    svc_model = AdaBoostClassifier(n_estimators=50, learning_rate=1.)
+
+    if probarVariosClasificadores:
+        classifiers = [
+        SVC(kernel="linear"),
+        AdaBoostClassifier(n_estimators=50, learning_rate=1.),
+        RandomForestClassifier(n_estimators=100, criterion="gini", max_depth=None, min_samples_split=2, min_samples_leaf=1, min_weight_fraction_leaf=0.,
                             max_features="auto", max_leaf_nodes=None, min_impurity_decrease=0., min_impurity_split=None,
                             bootstrap=True, oob_score=False, n_jobs=None, random_state=None, verbose=0, warm_start=False,
                             class_weight=None, ccp_alpha=0.0, max_samples=None)]
 
-    scoreAnterior = 0
-    numFeaturesAnterior=9999
-    for clasificadorActual in classifiers:
-      rfecv = RFECV(estimator=clasificadorActual, step=1, min_features_to_select=3, cv=StratifiedKFold(3), scoring='accuracy', verbose=0, n_jobs=8)
-      rfecv.fit(featuresFicheroNorm, targetsFichero)
-      print('Accuracy del clasificadorActual: {:.2f}'
-            .format(rfecv.score(featuresFicheroNorm, targetsFichero)))
-      print("Optimal number of features : %d" % rfecv.n_features_)
+        scoreAnterior = 0
+        numFeaturesAnterior=9999
+        for clasificadorActual in classifiers:
+            rfecv = RFECV(estimator=clasificadorActual, step=1, min_features_to_select=3, cv=StratifiedKFold(3), scoring='accuracy', verbose=0, n_jobs=8)
+            rfecv.fit(featuresFicheroNorm, targetsFichero)
+            print('Accuracy del clasificadorActual: {:.2f}'.format(rfecv.score(featuresFicheroNorm, targetsFichero)))
+            print("Optimal number of features : %d" % rfecv.n_features_)
 
-      if scoreAnterior < rfecv.score(featuresFicheroNorm, targetsFichero):
-          if numFeaturesAnterior > rfecv.n_features_:
-              print("Se cambia el clasificador elegido")
-              svc_model=clasificadorActual
-              scoreAnterior=rfecv.score(featuresFicheroNorm, targetsFichero)
-              numFeaturesAnterior=rfecv.n_features_
+            if scoreAnterior < rfecv.score(featuresFicheroNorm, targetsFichero):
+                if numFeaturesAnterior > rfecv.n_features_:
+                    print("Se cambia el clasificador elegido")
+                    svc_model=clasificadorActual
+                    scoreAnterior=rfecv.score(featuresFicheroNorm, targetsFichero)
+                    numFeaturesAnterior=rfecv.n_features_
 
-  # The "accuracy" scoring is proportional to the number of correct classifications
-  rfecv_modelo = RFECV(estimator=svc_model, step=1, min_features_to_select=3, cv=StratifiedKFold(3), scoring='accuracy', verbose=0, n_jobs=8)
-  rfecv_modelo.fit(featuresFicheroNorm, targetsFichero)
+    # The "accuracy" scoring is proportional to the number of correct classifications
+    rfecv_modelo = RFECV(estimator=svc_model, step=1, min_features_to_select=3, cv=StratifiedKFold(3), scoring='accuracy', verbose=0, n_jobs=8)
+    rfecv_modelo.fit(featuresFicheroNorm, targetsFichero)
+    pickle.dump(rfecv_modelo, open(path_modelo_reductor_features, 'wb'))
+
+
+  ################ REDUCCION DE FEATURES para pasado y futuro: ###########
+  rfecv_modelo = pickle.load(open(path_modelo_reductor_features, 'rb'))
   print("Numero original de features: %d" % featuresFicheroNorm.shape[1])
   print("Numero optimo de features: %d" % rfecv_modelo.n_features_)
-  #print("Mascara de features elegidas:")
-  #print(rfecv_modelo.support_)
-  #print("Ranking:")
-  #print(rfecv_modelo.ranking_)
-
-  # PENDIENTE guardar modelo reductor de features
-
 
   # Plot number of features VS. cross-validation scores
   if modoDebug:
@@ -331,15 +333,15 @@ def reducirFeaturesYGuardar(featuresFicheroNorm, targetsFichero, pathCsvReducido
   print(featuresFicheroNormElegidas)
 
   ####################### NO LO USAMOS pero lo dejo aqui ########
-  if modoDebug and False:
-      print("** PCA (Principal Components Algorithm) **")
-      print("Usando PCA, cogemos las features que tengan un impacto agregado sobre el X% de la varianza del target. Descartamos el resto.")
-      modelo_pca_subgrupo = PCA(n_components=varianzaAcumuladaDeseada, svd_solver='full')
-      print(modelo_pca_subgrupo)
-      featuresFicheroNorm_pca = modelo_pca_subgrupo.fit_transform(featuresFicheroNorm)
-      print(featuresFicheroNorm_pca)
-      print('Dimensiones del dataframe reducido: ' + str(featuresFicheroNorm_pca.shape[0]) + ' x ' + str(featuresFicheroNorm_pca.shape[1]))
-      print("Las features están ya normalizadas y reducidas. DESCRIBIMOS lo que hemos hecho y GUARDAMOS el dataset.")
+  #if modoDebug and False:
+      #print("** PCA (Principal Components Algorithm) **")
+      #print("Usando PCA, cogemos las features que tengan un impacto agregado sobre el X% de la varianza del target. Descartamos el resto.")
+      #modelo_pca_subgrupo = PCA(n_components=varianzaAcumuladaDeseada, svd_solver='full')
+      #print(modelo_pca_subgrupo)
+      #featuresFicheroNorm_pca = modelo_pca_subgrupo.fit_transform(featuresFicheroNorm)
+      #print(featuresFicheroNorm_pca)
+      #print('Dimensiones del dataframe reducido: ' + str(featuresFicheroNorm_pca.shape[0]) + ' x ' + str(featuresFicheroNorm_pca.shape[1]))
+      #print("Las features están ya normalizadas y reducidas. DESCRIBIMOS lo que hemos hecho y GUARDAMOS el dataset.")
 
   ### Guardar a fichero
   print("Escribiendo las features a CSV...")
@@ -367,10 +369,10 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
     featuresFicheroNorm = normalizarFeatures(featuresFichero, path_modelo_normalizador, dir_subgrupo_img, modoTiempo, modoDebug)
     numclases = comprobarSuficientesClasesTarget(featuresFicheroNorm, targetsFichero, modoDebug)
 
-    if(numclases <= 1):
+    if(modoTiempo == "pasado" and numclases <= 1):
         print("El subgrupo solo tiene " + str(numclases) + " clases en el target. Abortamos...")
     else:
-        reducirFeaturesYGuardar(featuresFicheroNorm, targetsFichero, pathCsvReducido, varianza, dir_subgrupo_img, modoTiempo, modoDebug)
+        reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, targetsFichero, pathCsvReducido, varianza, dir_subgrupo_img, modoTiempo, modoDebug)
 
 print("------------ FIN ----------------")
 
