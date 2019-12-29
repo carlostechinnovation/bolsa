@@ -282,16 +282,11 @@ elif (modoTiempo == "futuro" and pathCsvReducido.endswith('.csv') and os.path.is
 
     print("Predecir:")
     targets_predichos = modelo_predictor_ganador.predict(inputFeatures_sinnulos)
-    print("Targets_predichos: " + str(targets_predichos.shape[0]))
-    print(targets_predichos)
-
+    print("Numero de targets_predichos: " + str(targets_predichos.shape[0]))
     pathCsvPredichos = dir_subgrupo + "TARGETS_PREDICHOS.csv"
     print("Guardando targets PREDICHOS en: " + pathCsvPredichos)
     pathCsvPredichos_df = pd.DataFrame(data=targets_predichos, columns=['TARGET'])
     pathCsvPredichos_df.to_csv(pathCsvPredichos, index=False, sep='|')
-
-
-
 
 else:
     print("Los parametros de entrada son incorrectos o el CSV no existe o esta vacio!!")
