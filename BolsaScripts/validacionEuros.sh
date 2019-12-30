@@ -29,20 +29,15 @@ crearCarpetaSiNoExisteYVaciar "${DIR_VALIDACION}"
 
 ############### LOGS ########################################################
 rm -f "${DIR_LOGS}log4j.log"
-LOG_VALIDADOR="${DIR_LOGS}${ID_EJECUCION}_bolsa_coordinador_${DIR_TIEMPO}.log"
+LOG_VALIDADOR="${DIR_LOGS}validador.log"
 rm -f "${LOG_VALIDADOR}"
-
-############### COMPILAR JAR ########################################################
-echo -e "Compilando JAVA en un JAR..." >> ${LOG_VALIDADOR}
-cd "${DIR_JAVA}"
-mvn clean compile assembly:single
 
 ################################################################################################
 
-echo -e "Ejecución del pasado (para entrenar los modelos como si estuvieramos ATRAS con la lista normal de empresas)..." >>${LOG_VALIDADOR}
-${PATH_SCRIPTS}master.sh "pasado" "$VELAS_RETROCESO" "0"  2>>${LOG_VALIDADOR} 1>>${LOG_VALIDADOR}
+echo -e "Ejecución del PASADO (para entrenar los modelos a dia de HOY con la lista normal de empresas)..." >>${LOG_VALIDADOR}
+${PATH_SCRIPTS}master.sh "pasado" "0" "0"  2>>${LOG_VALIDADOR} 1>>${LOG_VALIDADOR}
 
-echo -e "Ejecución del futuro (para las velas que habia ATRAS con la lista normal de empresas)..." >>${LOG_VALIDADOR}
+echo -e "Ejecución del futuro (para velas de ATRAS) con OTRAS empresas (lista REVERTIDA)..." >>${LOG_VALIDADOR}
 ${PATH_SCRIPTS}master.sh "futuro" "$VELAS_RETROCESO" "1"   2>>${LOG_VALIDADOR} 1>>${LOG_VALIDADOR}
 
 echo -e "ATRAS $VELAS_RETROCESO velas --> Guardamos la prediccion de todos los SUBGRUPOS en la carpeta de validacion, para analizarla luego..." >>${LOG_VALIDADOR}
@@ -55,7 +50,7 @@ do
 done 9< <( find $DIR_FUT_SUBGRUPOS -type f -exec printf '%s\0' {} + )
 
 
-echo -e "Ejecución del futuro (para velas de HOY) con OTRAS empresas (lista revertida)..." >>${LOG_VALIDADOR}
+echo -e "Ejecución del futuro (para velas de HOY) con OTRAS empresas (lista REVERTIDA)..." >>${LOG_VALIDADOR}
 ${PATH_SCRIPTS}master.sh "futuro" "0" "1"   2>>${LOG_VALIDADOR} 1>>${LOG_VALIDADOR}
 
 echo -e "VELAS_50 --> Guardamos la prediccion de todos los SUBGRUPOS en la carpeta de validacion, para analizarla luego..." >>${LOG_VALIDADOR}
@@ -67,7 +62,10 @@ do
 	fi
 done 9< <( find $DIR_FUT_SUBGRUPOS -type f -exec printf '%s\0' {} + )
 
-echo -e "Validacion de rendimiento..." >> ${LOG_VALIDADOR}
+
+echo -e "Validacion de rendimiento: comparar ATRAS_PREDICHO con HOY_REAL para empresas de la lista REVERTIDA..." >> ${LOG_VALIDADOR}
 java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n" -jar ${PATH_JAR} --class "coordinador.Principal" "c70X.validacion.Validador" "${PATH_PREDICHO}" "${PATH_VALIDACION}" "${S}" "${X}" "${R}" "${M}" 2>>${LOG_VALIDADOR} 1>>${LOG_VALIDADOR}
+
+echo -e "Un sistema CLASIFICADOR BINOMIAL tonto acierta el 50% de las veces. El nuestro..." >> ${LOG_VALIDADOR}
 
 
