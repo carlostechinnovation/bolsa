@@ -373,7 +373,7 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, 
 
   if modoTiempo == "futuro":
       print("Guardamos a CSV los indices de las filas de REDUCIDO respeto a COMPLETO (para cuando haya que reconstruir el final")
-      np.savetxt(pathCsvReducido+"_indices", indiceFilasFuturasTransformadas, delimiter="|", fmt='%f')
+      np.savetxt(pathCsvReducido+"_indices", indiceFilasFuturasTransformadas, header="indice", delimiter="|", fmt='%f')
 
 
 

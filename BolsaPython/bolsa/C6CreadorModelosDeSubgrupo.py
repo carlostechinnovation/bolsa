@@ -28,7 +28,12 @@ dir_subgrupo = sys.argv[1]
 modoTiempo = sys.argv[2]
 modoDebug = True  #En modo debug se pintan los dibujos. En otro caso, se evita calculo innecesario
 umbralCasosSuficientesClasePositiva = 100
+pathCsvCompleto = dir_subgrupo + "COMPLETO.csv"
 pathCsvReducido = dir_subgrupo + "REDUCIDO.csv"
+pathCsvReducidoIndices = dir_subgrupo + "REDUCIDO.csv_indices"
+pathCsvPredichos = dir_subgrupo + "TARGETS_PREDICHOS.csv"
+pathCsvPredichosIndices = dir_subgrupo + "TARGETS_PREDICHOS.csv_indices"
+pathCsvFinalFuturo = dir_subgrupo + "COMPLETO_PREDICCION.csv"
 dir_subgrupo_img = dir_subgrupo + "img/"
 
 print ("dir_subgrupo: %s" % dir_subgrupo)
@@ -272,7 +277,7 @@ elif (modoTiempo == "futuro" and pathCsvReducido.endswith('.csv') and os.path.is
 
     print("MISSING VALUES (FILAS) - Borramos las FILAS que tengan 1 o mas valores NaN porque son huecos que no deberían estar...")
     inputFeatures_sinnulos = inputFeatures.dropna(axis=0, how='any')  # Borrar FILA si ALGUNO sus valores tienen NaN
-    indiceFilasFuturasTransformadas2 = inputFeaturesyTarget.index.values
+    indiceFilasFuturasTransformadas2 = inputFeatures_sinnulos.index.values
     inputFeatures_sinnulos = inputFeatures_sinnulos.to_numpy()
     print("inputFeatures_sinnulos (filas algun nulo borradas):" + str(inputFeatures_sinnulos.shape[0]) + " x " + str(inputFeatures_sinnulos.shape[1]))
 
@@ -287,23 +292,46 @@ elif (modoTiempo == "futuro" and pathCsvReducido.endswith('.csv') and os.path.is
     print("Predecir:")
     targets_predichos = modelo_predictor_ganador.predict(inputFeatures_sinnulos)
     print("Numero de targets_predichos: " + str(targets_predichos.shape[0]))
-    pathCsvPredichos = dir_subgrupo + "TARGETS_PREDICHOS.csv"
     print("Guardando targets PREDICHOS en: " + pathCsvPredichos)
     pathCsvPredichos_df = pd.DataFrame(data=targets_predichos, columns=['TARGET'])
     pathCsvPredichos_df.to_csv(pathCsvPredichos, index=False, sep='|')
 
     print("Guardando indices de filas de salida respecto de la entrada...")
-    np.savetxt(pathCsvPredichos + "_indices", indiceFilasFuturasTransformadas2, delimiter="|", fmt='%f')
+    np.savetxt(pathCsvPredichos + "_indices", indiceFilasFuturasTransformadas2, delimiter="|", header="indice", fmt='%f')
 
 
     ############### RECONSTRUCCION DEL CSV FINAL IMPORTANTE, viendo los ficheros de indices #################
     print("Partiendo de COMPLETO.csv llevamos la cuenta de los indices pasando por REDUCIDO.csv y por TARGETS_PREDICHOS.csv para generar el CSV final...")
-    # PENDIENTE
+    df_completo = pd.read_csv(pathCsvCompleto, sep='|')
+    df_reducido = pd.read_csv(pathCsvReducido, sep='|')
+    df_reducido_indices = pd.read_csv(pathCsvReducidoIndices, sep='|').to_numpy()
+    df_predichos = pd.read_csv(pathCsvPredichos, sep='|')
+    df_predichos_indices = pd.read_csv(pathCsvPredichosIndices, sep='|').to_numpy()
+
+    print("df_completo: " + str(df_completo.shape[0]) + " x " + str(df_completo.shape[1]))
+    print("df_reducido: " + str(df_reducido.shape[0]) + " x " + str(df_reducido.shape[1]))
+    print("df_reducido_indices: " + str(df_reducido_indices.shape[0]) + " x " + str(df_reducido_indices.shape[1]))
+    print("df_predichos: " + str(df_predichos.shape[0]) + " x " + str(df_predichos.shape[1]))
+    print("df_predichos_indices: " + str(df_predichos_indices.shape[0]) + " x " + str(df_predichos_indices.shape[1]))
+
+    print("COMPLETO_1 -->Del COMPLETO, cogemos solo las filas que se han usado para calcular el REDUCIDO...")
+    df_completo_1 = df_completo.loc[df_reducido_indices[:,0].tolist()].reset_index(drop=False, inplace=False).drop('index', axis=1).drop('TARGET', axis=1)
+    print("df_completo_1: " + str(df_completo_1.shape[0]) + " x " + str(df_completo_1.shape[1]))
+
+    print("COMPLETO_2 --> Del COMPLETO_1, cogemos solo las filas que se han usado para calcular el PREDICHOS...")
+    df_completo_2 = df_completo_1.loc[df_predichos_indices[:, 0].tolist()]
+    print("df_completo_2: " + str(df_completo_2.shape[0]) + " x " + str(df_completo_2.shape[1]))
+
+    print("Juntar COMPLETO con TARGETS PREDICHOS: " + pathCsvFinalFuturo)
+    df_final = pd.concat([df_completo_2.reset_index(drop=True), df_predichos], axis=1)
+    df_final.to_csv(pathCsvFinalFuturo, index=False, sep='|')
 
 else:
     print("Los parametros de entrada son incorrectos o el CSV no existe o esta vacio!!")
 
 
+
 ############################################################
 print("------------ FIN ----------------")
+
 
