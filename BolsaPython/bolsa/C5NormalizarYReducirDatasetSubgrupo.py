@@ -67,6 +67,7 @@ def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmp
   entradaFeaturesYTarget = pd.read_csv(filepath_or_buffer=path_csv_completo, sep='|')
   num_nulos_por_fila_1 = np.logical_not(entradaFeaturesYTarget.isnull()).sum()
   print("entradaFeaturesYTarget:" + str(entradaFeaturesYTarget.shape[0]) + " x " + str(entradaFeaturesYTarget.shape[1]))
+  indiceFilasFuturasTransformadas = entradaFeaturesYTarget.index.values
 
   ################# Borrado de columnas nulas enteras ##########
   print("MISSING VALUES (COLUMNAS) - Borramos las columnas (features) que sean siempre NaN...")
@@ -77,16 +78,25 @@ def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmp
 
   ################# Borrado de filas que tengan algun hueco (tratamiento espacial para el futuro con sus columnas: TARGET y otras) #####
   if modoTiempo == "futuro":
-      # Quedarnos solo con las velas con antiguedad=0 (futuras)
+
+      print("Nos quedamos solo con las velas con antiguedad=0 (futuras)...")
       entradaFeaturesYTarget2b = entradaFeaturesYTarget2[entradaFeaturesYTarget2.antiguedad == 0]
       print("entradaFeaturesYTarget2b:" + str(entradaFeaturesYTarget2b.shape[0]) + " x " + str(entradaFeaturesYTarget2b.shape[1]))
       print(entradaFeaturesYTarget2b.head())
+      print("Transformacion en la que borro o barajo filas. Por tanto, guardo el indice...")
+      indiceFilasFuturasTransformadas = entradaFeaturesYTarget2b.index.values
 
       # Reponer el dataframe 2
       entradaFeaturesYTarget2 = entradaFeaturesYTarget2b
 
+  entradaFeaturesYTarget2 = entradaFeaturesYTarget2.drop('empresa', axis=1).drop('antiguedad', axis=1).drop('mercado', axis=1).drop('anio', axis=1).drop('mes', axis=1).drop('dia', axis=1).drop('hora', axis=1).drop('minuto', axis=1).drop('volumen', axis=1).drop('high', axis=1).drop('low', axis=1).drop('close', axis=1).drop('open', axis=1)
+<<<<<<< .mine
   ############ Borrar columnas especiales (informativas): empresa | antiguedad | mercado | anio | mes | dia | hora | minuto | volumen | high | low | close | open ############
   entradaFeaturesYTarget2 = entradaFeaturesYTarget2.drop('empresa', axis=1).drop('antiguedad', axis=1).drop('mercado', axis=1).drop('anio', axis=1).drop('mes', axis=1).drop('dia', axis=1).drop('hora', axis=1).drop('minuto', axis=1).drop('volumen', axis=1).drop('high', axis=1).drop('low', axis=1).drop('close', axis=1).drop('open', axis=1)
+=======
+  print("Borrar columnas especiales (informativas): empresa | antiguedad | mercado | anio | mes | dia | hora | minuto...")
+  entradaFeaturesYTarget2 = entradaFeaturesYTarget2.drop('empresa', axis=1).drop('antiguedad', axis=1).drop('mercado', axis=1).drop('anio', axis=1).drop('mes', axis=1).drop('dia', axis=1).drop('hora', axis=1).drop('minuto', axis=1)
+>>>>>>> .theirs
   print("entradaFeaturesYTarget2:" + str(entradaFeaturesYTarget2.shape[0]) + " x " + str(entradaFeaturesYTarget2.shape[1]))
   print(entradaFeaturesYTarget2.head())
 
@@ -192,15 +202,16 @@ def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmp
       plt.cla()
       plt.close()
 
-  return featuresFichero, targetsFichero
+  return featuresFichero, targetsFichero, indiceFilasFuturasTransformadas
 
 
-def normalizarFeatures(featuresFichero, path_modelo_normalizador, dir_subgrupo_img, modoTiempo, modoDebug):
+def normalizarFeatures(featuresFichero, path_modelo_normalizador, dir_subgrupo_img, modoTiempo, indiceFilasFuturasTransformadas, modoDebug):
   print("----- normalizarFeatures ------")
   print("NORMALIZACION: hacemos que todas las features tengan distribución gaussiana media 0 y varianza 1. El target no se toca.")
   print("PARAMS --> " + path_modelo_normalizador + "|" + modoTiempo + "|" + str(modoDebug))
   print("featuresFichero:" + str(featuresFichero.shape[0]) + " x " + str(featuresFichero.shape[1]))
   print("path_modelo_normalizador:" + path_modelo_normalizador)
+  print("indiceFilasFuturasTransformadas (numero de items):" + str(indiceFilasFuturasTransformadas.shape[0]))
 
   if modoTiempo == "pasado":
       modelo_normalizador = PowerTransformer(method='yeo-johnson', standardize=True, copy=True).fit(featuresFichero)
@@ -246,7 +257,7 @@ def comprobarSuficientesClasesTarget(featuresFicheroNorm, targetsFichero, modoDe
   return y_unicos.size
 
 
-def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, targetsFichero, pathCsvReducido, varianzaAcumuladaDeseada, dir_subgrupo_img, modoTiempo, modoDebug):
+def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, targetsFichero, pathCsvReducido, varianzaAcumuladaDeseada, dir_subgrupo_img, modoTiempo, indiceFilasFuturasTransformadas, modoDebug):
   print("----- reducirFeaturesYGuardar ------")
   print("path_modelo_reductor_features --> " + path_modelo_reductor_features)
   print("featuresFicheroNorm:" + str(featuresFicheroNorm.shape[0]) + " x " + str(featuresFicheroNorm.shape[1]))
@@ -255,6 +266,8 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, 
   print("varianzaAcumuladaDeseada (PCA) --> " + str(varianzaAcumuladaDeseada))
   print("dir_subgrupo_img --> " + dir_subgrupo_img)
   print("modoTiempo:" + modoTiempo)
+  print("indiceFilasFuturasTransformadas (numero de items):" + str(indiceFilasFuturasTransformadas.shape[0]))
+
 
   print("**** REDUCCION DE DIMENSIONES*****")
 
@@ -358,21 +371,24 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, 
   print("FEATURES+TARGETS juntas (sample):")
   print(featuresytargets.head())
 
+  if modoTiempo == "futuro":
+      print("Guardamos a CSV los indices de las filas de REDUCIDO respeto a COMPLETO (para cuando haya que reconstruir el final")
+      np.savetxt(pathCsvReducido+"_indices", indiceFilasFuturasTransformadas, delimiter="|", fmt='%f')
+
 
 
 print("################## MAIN ###########################################################")
 
-
 if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.stat(pathCsvCompleto).st_size > 0:
 
-    featuresFichero, targetsFichero = leerFeaturesyTarget(pathCsvCompleto, dir_subgrupo_img, compatibleParaMuchasEmpresas, pathModeloOutliers, modoTiempo, modoDebug)
-    featuresFicheroNorm = normalizarFeatures(featuresFichero, path_modelo_normalizador, dir_subgrupo_img, modoTiempo, modoDebug)
+    featuresFichero, targetsFichero, indiceFilasFuturasTransformadas = leerFeaturesyTarget(pathCsvCompleto, dir_subgrupo_img, compatibleParaMuchasEmpresas, pathModeloOutliers, modoTiempo, modoDebug)
+    featuresFicheroNorm = normalizarFeatures(featuresFichero, path_modelo_normalizador, dir_subgrupo_img, modoTiempo, indiceFilasFuturasTransformadas, modoDebug)
     numclases = comprobarSuficientesClasesTarget(featuresFicheroNorm, targetsFichero, modoDebug)
 
     if(modoTiempo == "pasado" and numclases <= 1):
         print("El subgrupo solo tiene " + str(numclases) + " clases en el target. Abortamos...")
     else:
-        reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, targetsFichero, pathCsvReducido, varianza, dir_subgrupo_img, modoTiempo, modoDebug)
+        reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, targetsFichero, pathCsvReducido, varianza, dir_subgrupo_img, modoTiempo, indiceFilasFuturasTransformadas, modoDebug)
 
 print("------------ FIN ----------------")
 

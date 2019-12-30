@@ -132,8 +132,8 @@ do
 	echo -e "Capa 6 - PASADO ó FUTURO: balancea las clases (aunque ya se hizo en capa 5), divide dataset de entrada (entrenamiento, test, validación), CREA MODELOS (con hyperparámetros)  los evalúa. Guarda el modelo GANADOR de cada subgrupo..." >> ${LOG_MASTER}
 	$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/C6CreadorModelosDeSubgrupo.py" "${dir_subgrupo}/" "${DIR_TIEMPO}"  >> ${LOG_MASTER}
 	
-	echo -e "Capa 7: otras validaciones manuales (rentabilidad a posteriori, etc)..." >> ${LOG_MASTER}
-	$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/C7OtrasValidacionesManuales.py" >> ${LOG_MASTER}
+	#echo -e "Capa 7: otras validaciones manuales (rentabilidad a posteriori, etc)..." >> ${LOG_MASTER}
+	#$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/C7OtrasValidacionesManuales.py" >> ${LOG_MASTER}
 	
 	
 done
