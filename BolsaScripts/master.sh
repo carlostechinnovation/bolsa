@@ -2,9 +2,8 @@
 
 ################## PARAMETROS DE ENTRADA ############################################
 DIR_TIEMPO="${1}" #pasado o futuro
-DESPLAZAMIENTO_ANTIGUEDAD="${2}"  #0, -50 ....
+DESPLAZAMIENTO_ANTIGUEDAD="${2}"  #0, 50 ....
 ES_ENTORNO_VALIDACION="${3}" #0, 1
-
 
 
 ################## FUNCIONES #############################################################
@@ -26,7 +25,7 @@ crearCarpetaSiNoExisteYVaciarRecursivo() {
 ID_EJECUCION=$( date "+%Y%m%d%H%M%S" )
 echo -e "ID_EJECUCION = "${ID_EJECUCION}
 
-NUM_MAX_EMPRESAS_DESCARGADAS=60
+NUM_MAX_EMPRESAS_DESCARGADAS=500
 MIN_COBERTURA_CLUSTER=60
 MIN_EMPRESAS_POR_CLUSTER=10
 
@@ -130,7 +129,7 @@ do
 	$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/C5NormalizarYReducirDatasetSubgrupo.py" "${dir_subgrupo}/" "${DIR_TIEMPO}" >> ${LOG_MASTER}
 	
 	echo -e "Capa 6 - PASADO ó FUTURO: balancea las clases (aunque ya se hizo en capa 5), divide dataset de entrada (entrenamiento, test, validación), CREA MODELOS (con hyperparámetros)  los evalúa. Guarda el modelo GANADOR de cada subgrupo..." >> ${LOG_MASTER}
-	$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/C6CreadorModelosDeSubgrupo.py" "${dir_subgrupo}/" "${DIR_TIEMPO}"  >> ${LOG_MASTER}
+	$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/C6CreadorModelosDeSubgrupo.py" "${dir_subgrupo}/" "${DIR_TIEMPO}" "${DESPLAZAMIENTO_ANTIGUEDAD}"  >> ${LOG_MASTER}
 	
 done
 

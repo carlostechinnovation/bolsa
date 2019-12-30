@@ -26,19 +26,30 @@ print("Tipo de problema: CLASIFICACION BINOMIAL (target es boolean)")
 print ("PARAMETROS: ")
 dir_subgrupo = sys.argv[1]
 modoTiempo = sys.argv[2]
+desplazamientoAntiguedad = sys.argv[3]
 modoDebug = True  #En modo debug se pintan los dibujos. En otro caso, se evita calculo innecesario
 umbralCasosSuficientesClasePositiva = 100
+
+######### ID de subgrupo #######
+partes = dir_subgrupo.split("/")
+id_subgrupo=""
+for parte in partes:
+    if(parte != ''):
+        id_subgrupo = parte
+
+########### Rutas #########
 pathCsvCompleto = dir_subgrupo + "COMPLETO.csv"
 pathCsvReducido = dir_subgrupo + "REDUCIDO.csv"
 pathCsvReducidoIndices = dir_subgrupo + "REDUCIDO.csv_indices"
 pathCsvPredichos = dir_subgrupo + "TARGETS_PREDICHOS.csv"
 pathCsvPredichosIndices = dir_subgrupo + "TARGETS_PREDICHOS.csv_indices"
-pathCsvFinalFuturo = dir_subgrupo + "COMPLETO_PREDICCION.csv"
+pathCsvFinalFuturo = dir_subgrupo + desplazamientoAntiguedad + "_" + id_subgrupo + "_COMPLETO_PREDICCION.csv"
 dir_subgrupo_img = dir_subgrupo + "img/"
 
-print ("dir_subgrupo: %s" % dir_subgrupo)
-print ("modoTiempo: %s" % modoTiempo)
-print ("pathCsvReducido: %s" % pathCsvReducido)
+print("dir_subgrupo: %s" % dir_subgrupo)
+print("modoTiempo: %s" % modoTiempo)
+print("desplazamientoAntiguedad: %s" % desplazamientoAntiguedad)
+print("pathCsvReducido: %s" % pathCsvReducido)
 print("dir_subgrupo_img = %s" % dir_subgrupo_img)
 
 
