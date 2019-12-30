@@ -8,7 +8,7 @@ import java.util.List;
 
 public class LimpiosUtils {
 
-	public static final String DIR_LIMPIOS = "/bolsa/futuro/limpios/";
+	public static final String DIR_LIMPIOS = "/bolsa/pasado/limpios/";
 
 	/**
 	 * Lee un fichero y carga los datos en una lista de listas. Es decir, una lista

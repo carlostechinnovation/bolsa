@@ -31,7 +31,7 @@ public class SubgruposUtils {
 	}
 
 	/**
-	 * Posición del carácter en el String pasado como parámetro, en el ocurrencia
+	 * Posición del carácter en el String pasado como parámetro, en la ocurrencia
 	 * indicada como parámetro.
 	 * 
 	 * @param caracterABuscar

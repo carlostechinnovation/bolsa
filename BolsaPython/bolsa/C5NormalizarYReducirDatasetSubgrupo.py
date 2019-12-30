@@ -85,8 +85,8 @@ def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmp
       # Reponer el dataframe 2
       entradaFeaturesYTarget2 = entradaFeaturesYTarget2b
 
-  ############ Borrar columnas especiales (informativas): empresa | antiguedad | mercado | anio | mes | dia | hora | minuto ############
-  entradaFeaturesYTarget2 = entradaFeaturesYTarget2.drop('empresa', axis=1).drop('antiguedad', axis=1).drop('mercado', axis=1).drop('anio', axis=1).drop('mes', axis=1).drop('dia', axis=1).drop('hora', axis=1).drop('minuto', axis=1)
+  ############ Borrar columnas especiales (informativas): empresa | antiguedad | mercado | anio | mes | dia | hora | minuto | volumen | high | low | close | open ############
+  entradaFeaturesYTarget2 = entradaFeaturesYTarget2.drop('empresa', axis=1).drop('antiguedad', axis=1).drop('mercado', axis=1).drop('anio', axis=1).drop('mes', axis=1).drop('dia', axis=1).drop('hora', axis=1).drop('minuto', axis=1).drop('volumen', axis=1).drop('high', axis=1).drop('low', axis=1).drop('close', axis=1).drop('open', axis=1)
   print("entradaFeaturesYTarget2:" + str(entradaFeaturesYTarget2.shape[0]) + " x " + str(entradaFeaturesYTarget2.shape[1]))
   print(entradaFeaturesYTarget2.head())
 

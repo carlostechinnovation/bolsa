@@ -307,10 +307,12 @@ public class CrearDatasetsSubgrupos implements Serializable {
 
 							while ((row = csvReader.readLine()) != null) {
 								MY_LOGGER.debug("Fila leída: " + row);
-								// Se eliminan los parámetros estáticos de la fila, EXCEPTO los datos para la validación futura
+								// Se eliminan los parámetros estáticos de la fila, EXCEPTO los datos para la
+								// validación futura
 								// Para cada fila de datos o de cabecera, de longitud variable, se eliminan los
 								// datos estáticos
-								Integer indice = SubgruposUtils.indiceDeAparicion(characterPipe, 8, row);
+								// También se añaden precios y volumen, para la validación económica en c7
+								Integer indice = SubgruposUtils.indiceDeAparicion(characterPipe, 13, row);
 								infoParaValidacionFutura = row.substring(0, indice);
 								rowTratada = infoParaValidacionFutura + characterPipe + SubgruposUtils
 										.recortaPrimeraParteDeString(characterPipe, numeroParametrosEstaticos, row);
