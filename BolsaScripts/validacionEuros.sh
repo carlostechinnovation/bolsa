@@ -20,6 +20,8 @@ DIR_FUT_SUBGRUPOS="${DIR_BASE}futuro/subgrupos/"
 DIR_JAVA="${DIR_CODIGOS}BolsaJava/"
 PATH_JAR="${DIR_JAVA}target/bolsajava-1.0-jar-with-dependencies.jar"
 
+
+rm -Rf ${DIR_VALIDACION}
 crearCarpetaSiNoExiste "${DIR_VALIDACION}"
 
 ############### LOGS ########################################################
