@@ -66,7 +66,7 @@ public class YahooFinance02Parsear implements Serializable {
 
 		String directorioIn = BrutosUtils.DIR_BRUTOS; // DEFAULT
 		String directorioOut = BrutosUtils.DIR_BRUTOS_CSV; // DEFAULT
-		String modo = BrutosUtils.FUTURO; // DEFAULT
+		String modo = BrutosUtils.PASADO; // DEFAULT
 		Integer entornoDeValidacion = BrutosUtils.ES_ENTORNO_VALIDACION;// DEFAULT
 
 		if (args.length == 0) {
@@ -353,7 +353,7 @@ public class YahooFinance02Parsear implements Serializable {
 	/**
 	 * Dado un fichero CSV de Yahoo Finance (con precios, etc), rellena las velas
 	 * horarias (antiguedad). Genera las filas HUECO que falten, poniendo PRECIO
-	 * ARRASTRADO (de la �ltima vela conocida) y VOLUMEN CERO.
+	 * ARRASTRADO (de la ultima vela conocida) y VOLUMEN CERO.
 	 * 
 	 * @param pathFicheroIn
 	 * @param velas
@@ -375,66 +375,79 @@ public class YahooFinance02Parsear implements Serializable {
 		boolean filaActualEsCompleta = false;
 
 		long num = 1;
+		String[] actualArray = {};
 
 		while ((actual = br.readLine()) != null) {
 
 			filaActualEsCompleta = false; // default
 
+			int numeroCamposActual = 0;
+			if (actual != null & !actual.isEmpty() && actual.contains("|")) {
+				numeroCamposActual = actual.split("\\|").length;
+
+				actualArray = actual.split("\\|");
+			}
+
 			if (primeraLinea == false) {// excluye la cabecera
 
-				String[] lineArray = actual.split("\\|");
-
-				// RELLENOS: volumen y precio de cierre
-				filaActualEsCompleta = !lineArray[7].isEmpty() && !lineArray[7].equalsIgnoreCase(BrutosUtils.NULO)
-						&& !lineArray[10].isEmpty() && !lineArray[10].equalsIgnoreCase(BrutosUtils.NULO);
-
-				ultimaLineaRellenaCompletaConocida = filaActualEsCompleta ? actual : ultimaLineaRellenaCompletaConocida;
-
-				String[] actualArray = actual.split("\\|");
 				String claveActual = actualArray[2] + "|" + actualArray[3] + "|" + actualArray[4] + "|" + actualArray[5]
 						+ "|" + actualArray[6];
 				Integer velaActual = velas.get(claveActual);
 
-				if (anterior != null && ultimaLineaRellenaCompletaConocida != null) {
-					String[] anteriorArray = actual.split("\\|");
-					String claveAnterior = anteriorArray[2] + "|" + anteriorArray[3] + "|" + anteriorArray[4] + "|"
-							+ anteriorArray[5] + "|" + anteriorArray[6];
-					velaAnterior = velas.get(claveAnterior);
+				if (numeroCamposActual >= 12) {
+					String[] lineArray = actual.split("\\|");
 
-					// Si entre la vela anterior y la actual faltan filas, las CREO con precio
-					// arrastrado y volumen cero
+					// RELLENOS: volumen y precio de cierre
+					Boolean parte7NoNula = !lineArray[7].isEmpty() && !lineArray[7].equalsIgnoreCase(BrutosUtils.NULO);
+					Boolean parte10NoNula = !lineArray[10].isEmpty()
+							&& !lineArray[10].equalsIgnoreCase(BrutosUtils.NULO);
+					filaActualEsCompleta = parte7NoNula && parte10NoNula;
 
-					String[] completaAnteriorArray = ultimaLineaRellenaCompletaConocida.split("\\|");
+					ultimaLineaRellenaCompletaConocida = filaActualEsCompleta ? actual
+							: ultimaLineaRellenaCompletaConocida;
 
-					if (velaActual != null && velaAnterior != null) {
+					if (anterior != null && ultimaLineaRellenaCompletaConocida != null) {
+						String[] anteriorArray = actual.split("\\|");
+						String claveAnterior = anteriorArray[2] + "|" + anteriorArray[3] + "|" + anteriorArray[4] + "|"
+								+ anteriorArray[5] + "|" + anteriorArray[6];
+						velaAnterior = velas.get(claveAnterior);
 
-						for (int numVelaHueco = (velaAnterior + 1); numVelaHueco < velaActual; numVelaHueco++) {
+						// Si entre la vela anterior y la actual faltan filas, las CREO con precio
+						// arrastrado y volumen cero
 
-							String corregida = actualArray[0];// mercado
-							corregida += "|" + actualArray[1];// empresa
-							corregida += "|" + String.valueOf(numVelaHueco);// antiguedad (vela)
-							corregida += "|" + actualArray[2];// anio
-							corregida += "|" + actualArray[3];// mes
-							corregida += "|" + actualArray[4];// dia
-							corregida += "|" + actualArray[5];// hora
-							corregida += "|" + actualArray[6];// minuto
-							corregida += "|" + "0";// CORRIJO volumen: pongo un CERO
-							corregida += "|" + completaAnteriorArray[8];// CORRIJO high
-							corregida += "|" + completaAnteriorArray[9];// CORRIJO low
-							corregida += "|" + completaAnteriorArray[10];// CORRIJO close
-							corregida += "|" + completaAnteriorArray[11];// CORRIJO open
+						String[] completaAnteriorArray = ultimaLineaRellenaCompletaConocida.split("\\|");
 
-							// FILA CORREGIDA
-							lista.add(corregida);
+						if (velaActual != null && velaAnterior != null) {
+
+							for (int numVelaHueco = (velaAnterior + 1); numVelaHueco < velaActual; numVelaHueco++) {
+
+								String corregida = actualArray[0];// mercado
+								corregida += "|" + actualArray[1];// empresa
+								corregida += "|" + String.valueOf(numVelaHueco);// antiguedad (vela)
+								corregida += "|" + actualArray[2];// anio
+								corregida += "|" + actualArray[3];// mes
+								corregida += "|" + actualArray[4];// dia
+								corregida += "|" + actualArray[5];// hora
+								corregida += "|" + actualArray[6];// minuto
+								corregida += "|" + "0";// CORRIJO volumen: pongo un CERO
+								corregida += "|" + completaAnteriorArray[8];// CORRIJO high
+								corregida += "|" + completaAnteriorArray[9];// CORRIJO low
+								corregida += "|" + completaAnteriorArray[10];// CORRIJO close
+								corregida += "|" + completaAnteriorArray[11];// CORRIJO open
+
+								// FILA CORREGIDA
+								lista.add(corregida);
+							}
+
 						}
 
 					}
-
 				}
 
-				// En FILAS YA EXISTENTES (no son huecos), que tengan datos null, tambi�n
+				// En FILAS YA EXISTENTES (no son huecos), que tengan datos null, tambien
 				// relleno con precio arrastrado y volumen cero
-				if (ultimaLineaRellenaCompletaConocida != null && filaActualEsCompleta == false) {
+				if (ultimaLineaRellenaCompletaConocida != null
+						&& (filaActualEsCompleta == false || numeroCamposActual >= 12)) {
 
 					String[] completaAnteriorArray = ultimaLineaRellenaCompletaConocida.split("\\|");
 

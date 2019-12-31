@@ -164,13 +164,11 @@ public class JuntarEstaticosYDinamicosCSVunico {
 				String[] partes = actual.split("\\|");
 
 				if ("null".equals(partes[2])) {
-					MY_LOGGER.error("CASO NULO -> " + actual);
+					MY_LOGGER.warn("CASO NULO -> " + actual);
 					antiguedadDesplazada = Integer.valueOf(0) - desplazamientoAntiguedad;
 				} else {
 					antiguedadDesplazada = Integer.valueOf(partes[2]) - desplazamientoAntiguedad;
 				}
-
-//				antiguedadDesplazada = Integer.valueOf(partes[2]) - desplazamientoAntiguedad;
 
 				// Sólo se añade la antigüedad, cuando la resta con el desplazamiento es mayor o
 				// igual que cero. Siempre la antigüedad escrita en el CSV comenzará en 0, con

@@ -157,6 +157,10 @@ public class ConstructorElaborados implements Serializable {
 		datosEmpresaEntrada = datos.get(empresa);
 		MY_LOGGER.info("anadirParametrosElaboradosDeSoloUnaEmpresa() -> Empresa: " + empresa);
 
+		if (empresa.equals("FLWS")) {
+			int x = 0;
+		}
+
 		HashMap<String, String> parametros = new HashMap<String, String>();
 		Iterator<Integer> itAntiguedad;
 		Set<Integer> periodos, antiguedades;
