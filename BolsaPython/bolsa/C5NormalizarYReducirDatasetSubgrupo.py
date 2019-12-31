@@ -385,5 +385,5 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
     else:
         reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, targetsFichero, pathCsvReducido, varianza, dir_subgrupo_img, modoTiempo, indiceFilasFuturasTransformadas, modoDebug)
 
-print("------------ FIN ----------------")
+print("------------ FIN de capa 5 ----------------")
 

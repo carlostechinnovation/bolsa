@@ -1,19 +1,12 @@
 #!/bin/bash
 
 ################## FUNCIONES #############################################################
-crearCarpetaSiNoExisteYVaciar() {
+crearCarpetaSiNoExiste() {
 	param1=${1} 			#directorio
 	echo "Creando carpeta: $param1"
 	mkdir -p ${param1}
-	rm -f ${param1}*
 }
 
-crearCarpetaSiNoExisteYVaciarRecursivo() {
-	param1=${1} 			#directorio
-	echo "Creando carpeta: $param1"
-	mkdir -p ${param1}
-	rm -Rf ${param1}*
-}
 
 ################################################################################################
 VELAS_RETROCESO="50"
@@ -24,8 +17,10 @@ PATH_SCRIPTS="${DIR_CODIGOS}BolsaScripts/"
 DIR_LOGS="${DIR_BASE}logs/"
 DIR_VALIDACION="${DIR_BASE}validacion/"
 DIR_FUT_SUBGRUPOS="${DIR_BASE}futuro/subgrupos/"
+DIR_JAVA="${DIR_CODIGOS}BolsaJava/"
+PATH_JAR="${DIR_JAVA}target/bolsajava-1.0-jar-with-dependencies.jar"
 
-crearCarpetaSiNoExisteYVaciar "${DIR_VALIDACION}"
+crearCarpetaSiNoExiste "${DIR_VALIDACION}"
 
 ############### LOGS ########################################################
 rm -f "${DIR_LOGS}log4j.log"
@@ -34,8 +29,15 @@ rm -f "${LOG_VALIDADOR}"
 
 ################################################################################################
 
+rm -Rf /bolsa/pasado/
+mkdir /bolsa/logs/
+echo -e ""  >>${LOG_VALIDADOR}
+
 echo -e "Ejecución del PASADO (para entrenar los modelos a dia de HOY con la lista normal de empresas)..." >>${LOG_VALIDADOR}
 ${PATH_SCRIPTS}master.sh "pasado" "0" "0"  2>>${LOG_VALIDADOR} 1>>${LOG_VALIDADOR}
+
+
+rm -Rf /bolsa/futuro/
 
 echo -e "Ejecución del futuro (para velas de ATRAS) con OTRAS empresas (lista REVERTIDA)..." >>${LOG_VALIDADOR}
 ${PATH_SCRIPTS}master.sh "futuro" "$VELAS_RETROCESO" "1"   2>>${LOG_VALIDADOR} 1>>${LOG_VALIDADOR}
@@ -49,6 +51,8 @@ do
 	fi
 done 9< <( find $DIR_FUT_SUBGRUPOS -type f -exec printf '%s\0' {} + )
 
+
+rm -Rf /bolsa/futuro/
 
 echo -e "Ejecución del futuro (para velas de HOY) con OTRAS empresas (lista REVERTIDA)..." >>${LOG_VALIDADOR}
 ${PATH_SCRIPTS}master.sh "futuro" "0" "1"   2>>${LOG_VALIDADOR} 1>>${LOG_VALIDADOR}
@@ -68,4 +72,4 @@ java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%
 
 echo -e "Un sistema CLASIFICADOR BINOMIAL tonto acierta el 50% de las veces. El nuestro..." >> ${LOG_VALIDADOR}
 
-
+echo -e "******** FIN de validacion **************" >> ${LOG_VALIDADOR}

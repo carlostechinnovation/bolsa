@@ -128,10 +128,6 @@ public class JuntarEstaticosYDinamicosCSVunico {
 		String estaticosCabecera = "Insider Own|Debt/Eq|P/E|Dividend %|Employees|Inst Own|Market Cap";
 		String estaticosDatos = "";
 
-		if (enm.symbol.equals("AAPL")) {
-			int x = 0;
-		}
-
 		while ((actual = br.readLine()) != null) {
 			if (primeraLinea == false) {
 
@@ -166,6 +162,13 @@ public class JuntarEstaticosYDinamicosCSVunico {
 			if (primeraLinea == false) {
 
 				String[] partes = actual.split("\\|");
+
+				if ("null".equals(partes[2])) {
+					MY_LOGGER.error("CASO NULO -> " + actual);
+					antiguedadDesplazada = Integer.valueOf(0) - desplazamientoAntiguedad;
+				} else {
+					antiguedadDesplazada = Integer.valueOf(partes[2]) - desplazamientoAntiguedad;
+				}
 
 				antiguedadDesplazada = Integer.valueOf(partes[2]) - desplazamientoAntiguedad;
 

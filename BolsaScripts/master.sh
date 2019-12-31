@@ -7,6 +7,12 @@ ES_ENTORNO_VALIDACION="${3}" #0, 1
 
 
 ################## FUNCIONES #############################################################
+crearCarpetaSiNoExiste() {
+	param1=${1} 			#directorio
+	echo "Creando carpeta: $param1"
+	mkdir -p ${param1}
+}
+
 crearCarpetaSiNoExisteYVaciar() {
 	param1=${1} 			#directorio
 	echo "Creando carpeta: $param1"
@@ -25,7 +31,7 @@ crearCarpetaSiNoExisteYVaciarRecursivo() {
 ID_EJECUCION=$( date "+%Y%m%d%H%M%S" )
 echo -e "ID_EJECUCION = "${ID_EJECUCION}
 
-NUM_MAX_EMPRESAS_DESCARGADAS=60
+NUM_MAX_EMPRESAS_DESCARGADAS=10
 MIN_COBERTURA_CLUSTER=60
 MIN_EMPRESAS_POR_CLUSTER=10
 
@@ -53,7 +59,7 @@ DIR_SUBGRUPOS="${DIR_BASE}${DIR_TIEMPO}/subgrupos/"
 DIR_IMG="img/"
 
 crearCarpetaSiNoExisteYVaciar "${DIR_BASE}"
-crearCarpetaSiNoExisteYVaciar "${DIR_LOGS}"
+crearCarpetaSiNoExiste "${DIR_LOGS}"
 crearCarpetaSiNoExisteYVaciar "${DIR_BASE}${DIR_TIEMPO}"
 crearCarpetaSiNoExisteYVaciar "${DIR_BRUTOS}"
 crearCarpetaSiNoExisteYVaciar "${DIR_BRUTOS_CSV}"
@@ -137,4 +143,4 @@ done
 rm -Rf "${DIR_JAVA}target/"
 
 ################################################################################################
-
+echo -e "******** FIN de master**************" >> ${LOG_MASTER}
