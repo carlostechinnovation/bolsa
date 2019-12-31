@@ -333,15 +333,16 @@ elif (modoTiempo == "futuro" and pathCsvReducido.endswith('.csv') and os.path.is
     df_completo_2 = df_completo_1.loc[df_predichos_indices[:, 0].tolist()]
     print("df_completo_2: " + str(df_completo_2.shape[0]) + " x " + str(df_completo_2.shape[1]))
 
-    print("Juntar COMPLETO con TARGETS PREDICHOS... " + pathCsvFinalFuturo)
+    print("Juntar COMPLETO con TARGETS PREDICHOS... ")
     df_juntos_1 = pd.concat([df_completo_2.reset_index(drop=True), df_predichos], axis=1)
     lado_derecho=df_juntos_1[['empresa', 'mercado', 'antiguedad', 'TARGET']]
     df_juntos_2 = pd.merge(df_completo, lado_derecho, how='left', on=['empresa', 'mercado', 'antiguedad'])
     df_juntos_2.rename(columns={'TARGET_x': 'TARGET_REAL', 'TARGET_y': 'TARGET_PREDICHO'}, inplace=True)
 
-    sdfasdf=0
+    df_juntos_2['TARGET_PREDICHO'] = (df_juntos_2['TARGET_PREDICHO'] * 1).astype('Int64') # Convertir de boolean a int64, manteniendo los nulos
 
-    #df_juntos_1.to_csv(pathCsvFinalFuturo, index=False, sep='|')
+    print("Guardando: " + pathCsvFinalFuturo)
+    df_juntos_2.to_csv(pathCsvFinalFuturo, index=False, sep='|')
 
 else:
     print("Los parametros de entrada son incorrectos o el CSV no existe o esta vacio!!")
