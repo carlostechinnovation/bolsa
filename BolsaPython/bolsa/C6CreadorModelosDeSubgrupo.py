@@ -325,7 +325,7 @@ elif (modoTiempo == "futuro" and pathCsvReducido.endswith('.csv') and os.path.is
     print("df_predichos: " + str(df_predichos.shape[0]) + " x " + str(df_predichos.shape[1]))
     print("df_predichos_indices: " + str(df_predichos_indices.shape[0]) + " x " + str(df_predichos_indices.shape[1]))
 
-    print("COMPLETO_1 -->Del COMPLETO, cogemos solo las filas que se han usado para calcular el REDUCIDO...")
+    print("COMPLETO_1 --> Del COMPLETO, cogemos solo las filas que se han usado para calcular el REDUCIDO...")
     df_completo_1 = df_completo.loc[df_reducido_indices[:,0].tolist()].reset_index(drop=False, inplace=False).drop('index', axis=1).drop('TARGET', axis=1)
     print("df_completo_1: " + str(df_completo_1.shape[0]) + " x " + str(df_completo_1.shape[1]))
 
@@ -333,9 +333,15 @@ elif (modoTiempo == "futuro" and pathCsvReducido.endswith('.csv') and os.path.is
     df_completo_2 = df_completo_1.loc[df_predichos_indices[:, 0].tolist()]
     print("df_completo_2: " + str(df_completo_2.shape[0]) + " x " + str(df_completo_2.shape[1]))
 
-    print("Juntar COMPLETO con TARGETS PREDICHOS: " + pathCsvFinalFuturo)
-    df_final = pd.concat([df_completo_2.reset_index(drop=True), df_predichos], axis=1)
-    df_final.to_csv(pathCsvFinalFuturo, index=False, sep='|')
+    print("Juntar COMPLETO con TARGETS PREDICHOS... " + pathCsvFinalFuturo)
+    df_juntos_1 = pd.concat([df_completo_2.reset_index(drop=True), df_predichos], axis=1)
+    lado_derecho=df_juntos_1[['empresa', 'mercado', 'antiguedad', 'TARGET']]
+    df_juntos_2 = pd.merge(df_completo, lado_derecho, how='left', on=['empresa', 'mercado', 'antiguedad'])
+    df_juntos_2.rename(columns={'TARGET_x': 'TARGET_REAL', 'TARGET_y': 'TARGET_PREDICHO'}, inplace=True)
+
+    sdfasdf=0
+
+    #df_juntos_1.to_csv(pathCsvFinalFuturo, index=False, sep='|')
 
 else:
     print("Los parametros de entrada son incorrectos o el CSV no existe o esta vacio!!")
