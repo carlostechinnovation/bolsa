@@ -11,6 +11,12 @@ crearCarpetaSiNoExiste() {
 ################################################################################################
 VELAS_RETROCESO="50"
 
+# PARAMETROS DE TARGET MEDIDOS EN VELAS
+S="10"
+X="28"
+R="5"
+M="7"
+
 DIR_BASE="/bolsa/"
 DIR_CODIGOS="/home/carloslinux/Desktop/GIT_BOLSA/"
 PATH_SCRIPTS="${DIR_CODIGOS}BolsaScripts/"
@@ -68,7 +74,7 @@ done 9< <( find $DIR_FUT_SUBGRUPOS -type f -exec printf '%s\0' {} + )
 
 
 echo -e "Validacion de rendimiento: comparar ATRAS_PREDICHO con HOY_REAL para empresas de la lista REVERTIDA..." >> ${LOG_VALIDADOR}
-java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n" -jar ${PATH_JAR} --class "coordinador.Principal" "c70X.validacion.Validador" "${PATH_PREDICHO}" "${PATH_VALIDACION}" "${S}" "${X}" "${R}" "${M}" 2>>${LOG_VALIDADOR} 1>>${LOG_VALIDADOR}
+java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n" -jar ${PATH_JAR} --class "coordinador.Principal" "c70X.validacion.Validador" "${VELAS_RETROCESO}" "${DIR_VALIDACION}" "${S}" "${X}" "${R}" "${M}" 2>>${LOG_VALIDADOR} 1>>${LOG_VALIDADOR}
 
 echo -e "Un sistema CLASIFICADOR BINOMIAL tonto acierta el 50% de las veces. El nuestro..." >> ${LOG_VALIDADOR}
 

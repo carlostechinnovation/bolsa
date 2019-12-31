@@ -4,7 +4,7 @@ public class ValidadorUtils {
 
 	public final static Integer HORAS_AL_DIA = 7;
 
-	public static final String PATH_PREDICHO = "/bolsa/futuro/subgrupos/";
+	public static final Integer VELAS_RETROCESO = 50;
 	public static final String PATH_VALIDACION = "/bolsa/validacion/";
 	// Parametros del TARGET (subida del S% en precio de close, tras X velas, y no
 	// cae mas de un R% dentro de las siguientes M velas posteriores)

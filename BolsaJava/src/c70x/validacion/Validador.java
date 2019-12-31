@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.apache.log4j.ConsoleAppender;
@@ -30,9 +31,6 @@ public class Validador implements Serializable {
 
 	private static Validador instancia = null;
 
-	// TODO: el final del fichero de predicciones debe llamarse
-	// COMPLETO_PREDICCION.csv, no lo que indicamos a continuación. Acordarlo con
-	// Carlos y cambiar esta línea.
 	private static String DEFINICION_PREDICCION = "COMPLETO_PREDICCION.csv";
 
 	private Validador() {
@@ -59,7 +57,7 @@ public class Validador implements Serializable {
 		MY_LOGGER.setLevel(Level.INFO);
 		MY_LOGGER.info("INICIO");
 
-		String pathPredicho = ValidadorUtils.PATH_PREDICHO; // DEFAULT
+		Integer velasRetroceso = ValidadorUtils.VELAS_RETROCESO;
 		String pathValidacion = ValidadorUtils.PATH_VALIDACION; // DEFAULT
 		Integer S = ValidadorUtils.S; // DEFAULT
 		Integer X = ValidadorUtils.X; // DEFAULT
@@ -68,11 +66,11 @@ public class Validador implements Serializable {
 
 		if (args.length == 0) {
 			MY_LOGGER.info("Sin parametros de entrada. Rellenamos los DEFAULT...");
-		} else if (args.length != 2) {
+		} else if (args.length != 6) {
 			MY_LOGGER.error("Parametros de entrada incorrectos!!");
 			System.exit(-1);
 		} else {
-			pathPredicho = args[0];
+			velasRetroceso = Integer.valueOf(args[0]);
 			pathValidacion = args[1];
 			S = Integer.valueOf(args[2]);
 			X = Integer.valueOf(args[3]);
@@ -80,33 +78,37 @@ public class Validador implements Serializable {
 			M = Integer.valueOf(args[5]);
 		}
 
-		analizarPrediccion(pathPredicho, pathValidacion, S, X, R, M);
+		analizarPrediccion(velasRetroceso, pathValidacion, S, X, R, M);
 
 		MY_LOGGER.info("FIN");
 	}
 
 	/**
-	 * * Tanto en la predicción desfasada como en la actual, estarán en el mismo
-	 * esquema de subcarpetas, así que se recorre cada subgrupo en paralelo, y se
-	 * comparan en parejas los ficheros actual y desfasado. Se obtienen las
-	 * estadísticas de aciertos/fallos.
+	 * Tanto la predicción desfasada como la actual, estarán en la misma carpeta, y
+	 * se compararán por subgrupos. Se obtienen las estadísticas de aciertos/fallos.
+	 * Para diferenciar cada fichero por subgrupo, comienzan por la cantidad de
+	 * desfase (que será 0 o velasRetroceso).
 	 * 
-	 * @param pathPredicho   Predicción, en tiempo desfasado.
-	 * @param pathValidacion Datos a tiempo actual, con los targets rellenos, con
-	 *                       los que se validará.
+	 * @param velasRetroceso Tiempo en velas donde simulamos la predicción.
+	 * @param pathValidacion Contiene los datos a tiempo actual, con los targets
+	 *                       rellenos, con los que se validará (comenzará por )
 	 * @param S              Subida mínima
 	 * @param X              Dentro de X velas
 	 * @param R              Caída máxima
 	 * @param M              En todas las M velas posteriores
 	 * @throws IOException
 	 */
-	public static void analizarPrediccion(final String pathPredicho, final String pathValidacion, Integer S, Integer X,
-			Integer R, Integer M) throws IOException {
+	public static void analizarPrediccion(final Integer velasRetroceso, final String pathValidacion, final Integer S,
+			final Integer X, final Integer R, final Integer M) throws IOException {
 
-		List<Path> ficherosPredichos = Files.walk(Paths.get(pathPredicho), 2)
-				.filter(s -> s.getFileName().toString().contains(DEFINICION_PREDICCION)).collect(Collectors.toList());
+		Predicate<Path> filtroFicheroPrediccion = s -> s.getFileName().toString().contains(DEFINICION_PREDICCION);
+		Predicate<Path> filtroPredichos = p -> p.getFileName().toString().startsWith(velasRetroceso + "_");
+		Predicate<Path> filtroValidaciones = p -> p.getFileName().toString().startsWith("0_");
+
+		List<Path> ficherosPredichos = Files.walk(Paths.get(pathValidacion), 2)
+				.filter(filtroFicheroPrediccion.and(filtroPredichos)).collect(Collectors.toList());
 		List<Path> ficherosValidacion = Files.walk(Paths.get(pathValidacion), 2)
-				.filter(s -> s.getFileName().toString().contains(DEFINICION_PREDICCION)).collect(Collectors.toList());
+				.filter(filtroFicheroPrediccion.and(filtroValidaciones)).collect(Collectors.toList());
 
 		// Recorro cada subgrupo predicho (a validar). Para cada uno, cogeré el fichero
 		// equivalente
@@ -119,7 +121,6 @@ public class Validador implements Serializable {
 		String targetPredicho, targetValidacion;
 
 		Integer aciertosTargetUnoSubgrupo, fallosTargetUnoSubgrupo, totalTargetUnoEnSubgrupo;
-		Double precioActualTargetUnoPorSubgrupo, precioFuturoTargetUnoPorSubgrupo, rendimientoMedioTargetUnoPorSubgrupo;
 		Integer antiguedadFutura;
 		Estadisticas performanceClose;
 
@@ -129,13 +130,24 @@ public class Validador implements Serializable {
 			aciertosTargetUnoSubgrupo = 0;
 			fallosTargetUnoSubgrupo = 0;
 			totalTargetUnoEnSubgrupo = 0;
-			precioActualTargetUnoPorSubgrupo = 0D;
-			precioFuturoTargetUnoPorSubgrupo = 0D;
-			rendimientoMedioTargetUnoPorSubgrupo = 0D;
 			performanceClose = new Estadisticas();
 
 			for (Path validacion : ficherosValidacion) {
-				if (predicho.getFileName().toString().compareTo(validacion.getFileName().toString()) == 0) {
+				// Se asume que la estructura del nombre de cada fichero es:
+				// <retroceso>_SG_<numeroSubgrupo>_COMPLETO_PREDICCION.csv
+
+				String nombrePredicho = predicho.getFileName().toString();
+				String finalnombrePredicho = nombrePredicho.substring(nombrePredicho.indexOf("_"));
+
+				String nombreValidacion = validacion.getFileName().toString();
+				String finalnombreValidacion = nombreValidacion.substring(nombreValidacion.indexOf("_"));
+
+				if (finalnombrePredicho.compareTo(finalnombreValidacion) == 0) {
+
+					System.out.println("Se compara " + nombrePredicho + " con " + nombreValidacion);
+					MY_LOGGER.info("Se compara el fichero de PREDICCIÓN (" + nombrePredicho
+							+ ") con el que tiene la info REAL de contraste/validación (" + nombreValidacion + "): ");
+
 					// Aquí tenemos ya el fichero predicho y el de validación, dentro de un mismo
 					// subgrupo.
 					// 1.1. Para cada fila 0 predicha (que sólo habrá una para cada empresa), busco
