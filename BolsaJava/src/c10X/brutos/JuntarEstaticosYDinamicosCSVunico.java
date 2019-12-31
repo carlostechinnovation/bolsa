@@ -170,7 +170,7 @@ public class JuntarEstaticosYDinamicosCSVunico {
 					antiguedadDesplazada = Integer.valueOf(partes[2]) - desplazamientoAntiguedad;
 				}
 
-				antiguedadDesplazada = Integer.valueOf(partes[2]) - desplazamientoAntiguedad;
+//				antiguedadDesplazada = Integer.valueOf(partes[2]) - desplazamientoAntiguedad;
 
 				// Sólo se añade la antigüedad, cuando la resta con el desplazamiento es mayor o
 				// igual que cero. Siempre la antigüedad escrita en el CSV comenzará en 0, con
