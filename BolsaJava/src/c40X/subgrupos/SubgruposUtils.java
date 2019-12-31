@@ -55,4 +55,21 @@ public class SubgruposUtils {
 		return salida;
 	}
 
+	/**
+	 * Devuelve el trozo final de la cadena de entrada que esté a la derecha del
+	 * string buscado, en la aparición número "numOcurrenciasDesdeElFinal" desde el
+	 * final de la cadena.
+	 * 
+	 * @param caracterABuscar
+	 * @param numOcurrenciasDesdeElFinal
+	 * @param entrada
+	 * @return
+	 */
+	public static String recortaUltimaParteDeString(final Character caracterABuscar,
+			final Integer numOcurrenciasDesdeElFinal, final String entrada) {
+		Integer indice = SubgruposUtils.indiceDeAparicion(caracterABuscar,
+				(int) entrada.chars().filter(ch -> ch == caracterABuscar).count() - numOcurrenciasDesdeElFinal + 1,
+				entrada);
+		return entrada.substring(indice + 1);
+	}
 }

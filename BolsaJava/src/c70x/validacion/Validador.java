@@ -196,8 +196,10 @@ public class Validador implements Serializable {
 
 									// RENTABILIDAD ACIERTOS/FALLOS para TARGET=1
 									// Cogeré el target predicho y el de validación, y los compararé
+									// Las dos últimas columnas son: TARGET_REAL (VALIDACIÓN), TARGET_PREDICHO
 									targetPredicho = filaPredicha.substring(filaPredicha.lastIndexOf("|") + 1);
-									targetValidacion = filaValidacion.substring(filaValidacion.lastIndexOf("|") + 1);
+									targetValidacion = SubgruposUtils.recortaUltimaParteDeString("|".charAt(0), 2,
+											filaValidacion);
 
 									if (targetPredicho.compareTo("1") == 0) {
 										totalTargetUnoEnSubgrupo++;
