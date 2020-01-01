@@ -198,8 +198,10 @@ public class Validador implements Serializable {
 									// Cogeré el target predicho y el de validación, y los compararé
 									// Las dos últimas columnas son: TARGET_REAL (VALIDACIÓN), TARGET_PREDICHO
 									targetPredicho = filaPredicha.substring(filaPredicha.lastIndexOf("|") + 1);
-									targetValidacion = SubgruposUtils.recortaUltimaParteDeString("|".charAt(0), 2,
+									Integer indice = SubgruposUtils.indiceDeAparicion("|".charAt(0),
+											(int) filaValidacion.chars().filter(ch -> ch == "|".charAt(0)).count() - 1,
 											filaValidacion);
+									targetValidacion = filaValidacion.substring(indice + 1, indice + 2);
 
 									if (targetPredicho.compareTo("1") == 0) {
 										totalTargetUnoEnSubgrupo++;
@@ -234,6 +236,14 @@ public class Validador implements Serializable {
 														.addValue((closeValidacionFutura - closeValidacionActual)
 																/ closeValidacionActual);
 
+												System.out.println("----------------NUEVO CASO---------------");
+												System.out.println("filaPredicha:         " + filaPredicha);
+												System.out.println("filaValidacion:       " + filaValidacion);
+												System.out.println("filaValidacionFutura: " + filaValidacionFutura);
+												System.out.println("closeValidacionActual: " + closeValidacionActual);
+												System.out.println("closeValidacionFutura: " + closeValidacionFutura);
+												System.out.println("----------------FIN NUEVO CASO---------------");
+
 												// No itero más
 												break;
 											}
@@ -263,18 +273,16 @@ public class Validador implements Serializable {
 			// RENTABILIDAD PRECIOS por SUBGRUPO
 			Double mediaRendimientoClose = performanceClose.getMean();
 			Double stdRendimientoClose = performanceClose.getStandardDeviation();
-			System.out.println("Porcentaje medio de rendimiento en precios CLOSE subgrupo " + predicho.getFileName()
-					+ ": " + mediaRendimientoClose * 100 + " % de " + totalTargetUnoEnSubgrupo
-					+ " elementos PREDICHOS a TARGET=1");
-			MY_LOGGER.info("Porcentaje medio de rendimiento en precios CLOSE subgrupo " + predicho.getFileName() + ": "
+			System.out.println("Porcentaje medio de SUBIDA del precio en subgrupo " + predicho.getFileName() + ": "
 					+ mediaRendimientoClose * 100 + " % de " + totalTargetUnoEnSubgrupo
 					+ " elementos PREDICHOS a TARGET=1");
-			System.out.println("Desviación estándar de rendimiento en precios CLOSE subgrupo " + predicho.getFileName()
-					+ ": " + stdRendimientoClose + " de " + totalTargetUnoEnSubgrupo
+			MY_LOGGER.info("Porcentaje medio de SUBIDA del precio en subgrupo " + predicho.getFileName() + ": "
+					+ mediaRendimientoClose * 100 + " % de " + totalTargetUnoEnSubgrupo
 					+ " elementos PREDICHOS a TARGET=1");
-			MY_LOGGER.info("Desviación estándar de rendimiento en precios CLOSE subgrupo " + predicho.getFileName()
-					+ ": " + stdRendimientoClose + " de " + totalTargetUnoEnSubgrupo
-					+ " elementos PREDICHOS a TARGET=1");
+			System.out.println("Desviación estándar de SUBIDA del precio en subgrupo " + predicho.getFileName() + ": "
+					+ stdRendimientoClose + " para " + totalTargetUnoEnSubgrupo + " elementos PREDICHOS a TARGET=1");
+			MY_LOGGER.info("Desviación estándar de SUBIDA del precio en subgrupo " + predicho.getFileName() + ": "
+					+ stdRendimientoClose + " para " + totalTargetUnoEnSubgrupo + " elementos PREDICHOS a TARGET=1");
 
 		}
 

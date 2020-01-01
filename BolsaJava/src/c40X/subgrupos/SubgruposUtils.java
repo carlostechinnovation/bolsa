@@ -70,6 +70,8 @@ public class SubgruposUtils {
 		Integer indice = SubgruposUtils.indiceDeAparicion(caracterABuscar,
 				(int) entrada.chars().filter(ch -> ch == caracterABuscar).count() - numOcurrenciasDesdeElFinal + 1,
 				entrada);
-		return entrada.substring(indice + 1);
+		String salida = entrada.substring(indice + 1);
+		return salida;
 	}
+
 }
