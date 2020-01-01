@@ -335,6 +335,10 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, 
       if(rfecv_modelo.support_[i] == True):
           columnasSeleccionadas.append(columnas[i])
 
+  print("Mascara de features seleccionadas (rfecv_modelo.support_):")
+  print(rfecv_modelo.support_)
+  print("El ranking de importancia de las features (rfecv_modelo.ranking_) no distingue las features mas importantes dentro de las seleccionadas:")
+  print(rfecv_modelo.ranking_)
   print("Las columnas seleccionadas son:")
   print(columnasSeleccionadas)
   featuresFicheroNormElegidas = featuresFicheroNorm[columnasSeleccionadas]
