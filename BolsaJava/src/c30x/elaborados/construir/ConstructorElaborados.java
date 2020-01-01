@@ -157,10 +157,6 @@ public class ConstructorElaborados implements Serializable {
 		datosEmpresaEntrada = datos.get(empresa);
 		MY_LOGGER.info("anadirParametrosElaboradosDeSoloUnaEmpresa() -> Empresa: " + empresa);
 
-		if (empresa.equals("FLWS")) {
-			int x = 0;
-		}
-
 		HashMap<String, String> parametros = new HashMap<String, String>();
 		Iterator<Integer> itAntiguedad;
 		Set<Integer> periodos, antiguedades;
@@ -200,6 +196,7 @@ public class ConstructorElaborados implements Serializable {
 
 			while (itAntiguedadTarget.hasNext()) {
 				antiguedad = itAntiguedadTarget.next();
+
 				// PARA CADA PERIODO DE CALCULO DE PAR�METROS ELABORADOS y cada antiguedad, que
 				// será un GRUPO de COLUMNAS...
 
@@ -293,7 +290,7 @@ public class ConstructorElaborados implements Serializable {
 		}
 
 		// Aniado el TARGET
-		Integer antiguedadX, antiguedadM;
+		Integer antiguedadX;
 		Double subidaSPrecioTantoPorUno = (100 + S) / 100.0;
 		Double caidaRPrecioTantoPorUno = (100 - R) / 100.0;
 		// Target=0 es que no se cumple. 1 es que sí. TARGET_INVALIDO es que no se puede
@@ -310,9 +307,14 @@ public class ConstructorElaborados implements Serializable {
 		while (itAntiguedadTarget.hasNext()) {
 
 			antiguedad = itAntiguedadTarget.next();
-			antiguedadM = antiguedad + M;
-			if (antiguedad > M) {
+
+			if (antiguedad >= M) {
 				antiguedadX = antiguedad + X;
+
+				if (antiguedad == 50) {
+					int r = 0;
+				}
+
 				if (antiguedadMaxima < antiguedadX) {
 					// Estamos analizando un punto en el tiempo X datos anteriores
 					target = TARGET_INVALIDO;
@@ -322,17 +324,19 @@ public class ConstructorElaborados implements Serializable {
 					// todas las M velas nuevas, no ha caido mas de R%, entonces Target=1
 					datosAntiguedad = datosEmpresaEntrada.get(antiguedad);
 					datosAntiguedadX = datosEmpresaEntrada.get(antiguedadX);
-					if (Double.valueOf(datosAntiguedad.get("close")) >= (Double.valueOf(datosAntiguedadX.get("close"))
-							* subidaSPrecioTantoPorUno)) {
-						for (int i = 0; i < M; i++) {
-							if (Double.valueOf(datosEmpresaEntrada.get(antiguedad).get("close"))
-									* caidaRPrecioTantoPorUno < Double
-											.valueOf(datosEmpresaEntrada.get(antiguedadM).get("close"))) {
-								// No se cumple el target
+					Double closeAntiguedad = Double.valueOf(datosAntiguedad.get("close"));
+					Double closeAntiguedadX = Double.valueOf(datosAntiguedadX.get("close"));
+					if (closeAntiguedad >= closeAntiguedadX * subidaSPrecioTantoPorUno) {
+						for (int i = 1; i <= M; i++) {
+							Integer antiguedadI = antiguedadX - i;
+							Double closeAntiguedadI = Double.valueOf(datosEmpresaEntrada.get(antiguedadI).get("close"));
+							if (closeAntiguedad * caidaRPrecioTantoPorUno < closeAntiguedadI) {
+								mCumplida = Boolean.TRUE;
+							} else {
+								// Se ha encontrado al menos una vela posterior, en las M siguientes, con el
+								// precio por debajo de la caída mínima R
 								mCumplida = Boolean.FALSE;
 								break;
-							} else {
-								mCumplida = Boolean.TRUE;
 							}
 						}
 						if (mCumplida) {

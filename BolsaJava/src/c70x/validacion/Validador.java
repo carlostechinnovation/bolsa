@@ -169,6 +169,12 @@ public class Validador implements Serializable {
 					filasValidacion.remove(0);
 
 					for (String filaPredicha : filasPredichas) {
+
+						if (filaPredicha.startsWith("VRML|0|")) {
+							int a = 0;
+							a++;
+						}
+
 						antiguedadPredicha = filaPredicha.substring(
 								SubgruposUtils.indiceDeAparicion("|".charAt(0), 1, filaPredicha) + 1,
 								SubgruposUtils.indiceDeAparicion("|".charAt(0), 2, filaPredicha));
