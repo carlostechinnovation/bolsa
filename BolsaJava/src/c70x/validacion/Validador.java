@@ -244,6 +244,14 @@ public class Validador implements Serializable {
 												System.out.println("closeValidacionFutura: " + closeValidacionFutura);
 												System.out.println("----------------FIN NUEVO CASO---------------");
 
+												MY_LOGGER.info("----------------NUEVO CASO---------------");
+												MY_LOGGER.info("filaPredicha:         " + filaPredicha);
+												MY_LOGGER.info("filaValidacion:       " + filaValidacion);
+												MY_LOGGER.info("filaValidacionFutura: " + filaValidacionFutura);
+												MY_LOGGER.info("closeValidacionActual: " + closeValidacionActual);
+												MY_LOGGER.info("closeValidacionFutura: " + closeValidacionFutura);
+												MY_LOGGER.info("----------------FIN NUEVO CASO---------------");
+
 												// No itero más
 												break;
 											}
