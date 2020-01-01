@@ -311,10 +311,6 @@ public class ConstructorElaborados implements Serializable {
 			if (antiguedad >= M) {
 				antiguedadX = antiguedad + X;
 
-				if (antiguedad == 50) {
-					int r = 0;
-				}
-
 				if (antiguedadMaxima < antiguedadX) {
 					// Estamos analizando un punto en el tiempo X datos anteriores
 					target = TARGET_INVALIDO;
@@ -328,13 +324,17 @@ public class ConstructorElaborados implements Serializable {
 					Double closeAntiguedadX = Double.valueOf(datosAntiguedadX.get("close"));
 					if (closeAntiguedad >= closeAntiguedadX * subidaSPrecioTantoPorUno) {
 						for (int i = 1; i <= M; i++) {
-							Integer antiguedadI = antiguedadX - i;
+							Integer antiguedadI = antiguedad - i; // Voy hacia el futuro
+							if (antiguedadI == 39) {
+								int r = 0;
+							}
 							Double closeAntiguedadI = Double.valueOf(datosEmpresaEntrada.get(antiguedadI).get("close"));
 							if (closeAntiguedad * caidaRPrecioTantoPorUno < closeAntiguedadI) {
 								mCumplida = Boolean.TRUE;
 							} else {
-								// Se ha encontrado al menos una vela posterior, en las M siguientes, con el
+								// Se ha encontrado AL MENOS una vela posterior, en las M siguientes, con el
 								// precio por debajo de la caída mínima R
+								// TODAS LAS VELAS FUTURAS TIENEN QUE ESTAR POR ENCIMA DE ESE UMBRAL
 								mCumplida = Boolean.FALSE;
 								break;
 							}
