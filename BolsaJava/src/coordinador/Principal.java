@@ -20,6 +20,7 @@ import c20X.limpios.LimpiarOperaciones;
 import c30x.elaborados.construir.ConstructorElaborados;
 import c40X.subgrupos.CrearDatasetsSubgrupos;
 import c40X.subgrupos.CrearDatasetsSubgruposKMeans;
+import c70x.validacion.Validador;
 
 /**
  * Clase PRINCIPAL
@@ -113,6 +114,9 @@ public class Principal implements Serializable {
 			} else if (programa.equals("c40X.subgrupos.CrearDatasetsSubgruposKMeans")) {
 				CrearDatasetsSubgruposKMeans.getInstance();
 				CrearDatasetsSubgruposKMeans.main(params);
+			} else if (programa.equals("c70X.validacion.Validador")) {
+				Validador.getInstance();
+				Validador.main(params);
 			} else {
 				MY_LOGGER.error("PROGRAMA NO ESPERADO: " + programa);
 				System.exit(-1);
