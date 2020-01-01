@@ -67,6 +67,7 @@ public class ConstructorElaborados implements Serializable {
 		Integer X = ElaboradosUtils.X; // DEFAULT
 		Integer R = ElaboradosUtils.R; // DEFAULT
 		Integer M = ElaboradosUtils.M; // DEFAULT
+		Integer F = ElaboradosUtils.F; // DEFAULT
 
 		if (args.length == 0) {
 			MY_LOGGER.info("Sin parametros de entrada. Rellenamos los DEFAULT...");
@@ -80,6 +81,7 @@ public class ConstructorElaborados implements Serializable {
 			X = Integer.valueOf(args[3]);
 			R = Integer.valueOf(args[4]);
 			M = Integer.valueOf(args[5]);
+			F = Integer.valueOf(args[6]);
 		}
 
 		File directorioEntrada = new File(directorioIn);
@@ -108,7 +110,7 @@ public class ConstructorElaborados implements Serializable {
 			destino = directorioSalida + "/" + ficheroGestionado.getName();
 			MY_LOGGER.info("Ficheros entrada|salida -> " + ficheroGestionado.getAbsolutePath() + " | " + destino);
 			ordenNombresParametros = gestorFicheros.getOrdenNombresParametrosLeidos();
-			anadirParametrosElaboradosDeSoloUnaEmpresa(datosEntrada, ordenNombresParametros, S, X, R, M);
+			anadirParametrosElaboradosDeSoloUnaEmpresa(datosEntrada, ordenNombresParametros, S, X, R, M, F);
 			gestorFicheros.creaFicheroDeSoloUnaEmpresa(datosEntrada, ordenNombresParametros, destino);
 		}
 
@@ -127,7 +129,7 @@ public class ConstructorElaborados implements Serializable {
 	 */
 	public static void anadirParametrosElaboradosDeSoloUnaEmpresa(
 			HashMap<String, HashMap<Integer, HashMap<String, String>>> datos,
-			HashMap<Integer, String> ordenNombresParametros, Integer S, Integer X, Integer R, Integer M)
+			HashMap<Integer, String> ordenNombresParametros, Integer S, Integer X, Integer R, Integer M, Integer F)
 			throws Exception {
 
 		HashMap<String, HashMap<Integer, HashMap<String, String>>> datosSalida = new HashMap<String, HashMap<Integer, HashMap<String, String>>>();
@@ -293,6 +295,7 @@ public class ConstructorElaborados implements Serializable {
 		Integer antiguedadX;
 		Double subidaSPrecioTantoPorUno = (100 + S) / 100.0;
 		Double caidaRPrecioTantoPorUno = (100 - R) / 100.0;
+		Double caidaFPrecioTantoPorUno = (100 - F) / 100.0;
 		// Target=0 es que no se cumple. 1 es que sí. TARGET_INVALIDO es que no se puede
 		// calcular
 		String target = TARGET_INVALIDO;
@@ -300,7 +303,7 @@ public class ConstructorElaborados implements Serializable {
 
 		antiguedades = datosEmpresaEntrada.keySet();
 		Integer antiguedadMaxima = Collections.max(antiguedades);
-		HashMap<String, String> datosAntiguedad, datosAntiguedadX;
+		HashMap<String, String> datosAntiguedad, datosAntiguedadX, datosAntiguedadM;
 		Iterator<Integer> itAntiguedadTarget = datosEmpresaEntrada.keySet().iterator();
 		HashMap<Integer, String> antiguedadYTarget = new HashMap<Integer, String>();
 
@@ -317,28 +320,33 @@ public class ConstructorElaborados implements Serializable {
 					break;
 				} else {
 					// Si el precio actual ha subido S% tras X velas viejas, y si despues, durante
-					// todas las M velas nuevas, no ha caido mas de R%, entonces Target=1
+					// todas las M velas nuevas, no ha caido mas de R% (y que el precio final en la
+					// vela M será mayor que F% respecto del actual), entonces Target=1
 					datosAntiguedad = datosEmpresaEntrada.get(antiguedad);
 					datosAntiguedadX = datosEmpresaEntrada.get(antiguedadX);
 					Double closeAntiguedad = Double.valueOf(datosAntiguedad.get("close"));
 					Double closeAntiguedadX = Double.valueOf(datosAntiguedadX.get("close"));
 					if (closeAntiguedad >= closeAntiguedadX * subidaSPrecioTantoPorUno) {
-						for (int i = 1; i <= M; i++) {
-							Integer antiguedadI = antiguedad - i; // Voy hacia el futuro
-							if (antiguedadI == 39) {
-								int r = 0;
+						Integer antiguedadM = antiguedad - M;// Última çvela M futura, más allá de la antigüedad actual
+						datosAntiguedadM = datosEmpresaEntrada.get(antiguedadM);
+						Double closeAntiguedadM = Double.valueOf(datosAntiguedadM.get("close"));
+						// En la vela M el precio debe ser un F% mejor que en la vela actual
+						if (closeAntiguedad < caidaFPrecioTantoPorUno * closeAntiguedadM)
+							for (int i = 1; i <= M; i++) {
+								Integer antiguedadI = antiguedad - i; // Voy hacia el futuro
+
+								Double closeAntiguedadI = Double
+										.valueOf(datosEmpresaEntrada.get(antiguedadI).get("close"));
+								if (closeAntiguedad * caidaRPrecioTantoPorUno < closeAntiguedadI) {
+									mCumplida = Boolean.TRUE;
+								} else {
+									// Se ha encontrado AL MENOS una vela posterior, en las M siguientes, con el
+									// precio por debajo de la caída mínima R
+									// TODAS LAS VELAS FUTURAS TIENEN QUE ESTAR POR ENCIMA DE ESE UMBRAL
+									mCumplida = Boolean.FALSE;
+									break;
+								}
 							}
-							Double closeAntiguedadI = Double.valueOf(datosEmpresaEntrada.get(antiguedadI).get("close"));
-							if (closeAntiguedad * caidaRPrecioTantoPorUno < closeAntiguedadI) {
-								mCumplida = Boolean.TRUE;
-							} else {
-								// Se ha encontrado AL MENOS una vela posterior, en las M siguientes, con el
-								// precio por debajo de la caída mínima R
-								// TODAS LAS VELAS FUTURAS TIENEN QUE ESTAR POR ENCIMA DE ESE UMBRAL
-								mCumplida = Boolean.FALSE;
-								break;
-							}
-						}
 						if (mCumplida) {
 							// La S sí se cumple, y la M tambien en todo el rango
 							target = "1";

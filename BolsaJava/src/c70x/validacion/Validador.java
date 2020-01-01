@@ -144,7 +144,6 @@ public class Validador implements Serializable {
 
 				if (finalnombrePredicho.compareTo(finalnombreValidacion) == 0) {
 
-					System.out.println("Se compara " + nombrePredicho + " con " + nombreValidacion);
 					MY_LOGGER.info("Se compara el fichero de PREDICCIÓN (" + nombrePredicho
 							+ ") con el que tiene la info REAL de contraste/validación (" + nombreValidacion + "): ");
 
@@ -169,11 +168,6 @@ public class Validador implements Serializable {
 					filasValidacion.remove(0);
 
 					for (String filaPredicha : filasPredichas) {
-
-						if (filaPredicha.startsWith("VRML|0|")) {
-							int a = 0;
-							a++;
-						}
 
 						antiguedadPredicha = filaPredicha.substring(
 								SubgruposUtils.indiceDeAparicion("|".charAt(0), 1, filaPredicha) + 1,
@@ -242,18 +236,13 @@ public class Validador implements Serializable {
 														.addValue((closeValidacionFutura - closeValidacionActual)
 																/ closeValidacionActual);
 
-												System.out.println("----------------NUEVO CASO---------------");
-												System.out.println("filaPredicha:         " + filaPredicha);
-												System.out.println("filaValidacion:       " + filaValidacion);
-												System.out.println("filaValidacionFutura: " + filaValidacionFutura);
-												System.out.println("closeValidacionActual: " + closeValidacionActual);
-												System.out.println("closeValidacionFutura: " + closeValidacionFutura);
-												System.out.println("----------------FIN NUEVO CASO---------------");
-
 												MY_LOGGER.info("----------------NUEVO CASO---------------");
-												MY_LOGGER.info("filaPredicha:         " + filaPredicha);
-												MY_LOGGER.info("filaValidacion:       " + filaValidacion);
-												MY_LOGGER.info("filaValidacionFutura: " + filaValidacionFutura);
+												MY_LOGGER.info(
+														"filaPredicha:                             " + filaPredicha);
+												MY_LOGGER.info(
+														"filaValidacion:                           " + filaValidacion);
+												MY_LOGGER.info("filaValidacionFutura (para rentabilidad): "
+														+ filaValidacionFutura);
 												MY_LOGGER.info("closeValidacionActual: " + closeValidacionActual);
 												MY_LOGGER.info("closeValidacionFutura: " + closeValidacionFutura);
 												MY_LOGGER.info("----------------FIN NUEVO CASO---------------");
@@ -277,26 +266,19 @@ public class Validador implements Serializable {
 			}
 
 			// PORCENTAJE ACIERTOS por SUBGRUPO
-			System.out.println("Porcentaje aciertos subgrupo " + predicho.getFileName() + ": "
-					+ (aciertosTargetUnoSubgrupo / totalTargetUnoEnSubgrupo) * 100 + "% de " + totalTargetUnoEnSubgrupo
-					+ " elementos PREDICHOS a TARGET=1");
-			MY_LOGGER.info("Porcentaje aciertos subgrupo " + predicho.getFileName() + ": "
+			MY_LOGGER.info("COBERTURA - Porcentaje aciertos subgrupo " + predicho.getFileName() + ": "
 					+ (aciertosTargetUnoSubgrupo / totalTargetUnoEnSubgrupo) * 100 + "% de " + totalTargetUnoEnSubgrupo
 					+ " elementos PREDICHOS a TARGET=1");
 
 			// RENTABILIDAD PRECIOS por SUBGRUPO
 			Double mediaRendimientoClose = performanceClose.getMean();
 			Double stdRendimientoClose = performanceClose.getStandardDeviation();
-			System.out.println("Porcentaje medio de SUBIDA del precio en subgrupo " + predicho.getFileName() + ": "
-					+ mediaRendimientoClose * 100 + " % de " + totalTargetUnoEnSubgrupo
+			MY_LOGGER.info("RENTABILIDAD - porcentaje medio de SUBIDA del precio en subgrupo " + predicho.getFileName()
+					+ ": " + mediaRendimientoClose * 100 + " % de " + totalTargetUnoEnSubgrupo
 					+ " elementos PREDICHOS a TARGET=1");
-			MY_LOGGER.info("Porcentaje medio de SUBIDA del precio en subgrupo " + predicho.getFileName() + ": "
-					+ mediaRendimientoClose * 100 + " % de " + totalTargetUnoEnSubgrupo
+			MY_LOGGER.info("RENTABILIDAD - Desviación estándar de SUBIDA del precio en subgrupo "
+					+ predicho.getFileName() + ": " + stdRendimientoClose + " para " + totalTargetUnoEnSubgrupo
 					+ " elementos PREDICHOS a TARGET=1");
-			System.out.println("Desviación estándar de SUBIDA del precio en subgrupo " + predicho.getFileName() + ": "
-					+ stdRendimientoClose + " para " + totalTargetUnoEnSubgrupo + " elementos PREDICHOS a TARGET=1");
-			MY_LOGGER.info("Desviación estándar de SUBIDA del precio en subgrupo " + predicho.getFileName() + ": "
-					+ stdRendimientoClose + " para " + totalTargetUnoEnSubgrupo + " elementos PREDICHOS a TARGET=1");
 
 		}
 

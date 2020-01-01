@@ -7,10 +7,12 @@ public class ValidadorUtils {
 	public static final Integer VELAS_RETROCESO = 50;
 	public static final String PATH_VALIDACION = "/bolsa/validacion/";
 	// Parametros del TARGET (subida del S% en precio de close, tras X velas, y no
-	// cae mas de un R% dentro de las siguientes M velas posteriores)
+	// cae mas de un R% dentro de las siguientes M velas posteriores, y F subida
+	// mínima tras M velas)
 	public static final Integer S = 10;
 	public static final Integer X = 4 * HORAS_AL_DIA;
 	public static final Integer R = 5;
 	public static final Integer M = 1 * HORAS_AL_DIA;
+	public static final Integer F = 5;
 
 }

@@ -37,9 +37,10 @@ MIN_EMPRESAS_POR_CLUSTER=10
 
 # PARAMETROS DE TARGET MEDIDOS EN VELAS
 S="10"
-X="28"
-R="5"
+X="56"
+R="10"
 M="7"
+F="5"
 
 #################### DIRECTORIOS ###############################################################
 DIR_CODIGOS="/home/carloslinux/Desktop/GIT_BOLSA/"
@@ -111,7 +112,7 @@ cp ${DIR_BRUTOS_CSV}*.csv ${DIR_LIMPIOS} 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 echo -e "-------- VARIABLES ELABORADAS -------------" >> ${LOG_MASTER}
 
 echo -e "Calculando elaborados y target..." >> ${LOG_MASTER}
-java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n" -jar ${PATH_JAR} --class "coordinador.Principal" "c30X.elaborados.ConstructorElaborados" "${DIR_LIMPIOS}" "${DIR_ELABORADOS}" "${S}" "${X}" "${R}" "${M}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
+java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n" -jar ${PATH_JAR} --class "coordinador.Principal" "c30X.elaborados.ConstructorElaborados" "${DIR_LIMPIOS}" "${DIR_ELABORADOS}" "${S}" "${X}" "${R}" "${M}" "${F}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 
 echo -e "Elaborados (incluye la variable elaborada TARGET) ya calculados" >> ${LOG_MASTER}
 
