@@ -112,7 +112,7 @@ public class GestorFicheros {
 			final String pathFichero, final Boolean leeSoloCabeceraYUnaFila) throws Exception, IOException {
 
 		Boolean esPrimeraLinea = Boolean.TRUE;
-		MY_LOGGER.info("Fichero leído: " + pathFichero);
+		MY_LOGGER.debug("Fichero leído: " + pathFichero);
 		HashMap<String, HashMap<Integer, HashMap<String, String>>> datosSalida = new HashMap<String, HashMap<Integer, HashMap<String, String>>>();
 		String row, empresa = "";
 		String[] data;
@@ -186,7 +186,7 @@ public class GestorFicheros {
 			final String pathFichero, final Integer n) throws Exception, IOException {
 
 		Boolean esPrimeraLinea = Boolean.TRUE;
-		MY_LOGGER.info("Fichero leído: " + pathFichero);
+		MY_LOGGER.debug("Fichero leído: " + pathFichero);
 		HashMap<String, HashMap<Integer, HashMap<String, String>>> datosSalida = new HashMap<String, HashMap<Integer, HashMap<String, String>>>();
 		String row, empresa = "";
 		String[] data;

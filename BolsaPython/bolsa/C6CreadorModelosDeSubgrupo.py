@@ -130,6 +130,14 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
     ift_minoritaria = inputFeaturesyTarget[inputFeaturesyTarget.TARGET == True]
     print("ift_mayoritaria:" + str(ift_mayoritaria.shape[0]) + " x " + str(ift_mayoritaria.shape[1]))
     print("ift_minoritaria:" + str(ift_minoritaria.shape[0]) + " x " + str(ift_minoritaria.shape[1]))
+
+    num_copias_anhadidas = 9
+    if( num_copias_anhadidas > 0):
+        print("OVERSAMPLING DE CLASE MINORITARIA: copiamos X veces los casos de clase minoritaria --> Eso evitará que tengamos la obligacion de borrar muchas filas de la clase mayoritaria")
+        ift_minoritaria_aux = ift_minoritaria.append([ift_minoritaria] * num_copias_anhadidas, ignore_index=True)
+        ift_minoritaria = ift_minoritaria_aux
+        print("ift_minoritaria:" + str(ift_minoritaria.shape[0]) + " x " + str(ift_minoritaria.shape[1]))
+
     print("Tasa de desbalanceo entre clases = " + str(ift_mayoritaria.shape[0]) + "/" + str(ift_minoritaria.shape[0]) + " = " + str(ift_mayoritaria.shape[0]/ift_minoritaria.shape[0]))
     num_muestras_minoria = ift_minoritaria.shape[0]
 
@@ -142,7 +150,7 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         print("num_muestras_minoria: " + str(num_muestras_minoria))
         ift_mayoritaria_downsampled = resample(ift_mayoritaria, replace=False, n_samples=num_muestras_minoria, random_state=123)
 
-        ift_balanceadas = pd.concat([ift_mayoritaria_downsampled, ift_minoritaria]) # Juntar ambas clases ya BALANCEADAS
+        ift_balanceadas = pd.concat([ift_mayoritaria_downsampled, ift_minoritaria])  # Juntar ambas clases ya BALANCEADAS
         print("Las clases ya están balanceadas:")
         print("ift_balanceadas:" + str(ift_balanceadas.shape[0]) + " x " + str(ift_balanceadas.shape[1]))
 

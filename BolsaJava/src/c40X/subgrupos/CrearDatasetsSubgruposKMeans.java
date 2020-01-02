@@ -116,7 +116,7 @@ public class CrearDatasetsSubgruposKMeans implements Serializable {
 			gestorFicheros = new GestorFicheros();
 			datosEntrada = new HashMap<String, HashMap<Integer, HashMap<String, String>>>();
 			ficheroGestionado = iterator.next();
-			MY_LOGGER.info("Fichero entrada: " + ficheroGestionado.getAbsolutePath());
+			MY_LOGGER.debug("Fichero entrada: " + ficheroGestionado.getAbsolutePath());
 			// Sólo leo la cabecera y las dos primeras líneas de datos, con antigüedad=0.
 			// Así
 			// optimizo la lectura

@@ -139,7 +139,7 @@ public class YahooFinance02Parsear implements Serializable {
 		}
 		br.close();
 
-		MY_LOGGER.info("Velas leidas: " + velas.size());
+		MY_LOGGER.debug("Velas leidas: " + velas.size());
 	}
 
 	/**
@@ -154,12 +154,12 @@ public class YahooFinance02Parsear implements Serializable {
 	public static List<String> parsearDinamicos01(List<EstaticoNasdaqModelo> nasdaqEstaticos1, String directorioIn,
 			String directorioOut, Boolean soloVelas, String modo) throws IOException {
 
-		MY_LOGGER.info("parsearNasdaqDinamicos01 --> " + directorioIn + "|" + directorioOut);
+		MY_LOGGER.debug("parsearNasdaqDinamicos01 --> " + directorioIn + "|" + directorioOut);
 
 		String mercado = "NASDAQ"; // DEFAULT
 		List<String> ficherosSalida = new ArrayList<String>();
 
-		MY_LOGGER.info("mercado=" + mercado);
+		MY_LOGGER.debug("mercado=" + mercado);
 
 		for (int i = 0; i < nasdaqEstaticos1.size(); i++) {
 			ficherosSalida.add(parsearDinamicosEmpresa01(mercado, nasdaqEstaticos1.get(i).symbol, directorioIn,
@@ -222,7 +222,7 @@ public class YahooFinance02Parsear implements Serializable {
 	public static Boolean parsearJson(String mercado, String empresa, String pathBrutoEntrada,
 			String pathBrutoCsvSalida, Boolean soloVelas, String modo) {
 
-		MY_LOGGER.info("parsearJson... --> " + pathBrutoEntrada + "|" + pathBrutoCsvSalida);
+		MY_LOGGER.debug("parsearJson... --> " + pathBrutoEntrada + "|" + pathBrutoCsvSalida);
 		Boolean out = false;
 		JSONParser parser = new JSONParser();
 
@@ -261,7 +261,7 @@ public class YahooFinance02Parsear implements Serializable {
 
 			if (listaVolumenes != null) {
 
-				MY_LOGGER.info("Tamanios --> " + listaVolumenes.size() + "|" + listaPreciosHigh.size() + "|"
+				MY_LOGGER.debug("Tamanios --> " + listaVolumenes.size() + "|" + listaPreciosHigh.size() + "|"
 						+ listaPreciosLow.size() + "|" + listaPreciosClose.size() + "|" + listaPreciosOpen.size());
 
 				// ---------------------------- ESCRITURA ---------------
@@ -345,7 +345,7 @@ public class YahooFinance02Parsear implements Serializable {
 		BrutosUtils.encontrarFicherosEnCarpeta("YF.*\\.csv", folder, result);
 
 		for (String pathFichero : result) {
-			MY_LOGGER.info(pathFichero);
+			MY_LOGGER.debug(pathFichero);
 			rellenarVelasDiariasHuecoyAntiguedadPorFichero03(pathFichero, velas);
 		}
 	}
@@ -500,7 +500,7 @@ public class YahooFinance02Parsear implements Serializable {
 		}
 		br.close();
 
-		MY_LOGGER.info("Lineas leidas: " + lista.size());
+		MY_LOGGER.debug("Lineas leidas: " + lista.size());
 
 		// ---------------- ESCRITURA: sustituye al existente ------
 		MY_LOGGER.debug("Escritura...");
