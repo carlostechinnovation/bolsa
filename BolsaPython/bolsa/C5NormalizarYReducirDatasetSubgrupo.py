@@ -66,14 +66,14 @@ def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmp
   print("Cargar datos (CSV)...")
   entradaFeaturesYTarget = pd.read_csv(filepath_or_buffer=path_csv_completo, sep='|')
   num_nulos_por_fila_1 = np.logical_not(entradaFeaturesYTarget.isnull()).sum()
-  print("entradaFeaturesYTarget:" + str(entradaFeaturesYTarget.shape[0]) + " x " + str(entradaFeaturesYTarget.shape[1]))
+  print("entradaFeaturesYTarget: " + str(entradaFeaturesYTarget.shape[0]) + " x " + str(entradaFeaturesYTarget.shape[1]))
   indiceFilasFuturasTransformadas = entradaFeaturesYTarget.index.values
 
   ################# Borrado de columnas nulas enteras ##########
   print("MISSING VALUES (COLUMNAS) - Borramos las columnas (features) que sean siempre NaN...")
   entradaFeaturesYTarget2 = entradaFeaturesYTarget.dropna(axis=1, how='all') #Borrar COLUMNA si TODOS sus valores tienen NaN
   #num_nulos_por_fila_2 = np.logical_not(entradaFeaturesYTarget2.isnull()).sum()
-  print("entradaFeaturesYTarget2 (columnas nulas borradas):" + str(entradaFeaturesYTarget2.shape[0]) + " x " + str(entradaFeaturesYTarget2.shape[1]))
+  print("entradaFeaturesYTarget2 (columnas nulas borradas): " + str(entradaFeaturesYTarget2.shape[0]) + " x " + str(entradaFeaturesYTarget2.shape[1]))
 
 
   ################# Borrado de filas que tengan algun hueco (tratamiento espacial para el futuro con sus columnas: TARGET y otras) #####
@@ -204,9 +204,9 @@ def normalizarFeatures(featuresFichero, path_modelo_normalizador, dir_subgrupo_i
   print("----- normalizarFeatures ------")
   print("NORMALIZACION: hacemos que todas las features tengan distribución gaussiana media 0 y varianza 1. El target no se toca.")
   print("PARAMS --> " + path_modelo_normalizador + "|" + modoTiempo + "|" + str(modoDebug))
-  print("featuresFichero:" + str(featuresFichero.shape[0]) + " x " + str(featuresFichero.shape[1]))
-  print("path_modelo_normalizador:" + path_modelo_normalizador)
-  print("indiceFilasFuturasTransformadas (numero de items):" + str(indiceFilasFuturasTransformadas.shape[0]))
+  print("featuresFichero: " + str(featuresFichero.shape[0]) + " x " + str(featuresFichero.shape[1]))
+  print("path_modelo_normalizador: " + path_modelo_normalizador)
+  print("indiceFilasFuturasTransformadas (numero de items): " + str(indiceFilasFuturasTransformadas.shape[0]))
 
   if modoTiempo == "pasado":
       modelo_normalizador = PowerTransformer(method='yeo-johnson', standardize=True, copy=True).fit(featuresFichero)
@@ -243,8 +243,8 @@ def normalizarFeatures(featuresFichero, path_modelo_normalizador, dir_subgrupo_i
 
 def comprobarSuficientesClasesTarget(featuresFicheroNorm, targetsFichero, modoDebug):
   print("----- comprobarSuficientesClasesTarget ------")
-  print("featuresFicheroNorm:" + str(featuresFicheroNorm.shape[0]) + " x " + str(featuresFicheroNorm.shape[1]))
-  print("targetsFichero:" + str(targetsFichero.shape[0]) + " x " + str(targetsFichero.shape[1]))
+  print("featuresFicheroNorm: " + str(featuresFicheroNorm.shape[0]) + " x " + str(featuresFicheroNorm.shape[1]))
+  print("targetsFichero: " + str(targetsFichero.shape[0]) + " x " + str(targetsFichero.shape[1]))
 
   y_unicos = np.unique(targetsFichero)
   print("Clases encontradas en el target: ")
@@ -255,13 +255,13 @@ def comprobarSuficientesClasesTarget(featuresFicheroNorm, targetsFichero, modoDe
 def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, targetsFichero, pathCsvReducido, varianzaAcumuladaDeseada, dir_subgrupo_img, modoTiempo, indiceFilasFuturasTransformadas, modoDebug):
   print("----- reducirFeaturesYGuardar ------")
   print("path_modelo_reductor_features --> " + path_modelo_reductor_features)
-  print("featuresFicheroNorm:" + str(featuresFicheroNorm.shape[0]) + " x " + str(featuresFicheroNorm.shape[1]))
-  print("targetsFichero:" + str(targetsFichero.shape[0]) + " x " + str(targetsFichero.shape[1]))
+  print("featuresFicheroNorm: " + str(featuresFicheroNorm.shape[0]) + " x " + str(featuresFicheroNorm.shape[1]))
+  print("targetsFichero: " + str(targetsFichero.shape[0]) + " x " + str(targetsFichero.shape[1]))
   print("pathCsvReducido --> " + pathCsvReducido)
   print("varianzaAcumuladaDeseada (PCA) --> " + str(varianzaAcumuladaDeseada))
   print("dir_subgrupo_img --> " + dir_subgrupo_img)
-  print("modoTiempo:" + modoTiempo)
-  print("indiceFilasFuturasTransformadas (numero de items):" + str(indiceFilasFuturasTransformadas.shape[0]))
+  print("modoTiempo: " + modoTiempo)
+  print("indiceFilasFuturasTransformadas (numero de items): " + str(indiceFilasFuturasTransformadas.shape[0]))
 
 
   print("**** REDUCCION DE DIMENSIONES*****")
@@ -270,7 +270,7 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, 
   # Create the RFE object and compute a cross-validated score.
 
   # Comparación de clasificadores
-  print('CLASIFICADORES - DENTRO DEL HILO DE EJECUCIÓN- LUIS')
+  print('CLASIFICADORES - DENTRO DEL HILO DE EJECUCIÓN')
   print('Se analiza el accuracy de varios tipos de clasificadores...')
 
   if modoTiempo == "pasado":

@@ -252,27 +252,19 @@ public class CrearDatasetsSubgrupos implements Serializable {
 					}
 					MY_LOGGER.debug("Empresa: " + pathEmpresa + " ¿tiene algún target=1? "
 							+ empresasConTarget.get(pathEmpresa));
-					System.out.println("Empresa: " + pathEmpresa + " ¿tiene algún target=1? "
-							+ empresasConTarget.get(pathEmpresa));
 				}
 
 				// Se calcula la cobertura del target
 				coberturaEmpresasPorCluster = estadisticas.getMean();
 				MY_LOGGER.debug("COBERTURA DEL cluster " + tipo + ": " + coberturaEmpresasPorCluster * 100 + "%");
-				System.out.println("COBERTURA DEL cluster " + tipo + ": " + coberturaEmpresasPorCluster * 100 + "%");
 
 				// Para generar un fichero de dataset del cluster, la cobertura debe ser mayor
 				// que un x%
 				if (coberturaEmpresasPorCluster * 100 < Double.valueOf(coberturaMinima)) {
 					MY_LOGGER.warn("El cluster " + tipo + ", con cobertura: " + coberturaEmpresasPorCluster * 100 + "%"
 							+ " no llega al mínimo: " + coberturaMinima + "%. NO SE GENERA DATASET");
-					System.err.println("El cluster " + tipo + ", con cobertura: " + coberturaEmpresasPorCluster * 100
-							+ "%" + " no llega al mínimo: " + coberturaMinima + "%. NO SE GENERA DATASET");
 				} else if (empresasConTarget.keySet().size() < Integer.valueOf(minEmpresasPorCluster)) {
 					MY_LOGGER.warn("El cluster " + tipo + ", tiene: " + empresasConTarget.keySet().size()
-							+ " empresas, pero el mínimo debe ser: " + minEmpresasPorCluster
-							+ ". NO SE GENERA DATASET");
-					System.err.println("El cluster " + tipo + ", tiene: " + empresasConTarget.keySet().size()
 							+ " empresas, pero el mínimo debe ser: " + minEmpresasPorCluster
 							+ ". NO SE GENERA DATASET");
 				} else {

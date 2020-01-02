@@ -99,7 +99,9 @@ public class ConstructorElaborados implements Serializable {
 
 		while (iterator.hasNext()) {
 
-			MY_LOGGER.info("Empresa numero = " + i);
+			if (i % 10 == 1) {
+				MY_LOGGER.info("Empresa numero = " + i);
+			}
 			i++;
 
 			gestorFicheros = new GestorFicheros();
@@ -108,7 +110,7 @@ public class ConstructorElaborados implements Serializable {
 			datosEntrada = gestorFicheros
 					.leeSoloParametrosNoElaboradosFicheroDeSoloUnaEmpresa(ficheroGestionado.getPath(), Boolean.FALSE);
 			destino = directorioSalida + "/" + ficheroGestionado.getName();
-			MY_LOGGER.info("Ficheros entrada|salida -> " + ficheroGestionado.getAbsolutePath() + " | " + destino);
+			MY_LOGGER.debug("Ficheros entrada|salida -> " + ficheroGestionado.getAbsolutePath() + " | " + destino);
 			ordenNombresParametros = gestorFicheros.getOrdenNombresParametrosLeidos();
 			anadirParametrosElaboradosDeSoloUnaEmpresa(datosEntrada, ordenNombresParametros, S, X, R, M, F);
 			gestorFicheros.creaFicheroDeSoloUnaEmpresa(datosEntrada, ordenNombresParametros, destino);
@@ -157,7 +159,7 @@ public class ConstructorElaborados implements Serializable {
 
 		// EXTRACCIÓN DE DATOS DE LA EMPRESA
 		datosEmpresaEntrada = datos.get(empresa);
-		MY_LOGGER.info("anadirParametrosElaboradosDeSoloUnaEmpresa() -> Empresa: " + empresa);
+		MY_LOGGER.debug("anadirParametrosElaboradosDeSoloUnaEmpresa() -> Empresa: " + empresa);
 
 		HashMap<String, String> parametros = new HashMap<String, String>();
 		Iterator<Integer> itAntiguedad;

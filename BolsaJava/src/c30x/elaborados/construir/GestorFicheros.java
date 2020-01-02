@@ -17,6 +17,9 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.helpers.NullEnumeration;
 
+/**
+ *
+ */
 public class GestorFicheros {
 
 	static Logger MY_LOGGER = Logger.getLogger(ConstructorElaborados.class);
@@ -289,16 +292,16 @@ public class GestorFicheros {
 		while (itAntiguedades.hasNext()) {
 			antiguedad = itAntiguedades.next();
 			parametrosEmpresa = datosEmpresa.get(antiguedad);
-			// Se a�ade empresa y antig�edad
+			// Se aniade empresa y antiguedad
 			csvWriter.append(empresa + "|" + antiguedad);
 			for (int i = 0; i < numParametros; i++) {
 				nombreParametro = ordenNombresParametros.get(i);
-				// Empresa y antig�edad se tratan aparte. No se a�aden aqu�
+				// Empresa y antiguedad se tratan aparte. No se aniaden aqui
 				if (nombreParametro == "empresa" || nombreParametro == "antiguedad") {
 					// no se hace nada
 				} else {
 
-					// Se a�aden el resto de parametros
+					// Se aniaden el resto de parametros
 					elementoAAnadir = "|" + parametrosEmpresa.get(nombreParametro);
 					MY_LOGGER.debug("Elemento a aniadir i=" + i + ": \"" + nombreParametro + "\" con valor: "
 							+ parametrosEmpresa.get(nombreParametro));
@@ -357,7 +360,7 @@ public class GestorFicheros {
 						totalCeros++;
 					}
 				}
-				System.out.println("---TARGETs-->: " + pathFichero + " con TotalTargetsUNO = " + totalUnos
+				MY_LOGGER.debug("---TARGETs-->: " + pathFichero + " con TotalTargetsUNO = " + totalUnos
 						+ " y TotalTargetsCERO = " + totalCeros);
 			} finally {
 				csvReader.close();

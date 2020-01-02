@@ -203,8 +203,6 @@ public class CrearDatasetsSubgruposKMeans implements Serializable {
 				}
 				MY_LOGGER.debug(
 						"Empresa: " + pathEmpresa + " ¿tiene algún target=1? " + empresasConTarget.get(pathEmpresa));
-				System.out.println(
-						"Empresa: " + pathEmpresa + " ¿tiene algún target=1? " + empresasConTarget.get(pathEmpresa));
 			}
 			// Se calcula la cobertura del target
 			coberturaEmpresasPorCluster = estadisticas.getMean();
@@ -216,13 +214,11 @@ public class CrearDatasetsSubgruposKMeans implements Serializable {
 			if (coberturaEmpresasPorCluster * 100 < Double.valueOf(coberturaMinima)) {
 				MY_LOGGER.debug("El cluster " + i + ", con cobertura: " + coberturaEmpresasPorCluster * 100 + "%"
 						+ " no llega al mínimo: " + coberturaMinima + "%. NO SE GENERA DATASET");
-				System.out.println("El cluster " + i + ", con cobertura: " + coberturaEmpresasPorCluster * 100 + "%"
-						+ " no llega al mínimo: " + coberturaMinima + "%. NO SE GENERA DATASET");
+
 			} else if (empresasConTarget.keySet().size() < Integer.valueOf(minEmpresasPorCluster)) {
 				MY_LOGGER.debug("El cluster " + i + ", tiene: " + empresasConTarget.keySet().size()
 						+ " empresas, pero el mínimo debe ser: " + minEmpresasPorCluster + ". NO SE GENERA DATASET");
-				System.out.println("El cluster " + i + ", tiene: " + empresasConTarget.keySet().size()
-						+ " empresas, pero el mínimo debe ser: " + minEmpresasPorCluster + ". NO SE GENERA DATASET");
+
 			} else {
 				// Creo un CSV común para todas las del mismo tipo
 				ficheroOut = directorioOut + i + ".csv";

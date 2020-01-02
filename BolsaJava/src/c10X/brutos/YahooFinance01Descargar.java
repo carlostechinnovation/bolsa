@@ -114,16 +114,18 @@ public class YahooFinance01Descargar implements Serializable {
 				String pathOut = directorioOut + BrutosUtils.YAHOOFINANCE + "_" + mercado + "_" + ticker + ".txt";
 				String URL_yahoo_ticker = getUrlYahooFinance(ticker, modo);
 
-				MY_LOGGER.info("Empresa numero = " + (i + 1));
-				MY_LOGGER.info("pathOut=" + pathOut);
-				MY_LOGGER.info("URL_yahoo_ticker=" + URL_yahoo_ticker);
+				if (i % 10 == 1) {
+					MY_LOGGER.info("Empresa numero = " + (i + 1));
+				}
+				MY_LOGGER.debug("pathOut=" + pathOut);
+				MY_LOGGER.debug("URL_yahoo_ticker=" + URL_yahoo_ticker);
 
 				Files.deleteIfExists(Paths.get(pathOut)); // Borramos el fichero de salida si existe
 
 				// espera aleatoria
 				msegEspera = (long) (BrutosUtils.ESPERA_ALEATORIA_MSEG_MIN
 						+ Math.random() * 1000 * BrutosUtils.ESPERA_ALEATORIA_SEG_MAX);
-				MY_LOGGER.info("Espera aleatoria " + msegEspera + " mseg...");
+				MY_LOGGER.debug("Espera aleatoria " + msegEspera + " mseg...");
 				Thread.sleep(msegEspera);
 
 				out = instancia.descargarPagina(pathOut, true, URL_yahoo_ticker);
@@ -151,7 +153,7 @@ public class YahooFinance01Descargar implements Serializable {
 	 */
 	public static Boolean descargarPagina(String pathOut, Boolean borrarSiExiste, String urlEntrada) {
 
-		MY_LOGGER.info("descargarPagina --> " + urlEntrada + " | " + pathOut + " | " + borrarSiExiste);
+		MY_LOGGER.debug("descargarPagina --> " + urlEntrada + " | " + pathOut + " | " + borrarSiExiste);
 		Boolean out = false;
 
 		try {
@@ -187,7 +189,7 @@ public class YahooFinance01Descargar implements Serializable {
 			// CODIGO de RESPUESTA
 			int status = con.getResponseCode();
 			if (status == HttpURLConnection.HTTP_MOVED_TEMP || status == HttpURLConnection.HTTP_MOVED_PERM) {
-				MY_LOGGER.info("--- Peticion HTTP escapando caracteres espacio en URL ---");
+				MY_LOGGER.debug("--- Peticion HTTP escapando caracteres espacio en URL ---");
 				String location = con.getHeaderField("Location");
 				URL newUrl = new URL(location);
 				con = (HttpURLConnection) newUrl.openConnection();

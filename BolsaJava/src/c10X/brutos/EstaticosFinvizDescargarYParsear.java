@@ -86,7 +86,7 @@ public class EstaticosFinvizDescargarYParsear {
 			dirBruto = args[1];
 			dirBrutoCsv = args[2];
 			entornoDeValidacion = Integer.valueOf(args[3]);
-			MY_LOGGER.info("PARAMS -> " + numMaxEmpresas + " | " + dirBruto + " | " + dirBrutoCsv + "|"
+			MY_LOGGER.debug("PARAMS -> " + numMaxEmpresas + " | " + dirBruto + " | " + dirBrutoCsv + "|"
 					+ entornoDeValidacion.toString());
 		}
 
@@ -98,8 +98,9 @@ public class EstaticosFinvizDescargarYParsear {
 		long msegEspera = -1;
 
 		for (int i = 0; i < Math.min(numMaxEmpresas, nasdaqEstaticos1.size()); i++) {
-
-			MY_LOGGER.info("Empresa numero = " + (i + 1));
+			if (i % 10 == 1) {
+				MY_LOGGER.info("Empresa numero = " + (i + 1));
+			}
 			mapaExtraidos.clear();
 
 			String empresa = nasdaqEstaticos1.get(i).symbol;
@@ -107,7 +108,7 @@ public class EstaticosFinvizDescargarYParsear {
 			String urlFinvizEmpresa = "https://finviz.com/quote.ashx?t=" + empresa;
 			rutaHtmlBruto = dirBruto + BrutosUtils.FINVIZ + "_" + BrutosUtils.MERCADO_NQ + "_" + empresa + ".html";
 
-			MY_LOGGER.info("URL | destino --> " + urlFinvizEmpresa + " | " + rutaHtmlBruto);
+			MY_LOGGER.debug("URL | destino --> " + urlFinvizEmpresa + " | " + rutaHtmlBruto);
 			msegEspera = (long) (BrutosUtils.ESPERA_ALEATORIA_MSEG_MIN
 					+ Math.random() * 1000 * BrutosUtils.ESPERA_ALEATORIA_SEG_MAX);
 			Thread.sleep(msegEspera);
@@ -135,7 +136,7 @@ public class EstaticosFinvizDescargarYParsear {
 			}
 		}
 
-		MY_LOGGER.info("FIN");
+		MY_LOGGER.debug("FIN");
 	}
 
 	/**
@@ -149,7 +150,7 @@ public class EstaticosFinvizDescargarYParsear {
 	 */
 	public static Boolean descargarPaginaFinviz(String pathOut, Boolean borrarSiExiste, String urlEntrada) {
 
-		MY_LOGGER.info("descargarPaginaFinviz --> " + urlEntrada + " | " + pathOut + " | " + borrarSiExiste);
+		MY_LOGGER.debug("descargarPaginaFinviz --> " + urlEntrada + " | " + pathOut + " | " + borrarSiExiste);
 		Boolean out = false;
 
 		try {
@@ -232,7 +233,7 @@ public class EstaticosFinvizDescargarYParsear {
 	public static void parsearFinviz1(String idEmpresa, String rutaHtmlBruto, Map<String, String> mapaExtraidos)
 			throws IOException {
 
-		MY_LOGGER.info("parsearNasdaqEstaticos2 --> " + idEmpresa + "|" + rutaHtmlBruto);
+		MY_LOGGER.debug("parsearNasdaqEstaticos2 --> " + idEmpresa + "|" + rutaHtmlBruto);
 
 		byte[] encoded = Files.readAllBytes(Paths.get(rutaHtmlBruto));
 		String in = new String(encoded, Charset.forName("ISO-8859-1"));
@@ -294,7 +295,7 @@ public class EstaticosFinvizDescargarYParsear {
 	public static void volcarEnCSV(String mercado, String empresa, Map<String, String> mapaExtraidos,
 			String rutaCsvBruto) throws IOException {
 
-		MY_LOGGER.info("volcarEnCSV --> " + mercado + "|" + empresa + "|" + mapaExtraidos.size() + "|" + rutaCsvBruto);
+		MY_LOGGER.debug("volcarEnCSV --> " + mercado + "|" + empresa + "|" + mapaExtraidos.size() + "|" + rutaCsvBruto);
 
 		// ---------------------------- ESCRITURA ---------------
 		MY_LOGGER.debug("Escritura...");

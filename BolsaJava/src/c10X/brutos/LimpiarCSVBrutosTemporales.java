@@ -79,6 +79,7 @@ public class LimpiarCSVBrutosTemporales {
 		File dirBrutoCsvFile = new File(dirBrutoCsv);
 		String[] listaBorrables = dirBrutoCsvFile.list(new FilenameFilter() {
 
+			@Override
 			public boolean accept(File dir, String name) {
 
 				boolean temporalNasdaqOld = name.startsWith(BrutosUtils.NASDAQOLD + "_") && name.endsWith(".csv");
@@ -93,7 +94,7 @@ public class LimpiarCSVBrutosTemporales {
 		});
 
 		for (String pathBorrable : listaBorrables) {
-			MY_LOGGER.info("Borrando temporal: " + dirBrutoCsv + pathBorrable);
+			MY_LOGGER.debug("Borrando temporal: " + dirBrutoCsv + pathBorrable);
 			Files.deleteIfExists(Paths.get(dirBrutoCsv + pathBorrable));
 		}
 

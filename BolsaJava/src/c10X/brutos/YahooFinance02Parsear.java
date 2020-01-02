@@ -189,7 +189,7 @@ public class YahooFinance02Parsear implements Serializable {
 		pathBrutoCsv = soloVelas ? (directorioOut + "VELAS_" + mercado + ".csv")
 				: (directorioOut + BrutosUtils.YAHOOFINANCE + "_" + mercado + "_" + ticker + ".csv");
 
-		MY_LOGGER.info("pathBruto|pathBrutoCsv =" + pathBruto + "|" + pathBrutoCsv);
+		MY_LOGGER.debug("pathBruto|pathBrutoCsv =" + pathBruto + "|" + pathBrutoCsv);
 
 		if (Files.exists(Paths.get(pathBruto))) {
 			Files.deleteIfExists(Paths.get(pathBrutoCsv)); // Borramos el fichero de salida si existe
@@ -202,7 +202,7 @@ public class YahooFinance02Parsear implements Serializable {
 			}
 
 		} else {
-			MY_LOGGER.warn("Fichero de entrada no existe: " + pathBruto + " Continua...");
+			MY_LOGGER.debug("Fichero de entrada no existe: " + pathBruto + " Continua...");
 		}
 		return pathBrutoCsv;
 	}
