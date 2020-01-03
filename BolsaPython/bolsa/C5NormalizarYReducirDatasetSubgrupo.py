@@ -145,29 +145,29 @@ def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmp
     print("BALANCEAR los casos positivos y negativos, haciendo downsampling de la clase mayoritaria...")
     print("URL: https://elitedatascience.com/imbalanced-classes")
     ift_minoritaria = entradaFeaturesYTarget4[entradaFeaturesYTarget4.TARGET == True]
+    print("ift_minoritaria (original):" + str(ift_minoritaria.shape[0]) + " x " + str(ift_minoritaria.shape[1]))
 
-    # Se seleccionan tantos target=0 (mayoritaria) como entradas tengo de Target=1 (minoritaria). Se cogeuna muestra de 2xminoritarias, para asegurar que cogemos suficientes valores con target=0. Luego ya nos quedamos sólo con un tamaño mayoriaria=minoritaria
-    ift_mayoritaria=pd.DataFrame(index=ift_minoritaria.index.copy(), columns=ift_minoritaria.columns)
-    ift_mayoritaria=entradaFeaturesYTarget4.loc[np.random.choice(entradaFeaturesYTarget4.index, 2*ift_minoritaria.shape[0])]
+    # Se seleccionan tantos target=0 (mayoritaria) como entradas tengo de Target=1 (minoritaria). Se coge una muestra al azar de 2xminoritarias, para asegurar que cogemos suficientes valores con target=0. Luego ya nos quedamos sólo con un tamaño mayoriaria=minoritaria
+    num_copias_anhadidas = 3
+
+    if (num_copias_anhadidas > 0):
+        print("OVERSAMPLING DE CLASE MINORITARIA: copiamos " + str(num_copias_anhadidas) + " veces los casos de clase minoritaria --> Eso evitará que tengamos la obligacion de borrar muchas filas de la clase mayoritaria")
+        ift_minoritaria_aux = ift_minoritaria.append([ift_minoritaria] * num_copias_anhadidas, ignore_index=True)
+        ift_minoritaria = ift_minoritaria_aux
+        print("ift_minoritaria (con oversampling):" + str(ift_minoritaria.shape[0]) + " x " + str(ift_minoritaria.shape[1]))
+
+    num_filas_azar = 2 * (num_copias_anhadidas + 1) * ift_minoritaria.shape[0]
+    print("num_filas_azar:" + str(num_filas_azar))
+    ift_mayoritaria = pd.DataFrame(index=ift_minoritaria.index.copy(), columns=ift_minoritaria.columns)
+    ift_mayoritaria = entradaFeaturesYTarget4.loc[np.random.choice(entradaFeaturesYTarget4.index, num_filas_azar )]
     ift_mayoritaria = ift_mayoritaria[ift_mayoritaria.TARGET == False]
-    ift_mayoritaria=ift_mayoritaria.head(ift_minoritaria.shape[0])
+    ift_mayoritaria = ift_mayoritaria.head(ift_minoritaria.shape[0])
 
-    print("ift_mayoritaria:" + str(ift_mayoritaria.shape[0]) + " x " + str(ift_mayoritaria.shape[1]))
-    print("ift_minoritaria:" + str(ift_minoritaria.shape[0]) + " x " + str(ift_minoritaria.shape[1]))
-
-    #num_copias_anhadidas = 9
-    #if (num_copias_anhadidas > 0):
-    #    print(
-    #        "OVERSAMPLING DE CLASE MINORITARIA: copiamos X veces los casos de clase minoritaria --> Eso evitará que tengamos la obligacion de borrar muchas filas de la clase mayoritaria")
-    #    ift_minoritaria_aux = ift_minoritaria.append([ift_minoritaria] * num_copias_anhadidas, ignore_index=True)
-    #    ift_minoritaria = ift_minoritaria_aux
-    #    print("ift_minoritaria:" + str(ift_minoritaria.shape[0]) + " x " + str(ift_minoritaria.shape[1]))
+    print("ift_mayoritaria (se han borrado filas, pero no muchas):" + str(ift_mayoritaria.shape[0]) + " x " + str(ift_mayoritaria.shape[1]))
+    print("ift_minoritaria (con oversampling):" + str(ift_minoritaria.shape[0]) + " x " + str(ift_minoritaria.shape[1]))
 
     print("Tasa de desbalanceo entre clases = " + str(ift_mayoritaria.shape[0]) + "/" + str(
         ift_minoritaria.shape[0]) + " = " + str(ift_mayoritaria.shape[0] / ift_minoritaria.shape[0]))
-    num_muestras_minoria = ift_minoritaria.shape[0]
-
-    print("num_muestras_minoria: " + str(num_muestras_minoria))
 
     # Juntar ambas clases ya BALANCEADAS. Primero vacío el dataset
     ift_mayoritaria.reset_index(drop=True, inplace=True)
@@ -287,7 +287,7 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, 
     # OPCIÓN NO USADA: Si quisiera probar varios clasificadores
     probarVariosClasificadores=False
 
-    svc_model = AdaBoostClassifier(n_estimators=50, learning_rate=1.)
+    svc_model = AdaBoostClassifier(n_estimators=20, learning_rate=1.)
 
     if probarVariosClasificadores:
         classifiers = [
@@ -315,7 +315,9 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, 
 
     # The "accuracy" scoring is proportional to the number of correct classifications
     rfecv_modelo = RFECV(estimator=svc_model, step=1, min_features_to_select=3, cv=StratifiedKFold(3), scoring='accuracy', verbose=0, n_jobs=8)
+    print("rfecv_modelo -> fit ...")
     rfecv_modelo.fit(featuresFicheroNorm, targetsFichero)
+    print("rfecv_modelo -> dump ...")
     pickle.dump(rfecv_modelo, open(path_modelo_reductor_features, 'wb'))
 
 
@@ -374,11 +376,10 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, 
   print(targetsFichero.head())
 
   featuresytargets = pd.concat([featuresFicheroNormElegidas.reset_index(drop=True), targetsFichero.reset_index(drop=True)], axis=1)
-  featuresytargets.to_csv(pathCsvReducido, index=False, sep='|')
-
-  print("Muestro las features + targets despues de juntarlas...")
   print("FEATURES+TARGETS juntas (sample):")
   print(featuresytargets.head())
+  print("Justo antes de guardar, featuresytargets: " + str(featuresytargets.shape[0]) + " x " + str(featuresytargets.shape[1]))
+  featuresytargets.to_csv(pathCsvReducido, index=False, sep='|')
 
   if modoTiempo == "futuro":
       print("Guardamos a CSV los indices de las filas de REDUCIDO respeto a COMPLETO (para cuando haya que reconstruir el final")
@@ -386,7 +387,7 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, 
 
 
 
-print("################## MAIN ###########################################################")
+################## MAIN ###########################################################
 
 if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.stat(pathCsvCompleto).st_size > 0:
 
