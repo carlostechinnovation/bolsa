@@ -1,11 +1,14 @@
+import sys
+import os
+import pandas as pd
+
 print("--- PRUEBAS ---")
-entrada_csv_subgrupo = "/bolsa/futuro/subgrupos/SG_0/"
-modoTiempo = "futuro"
-
-if modoTiempo == "futuro":
-    entrada_csv_subgrupo = entrada_csv_subgrupo.replace("futuro", "pasado")
-    print(entrada_csv_subgrupo)
-
-
+entradaFeaturesYTarget = pd.read_csv(filepath_or_buffer="/bolsa/futuro/subgrupos/SG_6/COMPLETO.csv", sep='|')
+print(entradaFeaturesYTarget)
+ift_minoritaria = entradaFeaturesYTarget[entradaFeaturesYTarget.TARGET == True]
+print("ift_minoritaria:" + str(ift_minoritaria.shape[0]) + " x " + str(ift_minoritaria.shape[1]))
+num_copias_anhadidas=2
+ift_minoritaria2 = ift_minoritaria.append([ift_minoritaria]*num_copias_anhadidas, ignore_index=True)
+print("ift_minoritaria2:" + str(ift_minoritaria2.shape[0]) + " x " + str(ift_minoritaria2.shape[1]))
 
 
