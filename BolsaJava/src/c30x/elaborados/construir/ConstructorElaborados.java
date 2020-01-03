@@ -329,7 +329,7 @@ public class ConstructorElaborados implements Serializable {
 					Double closeAntiguedad = Double.valueOf(datosAntiguedad.get("close"));
 					Double closeAntiguedadX = Double.valueOf(datosAntiguedadX.get("close"));
 					if (closeAntiguedad >= closeAntiguedadX * subidaSPrecioTantoPorUno) {
-						Integer antiguedadM = antiguedad - M;// Última çvela M futura, más allá de la antigüedad actual
+						Integer antiguedadM = antiguedad - M;// Última vela M futura, más allá de la antigüedad actual
 						datosAntiguedadM = datosEmpresaEntrada.get(antiguedadM);
 						Double closeAntiguedadM = Double.valueOf(datosAntiguedadM.get("close"));
 						// En la vela M el precio debe ser un F% mejor que en la vela actual
