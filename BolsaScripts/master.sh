@@ -32,7 +32,7 @@ crearCarpetaSiNoExisteYVaciarRecursivo() {
 ID_EJECUCION=$( date "+%Y%m%d%H%M%S" )
 echo -e "ID_EJECUCION = "${ID_EJECUCION}
 
-NUM_MAX_EMPRESAS_DESCARGADAS=150
+NUM_MAX_EMPRESAS_DESCARGADAS=300
 MIN_COBERTURA_CLUSTER=60
 MIN_EMPRESAS_POR_CLUSTER=10
 
@@ -60,13 +60,8 @@ DIR_ELABORADOS="${DIR_BASE}${DIR_TIEMPO}/elaborados/"
 DIR_SUBGRUPOS="${DIR_BASE}${DIR_TIEMPO}/subgrupos/"
 DIR_IMG="img/"
 
-crearCarpetaSiNoExisteYVaciar "${DIR_BASE}"
 crearCarpetaSiNoExiste "${DIR_LOGS}"
 crearCarpetaSiNoExisteYVaciar "${DIR_BASE}${DIR_TIEMPO}"
-crearCarpetaSiNoExisteYVaciar "${DIR_LIMPIOS}"
-crearCarpetaSiNoExisteYVaciar "${DIR_ELABORADOS}"
-crearCarpetaSiNoExisteYVaciarRecursivo "${DIR_SUBGRUPOS}"
-
 
 ############### LOGS ########################################################
 rm -f "${DIR_LOGS}log4j.log"
@@ -111,14 +106,14 @@ if [ "$NUM_FICHEROS_10x" -lt 1 ]; then
 	exit -1
 fi
 
-
 ################################################################################################
 echo -e "-------- DATOS LIMPIOS -------------" >> ${LOG_MASTER}
 
 #######echo -e "Operaciones de limpieza: quitar outliers, rellenar missing values..." >> ${LOG_MASTER}
 #######java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n" -jar ${PATH_JAR} --class "coordinador.Principal" "c30X.elaborados.LimpiarOperaciones" "${DIR_BRUTOS_CSV}" "${DIR_LIMPIOS}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 
-# PENDIENTE: de momento, no limpiamos, pero habrá que hacerlo
+crearCarpetaSiNoExisteYVaciar "${DIR_LIMPIOS}"
+
 cp ${DIR_BRUTOS_CSV}*.csv ${DIR_LIMPIOS} 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 
 NUM_FICHEROS_20x=$(ls -l ${DIR_LIMPIOS} | wc -l)
@@ -130,6 +125,8 @@ fi
 
 ################################################################################################
 echo -e "-------- VARIABLES ELABORADAS -------------" >> ${LOG_MASTER}
+
+crearCarpetaSiNoExisteYVaciar "${DIR_ELABORADOS}"
 
 echo -e "Calculando elaborados y target..." >> ${LOG_MASTER}
 java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n" -jar ${PATH_JAR} --class "coordinador.Principal" "c30X.elaborados.ConstructorElaborados" "${DIR_LIMPIOS}" "${DIR_ELABORADOS}" "${S}" "${X}" "${R}" "${M}" "${F}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
@@ -146,10 +143,10 @@ fi
 ################################################################################################
 echo -e "-------- SUBGRUPOS -------------" >> ${LOG_MASTER}
 
-echo -e "Calculando subgrupos..." >> ${LOG_MASTER}
+crearCarpetaSiNoExisteYVaciarRecursivo "${DIR_SUBGRUPOS}"
+
 java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n" -jar ${PATH_JAR} --class "coordinador.Principal" "c40X.subgrupos.CrearDatasetsSubgrupos" "${DIR_ELABORADOS}" "${DIR_SUBGRUPOS}" "${MIN_COBERTURA_CLUSTER}" "${MIN_EMPRESAS_POR_CLUSTER}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 #java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n" -jar ${PATH_JAR} --class "coordinador.Principal" "c40X.subgrupos.CrearDatasetsSubgruposKMeans" "${DIR_ELABORADOS}" "${DIR_SUBGRUPOS}" "${MIN_COBERTURA_CLUSTER}" "${MIN_EMPRESAS_POR_CLUSTER}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
-
 
 ############  PARA CADA SUBGRUPO ###############################################################
 
@@ -177,7 +174,6 @@ do
     fi;
 	
 done
-
 
 ################################################################################################
 echo -e "******** FIN de master**************" >> ${LOG_MASTER}
