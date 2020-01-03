@@ -120,16 +120,16 @@ public class Validador implements Serializable {
 		Integer indicePredicha, indiceValidacion;
 		String targetPredicho, targetValidacion;
 
-		Integer aciertosTargetUnoSubgrupo, fallosTargetUnoSubgrupo, totalTargetUnoEnSubgrupo;
+		Float aciertosTargetUnoSubgrupo, fallosTargetUnoSubgrupo, totalTargetUnoEnSubgrupo;
 		Integer antiguedadFutura;
 		Estadisticas performanceClose;
 
 		for (Path predicho : ficherosPredichos) {
 
 			// Reinicio contadores de Subgrupo
-			aciertosTargetUnoSubgrupo = 0;
-			fallosTargetUnoSubgrupo = 0;
-			totalTargetUnoEnSubgrupo = 0;
+			aciertosTargetUnoSubgrupo = 0F;
+			fallosTargetUnoSubgrupo = 0F;
+			totalTargetUnoEnSubgrupo = 0F;
 			performanceClose = new Estadisticas();
 
 			for (Path validacion : ficherosValidacion) {
@@ -202,6 +202,11 @@ public class Validador implements Serializable {
 											(int) filaValidacion.chars().filter(ch -> ch == "|".charAt(0)).count(),
 											filaValidacion);
 									targetValidacion = filaValidacion.substring(indice - 3, indice - 2);
+
+									if (filaPredicha.startsWith("WKHS|0|")) {
+										int a = 0;
+										a--;
+									}
 
 									if (targetPredicho.compareTo("1") == 0) {
 										totalTargetUnoEnSubgrupo++;
