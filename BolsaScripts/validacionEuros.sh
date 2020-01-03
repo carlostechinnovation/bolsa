@@ -7,7 +7,6 @@ crearCarpetaSiNoExiste() {
 	mkdir -p ${param1}
 }
 
-
 ################################################################################################
 VELAS_RETROCESO="50"
 
@@ -46,7 +45,7 @@ echo -e ""  >>${LOG_VALIDADOR}
 echo -e "Ejecución del PASADO (para entrenar los modelos a dia de HOY con la lista normal de empresas)..." >>${LOG_VALIDADOR}
 ${PATH_SCRIPTS}master.sh "pasado" "0" "0" "S"  2>>${LOG_VALIDADOR} 1>>${LOG_VALIDADOR}
 
-
+################################################################################################
 rm -Rf /bolsa/futuro/ >>${LOG_VALIDADOR}
 
 echo -e "Ejecución del futuro (para velas de ATRAS) con OTRAS empresas (lista REVERTIDA)..." >>${LOG_VALIDADOR}
@@ -61,7 +60,7 @@ do
 	fi
 done 9< <( find $DIR_FUT_SUBGRUPOS -type f -exec printf '%s\0' {} + )
 
-
+################################################################################################
 rm -Rf /bolsa/futuro/ >>${LOG_VALIDADOR}
 
 echo -e "Ejecución del futuro (para velas de HOY) con OTRAS empresas (lista REVERTIDA)..." >>${LOG_VALIDADOR}
@@ -76,7 +75,7 @@ do
 	fi
 done 9< <( find $DIR_FUT_SUBGRUPOS -type f -exec printf '%s\0' {} + )
 
-
+################################################################################################
 echo -e "Validacion de rendimiento: comparar ATRAS_PREDICHO con HOY_REAL para empresas de la lista REVERTIDA..." >> ${LOG_VALIDADOR}
 java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n" -jar ${PATH_JAR} --class "coordinador.Principal" "c70X.validacion.Validador" "${VELAS_RETROCESO}" "${DIR_VALIDACION}" "${S}" "${X}" "${R}" "${M}" 2>>${LOG_VALIDADOR} 1>>${LOG_VALIDADOR}
 

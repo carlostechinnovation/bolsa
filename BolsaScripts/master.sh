@@ -32,7 +32,7 @@ crearCarpetaSiNoExisteYVaciarRecursivo() {
 ID_EJECUCION=$( date "+%Y%m%d%H%M%S" )
 echo -e "ID_EJECUCION = "${ID_EJECUCION}
 
-NUM_MAX_EMPRESAS_DESCARGADAS=10
+NUM_MAX_EMPRESAS_DESCARGADAS=150
 MIN_COBERTURA_CLUSTER=60
 MIN_EMPRESAS_POR_CLUSTER=10
 
@@ -63,8 +63,6 @@ DIR_IMG="img/"
 crearCarpetaSiNoExisteYVaciar "${DIR_BASE}"
 crearCarpetaSiNoExiste "${DIR_LOGS}"
 crearCarpetaSiNoExisteYVaciar "${DIR_BASE}${DIR_TIEMPO}"
-crearCarpetaSiNoExisteYVaciar "${DIR_BRUTOS}"
-crearCarpetaSiNoExisteYVaciar "${DIR_BRUTOS_CSV}"
 crearCarpetaSiNoExisteYVaciar "${DIR_LIMPIOS}"
 crearCarpetaSiNoExisteYVaciar "${DIR_ELABORADOS}"
 crearCarpetaSiNoExisteYVaciarRecursivo "${DIR_SUBGRUPOS}"
@@ -84,7 +82,10 @@ mvn clean compile assembly:single
 ################################################################################################
 echo -e "-------- DATOS BRUTOS -------------" >> ${LOG_MASTER}
 
-if [ "$ACTIVAR_DESCARGA" = "S" ];  then 
+if [ "$ACTIVAR_DESCARGA" = "S" ];  then
+
+	crearCarpetaSiNoExisteYVaciar "${DIR_BRUTOS}"
+	crearCarpetaSiNoExisteYVaciar "${DIR_BRUTOS_CSV}"
 
 	echo -e "DINAMICOS - Descargando de YAHOO FINANCE..." >> ${LOG_MASTER}
 	java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n" -jar ${PATH_JAR} --class "coordinador.Principal" "c10X.brutos.YahooFinance01Descargar" "${NUM_MAX_EMPRESAS_DESCARGADAS}" "${DIR_BRUTOS}" "${DIR_TIEMPO}" "${ES_ENTORNO_VALIDACION}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
@@ -103,6 +104,13 @@ if [ "$ACTIVAR_DESCARGA" = "S" ];  then
 
 fi;
 
+NUM_FICHEROS_10x=$(ls -l ${DIR_BRUTOS_CSV} | wc -l)
+echo -e "La capa 10X ha generado $NUM_FICHEROS_10x ficheros" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
+if [ "$NUM_FICHEROS_10x" -lt 1 ]; then
+	echo -e "El numero de ficheros es menor que el de la capa anterior. Asi que se han perdido algunos por algun problema. Debemos analizarlo. Saliendo..." 2>>${LOG_MASTER} 1>>${LOG_MASTER}
+	exit -1
+fi
+
 
 ################################################################################################
 echo -e "-------- DATOS LIMPIOS -------------" >> ${LOG_MASTER}
@@ -113,6 +121,12 @@ echo -e "-------- DATOS LIMPIOS -------------" >> ${LOG_MASTER}
 # PENDIENTE: de momento, no limpiamos, pero habrá que hacerlo
 cp ${DIR_BRUTOS_CSV}*.csv ${DIR_LIMPIOS} 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 
+NUM_FICHEROS_20x=$(ls -l ${DIR_LIMPIOS} | wc -l)
+echo -e "La capa 20X ha generado $NUM_FICHEROS_20x ficheros" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
+if [ "$NUM_FICHEROS_20x" -lt "$NUM_FICHEROS_10x" ]; then
+	echo -e "El numero de ficheros es menor que el de la capa anterior. Asi que se han perdido algunos por algun problema. Debemos analizarlo. Saliendo..." 2>>${LOG_MASTER} 1>>${LOG_MASTER}
+	exit -1
+fi
 
 ################################################################################################
 echo -e "-------- VARIABLES ELABORADAS -------------" >> ${LOG_MASTER}
@@ -122,6 +136,12 @@ java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%
 
 echo -e "Elaborados (incluye la variable elaborada TARGET) ya calculados" >> ${LOG_MASTER}
 
+NUM_FICHEROS_30x=$(ls -l ${DIR_ELABORADOS} | wc -l)
+echo -e "La capa 30X ha generado $NUM_FICHEROS_30x ficheros" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
+if [ "$NUM_FICHEROS_30x" -lt "$NUM_FICHEROS_20x" ]; then
+	echo -e "El numero de ficheros es menor que el de la capa anterior. Asi que se han perdido algunos por algun problema. Debemos analizarlo. Saliendo..." 2>>${LOG_MASTER} 1>>${LOG_MASTER}
+	exit -1
+fi
 
 ################################################################################################
 echo -e "-------- SUBGRUPOS -------------" >> ${LOG_MASTER}
