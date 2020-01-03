@@ -31,7 +31,7 @@ crearCarpetaSiNoExisteYVaciarRecursivo() {
 ID_EJECUCION=$( date "+%Y%m%d%H%M%S" )
 echo -e "ID_EJECUCION = "${ID_EJECUCION}
 
-NUM_MAX_EMPRESAS_DESCARGADAS=500
+NUM_MAX_EMPRESAS_DESCARGADAS=400
 MIN_COBERTURA_CLUSTER=60
 MIN_EMPRESAS_POR_CLUSTER=10
 
@@ -131,16 +131,27 @@ java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%
 for dir_subgrupo in ${DIR_SUBGRUPOS}*
 do
 	echo "-------- Subgrupo cuya carpeta es: ${dir_subgrupo} --------" >> ${LOG_MASTER}
-	crearCarpetaSiNoExisteYVaciar  "${dir_subgrupo}/${DIR_IMG}"
 	
-	echo -e "Capa 5: elimina MISSING VALUES (NA en columnas y filas), elimina OUTLIERS, balancea clases (undersampling de mayoritaria), calcula IMG funciones de densidad, NORMALIZA las features, comprueba suficientes casos en clase minoritaria, REDUCCION de FEATURES y guarda el CSV REDUCIDO..." >> ${LOG_MASTER}
-	$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/C5NormalizarYReducirDatasetSubgrupo.py" "${dir_subgrupo}/" "${DIR_TIEMPO}" >> ${LOG_MASTER}
+	path_dir_pasado=$( echo '${dir_subgrupo}' | sed "s/futuro/pasado/" )
+	echo "$path_dir_pasado"
+	path_normalizador_pasado="${path_dir_pasado}/NORMALIZADOR.tool"
+	echo "$path_normalizador_pasado"
 	
-	echo -e "Capa 6 - PASADO ó FUTURO: balancea las clases (aunque ya se hizo en capa 5), divide dataset de entrada (entrenamiento, test, validación), CREA MODELOS (con hyperparámetros)  los evalúa. Guarda el modelo GANADOR de cada subgrupo..." >> ${LOG_MASTER}
-	$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/C6CreadorModelosDeSubgrupo.py" "${dir_subgrupo}/" "${DIR_TIEMPO}" "${DESPLAZAMIENTO_ANTIGUEDAD}"  >> ${LOG_MASTER}
+	if [ "$DIR_TIEMPO" = "pasado" ] || { [ "$DIR_TIEMPO" = "futuro" ] && [ -f "$path_normalizador_pasado" ]; };  then 
+        
+		crearCarpetaSiNoExisteYVaciar  "${dir_subgrupo}/${DIR_IMG}"
+	
+	    echo -e "Capa 5: elimina MISSING VALUES (NA en columnas y filas), elimina OUTLIERS, balancea clases (undersampling de mayoritaria), calcula IMG funciones de densidad, NORMALIZA las features, comprueba suficientes casos en clase minoritaria, REDUCCION de FEATURES y guarda el CSV REDUCIDO..." >> ${LOG_MASTER}
+	    $PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/C5NormalizarYReducirDatasetSubgrupo.py" "${dir_subgrupo}/" "${DIR_TIEMPO}" >> ${LOG_MASTER}
+	    
+	    echo -e "Capa 6 - PASADO ó FUTURO: balancea las clases (aunque ya se hizo en capa 5), divide dataset de entrada (entrenamiento, test, validación), CREA MODELOS (con hyperparámetros)  los evalúa. Guarda el modelo GANADOR de cada subgrupo..." >> ${LOG_MASTER}
+	    $PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/C6CreadorModelosDeSubgrupo.py" "${dir_subgrupo}/" "${DIR_TIEMPO}" "${DESPLAZAMIENTO_ANTIGUEDAD}"  >> ${LOG_MASTER}
+		
+    else
+        echo "Al evaluar el subgrupo cuyo directorio es $dir_subgrupo para el tiempo $DIR_TIEMPO vemos que no existe entrenamiento en el pasado, asi que no existe $path_normalizador_pasado"
+    fi;
 	
 done
-
 
 
 ################################################################################################
