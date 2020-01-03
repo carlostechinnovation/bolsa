@@ -27,7 +27,7 @@ print ("PARAMETROS: ")
 dir_subgrupo = sys.argv[1]
 modoTiempo = sys.argv[2]
 desplazamientoAntiguedad = sys.argv[3]
-modoDebug = True  #En modo debug se pintan los dibujos. En otro caso, se evita calculo innecesario
+modoDebug = False  #En modo debug se pintan los dibujos. En otro caso, se evita calculo innecesario
 umbralCasosSuficientesClasePositiva = 100
 
 ######### ID de subgrupo #######

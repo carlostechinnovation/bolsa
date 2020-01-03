@@ -5,7 +5,6 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bolsa/C5NormalizarYReducirDatasetSubgrupo.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/C5NormalizarYReducirDatasetSubgrupo.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bolsa/C6CreadorModelosDeSubgrupo.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/C6CreadorModelosDeSubgrupo.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ejemplos/pruebas.py" beforeDir="false" afterPath="$PROJECT_DIR$/ejemplos/pruebas.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../BolsaScripts/master.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/master.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />

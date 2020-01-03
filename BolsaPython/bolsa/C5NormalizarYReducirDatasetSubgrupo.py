@@ -42,7 +42,7 @@ print("modoTiempo = %s" % modoTiempo)
 
 varianza=0.90
 compatibleParaMuchasEmpresas = True  # Si hay muchas empresas, debo hacer ya el undersampling (en vez de capa 6)
-modoDebug = True  # En modo debug se pintan los dibujos. En otro caso, se evita calculo innecesario
+modoDebug = False  # En modo debug se pintan los dibujos. En otro caso, se evita calculo innecesario
 pathCsvCompleto = dir_subgrupo + "COMPLETO.csv"
 dir_subgrupo_img = dir_subgrupo + "img/"
 pathCsvReducido = dir_subgrupo + "REDUCIDO.csv"
