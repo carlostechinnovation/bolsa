@@ -13,9 +13,10 @@ VELAS_RETROCESO="50"
 
 # PARAMETROS DE TARGET MEDIDOS EN VELAS
 S="10"
-X="28"
-R="5"
+X="56"
+R="10"
 M="7"
+F="5"
 
 DIR_BASE="/bolsa/"
 DIR_CODIGOS="/home/carloslinux/Desktop/GIT_BOLSA/"
