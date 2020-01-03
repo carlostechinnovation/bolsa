@@ -199,9 +199,9 @@ public class Validador implements Serializable {
 									// Las dos últimas columnas son: TARGET_REAL (VALIDACIÓN), TARGET_PREDICHO
 									targetPredicho = filaPredicha.substring(filaPredicha.lastIndexOf("|") + 1);
 									Integer indice = SubgruposUtils.indiceDeAparicion("|".charAt(0),
-											(int) filaValidacion.chars().filter(ch -> ch == "|".charAt(0)).count() - 1,
+											(int) filaValidacion.chars().filter(ch -> ch == "|".charAt(0)).count(),
 											filaValidacion);
-									targetValidacion = filaValidacion.substring(indice + 1, indice + 2);
+									targetValidacion = filaValidacion.substring(indice - 3, indice - 2);
 
 									if (targetPredicho.compareTo("1") == 0) {
 										totalTargetUnoEnSubgrupo++;
