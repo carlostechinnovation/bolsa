@@ -68,12 +68,12 @@ def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmp
   entradaFeaturesYTarget = pd.read_csv(filepath_or_buffer=path_csv_completo, sep='|')
   num_nulos_por_fila_1 = np.logical_not(entradaFeaturesYTarget.isnull()).sum()
   print("entradaFeaturesYTarget: " + str(entradaFeaturesYTarget.shape[0]) + " x " + str(entradaFeaturesYTarget.shape[1]))
-  indiceFilasFuturasTransformadas = entradaFeaturesYTarget.index.values
+  indiceFilasFuturasTransformadas = entradaFeaturesYTarget.index.values  # DEFAULT
+  indiceFilasFuturasTransformadas2 = entradaFeaturesYTarget.index.values  # DEFAULT
 
   ################# Borrado de columnas nulas enteras ##########
   print("MISSING VALUES (COLUMNAS) - Borramos las columnas (features) que sean siempre NaN...")
   entradaFeaturesYTarget2 = entradaFeaturesYTarget.dropna(axis=1, how='all') #Borrar COLUMNA si TODOS sus valores tienen NaN
-  #num_nulos_por_fila_2 = np.logical_not(entradaFeaturesYTarget2.isnull()).sum()
   print("entradaFeaturesYTarget2 (columnas nulas borradas): " + str(entradaFeaturesYTarget2.shape[0]) + " x " + str(entradaFeaturesYTarget2.shape[1]))
 
 
@@ -86,6 +86,8 @@ def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmp
       print(entradaFeaturesYTarget2b.head())
       print("Transformacion en la que borro o barajo filas. Por tanto, guardo el indice...")
       indiceFilasFuturasTransformadas = entradaFeaturesYTarget2b.index.values
+      print("indiceFilasFuturasTransformadas: " + str(indiceFilasFuturasTransformadas.shape[0]))
+      print(indiceFilasFuturasTransformadas)
 
       # Reponer el dataframe 2
       entradaFeaturesYTarget2 = entradaFeaturesYTarget2b
@@ -99,13 +101,18 @@ def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmp
   if modoTiempo == "pasado":
       print("MISSING VALUES (FILAS) - Borramos las FILAS que tengan 1 o mas valores NaN porque son huecos que no deberían estar...")
       entradaFeaturesYTarget3 = entradaFeaturesYTarget2.dropna(axis=0, how='any')  # Borrar FILA si ALGUNO sus valores tienen NaN
-      #num_nulos_por_fila_3 = np.logical_not(entradaFeaturesYTarget3.isnull()).sum()
       print("entradaFeaturesYTarget3 (filas algun nulo borradas):" + str(entradaFeaturesYTarget3.shape[0]) + " x " + str(entradaFeaturesYTarget3.shape[1]))
 
   elif modoTiempo == "futuro":
       print("MISSING VALUES (FILAS) - Para el FUTURO; el target es NULO siempre, pero borramos las filas que tengan ademas otros NULOS...")
-      entradaFeaturesYTarget3 = entradaFeaturesYTarget2
-      print("entradaFeaturesYTarget3 (filas futuras sin haber borrado nulos):" + str(entradaFeaturesYTarget3.shape[0]) + " x " + str(entradaFeaturesYTarget3.shape[1]))
+      entradaFeaturesYTarget3 = entradaFeaturesYTarget2.drop('TARGET', axis=1).dropna(axis=0, how='any')  # Borrar FILA si ALGUNO sus valores tienen NaN
+      print("entradaFeaturesYTarget3 (filas algun nulo borradas):" + str(entradaFeaturesYTarget3.shape[0]) + " x " + str(entradaFeaturesYTarget3.shape[1]))
+
+      print("Transformacion en la que borro o barajo filas. Por tanto, guardo el indice...")
+      indiceFilasFuturasTransformadas2 = entradaFeaturesYTarget3.index.values
+      print("indiceFilasFuturasTransformadas2: " + str(indiceFilasFuturasTransformadas2.shape[0]))
+      print(indiceFilasFuturasTransformadas2)
+
 
   print("Mostramos las 5 primeras filas de entradaFeaturesYTarget3:")
   print(entradaFeaturesYTarget3.head())
@@ -134,9 +141,12 @@ def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmp
 
   # Si hay POCAS empresas
   if compatibleParaMuchasEmpresas is False or modoTiempo == "futuro":
-    featuresFichero = entradaFeaturesYTarget4.drop('TARGET', axis=1)
-    # featuresFichero = featuresFichero[1:] #quitamos la cabecera
-    targetsFichero = (entradaFeaturesYTarget4[['TARGET']] == 1)  # Convierto de int a boolean
+    if modoTiempo == "pasado":
+        featuresFichero = entradaFeaturesYTarget4.drop('TARGET', axis=1)
+        targetsFichero = (entradaFeaturesYTarget4[['TARGET']] == 1)  # Convierto de int a boolean
+    elif modoTiempo == "futuro":
+        featuresFichero = entradaFeaturesYTarget4
+        targetsFichero = pd.DataFrame({'TARGET': []})  # DEFAULT: Vacio (caso futuro)
 
 
   # SOLO PARA EL PASADO Si hay MUCHAS empresas (UNDER-SAMPLING para reducir los datos -útil para miles de empresas, pero puede quedar sobreentrenado, si borro casi todas las minoritarias-)
@@ -206,7 +216,7 @@ def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmp
       plt.cla()
       plt.close()
 
-  return featuresFichero, targetsFichero, indiceFilasFuturasTransformadas
+  return featuresFichero, targetsFichero, indiceFilasFuturasTransformadas2
 
 
 def normalizarFeatures(featuresFichero, path_modelo_normalizador, dir_subgrupo_img, modoTiempo, indiceFilasFuturasTransformadas, modoDebug):
@@ -215,15 +225,23 @@ def normalizarFeatures(featuresFichero, path_modelo_normalizador, dir_subgrupo_i
   print("PARAMS --> " + path_modelo_normalizador + "|" + modoTiempo + "|" + str(modoDebug))
   print("featuresFichero: " + str(featuresFichero.shape[0]) + " x " + str(featuresFichero.shape[1]))
   print("path_modelo_normalizador: " + path_modelo_normalizador)
-  print("indiceFilasFuturasTransformadas (numero de items): " + str(indiceFilasFuturasTransformadas.shape[0]))
 
   if modoTiempo == "pasado":
       modelo_normalizador = PowerTransformer(method='yeo-johnson', standardize=True, copy=True).fit(featuresFichero)
       pickle.dump(modelo_normalizador, open(path_modelo_normalizador, 'wb')) # Luego basta cargarlo así --> modelo_normalizador=load(path_modelo_normalizador)
   elif modoTiempo == "futuro":
+      print("Transformacion en la que borro o barajo filas. Por tanto, guardo el indice...")
+      indiceFilasFuturasTransformadas10 = indiceFilasFuturasTransformadas
+      print("indiceFilasFuturasTransformadas10: " + str(indiceFilasFuturasTransformadas10.shape[0]))
+      print(indiceFilasFuturasTransformadas10)
+
+      #Transformacion que afecta a los indices
+      featuresFichero = featuresFichero.reset_index().drop('index', axis=1)
+
       modelo_normalizador = pickle.load(open(path_modelo_normalizador, 'rb'))
 
   print("Aplicando normalizacion...")
+  print(list(featuresFichero.columns.values))
   featuresFicheroNorm = modelo_normalizador.transform(featuresFichero)
 
   print("Metiendo cabeceras...")
