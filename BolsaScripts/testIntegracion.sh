@@ -33,6 +33,12 @@ mkdir -p $DIR_LOGS >>${LOG_INTEGRACION}
 
 echo -e "******** INICIO del test de integracion **************" >> ${LOG_INTEGRACION}
 
+S="10"
+X="56"
+R="10"
+M="7"
+F="5"
+
 echo -e "Nos saltamos la capa de DESCARGA (ponemos unos datos que tenemos ya guardados de otro día)..." >> ${LOG_INTEGRACION}
 rm -Rf /bolsa/pasado/ >>${LOG_INTEGRACION}
 mkdir -p "${DIR_BRUTOS_CSV}" >>${LOG_INTEGRACION}
@@ -40,7 +46,7 @@ mkdir -p "${DIR_BRUTOS_CSV}" >>${LOG_INTEGRACION}
 cp ${DIR_INTEGRACION}brutos_csv/* "${DIR_BRUTOS_CSV}"  2>>${LOG_INTEGRACION} 1>>${LOG_INTEGRACION}
 
 echo -e "Ejecutando MASTER (saltando la capa de descarga)..." >> ${LOG_INTEGRACION}
-${PATH_SCRIPTS}master.sh "pasado" "0" "0" "N"  2>>${LOG_INTEGRACION} 1>>${LOG_INTEGRACION}
+${PATH_SCRIPTS}master.sh "pasado" "0" "0" "N" "${S}" "${X}" "${R}" "${M}" "${F}" 2>>${LOG_INTEGRACION} 1>>${LOG_INTEGRACION}
 
 ################################################################################################
 echo -e "****Comprobaciones de INTEGRACION*********" >> ${LOG_INTEGRACION}

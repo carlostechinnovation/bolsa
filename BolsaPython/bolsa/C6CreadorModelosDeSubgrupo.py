@@ -282,7 +282,8 @@ elif (modoTiempo == "futuro" and pathCsvReducido.endswith('.csv') and os.path.is
     print("inputFeaturesyTarget: " + str(inputFeaturesyTarget.shape[0]) + " x " + str(inputFeaturesyTarget.shape[1]))
     print("La columna TARGET que haya en el CSV de entrada no la queremos (es un NULL o False, por defecto), porque la vamos a PREDECIR...")
     inputFeatures = inputFeaturesyTarget.drop('TARGET', axis=1)
-    print(inputFeatures)
+    print(inputFeatures.head())
+    print("inputFeatures: " + str(inputFeatures.shape[0]) + " x " + str(inputFeatures.shape[1]))
 
     print("Capturamos el indice inicial de filas de entrada:")
     indiceFilasFuturasTransformadas = inputFeaturesyTarget.index.values

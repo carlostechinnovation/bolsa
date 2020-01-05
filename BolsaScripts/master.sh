@@ -1,10 +1,19 @@
 #!/bin/bash
 
+echo -e "MASTER - INICIO: "$( date "+%Y%m%d%H%M%S" )
+
 ################## PARAMETROS DE ENTRADA ############################################
 DIR_TIEMPO="${1}" #pasado o futuro
 DESPLAZAMIENTO_ANTIGUEDAD="${2}"  #0, 50 ....
 ES_ENTORNO_VALIDACION="${3}" #0, 1
 ACTIVAR_DESCARGA="${4}" #S o N
+
+# PARAMETROS DE TARGET MEDIDOS EN VELAS
+S="${5}" #default=10
+X="${6}" #default=56
+R="${7}" #default=10
+M="${8}" #default=7
+F="${9}" #default=5
 
 
 ################## FUNCIONES #############################################################
@@ -32,16 +41,9 @@ crearCarpetaSiNoExisteYVaciarRecursivo() {
 ID_EJECUCION=$( date "+%Y%m%d%H%M%S" )
 echo -e "ID_EJECUCION = "${ID_EJECUCION}
 
-NUM_MAX_EMPRESAS_DESCARGADAS=300
+NUM_MAX_EMPRESAS_DESCARGADAS=600
 MIN_COBERTURA_CLUSTER=60
 MIN_EMPRESAS_POR_CLUSTER=10
-
-# PARAMETROS DE TARGET MEDIDOS EN VELAS
-S="10"
-X="56"
-R="10"
-M="7"
-F="5"
 
 #################### DIRECTORIOS ###############################################################
 DIR_CODIGOS="/home/carloslinux/Desktop/GIT_BOLSA/"
@@ -70,9 +72,9 @@ rm -f "${LOG_MASTER}"
 
 ############### COMPILAR JAR ########################################################
 echo -e "Compilando JAVA en un JAR..." >> ${LOG_MASTER}
-cd "${DIR_JAVA}"
-rm -Rf "${DIR_JAVA}target/"
-mvn clean compile assembly:single
+cd "${DIR_JAVA}" >> ${LOG_MASTER}
+rm -Rf "${DIR_JAVA}target/" >> ${LOG_MASTER}
+mvn clean compile assembly:single >> ${LOG_MASTER}
 
 ################################################################################################
 echo -e "-------- DATOS BRUTOS -------------" >> ${LOG_MASTER}
@@ -150,18 +152,18 @@ java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%
 
 ############  PARA CADA SUBGRUPO ###############################################################
 
-for dir_subgrupo in ${DIR_SUBGRUPOS}*
+for dir_subgrupo in ${DIR_SUBGRUPOS}*/
 do
 	echo "-------- Subgrupo cuya carpeta es: ${dir_subgrupo} --------" >> ${LOG_MASTER}
 	
-	path_dir_pasado=$( echo '${dir_subgrupo}' | sed "s/futuro/pasado/" )
+	path_dir_pasado=$( echo ${dir_subgrupo} | sed "s/futuro/pasado/" )
 	echo "$path_dir_pasado"
-	path_normalizador_pasado="${path_dir_pasado}/NORMALIZADOR.tool"
+	path_normalizador_pasado="${path_dir_pasado}NORMALIZADOR.tool"
 	echo "$path_normalizador_pasado"
 	
 	if [ "$DIR_TIEMPO" = "pasado" ] || { [ "$DIR_TIEMPO" = "futuro" ] && [ -f "$path_normalizador_pasado" ]; };  then 
         
-		crearCarpetaSiNoExisteYVaciar  "${dir_subgrupo}/${DIR_IMG}"
+		crearCarpetaSiNoExisteYVaciar  "${dir_subgrupo}${DIR_IMG}"
 	
 	    echo -e "Capa 5: elimina MISSING VALUES (NA en columnas y filas), elimina OUTLIERS, balancea clases (undersampling de mayoritaria), calcula IMG funciones de densidad, NORMALIZA las features, comprueba suficientes casos en clase minoritaria, REDUCCION de FEATURES y guarda el CSV REDUCIDO..." >> ${LOG_MASTER}
 	    $PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/C5NormalizarYReducirDatasetSubgrupo.py" "${dir_subgrupo}/" "${DIR_TIEMPO}" >> ${LOG_MASTER}
@@ -170,10 +172,11 @@ do
 	    $PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/C6CreadorModelosDeSubgrupo.py" "${dir_subgrupo}/" "${DIR_TIEMPO}" "${DESPLAZAMIENTO_ANTIGUEDAD}"  >> ${LOG_MASTER}
 		
     else
-        echo "Al evaluar el subgrupo cuyo directorio es $dir_subgrupo para el tiempo $DIR_TIEMPO vemos que no existe entrenamiento en el pasado, asi que no existe $path_normalizador_pasado"
+        echo "Al evaluar el subgrupo cuyo directorio es $dir_subgrupo para el tiempo $DIR_TIEMPO vemos que no existe entrenamiento en el pasado, asi que no existe $path_normalizador_pasado" >> ${LOG_MASTER}
     fi;
 	
 done
 
 ################################################################################################
+echo -e "MASTER - FIN: "$( date "+%Y%m%d%H%M%S" )
 echo -e "******** FIN de master**************" >> ${LOG_MASTER}

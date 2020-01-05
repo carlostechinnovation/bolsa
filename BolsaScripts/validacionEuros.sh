@@ -17,6 +17,7 @@ R="10"
 M="7"
 F="5"
 
+
 DIR_BASE="/bolsa/"
 DIR_CODIGOS="/home/carloslinux/Desktop/GIT_BOLSA/"
 PATH_SCRIPTS="${DIR_CODIGOS}BolsaScripts/"
@@ -43,13 +44,13 @@ mkdir -p /bolsa/logs/ >>${LOG_VALIDADOR}
 echo -e ""  >>${LOG_VALIDADOR}
 
 echo -e "Ejecución del PASADO (para entrenar los modelos a dia de HOY con la lista normal de empresas)..." >>${LOG_VALIDADOR}
-${PATH_SCRIPTS}master.sh "pasado" "0" "0" "S"  2>>${LOG_VALIDADOR} 1>>${LOG_VALIDADOR}
+${PATH_SCRIPTS}master.sh "pasado" "0" "0" "S" "${S}" "${X}" "${R}" "${M}" "${F}" 2>>${LOG_VALIDADOR} 1>>${LOG_VALIDADOR}
 
 ################################################################################################
 rm -Rf /bolsa/futuro/ >>${LOG_VALIDADOR}
 
 echo -e "Ejecución del futuro (para velas de ATRAS) con OTRAS empresas (lista REVERTIDA)..." >>${LOG_VALIDADOR}
-${PATH_SCRIPTS}master.sh "futuro" "$VELAS_RETROCESO" "1" "S"   2>>${LOG_VALIDADOR} 1>>${LOG_VALIDADOR}
+${PATH_SCRIPTS}master.sh "futuro" "$VELAS_RETROCESO" "1" "S" "${S}" "${X}" "${R}" "${M}" "${F}"  2>>${LOG_VALIDADOR} 1>>${LOG_VALIDADOR}
 
 echo -e "ATRAS $VELAS_RETROCESO velas --> Guardamos la prediccion de todos los SUBGRUPOS en la carpeta de validacion, para analizarla luego..." >>${LOG_VALIDADOR}
 while IFS= read -r -d '' -u 9
@@ -64,7 +65,7 @@ done 9< <( find $DIR_FUT_SUBGRUPOS -type f -exec printf '%s\0' {} + )
 rm -Rf /bolsa/futuro/ >>${LOG_VALIDADOR}
 
 echo -e "Ejecución del futuro (para velas de HOY) con OTRAS empresas (lista REVERTIDA)..." >>${LOG_VALIDADOR}
-${PATH_SCRIPTS}master.sh "futuro" "0" "1" "S"  2>>${LOG_VALIDADOR} 1>>${LOG_VALIDADOR}
+${PATH_SCRIPTS}master.sh "futuro" "0" "1" "S" "${S}" "${X}" "${R}" "${M}" "${F}" 2>>${LOG_VALIDADOR} 1>>${LOG_VALIDADOR}
 
 echo -e "VELAS_50 --> Guardamos la prediccion de todos los SUBGRUPOS en la carpeta de validacion, para analizarla luego..." >>${LOG_VALIDADOR}
 while IFS= read -r -d '' -u 9

@@ -271,14 +271,16 @@ public class Validador implements Serializable {
 			}
 
 			// PORCENTAJE ACIERTOS por SUBGRUPO
+			MY_LOGGER.info("COBERTURA - aciertosTargetUnoSubgrupo (PREDICHOS)=" + aciertosTargetUnoSubgrupo);
+			MY_LOGGER.info("COBERTURA - totalTargetUnoEnSubgrupo (REALES)=" + totalTargetUnoEnSubgrupo);
 			MY_LOGGER.info("COBERTURA - Porcentaje aciertos subgrupo " + predicho.getFileName() + ": "
 					+ (aciertosTargetUnoSubgrupo / totalTargetUnoEnSubgrupo) * 100 + "% de " + totalTargetUnoEnSubgrupo
-					+ " elementos PREDICHOS a TARGET=1");
+					+ " elementos PREDICHOS con TARGET=1");
 
 			// RENTABILIDAD PRECIOS por SUBGRUPO
 			Double mediaRendimientoClose = performanceClose.getMean();
 			Double stdRendimientoClose = performanceClose.getStandardDeviation();
-			MY_LOGGER.info("RENTABILIDAD - porcentaje medio de SUBIDA del precio en subgrupo " + predicho.getFileName()
+			MY_LOGGER.info("RENTABILIDAD - Porcentaje medio de SUBIDA del precio en subgrupo " + predicho.getFileName()
 					+ ": " + mediaRendimientoClose * 100 + " % de " + totalTargetUnoEnSubgrupo
 					+ " elementos PREDICHOS a TARGET=1");
 			MY_LOGGER.info("RENTABILIDAD - Desviación estándar de SUBIDA del precio en subgrupo "

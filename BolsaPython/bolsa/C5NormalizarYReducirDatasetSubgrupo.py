@@ -226,6 +226,9 @@ def normalizarFeatures(featuresFichero, path_modelo_normalizador, dir_subgrupo_i
   print("featuresFichero: " + str(featuresFichero.shape[0]) + " x " + str(featuresFichero.shape[1]))
   print("path_modelo_normalizador: " + path_modelo_normalizador)
 
+  # Vamos a normalizar z-score (media 0, std_dvt=1), pero yeo-johnson tiene un bug (https://github.com/scipy/scipy/issues/10821) que se soluciona sumando una constante a toda la matriz, lo cual no afecta a la matriz normalizada
+  featuresFichero = featuresFichero + 1.015815
+
   if modoTiempo == "pasado":
       modelo_normalizador = PowerTransformer(method='yeo-johnson', standardize=True, copy=True).fit(featuresFichero)
       pickle.dump(modelo_normalizador, open(path_modelo_normalizador, 'wb')) # Luego basta cargarlo así --> modelo_normalizador=load(path_modelo_normalizador)
@@ -248,7 +251,7 @@ def normalizarFeatures(featuresFichero, path_modelo_normalizador, dir_subgrupo_i
   featuresFicheroNorm2 = pd.DataFrame(data=featuresFicheroNorm, columns=featuresFichero.columns)
 
   print("Features NORMALIZADAS (sample):")
-  print(featuresFicheroNorm2)
+  print(featuresFicheroNorm2.head())
   print("featuresFicheroNorm2:" + str(featuresFicheroNorm2.shape[0]) + " x " + str(featuresFicheroNorm2.shape[1]))
 
   if modoDebug:
@@ -371,7 +374,8 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, 
   print("Las columnas seleccionadas son:")
   print(columnasSeleccionadas)
   featuresFicheroNormElegidas = featuresFicheroNorm[columnasSeleccionadas]
-  print(featuresFicheroNormElegidas)
+  print(featuresFicheroNormElegidas.head())
+  print("featuresFicheroNormElegidas: " + str(featuresFicheroNormElegidas.shape[0]) + " x " + str(featuresFicheroNormElegidas.shape[1]))
 
   ####################### NO LO USAMOS pero lo dejo aqui ########
   #if modoDebug and False:
