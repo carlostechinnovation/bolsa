@@ -260,9 +260,11 @@ public class Validador implements Serializable {
 												MY_LOGGER.info("closeValidacionActual: " + closeValidacionActual);
 												MY_LOGGER.info("closeValidacionFutura: " + closeValidacionFutura);
 												if (acertado) {
-													MY_LOGGER.info("EL SISTEMA HA ACERTADO");
+													MY_LOGGER.info("EL SISTEMA HA ACERTADO, con rentabilidad: "
+															+ performance * 100 + " %");
 												} else {
-													MY_LOGGER.info("EL SISTEMA HA FALLADO");
+													MY_LOGGER.info("EL SISTEMA HA FALLADO, con rentabilidad: "
+															+ performance * 100 + " %");
 												}
 												MY_LOGGER.info("----------------FIN NUEVO CASO---------------");
 
