@@ -203,11 +203,6 @@ public class Validador implements Serializable {
 											filaValidacion);
 									targetValidacion = filaValidacion.substring(indice - 3, indice - 2);
 
-									if (filaPredicha.startsWith("WKHS|0|")) {
-										int a = 0;
-										a--;
-									}
-
 									if (targetPredicho.compareTo("1") == 0) {
 										totalTargetUnoEnSubgrupo++;
 										if (targetPredicho.compareTo(targetValidacion) == 0) {
