@@ -276,10 +276,10 @@ public class Validador implements Serializable {
 			Double mediaRendimientoClose = performanceClose.getMean();
 			Double stdRendimientoClose = performanceClose.getStandardDeviation();
 			MY_LOGGER.info("RENTABILIDAD - Porcentaje medio de SUBIDA del precio en subgrupo " + predicho.getFileName()
-					+ ": " + mediaRendimientoClose * 100 + " % de " + totalTargetUnoEnSubgrupo
+					+ " es: " + mediaRendimientoClose * 100 + " % de " + totalTargetUnoEnSubgrupo
 					+ " elementos PREDICHOS a TARGET=1");
 			MY_LOGGER.info("RENTABILIDAD - Desviación estándar de SUBIDA del precio en subgrupo "
-					+ predicho.getFileName() + ": " + stdRendimientoClose + " para " + totalTargetUnoEnSubgrupo
+					+ predicho.getFileName() + " es: " + stdRendimientoClose + " para " + totalTargetUnoEnSubgrupo
 					+ " elementos PREDICHOS a TARGET=1");
 
 		}

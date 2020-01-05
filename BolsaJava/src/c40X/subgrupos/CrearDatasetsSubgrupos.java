@@ -246,6 +246,7 @@ public class CrearDatasetsSubgrupos implements Serializable {
 				while (itEmpresas.hasNext()) {
 					pathEmpresa = itEmpresas.next();
 					if (empresasConTarget.get(pathEmpresa)) {
+						// Si la empresa tiene al menos una vela con target=1
 						estadisticas.addValue(1);
 					} else {
 						estadisticas.addValue(0);
@@ -261,13 +262,23 @@ public class CrearDatasetsSubgrupos implements Serializable {
 				// Para generar un fichero de dataset del cluster, la cobertura debe ser mayor
 				// que un x%
 				if (coberturaEmpresasPorCluster * 100 < Double.valueOf(coberturaMinima)) {
-					MY_LOGGER.warn("El cluster " + tipo + ", con cobertura: " + coberturaEmpresasPorCluster * 100 + "%"
-							+ " no llega al mínimo: " + coberturaMinima + "%. NO SE GENERA DATASET");
+					MY_LOGGER.warn("El cluster " + tipo + " tiene un " + coberturaEmpresasPorCluster * 100
+							+ "% de empresas con al menos una vela positiva (target=1). "
+							+ "Por tanto no se llega al mínimo deseado (" + coberturaMinima
+							+ "%). NO SE GENERA DATASET");
+
 				} else if (empresasConTarget.keySet().size() < Integer.valueOf(minEmpresasPorCluster)) {
-					MY_LOGGER.warn("El cluster " + tipo + ", tiene: " + empresasConTarget.keySet().size()
-							+ " empresas, pero el mínimo debe ser: " + minEmpresasPorCluster
-							+ ". NO SE GENERA DATASET");
+					MY_LOGGER.warn("El cluster " + tipo + ", tiene " + empresasConTarget.keySet().size()
+							+ " empresas. Es demasiado pequeño, porque debería tener al menos " + minEmpresasPorCluster
+							+ " empresas." + " NO SE GENERA DATASET");
 				} else {
+
+					MY_LOGGER.info("El cluster " + tipo + " tiene un " + coberturaEmpresasPorCluster * 100
+							+ "% de empresas con al menos una vela positiva (target=1). "
+							+ "Por tanto supera el mínimo deseado (" + coberturaMinima + "%). SI SE GENERA DATASET");
+					MY_LOGGER.info("También el cluster " + tipo + ", tiene " + empresasConTarget.keySet().size()
+							+ " empresas. Es suficientemente grande, porque supera el umbral de tener al menos "
+							+ minEmpresasPorCluster + " empresas." + " SI SE GENERA DATASET");
 
 					// Hay alguna empresa de este tipo. Creo un CSV común para todas las del mismo
 					// tipo
