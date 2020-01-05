@@ -122,7 +122,12 @@ public class Validador implements Serializable {
 
 		Float aciertosTargetUnoSubgrupo, fallosTargetUnoSubgrupo, totalTargetUnoEnSubgrupo;
 		Integer antiguedadFutura;
-		Estadisticas performanceClose;
+		Estadisticas performanceClose, performanceCloseAcertados, performanceCloseFallados;
+		Double closeValidacionFutura, closeValidacionActual;
+		Double performance;
+		Double mediaRendimientoClose, mediaRendimientoCloseAcertados, mediaRendimientoCloseFallados;
+		Double stdRendimientoClose, stdRendimientoCloseAcertados, stdRendimientoCloseFallados;
+		Boolean acertado;
 
 		for (Path predicho : ficherosPredichos) {
 
@@ -131,6 +136,8 @@ public class Validador implements Serializable {
 			fallosTargetUnoSubgrupo = 0F;
 			totalTargetUnoEnSubgrupo = 0F;
 			performanceClose = new Estadisticas();
+			performanceCloseAcertados = new Estadisticas();
+			performanceCloseFallados = new Estadisticas();
 
 			for (Path validacion : ficherosValidacion) {
 				// Se asume que la estructura del nombre de cada fichero es:
@@ -207,8 +214,10 @@ public class Validador implements Serializable {
 										totalTargetUnoEnSubgrupo++;
 										if (targetPredicho.compareTo(targetValidacion) == 0) {
 											aciertosTargetUnoSubgrupo++;
+											acertado = Boolean.TRUE;
 										} else {
 											fallosTargetUnoSubgrupo++;
+											acertado = Boolean.FALSE;
 										}
 
 										// RENTABILIDAD PRECIOS para TARGET = 1
@@ -219,22 +228,27 @@ public class Validador implements Serializable {
 											if (filaValidacionFutura.startsWith(
 													empresaValidacion + "|" + antiguedadFutura.toString())) {
 
-												Double closeValidacionFutura = Double
-														.valueOf(filaValidacionFutura.substring(
-																SubgruposUtils.indiceDeAparicion("|".charAt(0), 11,
-																		filaValidacionFutura) + 1,
-																SubgruposUtils.indiceDeAparicion("|".charAt(0), 12,
-																		filaValidacionFutura)));
+												closeValidacionFutura = Double.valueOf(filaValidacionFutura.substring(
+														SubgruposUtils.indiceDeAparicion("|".charAt(0), 11,
+																filaValidacionFutura) + 1,
+														SubgruposUtils.indiceDeAparicion("|".charAt(0), 12,
+																filaValidacionFutura)));
 
-												Double closeValidacionActual = Double.valueOf(filaValidacion.substring(
+												closeValidacionActual = Double.valueOf(filaValidacion.substring(
 														SubgruposUtils.indiceDeAparicion("|".charAt(0), 11,
 																filaValidacion) + 1,
 														SubgruposUtils.indiceDeAparicion("|".charAt(0), 12,
 																filaValidacion)));
 
-												performanceClose
-														.addValue((closeValidacionFutura - closeValidacionActual)
-																/ closeValidacionActual);
+												performance = (closeValidacionFutura - closeValidacionActual)
+														/ closeValidacionActual;
+												performanceClose.addValue(performance);
+
+												if (acertado) {
+													performanceCloseAcertados.addValue(performance);
+												} else {
+													performanceCloseFallados.addValue(performance);
+												}
 
 												MY_LOGGER.info("----------------NUEVO CASO---------------");
 												MY_LOGGER.info(
@@ -245,6 +259,11 @@ public class Validador implements Serializable {
 														+ filaValidacionFutura);
 												MY_LOGGER.info("closeValidacionActual: " + closeValidacionActual);
 												MY_LOGGER.info("closeValidacionFutura: " + closeValidacionFutura);
+												if (acertado) {
+													MY_LOGGER.info("EL SISTEMA HA ACERTADO");
+												} else {
+													MY_LOGGER.info("EL SISTEMA HA FALLADO");
+												}
 												MY_LOGGER.info("----------------FIN NUEVO CASO---------------");
 
 												// No itero más
@@ -273,13 +292,32 @@ public class Validador implements Serializable {
 					+ " elementos PREDICHOS con TARGET=1");
 
 			// RENTABILIDAD PRECIOS por SUBGRUPO
-			Double mediaRendimientoClose = performanceClose.getMean();
-			Double stdRendimientoClose = performanceClose.getStandardDeviation();
+			mediaRendimientoClose = performanceClose.getMean();
+			stdRendimientoClose = performanceClose.getStandardDeviation();
 			MY_LOGGER.info("RENTABILIDAD - Porcentaje medio de SUBIDA del precio en subgrupo " + predicho.getFileName()
-					+ " es: " + mediaRendimientoClose * 100 + " % de " + totalTargetUnoEnSubgrupo
+					+ ": " + mediaRendimientoClose * 100 + " % de " + totalTargetUnoEnSubgrupo
 					+ " elementos PREDICHOS a TARGET=1");
 			MY_LOGGER.info("RENTABILIDAD - Desviación estándar de SUBIDA del precio en subgrupo "
-					+ predicho.getFileName() + " es: " + stdRendimientoClose + " para " + totalTargetUnoEnSubgrupo
+					+ predicho.getFileName() + ": " + stdRendimientoClose + " para " + totalTargetUnoEnSubgrupo
+					+ " elementos PREDICHOS a TARGET=1");
+
+			// ANALISIS
+			mediaRendimientoCloseAcertados = performanceCloseAcertados.getMean();
+			stdRendimientoCloseAcertados = performanceCloseAcertados.getStandardDeviation();
+			MY_LOGGER.info("ANALISIS - ACERTADOS - Porcentaje medio de SUBIDA del precio en subgrupo "
+					+ predicho.getFileName() + ": " + mediaRendimientoCloseAcertados * 100 + " % de "
+					+ totalTargetUnoEnSubgrupo + " elementos PREDICHOS a TARGET=1");
+			MY_LOGGER.info("ANALISIS - ACERTADOS - Desviación estándar de SUBIDA del precio en subgrupo "
+					+ predicho.getFileName() + ": " + stdRendimientoCloseAcertados + " para " + totalTargetUnoEnSubgrupo
+					+ " elementos PREDICHOS a TARGET=1");
+
+			mediaRendimientoCloseFallados = performanceCloseFallados.getMean();
+			stdRendimientoCloseFallados = performanceCloseFallados.getStandardDeviation();
+			MY_LOGGER.info("ANALISIS - FALLADOS - Porcentaje medio de SUBIDA del precio en subgrupo "
+					+ predicho.getFileName() + ": " + mediaRendimientoCloseFallados * 100 + " % de "
+					+ totalTargetUnoEnSubgrupo + " elementos PREDICHOS a TARGET=1");
+			MY_LOGGER.info("ANALISIS - FALLADOS - Desviación estándar de SUBIDA del precio en subgrupo "
+					+ predicho.getFileName() + ": " + stdRendimientoCloseFallados + " para " + totalTargetUnoEnSubgrupo
 					+ " elementos PREDICHOS a TARGET=1");
 
 		}
