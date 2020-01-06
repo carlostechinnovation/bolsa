@@ -19,7 +19,7 @@ F="5"
 
 
 DIR_BASE="/bolsa/"
-DIR_CODIGOS="/home/carloslinux/Desktop/GIT_BOLSA/"
+DIR_CODIGOS="/home/t151521/bolsa/"
 PATH_SCRIPTS="${DIR_CODIGOS}BolsaScripts/"
 DIR_LOGS="${DIR_BASE}logs/"
 LOG_VALIDADOR="${DIR_LOGS}validador.log"

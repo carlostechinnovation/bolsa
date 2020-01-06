@@ -63,7 +63,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/bolsa/C5NormalizarYReducirDatasetSubgrupo.py" />
-      <option name="PARAMETERS" value="/bolsa/futuro/subgrupos/SG_5/ futuro" />
+      <option name="PARAMETERS" value="/bolsa/pasado/subgrupos/SG_5/ pasado" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -84,7 +84,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/bolsa/C6CreadorModelosDeSubgrupo.py" />
-      <option name="PARAMETERS" value="/bolsa/futuro/subgrupos/SG_5/ futuro 0" />
+      <option name="PARAMETERS" value="/bolsa/pasado/subgrupos/SG_5/ pasado 0" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -183,11 +183,12 @@
     <option name="LAST_COMMIT_MESSAGE" value="Machine Learning - Ejemplo" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="1985" y="260" width="1855" height="769" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1578180650942">
-      <screen x="1920" y="0" width="1920" height="1080" />
+    <state x="109" y="86" width="1855" height="769" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1578310786478">
+      <screen x="65" y="24" width="1301" height="744" />
     </state>
     <state x="54" y="169" key="#com.intellij.execution.impl.EditConfigurationsDialog/-1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1576786944833" />
     <state x="43" y="134" width="1428" height="690" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.824@0.0.1536.824" timestamp="1576676029392" />
+    <state x="109" y="86" key="#com.intellij.execution.impl.EditConfigurationsDialog/65.24.1301.744@65.24.1301.744" timestamp="1578310786478" />
     <state x="1985" y="260" width="1855" height="769" key="#com.intellij.execution.impl.EditConfigurationsDialog/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1578180650942" />
     <state x="334" y="278" width="1323" height="678" key="#com.intellij.execution.impl.EditConfigurationsDialog/65.24.1855.1056@65.24.1855.1056" timestamp="1578129116717" />
     <state x="1985" y="278" width="1855" height="678" key="#com.intellij.execution.impl.EditConfigurationsDialog/65.24.3775.1056@65.24.3775.1056" timestamp="1577913134573" />
