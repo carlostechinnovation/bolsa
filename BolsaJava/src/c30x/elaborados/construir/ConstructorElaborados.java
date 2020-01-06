@@ -201,7 +201,7 @@ public class ConstructorElaborados implements Serializable {
 			while (itAntiguedadTarget.hasNext()) {
 				antiguedad = itAntiguedadTarget.next();
 
-				// PARA CADA PERIODO DE CALCULO DE PAR�METROS ELABORADOS y cada antiguedad, que
+				// PARA CADA PERIODO DE CALCULO DE PARAMETROS ELABORADOS y cada antiguedad, que
 				// será un GRUPO de COLUMNAS...
 
 				// Deben existir datos de una antiguedadHistorica = (antiguedad + periodo)
@@ -213,8 +213,8 @@ public class ConstructorElaborados implements Serializable {
 					for (int i = 0; i < periodo; i++) {
 						parametros = datosEmpresaEntrada.get(i + antiguedad);
 						MY_LOGGER.debug("i + antiguedad: " + (i + antiguedad));
-						// Se toma el parámetro "close" para las estad�sticas de precio
-						// Se toma el parámetro "volumen" para las estad�sticas de volumen
+						// Se toma el parámetro "close" para las estadisticas de precio
+						// Se toma el parámetro "volumen" para las estadisticas de volumen
 						auxPrecio = parametros.get("close");
 						auxVolumen = parametros.get("volumen");
 						estadisticasPrecio.addValue(new Double(auxPrecio));
@@ -320,46 +320,79 @@ public class ConstructorElaborados implements Serializable {
 					// Estamos analizando un punto en el tiempo X datos anteriores
 					target = TARGET_INVALIDO;
 					break;
+
 				} else {
+
+					// ------------------ DEFINICION DE TARGET ----------------------
 					// Si el precio actual ha subido S% tras X velas viejas, y si despues, durante
 					// todas las M velas nuevas, no ha caido mas de R% (y que el precio final en la
 					// vela M será mayor que F% respecto del actual), entonces Target=1
+
 					datosAntiguedad = datosEmpresaEntrada.get(antiguedad);
 					datosAntiguedadX = datosEmpresaEntrada.get(antiguedadX);
+
+					if (!datosAntiguedad.containsKey("close")) {
+						MY_LOGGER.error("Empresa=" + empresa + " -> Falta dato close en datosAntiguedad");
+					}
+					if (!datosAntiguedadX.containsKey("close")) {
+						MY_LOGGER.error("Empresa=" + empresa + " -> Falta dato close en datosAntiguedadX");
+					}
+
 					Double closeAntiguedad = Double.valueOf(datosAntiguedad.get("close"));
 					Double closeAntiguedadX = Double.valueOf(datosAntiguedadX.get("close"));
-					if (closeAntiguedad >= closeAntiguedadX * subidaSPrecioTantoPorUno) {
+
+					boolean closeActualSuperaCloseXConSubidaS = closeAntiguedad >= closeAntiguedadX
+							* subidaSPrecioTantoPorUno;
+
+					if (closeActualSuperaCloseXConSubidaS) {
+
 						Integer antiguedadM = antiguedad - M;// Última vela M futura, más allá de la antigüedad actual
 						datosAntiguedadM = datosEmpresaEntrada.get(antiguedadM);
-						Double closeAntiguedadM = Double.valueOf(datosAntiguedadM.get("close"));
-						// En la vela M el precio debe ser un F% mejor que en la vela actual
-						if (closeAntiguedad < caidaFPrecioTantoPorUno * closeAntiguedadM)
-							for (int i = 1; i <= M; i++) {
-								Integer antiguedadI = antiguedad - i; // Voy hacia el futuro
 
-								Double closeAntiguedadI = Double
-										.valueOf(datosEmpresaEntrada.get(antiguedadI).get("close"));
-								if (closeAntiguedad * caidaRPrecioTantoPorUno < closeAntiguedadI) {
-									mCumplida = Boolean.TRUE;
-								} else {
-									// Se ha encontrado AL MENOS una vela posterior, en las M siguientes, con el
-									// precio por debajo de la caída mínima R
-									// TODAS LAS VELAS FUTURAS TIENEN QUE ESTAR POR ENCIMA DE ESE UMBRAL
-									mCumplida = Boolean.FALSE;
-									break;
+						if (datosAntiguedadM == null) {
+							MY_LOGGER.error("Empresa=" + empresa + " -> datosAntiguedadM es NULO para antiguedad="
+									+ antiguedad + " y M=" + M + " -> antiguedadM=" + antiguedadM
+									+ " Posible causa: el mercado está abierto");
+						} else {
+
+							Double closeAntiguedadM = Double.valueOf(datosAntiguedadM.get("close"));
+
+							// En la vela M el precio debe ser un F% mejor que en la vela actual
+							boolean closeMSuperaCloseActualMayorQueF = closeAntiguedad < caidaFPrecioTantoPorUno
+									* closeAntiguedadM;
+							if (closeMSuperaCloseActualMayorQueF) {
+
+								for (int i = 1; i <= M; i++) {
+									Integer antiguedadI = antiguedad - i; // Voy hacia el futuro
+
+									Double closeAntiguedadI = Double
+											.valueOf(datosEmpresaEntrada.get(antiguedadI).get("close"));
+									if (closeAntiguedad * caidaRPrecioTantoPorUno < closeAntiguedadI) {
+										mCumplida = Boolean.TRUE;
+									} else {
+										// Se ha encontrado AL MENOS una vela posterior, en las M siguientes, con el
+										// precio por debajo de la caída mínima R
+										// TODAS LAS VELAS FUTURAS TIENEN QUE ESTAR POR ENCIMA DE ESE UMBRAL
+										mCumplida = Boolean.FALSE;
+										break;
+									}
 								}
 							}
-						if (mCumplida) {
-							// La S sí se cumple, y la M tambien en todo el rango
-							target = "1";
-						} else {
-							target = "0";
+
+							if (mCumplida) {
+								// La S sí se cumple, y la M tambien en todo el rango
+								target = "1";
+							} else {
+								target = "0";
+							}
 						}
+
 					} else {
 						// La S no se cumple
 						target = "0";
 					}
 				}
+
 			} else {
 				// La antiguedad es demasiado reciente para ver si es estable en M
 				target = TARGET_INVALIDO;

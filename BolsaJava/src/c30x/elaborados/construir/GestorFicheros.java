@@ -75,14 +75,20 @@ public class GestorFicheros {
 		ordenNombresParametrosLeidos.put(10, "low");
 		ordenNombresParametrosLeidos.put(11, "close");
 		ordenNombresParametrosLeidos.put(12, "open");
-		ordenNombresParametrosLeidos.put(13, "Insider Own");
-		ordenNombresParametrosLeidos.put(14, "Debt/Eq");
-		ordenNombresParametrosLeidos.put(15, "P/E");
-		ordenNombresParametrosLeidos.put(16, "Dividend %");
-		ordenNombresParametrosLeidos.put(17, "Employees");
-		ordenNombresParametrosLeidos.put(18, "Inst Own");
-		ordenNombresParametrosLeidos.put(19, "Market Cap");
-
+		ordenNombresParametrosLeidos.put(13, "industria");
+		ordenNombresParametrosLeidos.put(14, "Insider Own");
+		ordenNombresParametrosLeidos.put(15, "Quick Ratio");
+		ordenNombresParametrosLeidos.put(16, "Current Ratio");
+		ordenNombresParametrosLeidos.put(17, "P/E");
+		ordenNombresParametrosLeidos.put(18, "Dividend %");
+		ordenNombresParametrosLeidos.put(19, "Employees");
+		ordenNombresParametrosLeidos.put(20, "geo");
+		ordenNombresParametrosLeidos.put(21, "Debt/Eq");
+		ordenNombresParametrosLeidos.put(22, "LT Debt/Eq");
+		ordenNombresParametrosLeidos.put(23, "EPS next Y");
+		ordenNombresParametrosLeidos.put(24, "sector");
+		ordenNombresParametrosLeidos.put(25, "Inst Own");
+		ordenNombresParametrosLeidos.put(26, "Market Cap");
 	}
 
 	/**

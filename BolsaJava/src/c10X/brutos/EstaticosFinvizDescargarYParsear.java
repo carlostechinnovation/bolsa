@@ -240,6 +240,11 @@ public class EstaticosFinvizDescargarYParsear {
 
 		Document doc = Jsoup.parse(in);
 
+		// -----------Sector + Industria + GEO -----------------
+		String claseSectoresYOtros = "fullview-links";
+		Elements items = doc.getElementsByClass(claseSectoresYOtros);
+		extraerSectorIndustriaGeo(items, mapaExtraidos);
+
 		// --------------------- Algunos datos estaticos ---------------
 		String claseBuscada = "table-dark-row";
 		Elements tablas = doc.getElementsByClass(claseBuscada);
@@ -249,10 +254,44 @@ public class EstaticosFinvizDescargarYParsear {
 			extraerInfoDeFila("P/E", t, mapaExtraidos, BrutosUtils.ESCALA_UNO);
 			extraerInfoDeFila("Insider Own", t, mapaExtraidos, BrutosUtils.ESCALA_UNO);
 			extraerInfoDeFila("Market Cap", t, mapaExtraidos, BrutosUtils.ESCALA_M);
+			extraerInfoDeFila("EPS next Y", t, mapaExtraidos, BrutosUtils.ESCALA_UNO);
 			extraerInfoDeFila("Inst Own", t, mapaExtraidos, BrutosUtils.ESCALA_UNO);
 			extraerInfoDeFila("Dividend %", t, mapaExtraidos, BrutosUtils.ESCALA_UNO);
+			extraerInfoDeFila("Quick Ratio", t, mapaExtraidos, BrutosUtils.ESCALA_UNO);
 			extraerInfoDeFila("Employees", t, mapaExtraidos, BrutosUtils.ESCALA_UNO);
+			extraerInfoDeFila("Current Ratio", t, mapaExtraidos, BrutosUtils.ESCALA_UNO);
 			extraerInfoDeFila("Debt/Eq", t, mapaExtraidos, BrutosUtils.ESCALA_UNO);
+			extraerInfoDeFila("LT Debt/Eq", t, mapaExtraidos, BrutosUtils.ESCALA_UNO);
+
+		}
+
+	}
+
+	/**
+	 * En la pagina de FINVIZ, extrae los campos de: Sector Económico, Industria y
+	 * Zona Geográfica
+	 * 
+	 * @param t
+	 * @param mapaExtraidos
+	 */
+	private static void extraerSectorIndustriaGeo(Elements items, Map<String, String> mapaExtraidos) {
+
+		for (Element t : items) {
+			String cad = t.toString();
+			if (cad.contains("sec_") && cad.contains("ind_") && cad.contains("geo_")) {
+
+				String[] partesSec = cad.substring(cad.indexOf("sec_")).split("\"", 2);
+				String sector = partesSec[0].replace("sec_", "");
+				mapaExtraidos.put("sector", sector);
+
+				String[] partesInd = cad.substring(cad.indexOf("ind_")).split("\"", 2);
+				String industria = partesInd[0].replace("ind_", "");
+				mapaExtraidos.put("industria", industria);
+
+				String[] partesGeo = cad.substring(cad.indexOf("geo_")).split("\"", 2);
+				String geo = partesGeo[0].replace("geo_", "");
+				mapaExtraidos.put("geo", geo);
+			}
 
 		}
 

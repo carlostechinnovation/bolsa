@@ -125,13 +125,14 @@ public class JuntarEstaticosYDinamicosCSVunico {
 		String actual;
 		boolean primeraLinea = true;
 
-		String estaticosCabecera = "Insider Own|Debt/Eq|P/E|Dividend %|Employees|Inst Own|Market Cap";
+		String estaticosCabecera = "industria|Insider Own|Quick Ratio|Current Ratio|P/E|Dividend %|Employees|geo|Debt/Eq|LT Debt/Eq|EPS next Y|sector|Inst Own|Market Cap";
 		String estaticosDatos = "";
 
 		while ((actual = br.readLine()) != null) {
 			if (primeraLinea == false) {
 
 				String[] partes = actual.split("\\|");
+				// Descartamos: partes[0]=mercado y partes[1]=empresa
 				estaticosDatos += partes[2];
 				estaticosDatos += "|" + partes[3];
 				estaticosDatos += "|" + partes[4];
@@ -139,6 +140,13 @@ public class JuntarEstaticosYDinamicosCSVunico {
 				estaticosDatos += "|" + partes[6];
 				estaticosDatos += "|" + partes[7];
 				estaticosDatos += "|" + partes[8];
+				estaticosDatos += "|" + partes[9];
+				estaticosDatos += "|" + partes[10];
+				estaticosDatos += "|" + partes[11];
+				estaticosDatos += "|" + partes[12];
+				estaticosDatos += "|" + partes[13];
+				estaticosDatos += "|" + partes[14];
+				estaticosDatos += "|" + partes[15];
 			}
 			primeraLinea = false;
 		}
@@ -212,7 +220,7 @@ public class JuntarEstaticosYDinamicosCSVunico {
 		// modelos porque son casos independientes) ----
 		Collections.reverse(dinamicosDatos);
 
-//------- ESCRITURA a fichero
+		// ------- ESCRITURA a fichero
 		FileOutputStream fos = new FileOutputStream(fjuntos, false);
 		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
 

@@ -12,7 +12,7 @@ VELAS_RETROCESO="50"
 
 # PARAMETROS DE TARGET MEDIDOS EN VELAS
 S="10"
-X="56"
+X="28"
 R="10"
 M="7"
 F="5"
@@ -38,6 +38,8 @@ rm -f "${DIR_LOGS}log4j.log" >>${LOG_VALIDADOR}
 rm -f "${LOG_VALIDADOR}" >>${LOG_VALIDADOR}
 
 ################################################################################################
+
+echo -e "PARAMETROS --> VELAS_RETROCESO|S|X|R|M|F --> ${VELAS_RETROCESO}|${S}|${X}|${R}|${M}|${F}" >>${LOG_VALIDADOR}
 
 rm -Rf /bolsa/pasado/ >>${LOG_VALIDADOR}
 mkdir -p /bolsa/logs/ >>${LOG_VALIDADOR}
@@ -81,5 +83,9 @@ echo -e "Validacion de rendimiento: comparar ATRAS_PREDICHO con HOY_REAL para em
 java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n" -jar ${PATH_JAR} --class "coordinador.Principal" "c70X.validacion.Validador" "${VELAS_RETROCESO}" "${DIR_VALIDACION}" "${S}" "${X}" "${R}" "${M}" 2>>${LOG_VALIDADOR} 1>>${LOG_VALIDADOR}
 
 echo -e "Un sistema CLASIFICADOR BINOMIAL tonto acierta el 50% de las veces. El nuestro..." >> ${LOG_VALIDADOR}
+
+dir_escenario="/bolsa/Empresas600_${VELAS_RETROCESO}_${S}_${X}_${R}_${M}_${F}/"
+mkdir $dir_escenario
+cp -R "/bolsa/logs/" $dir_escenario
 
 echo -e "******** FIN de validacion **************" >> ${LOG_VALIDADOR}
