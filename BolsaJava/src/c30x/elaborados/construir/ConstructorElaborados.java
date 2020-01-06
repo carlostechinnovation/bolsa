@@ -159,7 +159,7 @@ public class ConstructorElaborados implements Serializable {
 
 		// EXTRACCIÓN DE DATOS DE LA EMPRESA
 		datosEmpresaEntrada = datos.get(empresa);
-		MY_LOGGER.debug("anadirParametrosElaboradosDeSoloUnaEmpresa() -> Empresa: " + empresa);
+		MY_LOGGER.info("anadirParametrosElaboradosDeSoloUnaEmpresa() -> Empresa: " + empresa);
 
 		HashMap<String, String> parametros = new HashMap<String, String>();
 		Iterator<Integer> itAntiguedad;
@@ -211,16 +211,26 @@ public class ConstructorElaborados implements Serializable {
 				if (antiguedadHistoricaMaxima < datosEmpresaEntrada.size()) {
 
 					for (int i = 0; i < periodo; i++) {
+
 						parametros = datosEmpresaEntrada.get(i + antiguedad);
 						MY_LOGGER.debug("i + antiguedad: " + (i + antiguedad));
-						// Se toma el parámetro "close" para las estadisticas de precio
-						// Se toma el parámetro "volumen" para las estadisticas de volumen
-						auxPrecio = parametros.get("close");
-						auxVolumen = parametros.get("volumen");
-						estadisticasPrecio.addValue(new Double(auxPrecio));
-						estadisticasVolumen.addValue(new Double(auxVolumen));
-						MY_LOGGER.debug("(antiguedad: " + antiguedad + ", periodo: " + periodo
-								+ ") Metido para estadísticas: " + auxPrecio);
+
+						if (parametros == null) {
+
+							MY_LOGGER.error("Empresa=" + empresa + " No hay datos para la vela --> " + (i + antiguedad)
+									+ " Posible causa: el mercado estaba abierto cuando hemos ejecutado la descarga de datos");
+
+						} else {
+							// Se toma el parámetro "close" para las estadisticas de precio
+							// Se toma el parámetro "volumen" para las estadisticas de volumen
+							auxPrecio = parametros.get("close");
+							auxVolumen = parametros.get("volumen");
+							estadisticasPrecio.addValue(new Double(auxPrecio));
+							estadisticasVolumen.addValue(new Double(auxVolumen));
+							MY_LOGGER.debug("(antiguedad: " + antiguedad + ", periodo: " + periodo
+									+ ") Metido para estadísticas: " + auxPrecio);
+						}
+
 					}
 
 				} else {
@@ -352,7 +362,7 @@ public class ConstructorElaborados implements Serializable {
 						if (datosAntiguedadM == null) {
 							MY_LOGGER.error("Empresa=" + empresa + " -> datosAntiguedadM es NULO para antiguedad="
 									+ antiguedad + " y M=" + M + " -> antiguedadM=" + antiguedadM
-									+ " Posible causa: el mercado está abierto");
+									+ " Posible causa: el mercado estaba abierto cuando hemos ejecutado la descarga de datos");
 						} else {
 
 							Double closeAntiguedadM = Double.valueOf(datosAntiguedadM.get("close"));
