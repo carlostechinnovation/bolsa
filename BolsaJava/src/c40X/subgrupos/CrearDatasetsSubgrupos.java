@@ -17,6 +17,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.helpers.NullEnumeration;
 
+import c10X.brutos.EstaticosFinvizDescargarYParsear;
 import c30x.elaborados.construir.ElaboradosUtils;
 import c30x.elaborados.construir.Estadisticas;
 import c30x.elaborados.construir.GestorFicheros;
@@ -114,7 +115,8 @@ public class CrearDatasetsSubgrupos implements Serializable {
 		HashMap<String, String> parametros;
 
 		HashMap<Integer, HashMap<String, String>> datosEmpresaEntrada = new HashMap<Integer, HashMap<String, String>>();
-		// Tipos de empresa
+
+		// Tipos de empresa segun MARKET CAP (0-6)
 		// Tipo 0: TODAS
 		// Tipo 1: MARKETCAP=MEGA
 		// Tipo 2: MARKETCAP=LARGA
@@ -130,6 +132,18 @@ public class CrearDatasetsSubgrupos implements Serializable {
 		ArrayList<String> pathEmpresasTipo5 = new ArrayList<String>();
 		ArrayList<String> pathEmpresasTipo6 = new ArrayList<String>();
 
+		// Tipos de empresa segun SECTOR ECONOMICO (7-15)
+		ArrayList<String> pathEmpresasTipo7 = new ArrayList<String>();
+		ArrayList<String> pathEmpresasTipo8 = new ArrayList<String>();
+		ArrayList<String> pathEmpresasTipo9 = new ArrayList<String>();
+		ArrayList<String> pathEmpresasTipo10 = new ArrayList<String>();
+		ArrayList<String> pathEmpresasTipo11 = new ArrayList<String>();
+		ArrayList<String> pathEmpresasTipo12 = new ArrayList<String>();
+		ArrayList<String> pathEmpresasTipo13 = new ArrayList<String>();
+		ArrayList<String> pathEmpresasTipo14 = new ArrayList<String>();
+		ArrayList<String> pathEmpresasTipo15 = new ArrayList<String>();
+
+		// Para caad EMPRESA
 		while (iterator.hasNext()) {
 
 			gestorFicheros = new GestorFicheros();
@@ -161,6 +175,8 @@ public class CrearDatasetsSubgrupos implements Serializable {
 				indicePrimeraFilaDeDatos = a.iterator().next();
 			}
 			parametros = datosEmpresaEntrada.get(indicePrimeraFilaDeDatos); // PRIMERA FILA
+
+			// ------ SUBGRUPOS según MARKET CAP ------------
 			String mcStr = parametros.get("Market Cap");
 
 			if (mcStr != null && !mcStr.isEmpty() && !"-".equals(mcStr)) {
@@ -186,6 +202,38 @@ public class CrearDatasetsSubgrupos implements Serializable {
 			} else {
 				MY_LOGGER.warn(ficheroGestionado.getAbsolutePath() + " -> Market Cap: " + mcStr);
 			}
+
+			// ------ SUBGRUPOS según SECTOR ------------
+			String sectorStr = parametros.get("sector");
+
+			if (sectorStr != null && !sectorStr.isEmpty() && !"-".equals(sectorStr)) {
+
+				if (sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_BM)) {
+					pathEmpresasTipo7.add(ficheroGestionado.getAbsolutePath());
+				} else if (sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_CONG)) {
+					pathEmpresasTipo8.add(ficheroGestionado.getAbsolutePath());
+				} else if (sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_CONSGO)) {
+					pathEmpresasTipo9.add(ficheroGestionado.getAbsolutePath());
+				} else if (sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_FIN)) {
+					pathEmpresasTipo10.add(ficheroGestionado.getAbsolutePath());
+				} else if (sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_HC)) {
+					pathEmpresasTipo11.add(ficheroGestionado.getAbsolutePath());
+				} else if (sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_IG)) {
+					pathEmpresasTipo12.add(ficheroGestionado.getAbsolutePath());
+				} else if (sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_SERV)) {
+					pathEmpresasTipo13.add(ficheroGestionado.getAbsolutePath());
+				} else if (sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_TECH)) {
+					pathEmpresasTipo14.add(ficheroGestionado.getAbsolutePath());
+				} else if (sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_UTIL)) {
+					pathEmpresasTipo15.add(ficheroGestionado.getAbsolutePath());
+				} else {
+					MY_LOGGER.warn(ficheroGestionado.getAbsolutePath() + " -> Sector raro: " + sectorStr);
+				}
+
+			} else {
+				MY_LOGGER.warn(ficheroGestionado.getAbsolutePath() + " -> Sector raro: " + sectorStr);
+			}
+
 		}
 
 		// Almacenamiento del tipo de empresa en la lista
@@ -197,6 +245,16 @@ public class CrearDatasetsSubgrupos implements Serializable {
 		empresasPorTipo.put(4, pathEmpresasTipo4);
 		empresasPorTipo.put(5, pathEmpresasTipo5);
 		empresasPorTipo.put(6, pathEmpresasTipo6);
+
+		empresasPorTipo.put(7, pathEmpresasTipo7);
+		empresasPorTipo.put(8, pathEmpresasTipo8);
+		empresasPorTipo.put(9, pathEmpresasTipo9);
+		empresasPorTipo.put(10, pathEmpresasTipo10);
+		empresasPorTipo.put(11, pathEmpresasTipo11);
+		empresasPorTipo.put(12, pathEmpresasTipo12);
+		empresasPorTipo.put(13, pathEmpresasTipo13);
+		empresasPorTipo.put(14, pathEmpresasTipo14);
+		empresasPorTipo.put(15, pathEmpresasTipo15);
 
 		// Se crea un CSV para cada subgrupo
 		Set<Integer> tipos = empresasPorTipo.keySet();

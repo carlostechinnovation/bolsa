@@ -37,6 +37,16 @@ public class EstaticosFinvizDescargarYParsear {
 
 	static String ID_SRL = "stockreportslink";
 
+	public static final String SECTOR_BM = "basicmaterials";
+	public static final String SECTOR_CONG = "conglomerates";
+	public static final String SECTOR_CONSGO = "consumergoods";
+	public static final String SECTOR_FIN = "financial";
+	public static final String SECTOR_HC = "healthcare";
+	public static final String SECTOR_IG = "industrialgoods";
+	public static final String SECTOR_SERV = "services";
+	public static final String SECTOR_TECH = "technology";
+	public static final String SECTOR_UTIL = "utilities";
+
 	private static EstaticosFinvizDescargarYParsear instancia = null;
 
 	private EstaticosFinvizDescargarYParsear() {

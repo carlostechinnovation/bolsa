@@ -41,12 +41,15 @@ crearCarpetaSiNoExisteYVaciarRecursivo() {
 ID_EJECUCION=$( date "+%Y%m%d%H%M%S" )
 echo -e "ID_EJECUCION = "${ID_EJECUCION}
 
-NUM_MAX_EMPRESAS_DESCARGADAS=200
+NUM_MAX_EMPRESAS_DESCARGADAS=300
 MIN_COBERTURA_CLUSTER=60
 MIN_EMPRESAS_POR_CLUSTER=10
 
 #################### DIRECTORIOS ###############################################################
-DIR_CODIGOS="/home/t151521/bolsa/"
+DIR_CODIGOS_CARLOS="/home/carloslinux/Desktop/GIT_BOLSA/" #NO TOCAR
+DIR_CODIGOS_LUIS="/home/t151521/bolsa/" #NO TOCAR
+DIR_CODIGOS="${DIR_CODIGOS_CARLOS}"
+
 PATH_SCRIPTS="${DIR_CODIGOS}BolsaScripts/"
 PYTHON_SCRIPTS="${DIR_CODIGOS}BolsaPython/"
 DIR_JAVA="${DIR_CODIGOS}BolsaJava/"
