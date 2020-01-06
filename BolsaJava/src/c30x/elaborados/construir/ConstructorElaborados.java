@@ -352,6 +352,8 @@ public class ConstructorElaborados implements Serializable {
 						if (mCumplida) {
 							// La S sí se cumple, y la M tambien en todo el rango
 							target = "1";
+						} else {
+							target = "0";
 						}
 					} else {
 						// La S no se cumple
