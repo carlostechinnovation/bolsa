@@ -80,7 +80,7 @@ cp -R "/bolsa/futuro/" $dir_val_futuro_atras
 ################################################################################################
 
 #En esta ejecucion SOLO NOS INTERESA COGER el tablon analítico de entrada, para extraer el resultado REAL y compararlo con las predicciones que hicimos unas velas atrás.
-#En esta ejecucion, no miramos la predicción.
+#En esta ejecucion, no miramos la predicción. --> Realmente esta PREDICCION DEL FUTURO en este instante es donde vamos a PONER EL DINERO REAL. 
 
 rm -Rf /bolsa/futuro/ >>${LOG_VALIDADOR}
 
