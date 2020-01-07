@@ -54,6 +54,9 @@ public class CrearDatasetsSubgrupos implements Serializable {
 	private final static Integer marketCap_micro_max = 299;
 	private final static Integer marketCap_nano_max = 49;
 
+	private final static Float PER_umbral1 = 5.0F;
+	private final static Float PER_umbral2 = 25.0F;
+
 	private static HashMap<Integer, ArrayList<String>> empresasPorTipo;
 
 	/**
@@ -142,8 +145,15 @@ public class CrearDatasetsSubgrupos implements Serializable {
 		ArrayList<String> pathEmpresasTipo13 = new ArrayList<String>();
 		ArrayList<String> pathEmpresasTipo14 = new ArrayList<String>();
 		ArrayList<String> pathEmpresasTipo15 = new ArrayList<String>();
+		ArrayList<String> pathEmpresasTipo16 = new ArrayList<String>();
 
-		// Para caad EMPRESA
+		// Tipos de empresa segun PER
+		ArrayList<String> pathEmpresasTipo17 = new ArrayList<String>(); // PER bajo
+		ArrayList<String> pathEmpresasTipo18 = new ArrayList<String>(); // PER medio
+		ArrayList<String> pathEmpresasTipo19 = new ArrayList<String>(); // PER alto
+		ArrayList<String> pathEmpresasTipo20 = new ArrayList<String>(); // PER desconocido
+
+		// Para cada EMPRESA
 		while (iterator.hasNext()) {
 
 			gestorFicheros = new GestorFicheros();
@@ -183,7 +193,7 @@ public class CrearDatasetsSubgrupos implements Serializable {
 
 				Float marketCapValor = Float.valueOf(mcStr);
 
-				pathEmpresasTipo0.add(ficheroGestionado.getAbsolutePath()); // subgrupo default
+				pathEmpresasTipo0.add(ficheroGestionado.getAbsolutePath()); // subgrupo default, incluye a todos
 
 				// CLASIFICACIÓN DEL TIPO DE EMPRESA
 				if (marketCapValor < marketCap_nano_max)
@@ -226,12 +236,33 @@ public class CrearDatasetsSubgrupos implements Serializable {
 					pathEmpresasTipo14.add(ficheroGestionado.getAbsolutePath());
 				} else if (sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_UTIL)) {
 					pathEmpresasTipo15.add(ficheroGestionado.getAbsolutePath());
+				} else if (sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_RE)) {
+					pathEmpresasTipo16.add(ficheroGestionado.getAbsolutePath());
 				} else {
 					MY_LOGGER.warn(ficheroGestionado.getAbsolutePath() + " -> Sector raro: " + sectorStr);
 				}
 
 			} else {
-				MY_LOGGER.warn(ficheroGestionado.getAbsolutePath() + " -> Sector raro: " + sectorStr);
+				MY_LOGGER.warn(ficheroGestionado.getAbsolutePath() + " -> PER desconocido: " + sectorStr);
+
+			}
+
+			// ------ SUBGRUPOS según PER ------------
+			String perStr = parametros.get("P/E");
+
+			if (perStr != null && !perStr.isEmpty() && !"-".equals(perStr)) {
+				Float per = Float.valueOf(perStr);
+
+				if (per < PER_umbral1) {
+					pathEmpresasTipo17.add(ficheroGestionado.getAbsolutePath());
+				} else if (per >= PER_umbral1 && per < PER_umbral2) {
+					pathEmpresasTipo18.add(ficheroGestionado.getAbsolutePath());
+				} else {
+					pathEmpresasTipo19.add(ficheroGestionado.getAbsolutePath());
+				}
+
+			} else {
+				pathEmpresasTipo20.add(ficheroGestionado.getAbsolutePath());
 			}
 
 		}
@@ -255,6 +286,12 @@ public class CrearDatasetsSubgrupos implements Serializable {
 		empresasPorTipo.put(13, pathEmpresasTipo13);
 		empresasPorTipo.put(14, pathEmpresasTipo14);
 		empresasPorTipo.put(15, pathEmpresasTipo15);
+		empresasPorTipo.put(16, pathEmpresasTipo16);
+
+		empresasPorTipo.put(17, pathEmpresasTipo17);
+		empresasPorTipo.put(18, pathEmpresasTipo18);
+		empresasPorTipo.put(19, pathEmpresasTipo19);
+		empresasPorTipo.put(20, pathEmpresasTipo20);
 
 		// Se crea un CSV para cada subgrupo
 		Set<Integer> tipos = empresasPorTipo.keySet();
@@ -321,7 +358,8 @@ public class CrearDatasetsSubgrupos implements Serializable {
 				// que un x%
 				if (coberturaEmpresasPorCluster * 100 < Double.valueOf(coberturaMinima)) {
 					MY_LOGGER.warn("El cluster " + tipo + " tiene un " + coberturaEmpresasPorCluster * 100
-							+ "% de empresas con al menos una vela positiva (target=1). "
+							+ "% de empresas (" + estadisticas.getSum() + " de " + estadisticas.getValues().length
+							+ ") con al menos una vela positiva (target=1). "
 							+ "Por tanto no se llega al mínimo deseado (" + coberturaMinima
 							+ "%). NO SE GENERA DATASET");
 
@@ -332,8 +370,9 @@ public class CrearDatasetsSubgrupos implements Serializable {
 				} else {
 
 					MY_LOGGER.info("El cluster " + tipo + " tiene un " + coberturaEmpresasPorCluster * 100
-							+ "% de empresas con al menos una vela positiva (target=1). "
-							+ "Por tanto supera el mínimo deseado (" + coberturaMinima + "%). SI SE GENERA DATASET");
+							+ "% de empresas (" + estadisticas.getSum() + " de " + estadisticas.getValues().length
+							+ ") con al menos una vela positiva (target=1)." + "Por tanto supera el mínimo deseado ("
+							+ coberturaMinima + "%). SI SE GENERA DATASET");
 					MY_LOGGER.info("También el cluster " + tipo + ", tiene " + empresasConTarget.keySet().size()
 							+ " empresas. Es suficientemente grande, porque supera el umbral de tener al menos "
 							+ minEmpresasPorCluster + " empresas." + " SI SE GENERA DATASET");

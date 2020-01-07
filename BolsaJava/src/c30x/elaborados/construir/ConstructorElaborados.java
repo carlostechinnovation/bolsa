@@ -91,6 +91,8 @@ public class ConstructorElaborados implements Serializable {
 		GestorFicheros gestorFicheros = new GestorFicheros();
 		ArrayList<File> ficherosEntradaEmpresas = gestorFicheros.listaFicherosDeDirectorio(directorioEntrada);
 
+		MY_LOGGER.info(crearDefinicionTarget(S, X, R, M, F));
+
 		String destino = "";
 		Iterator<File> iterator = ficherosEntradaEmpresas.iterator();
 		File ficheroGestionado;
@@ -333,11 +335,6 @@ public class ConstructorElaborados implements Serializable {
 
 				} else {
 
-					// ------------------ DEFINICION DE TARGET ----------------------
-					// Si el precio actual ha subido S% tras X velas viejas, y si despues, durante
-					// todas las M velas nuevas, no ha caido mas de R% (y que el precio final en la
-					// vela M será mayor que F% respecto del actual), entonces Target=1
-
 					datosAntiguedad = datosEmpresaEntrada.get(antiguedad);
 					datosAntiguedadX = datosEmpresaEntrada.get(antiguedadX);
 
@@ -378,11 +375,12 @@ public class ConstructorElaborados implements Serializable {
 									Double closeAntiguedadI = Double
 											.valueOf(datosEmpresaEntrada.get(antiguedadI).get("close"));
 									if (closeAntiguedad * caidaRPrecioTantoPorUno < closeAntiguedadI) {
+										// El precio puede haber caido, pero nunca más de R
 										mCumplida = Boolean.TRUE;
 									} else {
 										// Se ha encontrado AL MENOS una vela posterior, en las M siguientes, con el
 										// precio por debajo de la caída mínima R
-										// TODAS LAS VELAS FUTURAS TIENEN QUE ESTAR POR ENCIMA DE ESE UMBRAL
+										// TODAS LAS VELAS FUTURAS TIENEN QUE ESTAR POR ENCIMA DE ESE UMBRAL DE CAIDA
 										mCumplida = Boolean.FALSE;
 										break;
 									}
@@ -448,6 +446,26 @@ public class ConstructorElaborados implements Serializable {
 			throw new Exception("Tiempo erróneo");
 		}
 		return horas;
+	}
+
+	/**
+	 * @param S
+	 * @param X
+	 * @param R
+	 * @param M
+	 * @param F
+	 * @return
+	 */
+	public static String crearDefinicionTarget(Integer S, Integer X, Integer R, Integer M, Integer F) {
+
+		String definicion = "DEFINICION DE TARGET --> Vemos los instantes [t1,t2,t3]. Ahora estamos en t2. El periodo [t1,t2] duró "
+				+ X + " velas, en el que el precio subió >= " + S + "% . El periodo [t2,t3] duró " + M
+				+ " velas; durante TODAS ellas, el precio de cierre puede haber caido un poco, pero nunca por debajo de un "
+				+ R + "% respecto del precio de t2. El precio en el instante t3 (es decir, tras " + M
+				+ " velas desde ahora) debe ser >= " + F + "% respecto del t2. Entonces Target=1";
+
+		return definicion;
+
 	}
 
 }

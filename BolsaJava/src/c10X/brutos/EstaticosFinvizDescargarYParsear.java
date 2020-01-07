@@ -46,6 +46,7 @@ public class EstaticosFinvizDescargarYParsear {
 	public static final String SECTOR_SERV = "services";
 	public static final String SECTOR_TECH = "technology";
 	public static final String SECTOR_UTIL = "utilities";
+	public static final String SECTOR_RE = "realestate";
 
 	private static EstaticosFinvizDescargarYParsear instancia = null;
 
