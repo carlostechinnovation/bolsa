@@ -193,7 +193,8 @@ public class CrearDatasetsSubgrupos implements Serializable {
 
 				Float marketCapValor = Float.valueOf(mcStr);
 
-				pathEmpresasTipo0.add(ficheroGestionado.getAbsolutePath()); // subgrupo default, incluye a todos
+				// default, incluye a todos. LO quitamos, porque es inutil
+				// pathEmpresasTipo0.add(ficheroGestionado.getAbsolutePath());
 
 				// CLASIFICACIÓN DEL TIPO DE EMPRESA
 				if (marketCapValor < marketCap_nano_max)
@@ -269,7 +270,7 @@ public class CrearDatasetsSubgrupos implements Serializable {
 
 		// Almacenamiento del tipo de empresa en la lista
 		empresasPorTipo = new HashMap<Integer, ArrayList<String>>();
-		empresasPorTipo.put(0, pathEmpresasTipo0);
+		// empresasPorTipo.put(0, pathEmpresasTipo0);
 		empresasPorTipo.put(1, pathEmpresasTipo1);
 		empresasPorTipo.put(2, pathEmpresasTipo2);
 		empresasPorTipo.put(3, pathEmpresasTipo3);

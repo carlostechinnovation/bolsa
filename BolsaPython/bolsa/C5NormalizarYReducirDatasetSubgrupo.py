@@ -157,7 +157,11 @@ def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmp
     print("ift_minoritaria (original):" + str(ift_minoritaria.shape[0]) + " x " + str(ift_minoritaria.shape[1]))
 
     # Se seleccionan tantos target=0 (mayoritaria) como entradas tengo de Target=1 (minoritaria). Se coge una muestra al azar de 2xminoritarias, para asegurar que cogemos suficientes valores con target=0. Luego ya nos quedamos sólo con un tamaño mayoriaria=minoritaria
-    num_copias_anhadidas = 3
+    num_copias_anhadidas = 0 #default
+    if(ift_minoritaria.shape[0] > 2000 and ift_minoritaria.shape[0] < 8000):
+        num_copias_anhadidas = 1
+    elif(ift_minoritaria.shape[0] <= 2000):
+        num_copias_anhadidas = 3
 
     if (num_copias_anhadidas > 0):
         print("OVERSAMPLING DE CLASE MINORITARIA: copiamos " + str(num_copias_anhadidas) + " veces los casos de clase minoritaria --> Eso evitará que tengamos la obligacion de borrar muchas filas de la clase mayoritaria")

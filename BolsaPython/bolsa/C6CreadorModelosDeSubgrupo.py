@@ -27,7 +27,7 @@ print ("PARAMETROS: ")
 dir_subgrupo = sys.argv[1]
 modoTiempo = sys.argv[2]
 desplazamientoAntiguedad = sys.argv[3]
-modoDebug = True  #En modo debug se pintan los dibujos. En otro caso, se evita calculo innecesario
+modoDebug = False  #En modo debug se pintan los dibujos. En otro caso, se evita calculo innecesario
 umbralCasosSuficientesClasePositiva = 100
 
 ######### ID de subgrupo #######
@@ -199,28 +199,28 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
             ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
 
 
-        nombreModelo = "rf"
-        pathModelo = dir_subgrupo + nombreModelo + ".modelo"
-        modelo = RandomForestClassifier(n_estimators=50, max_depth=2, random_state=0)
-        modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_train_t, False, modoDebug)
-        area_bajo_roc = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, modoDebug)
-        print(type(area_bajo_roc))
-        if area_bajo_roc > ganador_area_bajo_roc:
-            ganador_area_bajo_roc = area_bajo_roc
-            ganador_nombreModelo = nombreModelo
-            ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
+        #nombreModelo = "rf"
+        #pathModelo = dir_subgrupo + nombreModelo + ".modelo"
+        #modelo = RandomForestClassifier(n_estimators=50, max_depth=2, random_state=0)
+        #modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_train_t, False, modoDebug)
+        #area_bajo_roc = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, modoDebug)
+        #print(type(area_bajo_roc))
+        #if area_bajo_roc > ganador_area_bajo_roc:
+            #ganador_area_bajo_roc = area_bajo_roc
+            #ganador_nombreModelo = nombreModelo
+            #ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
 
 
-        nombreModelo = "nn"
-        pathModelo = dir_subgrupo + nombreModelo + ".modelo"
-        modelo = MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(5, 2), random_state=1)
-        modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_train_t, False, modoDebug)
-        area_bajo_roc = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, modoDebug)
-        print(type(area_bajo_roc))
-        if area_bajo_roc > ganador_area_bajo_roc:
-            ganador_area_bajo_roc = area_bajo_roc
-            ganador_nombreModelo = nombreModelo
-            ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
+        #nombreModelo = "nn"
+        #pathModelo = dir_subgrupo + nombreModelo + ".modelo"
+        #modelo = MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(5, 2), random_state=1)
+        #modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_train_t, False, modoDebug)
+        #area_bajo_roc = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, modoDebug)
+        #print(type(area_bajo_roc))
+        #if area_bajo_roc > ganador_area_bajo_roc:
+            #ganador_area_bajo_roc = area_bajo_roc
+            #ganador_nombreModelo = nombreModelo
+            #ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
 
 
         ####### HYPERPARAMETROS: GRID de parametros #######
@@ -257,7 +257,7 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         nombreModelo = "rf_grid"
         pathModelo = dir_subgrupo + nombreModelo + ".modelo"
         modelo_base = CalibratedClassifierCV(base_estimator=RandomForestClassifier(n_estimators=50))
-        hiperparametros = {'base_estimator__max_depth': [2, 5, 8, 13, 17, 25]}
+        hiperparametros = {'base_estimator__max_depth': [8, 13, 17, 25, 35]}
         modelos_grid = GridSearchCV(modelo_base, hiperparametros, n_jobs=-1, refit=True, cv=5, pre_dispatch='2*n_jobs', return_train_score=False)
         modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelos_grid, pathModelo, ds_train_f, ds_train_t, True, modoDebug)
         area_bajo_roc = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, modoDebug)
