@@ -5,6 +5,7 @@ public class ElaboradosUtils {
 	public final static Integer HORAS_AL_DIA = 7;
 
 	public static final String DIR_ELABORADOS = "/bolsa/pasado/elaborados/";
+
 	// Parametros del TARGET: ver definición dentro de ConstructorElaborados
 	public static final Integer S = 10;
 	public static final Integer X = 4 * HORAS_AL_DIA;

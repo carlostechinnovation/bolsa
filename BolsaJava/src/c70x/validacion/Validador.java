@@ -17,14 +17,11 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.helpers.NullEnumeration;
 
-import c30x.elaborados.construir.Estadisticas;
+import c30x.elaborados.construir.ElaboradosUtils;
 import c40X.subgrupos.SubgruposUtils;
 
 public class Validador implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	static Logger MY_LOGGER = Logger.getLogger(Validador.class);
@@ -59,10 +56,10 @@ public class Validador implements Serializable {
 
 		Integer velasRetroceso = ValidadorUtils.VELAS_RETROCESO;
 		String pathValidacion = ValidadorUtils.PATH_VALIDACION; // DEFAULT
-		Integer S = ValidadorUtils.S; // DEFAULT
-		Integer X = ValidadorUtils.X; // DEFAULT
-		Integer R = ValidadorUtils.R; // DEFAULT
-		Integer M = ValidadorUtils.M; // DEFAULT
+		Integer S = ElaboradosUtils.S; // DEFAULT
+		Integer X = ElaboradosUtils.X; // DEFAULT
+		Integer R = ElaboradosUtils.R; // DEFAULT
+		Integer M = ElaboradosUtils.M; // DEFAULT
 
 		if (args.length == 0) {
 			MY_LOGGER.info("Sin parametros de entrada. Rellenamos los DEFAULT...");
@@ -102,44 +99,34 @@ public class Validador implements Serializable {
 			final Integer X, final Integer R, final Integer M) throws IOException {
 
 		Predicate<Path> filtroFicheroPrediccion = s -> s.getFileName().toString().contains(DEFINICION_PREDICCION);
+
 		Predicate<Path> filtroPredichos = p -> p.getFileName().toString().startsWith(velasRetroceso + "_");
 		Predicate<Path> filtroValidaciones = p -> p.getFileName().toString().startsWith("0_");
 
+		// Buscar ficheros: PREDICHO (días atrás) y REAL (hoy)
 		List<Path> ficherosPredichos = Files.walk(Paths.get(pathValidacion), 2)
 				.filter(filtroFicheroPrediccion.and(filtroPredichos)).collect(Collectors.toList());
 		List<Path> ficherosValidacion = Files.walk(Paths.get(pathValidacion), 2)
 				.filter(filtroFicheroPrediccion.and(filtroValidaciones)).collect(Collectors.toList());
 
 		// Recorro cada subgrupo predicho (a validar). Para cada uno, cogeré el fichero
-		// equivalente
-		// en el otro bloque de carpetas de de validación, dentro de su subgrupo
+		// equivalente en el otro bloque de carpetas de de validación, dentro de su
+		// subgrupo
 		List<String> filasPredichas, filasValidacion;
 
-		String empresaPredicha, empresaValidacion, antiguedadPredicha, antiguedadValidacion, fechaPredicha,
-				fechaValidacion;
-		Integer indicePredicha, indiceValidacion;
-		String targetPredicho, targetValidacion;
-
-		Float aciertosTargetUnoSubgrupo, fallosTargetUnoSubgrupo, totalTargetUnoEnSubgrupo;
-		Integer antiguedadFutura;
-		Estadisticas performanceClose, performanceCloseAcertados, performanceCloseFallados;
-		Double closeValidacionFutura, closeValidacionActual;
-		Double performance;
-		Double mediaRendimientoClose, mediaRendimientoCloseAcertados, mediaRendimientoCloseFallados;
-		Double stdRendimientoClose, stdRendimientoCloseAcertados, stdRendimientoCloseFallados;
-		Boolean acertado;
+		ValidadorComparacionSubgrupo vc = new ValidadorComparacionSubgrupo();
 
 		for (Path predicho : ficherosPredichos) {
 
+			MY_LOGGER.info("Path predicho: " + predicho.toString());
+
 			// Reinicio contadores de Subgrupo
-			aciertosTargetUnoSubgrupo = 0F;
-			fallosTargetUnoSubgrupo = 0F;
-			totalTargetUnoEnSubgrupo = 0F;
-			performanceClose = new Estadisticas();
-			performanceCloseAcertados = new Estadisticas();
-			performanceCloseFallados = new Estadisticas();
+			vc = new ValidadorComparacionSubgrupo();
 
 			for (Path validacion : ficherosValidacion) {
+
+				MY_LOGGER.info("Path validacion: " + validacion.toString());
+
 				// Se asume que la estructura del nombre de cada fichero es:
 				// <retroceso>_SG_<numeroSubgrupo>_COMPLETO_PREDICCION.csv
 
@@ -149,7 +136,7 @@ public class Validador implements Serializable {
 				String nombreValidacion = validacion.getFileName().toString();
 				String finalnombreValidacion = nombreValidacion.substring(nombreValidacion.indexOf("_"));
 
-				if (finalnombrePredicho.compareTo(finalnombreValidacion) == 0) {
+				if (finalnombrePredicho.equals(finalnombreValidacion)) {
 
 					MY_LOGGER.info("Se compara el fichero de PREDICCIÓN (" + nombrePredicho
 							+ ") con el que tiene la info REAL de contraste/validación (" + nombreValidacion + "): ");
@@ -170,157 +157,40 @@ public class Validador implements Serializable {
 					filasPredichas = Files.readAllLines(predicho);
 					filasValidacion = Files.readAllLines(validacion);
 
-					// Elimino las filas de cabecera
-					filasPredichas.remove(0);
-					filasValidacion.remove(0);
-
-					for (String filaPredicha : filasPredichas) {
-
-						antiguedadPredicha = filaPredicha.substring(
-								SubgruposUtils.indiceDeAparicion("|".charAt(0), 1, filaPredicha) + 1,
-								SubgruposUtils.indiceDeAparicion("|".charAt(0), 2, filaPredicha));
-						indicePredicha = SubgruposUtils.indiceDeAparicion("|".charAt(0), 8, filaPredicha);
-						fechaPredicha = filaPredicha.substring(0, indicePredicha);
-						empresaPredicha = fechaPredicha.substring(0, fechaPredicha.indexOf("|"));
-						fechaPredicha = SubgruposUtils.recortaPrimeraParteDeString("|".charAt(0), 3, fechaPredicha);
-
-						// Sólo se analizarán las predicciones. Es decir, las filas con antigüedad=0 en
-						// predichas
-						if (antiguedadPredicha.compareTo("0") == 0) {
-							for (String filaValidacion : filasValidacion) {
-								antiguedadValidacion = filaValidacion.substring(
-										SubgruposUtils.indiceDeAparicion("|".charAt(0), 1, filaValidacion) + 1,
-										SubgruposUtils.indiceDeAparicion("|".charAt(0), 2, filaValidacion));
-								indiceValidacion = SubgruposUtils.indiceDeAparicion("|".charAt(0), 8, filaValidacion);
-								fechaValidacion = filaValidacion.substring(0, indiceValidacion);
-								empresaValidacion = fechaValidacion.substring(0, fechaValidacion.indexOf("|"));
-								fechaValidacion = SubgruposUtils.recortaPrimeraParteDeString("|".charAt(0), 3,
-										fechaValidacion);
-
-								if (empresaPredicha.compareTo(empresaValidacion) == 0
-										&& fechaPredicha.compareTo(fechaValidacion) == 0) {
-									// Tengo ya las posiciones en empresa+fecha en predicha y en validación.
-
-									// RENTABILIDAD ACIERTOS/FALLOS para TARGET=1
-									// Cogeré el target predicho y el de validación, y los compararé
-									// Las dos últimas columnas son: TARGET_REAL (VALIDACIÓN), TARGET_PREDICHO
-									targetPredicho = filaPredicha.substring(filaPredicha.lastIndexOf("|") + 1);
-									Integer indice = SubgruposUtils.indiceDeAparicion("|".charAt(0),
-											(int) filaValidacion.chars().filter(ch -> ch == "|".charAt(0)).count(),
-											filaValidacion);
-									targetValidacion = filaValidacion.substring(indice - 3, indice - 2);
-
-									if (targetPredicho.compareTo("1") == 0) {
-										totalTargetUnoEnSubgrupo++;
-										if (targetPredicho.compareTo(targetValidacion) == 0) {
-											aciertosTargetUnoSubgrupo++;
-											acertado = Boolean.TRUE;
-										} else {
-											fallosTargetUnoSubgrupo++;
-											acertado = Boolean.FALSE;
-										}
-
-										// RENTABILIDAD PRECIOS para TARGET = 1
-										// Para esto, debo buscar la fila de validación del futuro, X velas más allá
-										// (menor en antigüedad) que la actual
-										antiguedadFutura = Integer.valueOf(antiguedadValidacion) - X;
-										for (String filaValidacionFutura : filasValidacion) {
-											if (filaValidacionFutura.startsWith(
-													empresaValidacion + "|" + antiguedadFutura.toString())) {
-
-												closeValidacionFutura = Double.valueOf(filaValidacionFutura.substring(
-														SubgruposUtils.indiceDeAparicion("|".charAt(0), 11,
-																filaValidacionFutura) + 1,
-														SubgruposUtils.indiceDeAparicion("|".charAt(0), 12,
-																filaValidacionFutura)));
-
-												closeValidacionActual = Double.valueOf(filaValidacion.substring(
-														SubgruposUtils.indiceDeAparicion("|".charAt(0), 11,
-																filaValidacion) + 1,
-														SubgruposUtils.indiceDeAparicion("|".charAt(0), 12,
-																filaValidacion)));
-
-												performance = (closeValidacionFutura - closeValidacionActual)
-														/ closeValidacionActual;
-												performanceClose.addValue(performance);
-
-												if (acertado) {
-													performanceCloseAcertados.addValue(performance);
-												} else {
-													performanceCloseFallados.addValue(performance);
-												}
-
-												MY_LOGGER.info("----------------NUEVO CASO---------------");
-												MY_LOGGER.info(
-														"filaPredicha:                             " + filaPredicha);
-												MY_LOGGER.info(
-														"filaValidacion:                           " + filaValidacion);
-												MY_LOGGER.info("filaValidacionFutura (para rentabilidad): "
-														+ filaValidacionFutura);
-												MY_LOGGER.info("closeValidacionActual: " + closeValidacionActual);
-												MY_LOGGER.info("closeValidacionFutura: " + closeValidacionFutura);
-												if (acertado) {
-													MY_LOGGER.info("EL SISTEMA HA ACERTADO, con rentabilidad: "
-															+ performance * 100 + " %");
-												} else {
-													MY_LOGGER.info("EL SISTEMA HA FALLADO, con rentabilidad: "
-															+ performance * 100 + " %");
-												}
-												MY_LOGGER.info("----------------FIN NUEVO CASO---------------");
-
-												// No itero más
-												break;
-											}
-
-										}
-									}
-
-									break; // No sigo iterando en este for interno, porque ya tengo la info
-								}
-							}
-
-						}
-
-					}
+					compararPredichasYRealesDeUnSubgrupo(filasPredichas, filasValidacion, vc, S, X, R, M);
 
 				}
 			}
 
 			// PORCENTAJE ACIERTOS por SUBGRUPO
-			MY_LOGGER.info("COBERTURA - aciertosTargetUnoSubgrupo (PREDICHOS)=" + aciertosTargetUnoSubgrupo);
-			MY_LOGGER.info("COBERTURA - totalTargetUnoEnSubgrupo (REALES)=" + totalTargetUnoEnSubgrupo);
+			MY_LOGGER.info("COBERTURA - aciertosTargetUnoSubgrupo (PREDICHOS)=" + vc.aciertosTargetUnoSubgrupo);
+			MY_LOGGER.info("COBERTURA - totalTargetUnoEnSubgrupo (REALES)=" + vc.totalTargetUnoEnSubgrupo);
 			MY_LOGGER.info("COBERTURA - Porcentaje aciertos subgrupo " + predicho.getFileName() + ": "
-					+ (aciertosTargetUnoSubgrupo / totalTargetUnoEnSubgrupo) * 100 + "% de " + totalTargetUnoEnSubgrupo
-					+ " elementos PREDICHOS con TARGET=1");
+					+ (vc.aciertosTargetUnoSubgrupo / vc.totalTargetUnoEnSubgrupo) * 100 + "% de "
+					+ vc.totalTargetUnoEnSubgrupo + " elementos PREDICHOS con TARGET=1");
 
 			// RENTABILIDAD PRECIOS por SUBGRUPO
-			mediaRendimientoClose = performanceClose.getMean();
-			stdRendimientoClose = performanceClose.getStandardDeviation();
 			MY_LOGGER.info("RENTABILIDAD - Porcentaje medio de SUBIDA del precio en subgrupo " + predicho.getFileName()
-					+ ": " + mediaRendimientoClose * 100 + " % de " + totalTargetUnoEnSubgrupo
+					+ ": " + vc.performanceClose.getMean() * 100 + " % de " + vc.totalTargetUnoEnSubgrupo
 					+ " elementos PREDICHOS a TARGET=1");
 			MY_LOGGER.info("RENTABILIDAD - Desviación estándar de SUBIDA del precio en subgrupo "
-					+ predicho.getFileName() + ": " + stdRendimientoClose + " para " + totalTargetUnoEnSubgrupo
-					+ " elementos PREDICHOS a TARGET=1");
+					+ predicho.getFileName() + ": " + vc.performanceClose.getStandardDeviation() + " para "
+					+ vc.totalTargetUnoEnSubgrupo + " elementos PREDICHOS a TARGET=1");
 
 			// ANALISIS
-			mediaRendimientoCloseAcertados = performanceCloseAcertados.getMean();
-			stdRendimientoCloseAcertados = performanceCloseAcertados.getStandardDeviation();
 			MY_LOGGER.info("ANALISIS - ACERTADOS - Porcentaje medio de SUBIDA del precio en subgrupo "
-					+ predicho.getFileName() + ": " + mediaRendimientoCloseAcertados * 100 + " % de "
-					+ totalTargetUnoEnSubgrupo + " elementos PREDICHOS a TARGET=1");
+					+ predicho.getFileName() + ": " + vc.performanceCloseAcertados.getMean() * 100 + " % de "
+					+ vc.totalTargetUnoEnSubgrupo + " elementos PREDICHOS a TARGET=1");
 			MY_LOGGER.info("ANALISIS - ACERTADOS - Desviación estándar de SUBIDA del precio en subgrupo "
-					+ predicho.getFileName() + ": " + stdRendimientoCloseAcertados + " para " + totalTargetUnoEnSubgrupo
-					+ " elementos PREDICHOS a TARGET=1");
+					+ predicho.getFileName() + ": " + vc.performanceCloseAcertados.getStandardDeviation() + " para "
+					+ vc.totalTargetUnoEnSubgrupo + " elementos PREDICHOS a TARGET=1");
 
-			mediaRendimientoCloseFallados = performanceCloseFallados.getMean();
-			stdRendimientoCloseFallados = performanceCloseFallados.getStandardDeviation();
 			MY_LOGGER.info("ANALISIS - FALLADOS - Porcentaje medio de SUBIDA del precio en subgrupo "
-					+ predicho.getFileName() + ": " + mediaRendimientoCloseFallados * 100 + " % de "
-					+ totalTargetUnoEnSubgrupo + " elementos PREDICHOS a TARGET=1");
+					+ predicho.getFileName() + ": " + vc.performanceCloseFallados.getMean() * 100 + " % de "
+					+ vc.totalTargetUnoEnSubgrupo + " elementos PREDICHOS a TARGET=1");
 			MY_LOGGER.info("ANALISIS - FALLADOS - Desviación estándar de SUBIDA del precio en subgrupo "
-					+ predicho.getFileName() + ": " + stdRendimientoCloseFallados + " para " + totalTargetUnoEnSubgrupo
-					+ " elementos PREDICHOS a TARGET=1");
+					+ predicho.getFileName() + ": " + vc.performanceCloseFallados.getStandardDeviation() + " para "
+					+ vc.totalTargetUnoEnSubgrupo + " elementos PREDICHOS a TARGET=1");
 
 		}
 
@@ -343,4 +213,178 @@ public class Validador implements Serializable {
 		}
 		return fileList;
 	}
+
+	/**
+	 * @param filasPredichas
+	 * @param filasValidacion
+	 * @param vc
+	 * @param S
+	 * @param X
+	 * @param R
+	 * @param M
+	 */
+	public static void compararPredichasYRealesDeUnSubgrupo(List<String> filasPredichas, List<String> filasValidacion,
+			ValidadorComparacionSubgrupo vc, final Integer S, final Integer X, final Integer R, final Integer M) {
+
+		if (filasPredichas != null && !filasPredichas.isEmpty() && filasPredichas != null
+				&& !filasValidacion.isEmpty()) {
+
+			// Elimino las filas de cabecera
+			filasPredichas.remove(0);
+			filasValidacion.remove(0);
+
+			for (String filaPredicha : filasPredichas) {
+
+				// VELA 0 en la lista PREDICHAS
+				String antiguedadPredicha = filaPredicha.substring(
+						SubgruposUtils.indiceDeAparicion("|".charAt(0), 1, filaPredicha) + 1,
+						SubgruposUtils.indiceDeAparicion("|".charAt(0), 2, filaPredicha));
+				boolean antiguedadPredichaVelaCero = antiguedadPredicha.equals("0");
+				vc.indicePredicha = SubgruposUtils.indiceDeAparicion("|".charAt(0), 8, filaPredicha);
+				vc.fechaPredicha = filaPredicha.substring(0, vc.indicePredicha);
+				vc.empresaPredicha = vc.fechaPredicha.substring(0, vc.fechaPredicha.indexOf("|"));
+				vc.fechaPredicha = SubgruposUtils.recortaPrimeraParteDeString("|".charAt(0), 3, vc.fechaPredicha);
+
+				// Sólo se analizarán las predicciones. Es decir, las filas con antigüedad=0 en
+				// predichas
+				if (antiguedadPredichaVelaCero) {
+
+					compararFilaPredichaYListaFilasValidacion(filaPredicha, filasValidacion, vc, S, X, R, M);
+
+				}
+
+			}
+
+		} else {
+			MY_LOGGER.warn("El fichero de PREDICCIÓN o el fichero contraste/validación es nulo o está vacío.");
+		}
+
+	}
+
+	/**
+	 * @param filaPredicha    Fila en fichero PREDICHAS en la FECHA en la que
+	 *                        hicimos la prediccion para adivinar el instante con
+	 *                        antigüedad=(FECHA - X)
+	 * @param filasValidacion Lista de velas de validacion, donde aparece el precio
+	 *                        real para ese instante con antigüedad=(FECHA - X) y
+	 *                        también el resto de velas de alrededor, que permiten
+	 *                        COMPROBAR SI SE CUMPLEN EL RESTO DE CONDICIONES PARA
+	 *                        CALCULAR EL TARGET (no solo basta mirar el precio de
+	 *                        cierre de ese día).
+	 * @param vc
+	 * @param S
+	 * @param X
+	 * @param R
+	 * @param M
+	 */
+	public static void compararFilaPredichaYListaFilasValidacion(String filaPredicha, List<String> filasValidacion,
+			ValidadorComparacionSubgrupo vc, final Integer S, final Integer X, final Integer R, final Integer M) {
+
+		for (String filaValidacion : filasValidacion) {
+
+			vc.antiguedadValidacion = filaValidacion.substring(
+					SubgruposUtils.indiceDeAparicion("|".charAt(0), 1, filaValidacion) + 1,
+					SubgruposUtils.indiceDeAparicion("|".charAt(0), 2, filaValidacion));
+			vc.indiceValidacion = SubgruposUtils.indiceDeAparicion("|".charAt(0), 8, filaValidacion);
+			vc.fechaValidacion = filaValidacion.substring(0, vc.indiceValidacion);
+			vc.empresaValidacion = vc.fechaValidacion.substring(0, vc.fechaValidacion.indexOf("|"));
+			vc.fechaValidacion = SubgruposUtils.recortaPrimeraParteDeString("|".charAt(0), 3, vc.fechaValidacion);
+
+			boolean mismaEmpresaYFecha = vc.empresaPredicha.equals(vc.empresaValidacion)
+					&& vc.fechaPredicha.equals(vc.fechaValidacion);
+
+			if (mismaEmpresaYFecha) {
+				compararFilaPredichaYReal(filaPredicha, filaValidacion, filasValidacion, S, X, R, M, vc);
+				break; // No sigo iterando en este for interno, porque ya tengo la info
+			}
+		}
+
+	}
+
+	/**
+	 * @param filaPredicha    Fila en fichero PREDICHAS en la FECHA en la que
+	 *                        hicimos la prediccion para adivinar el instante con
+	 *                        antigüedad=(FECHA - X)
+	 * @param filaValidacion  Fila en fichero VALIDACION en la FECHA ANALIZADA (en
+	 *                        la que hemos predicho)
+	 * @param filasValidacion
+	 * @param S
+	 * @param X
+	 * @param R
+	 * @param M
+	 */
+	public static void compararFilaPredichaYReal(String filaPredicha, String filaValidacion,
+			List<String> filasValidacion, final Integer S, final Integer X, final Integer R, final Integer M,
+			ValidadorComparacionSubgrupo vc) {
+
+		// Tengo ya las posiciones en empresa+fecha en predicha y en validación.
+
+		// RENTABILIDAD ACIERTOS/FALLOS para TARGET=1
+		// Cogeré el target predicho y el de validación, y los compararé
+		// Las dos últimas columnas son: TARGET_REAL (VALIDACIÓN), TARGET_PREDICHO
+		String targetPredicho = filaPredicha.substring(filaPredicha.lastIndexOf("|") + 1);
+		Integer indiceValidacionAux = SubgruposUtils.indiceDeAparicion("|".charAt(0),
+				(int) filaValidacion.chars().filter(ch -> ch == "|".charAt(0)).count(), filaValidacion);
+
+		String targetValidacion = filaValidacion.substring(indiceValidacionAux - 3, indiceValidacionAux - 2);
+
+		if (targetPredicho.equals("1")) {
+
+			vc.totalTargetUnoEnSubgrupo++;
+			if (targetPredicho.equals(targetValidacion)) {
+				vc.aciertosTargetUnoSubgrupo++;
+				vc.acertado = Boolean.TRUE;
+			} else {
+				vc.fallosTargetUnoSubgrupo++;
+				vc.acertado = Boolean.FALSE;
+			}
+
+			// RENTABILIDAD PRECIOS para TARGET = 1
+			// Para esto, debo buscar la fila de validación del futuro, X velas más allá
+			// (menor en antigüedad) que la actual
+			vc.antiguedadFutura = Integer.valueOf(vc.antiguedadValidacion) - X;
+
+			for (String filaValidacionFutura : filasValidacion) {
+				if (filaValidacionFutura.startsWith(vc.empresaValidacion + "|" + vc.antiguedadFutura.toString())) {
+
+					vc.closeValidacionFutura = Double.valueOf(filaValidacionFutura.substring(
+							SubgruposUtils.indiceDeAparicion("|".charAt(0), 11, filaValidacionFutura) + 1,
+							SubgruposUtils.indiceDeAparicion("|".charAt(0), 12, filaValidacionFutura)));
+
+					vc.closeValidacionActual = Double.valueOf(filaValidacion.substring(
+							SubgruposUtils.indiceDeAparicion("|".charAt(0), 11, filaValidacion) + 1,
+							SubgruposUtils.indiceDeAparicion("|".charAt(0), 12, filaValidacion)));
+
+					Double performance = vc.calcularRentabilidad();
+					vc.performanceClose.addValue(performance);
+
+					if (vc.acertado) {
+						vc.performanceCloseAcertados.addValue(performance);
+					} else {
+						vc.performanceCloseFallados.addValue(performance);
+					}
+
+					MY_LOGGER.info("----------------NUEVO CASO---------------");
+					MY_LOGGER.info("filaPredicha:                             " + filaPredicha);
+					MY_LOGGER.info("filaValidacion:                           " + filaValidacion);
+					MY_LOGGER.info("filaValidacionFutura (para rentabilidad): " + filaValidacionFutura);
+					MY_LOGGER.info("closeValidacionActual: " + vc.closeValidacionActual);
+					MY_LOGGER.info("closeValidacionFutura: " + vc.closeValidacionFutura);
+
+					if (vc.acertado) {
+						MY_LOGGER.info("EL SISTEMA HA ACERTADO, con rentabilidad: " + performance * 100 + " %");
+					} else {
+						MY_LOGGER.info("EL SISTEMA HA FALLADO, con rentabilidad: " + performance * 100 + " %");
+					}
+					MY_LOGGER.info("----------------FIN NUEVO CASO---------------");
+
+					// No itero más
+					break;
+				}
+
+			}
+		}
+
+	}
+
 }

@@ -11,7 +11,7 @@ crearCarpetaSiNoExiste() {
 VELAS_RETROCESO="28"
 
 # PARAMETROS DE TARGET MEDIDOS EN VELAS
-S="11"
+S="10"
 X="56"
 R="7"
 M="28"

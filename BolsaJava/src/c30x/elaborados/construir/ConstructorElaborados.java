@@ -19,6 +19,8 @@ import c30x.elaborados.construir.Estadisticas.FINAL_NOMBRES_PARAMETROS_ELABORADO
 
 public class ConstructorElaborados implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+
 	static Logger MY_LOGGER = Logger.getLogger(ConstructorElaborados.class);
 
 	private static ConstructorElaborados instancia = null;
@@ -122,9 +124,13 @@ public class ConstructorElaborados implements Serializable {
 	}
 
 	/**
+	 * Calcula columnas ELABORADAS (incluido el TARGET) y las añade a la MATRIZ de
+	 * datos pasada como parámetro.
 	 * 
-	 * @param datos
-	 * @param ordenNombresParametros
+	 * @param datos                  MATRIZ de datos no elaborados. A ella se
+	 *                               añadiran columnas elaboradas
+	 * @param ordenNombresParametros Mapa de nombres de columnas y su orden de
+	 *                               aparicion en la MATRIZ.
 	 * @param S
 	 * @param X
 	 * @param R
@@ -306,18 +312,12 @@ public class ConstructorElaborados implements Serializable {
 		}
 
 		// Aniado el TARGET
-		Integer antiguedadX;
-		Double subidaSPrecioTantoPorUno = (100 + S) / 100.0;
-		Double caidaRPrecioTantoPorUno = (100 - R) / 100.0;
-		Double caidaFPrecioTantoPorUno = (100 - F) / 100.0;
 		// Target=0 es que no se cumple. 1 es que sí. TARGET_INVALIDO es que no se puede
 		// calcular
 		String target = TARGET_INVALIDO;
-		Boolean mCumplida = Boolean.FALSE;
 
 		antiguedades = datosEmpresaEntrada.keySet();
 		Integer antiguedadMaxima = Collections.max(antiguedades);
-		HashMap<String, String> datosAntiguedad, datosAntiguedadX, datosAntiguedadM;
 		Iterator<Integer> itAntiguedadTarget = datosEmpresaEntrada.keySet().iterator();
 		HashMap<Integer, String> antiguedadYTarget = new HashMap<Integer, String>();
 
@@ -326,81 +326,15 @@ public class ConstructorElaborados implements Serializable {
 			antiguedad = itAntiguedadTarget.next();
 
 			if (antiguedad >= M) {
-				antiguedadX = antiguedad + X;
 
-				if (antiguedadMaxima < antiguedadX) {
-					// Estamos analizando un punto en el tiempo X datos anteriores
+				if (antiguedadMaxima < antiguedad + X) {
+					// El periodo hacia atrás en el tiempo son X velas, desde el instante analizado
 					target = TARGET_INVALIDO;
 					break;
 
 				} else {
-
-					datosAntiguedad = datosEmpresaEntrada.get(antiguedad);
-					datosAntiguedadX = datosEmpresaEntrada.get(antiguedadX);
-
-					if (!datosAntiguedad.containsKey("close")) {
-						MY_LOGGER.error("Empresa=" + empresa + " -> Falta dato close en datosAntiguedad");
-					}
-					if (!datosAntiguedadX.containsKey("close")) {
-						MY_LOGGER.error("Empresa=" + empresa + " -> Falta dato close en datosAntiguedadX");
-					}
-
-					Double closeAntiguedad = Double.valueOf(datosAntiguedad.get("close"));
-					Double closeAntiguedadX = Double.valueOf(datosAntiguedadX.get("close"));
-
-					boolean closeActualSuperaCloseXConSubidaS = closeAntiguedad >= closeAntiguedadX
-							* subidaSPrecioTantoPorUno;
-
-					if (closeActualSuperaCloseXConSubidaS) {
-
-						Integer antiguedadM = antiguedad - M;// Última vela M futura, más allá de la antigüedad actual
-						datosAntiguedadM = datosEmpresaEntrada.get(antiguedadM);
-
-						if (datosAntiguedadM == null) {
-							MY_LOGGER.error("Empresa=" + empresa + " -> datosAntiguedadM es NULO para antiguedad="
-									+ antiguedad + " y M=" + M + " -> antiguedadM=" + antiguedadM
-									+ " Posible causa: el mercado estaba abierto cuando hemos ejecutado la descarga de datos");
-						} else {
-
-							Double closeAntiguedadM = Double.valueOf(datosAntiguedadM.get("close"));
-
-							// En la vela M el precio debe ser un F% mejor que en la vela actual
-							boolean closeMSuperaCloseActualMayorQueF = closeAntiguedad < caidaFPrecioTantoPorUno
-									* closeAntiguedadM;
-							if (closeMSuperaCloseActualMayorQueF) {
-
-								for (int i = 1; i <= M; i++) {
-									Integer antiguedadI = antiguedad - i; // Voy hacia el futuro
-
-									Double closeAntiguedadI = Double
-											.valueOf(datosEmpresaEntrada.get(antiguedadI).get("close"));
-									if (closeAntiguedad * caidaRPrecioTantoPorUno < closeAntiguedadI) {
-										// El precio puede haber caido, pero nunca más de R
-										mCumplida = Boolean.TRUE;
-									} else {
-										// Se ha encontrado AL MENOS una vela posterior, en las M siguientes, con el
-										// precio por debajo de la caída mínima R
-										// TODAS LAS VELAS FUTURAS TIENEN QUE ESTAR POR ENCIMA DE ESE UMBRAL DE CAIDA
-										mCumplida = Boolean.FALSE;
-										break;
-									}
-								}
-							}
-
-							if (mCumplida) {
-								// La S sí se cumple, y la M tambien en todo el rango
-								target = "1";
-							} else {
-								target = "0";
-							}
-						}
-
-					} else {
-						// La S no se cumple
-						target = "0";
-					}
+					target = calcularTarget(empresa, datosEmpresaEntrada, antiguedad, S, X, R, M, F);
 				}
-
 			} else {
 				// La antiguedad es demasiado reciente para ver si es estable en M
 				target = TARGET_INVALIDO;
@@ -466,6 +400,94 @@ public class ConstructorElaborados implements Serializable {
 
 		return definicion;
 
+	}
+
+	/**
+	 * @param datosEmpresaEntrada
+	 * @param antiguedad
+	 * @param S
+	 * @param X
+	 * @param R
+	 * @param M
+	 * @param F
+	 * @return
+	 */
+	public static String calcularTarget(String empresa, HashMap<Integer, HashMap<String, String>> datosEmpresaEntrada,
+			Integer antiguedad, Integer S, Integer X, Integer R, Integer M, Integer F) {
+
+		String targetOut = TARGET_INVALIDO; // default
+
+		Double subidaSPrecioTantoPorUno = (100 + S) / 100.0;
+		Double caidaRPrecioTantoPorUno = (100 - R) / 100.0;
+		Double caidaFPrecioTantoPorUno = (100 - F) / 100.0;
+
+		Boolean mCumplida = Boolean.FALSE;
+
+		HashMap<String, String> datosAntiguedadM = datosEmpresaEntrada.get(antiguedad - M); // velas siguientes (precio
+																							// puede caer ligeramente)
+		HashMap<String, String> datosAntiguedad = datosEmpresaEntrada.get(antiguedad); // vela analizada
+		HashMap<String, String> datosAntiguedadX = datosEmpresaEntrada.get(antiguedad + X); // velas pasadas (precio
+																							// debe subir)
+
+		if (!datosAntiguedad.containsKey("close")) {
+			MY_LOGGER.error("Empresa=" + empresa + " -> Falta dato close en datosAntiguedad");
+			return TARGET_INVALIDO;
+		}
+		if (!datosAntiguedadX.containsKey("close")) {
+			MY_LOGGER.error("Empresa=" + empresa + " -> Falta dato close en datosAntiguedadX");
+			return TARGET_INVALIDO;
+		}
+
+		Double closeAntiguedad = Double.valueOf(datosAntiguedad.get("close"));
+		Double closeAntiguedadX = Double.valueOf(datosAntiguedadX.get("close"));
+
+		boolean closeActualSuperaCloseXConSubidaS = closeAntiguedad >= closeAntiguedadX * subidaSPrecioTantoPorUno;
+
+		if (closeActualSuperaCloseXConSubidaS) {
+
+			if (datosAntiguedadM == null) {
+				MY_LOGGER.error("Empresa=" + empresa + " -> datosAntiguedadM es NULO para antiguedad=" + antiguedad
+						+ " y M=" + M + " -> antiguedadM=" + (antiguedad - M)
+						+ " Posible causa: el mercado estaba abierto cuando hemos ejecutado la descarga de datos");
+			} else {
+
+				Double closeAntiguedadM = Double.valueOf(datosAntiguedadM.get("close"));
+
+				// En la vela M el precio debe ser un F% mejor que en la vela actual
+				boolean closeMSuperaCloseActualMayorQueF = closeAntiguedad < caidaFPrecioTantoPorUno * closeAntiguedadM;
+				if (closeMSuperaCloseActualMayorQueF) {
+
+					for (int i = 1; i <= M; i++) {
+						Integer antiguedadI = antiguedad - i; // Voy hacia el futuro
+
+						Double closeAntiguedadI = Double.valueOf(datosEmpresaEntrada.get(antiguedadI).get("close"));
+						if (closeAntiguedad * caidaRPrecioTantoPorUno < closeAntiguedadI) {
+							// El precio puede haber caido, pero nunca más de R
+							mCumplida = Boolean.TRUE;
+						} else {
+							// Se ha encontrado AL MENOS una vela posterior, en las M siguientes, con el
+							// precio por debajo de la caída mínima R
+							// TODAS LAS VELAS FUTURAS TIENEN QUE ESTAR POR ENCIMA DE ESE UMBRAL DE CAIDA
+							mCumplida = Boolean.FALSE;
+							break;
+						}
+					}
+				}
+
+				if (mCumplida) {
+					// La S sí se cumple, y la M tambien en todo el rango
+					targetOut = "1";
+				} else {
+					targetOut = "0";
+				}
+			}
+
+		} else {
+			// La S no se cumple
+			targetOut = "0";
+		}
+
+		return targetOut;
 	}
 
 }
