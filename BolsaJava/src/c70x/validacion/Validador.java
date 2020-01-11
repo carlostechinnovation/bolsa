@@ -104,8 +104,14 @@ public class Validador implements Serializable {
 
 		Predicate<Path> filtroFicheroPrediccion = s -> s.getFileName().toString().contains(DEFINICION_PREDICCION);
 
+		int antiguedadAnalizada = velasRetroceso;
+		int antiguedadValidacion = velasRetroceso - M;
+
+		MY_LOGGER.info("analizarPrediccion() --> antiguedadAnalizada=" + antiguedadAnalizada + " antiguedadValidacion="
+				+ antiguedadValidacion);
+
 		Predicate<Path> filtroPredichos = p -> p.getFileName().toString().startsWith(velasRetroceso + "_");
-		Predicate<Path> filtroValidaciones = p -> p.getFileName().toString().startsWith("0_");
+		Predicate<Path> filtroValidaciones = p -> p.getFileName().toString().startsWith((velasRetroceso - M) + "_");
 
 		// Buscar ficheros: PREDICHO (días atrás) y REAL (hoy)
 		List<Path> ficherosPredichos = Files.walk(Paths.get(pathValidacion), 2)
@@ -129,6 +135,7 @@ public class Validador implements Serializable {
 
 			// Resultados subgrupo
 			HashMap<String, Integer> resultadosSubgrupo = new HashMap<String, Integer>();
+			boolean encontradoFicheroValidacion = false;
 
 			for (Path validacion : ficherosValidacion) {
 
@@ -144,6 +151,7 @@ public class Validador implements Serializable {
 				String finalnombreValidacion = nombreValidacion.substring(nombreValidacion.indexOf("_"));
 
 				if (finalnombrePredicho.equals(finalnombreValidacion)) {
+					encontradoFicheroValidacion = true;
 
 					MY_LOGGER.info("Se compara el fichero de PREDICCIÓN (" + nombrePredicho
 							+ ") con el que tiene la info REAL de contraste/validación (" + nombreValidacion + "): ");
@@ -209,7 +217,8 @@ public class Validador implements Serializable {
 			} else {
 				MY_LOGGER.error(
 						"No hemos podido calcular la comparativa para el subgrupo cuyo fichero de prediccion fue: "
-								+ predicho.toString());
+								+ predicho.toString() + " encontradoFicheroValidacion = "
+								+ encontradoFicheroValidacion);
 			}
 
 		}

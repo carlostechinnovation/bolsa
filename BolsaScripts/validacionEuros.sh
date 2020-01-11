@@ -107,7 +107,7 @@ cp -R "/bolsa/futuro/" $dir_val_futuro_2
 
 ################################################################################################
 echo -e "-------------------------------------------------" >> ${LOG_VALIDADOR}
-echo -e "Validacion de rendimiento: COMPRAR el ATRAS_PREDICHO con HOY_REAL para empresas de la lista REVERTIDA..." >> ${LOG_VALIDADOR}
+echo -e "Validacion de rendimiento: COMPARAR el ATRAS_PREDICHO con HOY_REAL para empresas de la lista REVERTIDA..." >> ${LOG_VALIDADOR}
 
 echo -e "Nuestro sistema se situa en el instante t2." >> ${LOG_VALIDADOR}
 echo -e "Para calcular el TARGET, trabaja usando los periodos [t1,t2] (X velas hacia atrás) y [t2,t3] (M velas hacia adelante)." >> ${LOG_VALIDADOR}

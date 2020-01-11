@@ -8,8 +8,8 @@ public class ElaboradosUtils {
 
 	// Parametros del TARGET: ver definición dentro de ConstructorElaborados
 	public static final Integer S = 10;
-	public static final Integer X = 4 * HORAS_AL_DIA;
-	public static final Integer R = 5;
+	public static final Integer X = 8 * HORAS_AL_DIA;
+	public static final Integer R = 8;
 	public static final Integer M = 1 * HORAS_AL_DIA;
-	public static final Integer F = 5;
+	public static final Integer F = 4;
 }
