@@ -403,13 +403,20 @@ public class ConstructorElaborados implements Serializable {
 	}
 
 	/**
-	 * @param datosEmpresaEntrada
-	 * @param antiguedad
-	 * @param S
-	 * @param X
-	 * @param R
-	 * @param M
-	 * @param F
+	 * Calcula el TARGET. Analiza los periodos [t1,t2] y [t2,t3], donde el foco está
+	 * en el tiempo t2. El precio debe haber subido durante [t1,t2] y no haber
+	 * bajado demasiado en [t2,t3].
+	 * 
+	 * @param datosEmpresa Entrada MATRIZ de datos.
+	 * @param antiguedad   Antigüedad (índice en el tiempo t2) de la vela analizada,
+	 *                     dentro de la MATRIZ pasada como parámetro.
+	 * @param S            Subida del precio de cierre durante [t1,t2]
+	 * @param X            Duración del periodo [t1,t2]
+	 * @param R            Caida ligera máxima permitida durante [t2,t3], en TODAS
+	 *                     esas velas.
+	 * @param M            Duración del periodo [t2,t3]
+	 * @param F            Caida ligera permitida durante [t2,t3], en la ÚLTIMA
+	 *                     vela.
 	 * @return
 	 */
 	public static String calcularTarget(String empresa, HashMap<Integer, HashMap<String, String>> datosEmpresaEntrada,

@@ -8,14 +8,14 @@ crearCarpetaSiNoExiste() {
 }
 
 ################################################################################################
-VELAS_RETROCESO="28"
+VELAS_RETROCESO="28" #INSTANTE ANALIZADO (T2). Su antiguedad siempre es mayor que M, para poder ver esas M velas del futuro
 
 # PARAMETROS DE TARGET MEDIDOS EN VELAS
-S="10"
-X="56"
-R="7"
-M="28"
-F="4"
+S="10"  #Subida durante [t1,t2]
+X="56"  #Duracion en velas de [t1,t2]
+R="8"  #Caida ligera máxima permitida durante [t2,t3], en TODAS esas velas.
+M="7"  #Duración en velas de [t2,t3]
+F="4"  #Caida ligera permitida durante [t2,t3], en la ÚLTIMA vela
 
 DIR_BASE="/bolsa/"
 
@@ -109,24 +109,20 @@ cp -R "/bolsa/futuro/" $dir_val_futuro_2
 echo -e "-------------------------------------------------" >> ${LOG_VALIDADOR}
 echo -e "Validacion de rendimiento: COMPRAR el ATRAS_PREDICHO con HOY_REAL para empresas de la lista REVERTIDA..." >> ${LOG_VALIDADOR}
 
-# Supongamos que estoy en vela A (=0, actual). El sistema predictivo trabaja con el periodo [A-X, A+M], es decir, las columnas elaboradas han trabajado en un periodo de duración X+M+1.
-# Nuestro validador debe calcular:
-# - Pasado (entrenamiento): entrenamos suponiendo que estamos sobre la vela A=0 (vela actual), usando la lista NORMAL de EMPRESAS.
-# - Futuro 1: predicción del futuro, usando la lista INVERSA de EMPRESAS, suponiendo que estamos justo encima de la vela (A - VELAS_RETROCESO). Es decir, estamos prediciendo el comportamiento en la vela (A - VELAS_RETROCESO + M) !!!!
-# - Futuro 2: predicción del futuro, usando la lista INVERSA de EMPRESAS, suponiendo que estamos justo encima de la vela A. Es decir, estamos prediciendo el comportamiento en la vela (A + M). No podemos usar ese campo "predicho" (target) !!!!  Sino que debemos ver si se cumplieron las condiciones deseadas en (A - VELAS_RETROCESO + M).
-
-# Sólo estaría bien en un caso: si VELAS_RETROCESO == M !!!   ===> Por sencillez, voy a ejecutar así.
-
-# Lo que estabamos haciendo era comparar los campos "target" del caso "futuro 1", con los "target" del caso "futuro 2". No tiene sentido.
-
-# Lo que realmente queremos hacer es comparar estos dos:
-# - FUTURO1 --> "Usando los datos hasta la vela (A - VELAS_RETROCESO): target con lista INVERSA de empresas, que es lo predicho para la vela (A - VELAS_RETROCESO + M)".
-# - FUTURO2 --> "Usando los datos hasta la vela (A - VELAS_RETROCESO + M): cumplimiento de condiciones previstas, que miran ciertas cosas en el periodo [ A - VELAS_RETROCESO - X, A - VELAS_RETROCESO + M], habiendo usado la lista INVERSA de empresas".
+echo -e "Nuestro sistema se situa en el instante t2." >> ${LOG_VALIDADOR}
+echo -e "Para calcular el TARGET, trabaja usando los periodos [t1,t2] (X velas hacia atrás) y [t2,t3] (M velas hacia adelante)." >> ${LOG_VALIDADOR}
+echo -e "En el script de validacion, ejecutamos:" >> ${LOG_VALIDADOR}
+echo -e "- Pasado con t2=0" >> ${LOG_VALIDADOR}
+echo -e "- Futuro con t2 -> 50 velas atrás ==> Predice el target para el instante t3 (= t2 - 50 +M)" >> ${LOG_VALIDADOR}
+echo -e "- Futuro con t2=0  ==> Descarga los datos reales en t2=0 y predice el target para t3 ( t2 + M)" >> ${LOG_VALIDADOR}
+echo -e "Lo CORRECTO es comparar el target PREDICHO para (t2 -50 +M) y compararlo con un target GENERADO mirando si se han cumplido las condiciones en (t2 -50 +M)" >> ${LOG_VALIDADOR}
+echo -e "Además, es importante situar t2 en un instante del pasado (no vale justo ahora), porque tenemos que ver las M velas siguientes." >> ${LOG_VALIDADOR}
+echo -e "Al menos, t2 debe estar -50+M velas más atrás que ahora mismo" >> ${LOG_VALIDADOR}
 
 echo -e "-------" >> ${LOG_VALIDADOR}
 echo -e "Para poder calcular la RENTABILIDAD comparando predicho y real, los parámetros de entrada siempre deben ser X<=VELAS_RETROCESO, es decir: ${X} <= ${VELAS_RETROCESO}" >> ${LOG_VALIDADOR}
 echo -e "-------" >> ${LOG_VALIDADOR}
-java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n" -jar ${PATH_JAR} --class "coordinador.Principal" "c70X.validacion.Validador" "${VELAS_RETROCESO}" "${DIR_VALIDACION}" "${S}" "${X}" "${R}" "${M}" 2>>${LOG_VALIDADOR} 1>>${LOG_VALIDADOR}
+java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n" -jar ${PATH_JAR} --class "coordinador.Principal" "c70X.validacion.Validador" "${VELAS_RETROCESO}" "${DIR_VALIDACION}" "${S}" "${X}" "${R}" "${M}" "${F}" 2>>${LOG_VALIDADOR} 1>>${LOG_VALIDADOR}
 
 echo -e "Un sistema CLASIFICADOR BINOMIAL tonto acierta el 50% de las veces. El nuestro..." >> ${LOG_VALIDADOR}
 
