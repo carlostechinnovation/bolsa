@@ -139,7 +139,7 @@ public class Validador implements Serializable {
 
 			for (Path validacion : ficherosValidacion) {
 
-				MY_LOGGER.info("Path validacion: " + validacion.toString());
+				MY_LOGGER.debug("Path validacion: " + validacion.toString());
 
 				// Se asume que la estructura del nombre de cada fichero es:
 				// <retroceso>_SG_<numeroSubgrupo>_COMPLETO_PREDICCION.csv
@@ -451,7 +451,7 @@ public class Validador implements Serializable {
 																					// predijimos un uno.
 		}
 
-		MY_LOGGER.info("empresa=" + empresa + " targetPredicho=" + targetPredicho + " targetReal=" + targetReal
+		MY_LOGGER.debug("empresa=" + empresa + " targetPredicho=" + targetPredicho + " targetReal=" + targetReal
 				+ " ==> out=" + out);
 
 		return out;
