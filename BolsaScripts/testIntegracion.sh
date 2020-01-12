@@ -1,76 +1,33 @@
 #!/bin/bash
 
-################## FUNCIONES #############################################################
-crearCarpetaSiNoExiste() {
-	param1=${1} 			#directorio
-	echo "Creando carpeta: $param1"
-	mkdir -p ${param1}
-}
+LOG_INTEGRACION="/bolsa/logs/integracion.log"
+echo -e ""  > ${LOG_INTEGRACION}
 
-################################################################################################
-DIR_TIEMPO="pasado"
+echo -e "Damos por hecho que tenemos una ejecucion completa de validador (1 pasado y 2 futuros)."  >> ${LOG_INTEGRACION}
+echo -e "Cogemos una empresa y vemos su evolucion en cada capa."  >> ${LOG_INTEGRACION}
 
-DIR_BASE="/bolsa/"
-DIR_LOGS="${DIR_BASE}logs/"
-DIR_BRUTOS="${DIR_BASE}${DIR_TIEMPO}/brutos/"
-DIR_BRUTOS_CSV="${DIR_BASE}${DIR_TIEMPO}/brutos_csv/"
-DIR_LIMPIOS="${DIR_BASE}${DIR_TIEMPO}/limpios/"
-DIR_ELABORADOS="${DIR_BASE}${DIR_TIEMPO}/elaborados/"
-DIR_SUBGRUPOS="${DIR_BASE}${DIR_TIEMPO}/subgrupos/"
-DIR_IMG="img/"
-DIR_INTEGRACION="${DIR_BASE}integracion/"
+echo -e "******** Test del PASADO **************" >> ${LOG_INTEGRACION}
+empresa="ADXS"
 
-crearCarpetaSiNoExiste "${DIR_INTEGRACION}"
-cd ${DIR_INTEGRACION}
+echo -e "\n-- capa 1 (brutos) ---" >> ${LOG_INTEGRACION}
+BRUTO_YF="/bolsa/pasado/brutos/YF_NASDAQ_${empresa}.txt"
+BRUTO_FZ="/bolsa/pasado/brutos/FZ_NASDAQ_${empresa}.html"
+echo -e "Bruto - YahooFinance: ${BRUTO_YF} --> Tamanio (bytes) = "$(stat -c%s "$BRUTO_YF") >> ${LOG_INTEGRACION}
+echo -e "Bruto - Finviz: ${BRUTO_FZ} --> Tamanio (bytes) = "$(stat -c%s "$BRUTO_FZ") >> ${LOG_INTEGRACION}
+BRUTO_CSV="/bolsa/pasado/brutos_csv/NASDAQ_${empresa}.csv"
+echo -e "Bruto CSV: ${BRUTO_CSV} --> Tamanio (bytes) = "$(stat -c%s "$BRUTO_CSV")"\n" >> ${LOG_INTEGRACION}
+head -n 5 ${BRUTO_CSV}>> ${LOG_INTEGRACION}
 
-############### LOGS ########################################################
-LOG_INTEGRACION="${DIR_LOGS}integracion.log"
-rm -f "${LOG_INTEGRACION}"
+echo -e "\n-- capa 2 (limpios) ---" >> ${LOG_INTEGRACION}
+LIMPIO="/bolsa/pasado/limpios/NASDAQ_${empresa}.csv"
+echo -e "Limpio: ${LIMPIO} --> Tamanio (bytes) = "$(stat -c%s "$LIMPIO")"\n" >> ${LOG_INTEGRACION}
+head -n 5 ${LIMPIO}>> ${LOG_INTEGRACION}
 
-################################################################################################
-echo -e ""  >${LOG_INTEGRACION}
-mkdir -p $DIR_LOGS >>${LOG_INTEGRACION}
+echo -e "\n-- capa 3 (elaboradas) ---" >> ${LOG_INTEGRACION}
+LIMPIO="/bolsa/pasado/elaborados/NASDAQ_${empresa}.csv"
+echo -e "Limpio: ${LIMPIO} --> Tamanio (bytes) = "$(stat -c%s "$LIMPIO")"\n" >> ${LOG_INTEGRACION}
+head -n 5 ${LIMPIO}>> ${LOG_INTEGRACION}
 
-echo -e "******** INICIO del test de integracion **************" >> ${LOG_INTEGRACION}
-
-S="10"
-X="56"
-R="10"
-M="7"
-F="5"
-
-echo -e "Nos saltamos la capa de DESCARGA (ponemos unos datos que tenemos ya guardados de otro día)..." >> ${LOG_INTEGRACION}
-rm -Rf /bolsa/pasado/ >>${LOG_INTEGRACION}
-mkdir -p "${DIR_BRUTOS_CSV}" >>${LOG_INTEGRACION}
-
-cp ${DIR_INTEGRACION}brutos_csv/* "${DIR_BRUTOS_CSV}"  2>>${LOG_INTEGRACION} 1>>${LOG_INTEGRACION}
-
-echo -e "Ejecutando MASTER (saltando la capa de descarga)..." >> ${LOG_INTEGRACION}
-${PATH_SCRIPTS}master.sh "pasado" "0" "0" "N" "${S}" "${X}" "${R}" "${M}" "${F}" 2>>${LOG_INTEGRACION} 1>>${LOG_INTEGRACION}
-
-################################################################################################
-echo -e "****Comprobaciones de INTEGRACION*********" >> ${LOG_INTEGRACION}
-
-NUM_FICHEROS_10x=$(ls -l ${DIR_BRUTOS_CSV} | wc -l)
-echo -e "La capa 10X ha generado $NUM_FICHEROS_10x ficheros" 2>>${ LOG_INTEGRACION} 1>>${ LOG_INTEGRACION}
-if [ "$NUM_FICHEROS_10x" -lt 1 ]; then
-	echo -e "El numero de ficheros es menor que el de la capa anterior. Asi que se han perdido algunos por algun problema. Debemos analizarlo. Saliendo..." 2>>${ LOG_INTEGRACION} 1>>${ LOG_INTEGRACION}
-	exit -1
-fi
-
-NUM_FICHEROS_20x=$(ls -l ${DIR_LIMPIOS} | wc -l)
-echo -e "La capa 20X ha generado $NUM_FICHEROS_20x ficheros" 2>>${ LOG_INTEGRACION} 1>>${ LOG_INTEGRACION}
-if [ "$NUM_FICHEROS_20x" -lt "$NUM_FICHEROS_10x" ]; then
-	echo -e "El numero de ficheros es menor que el de la capa anterior. Asi que se han perdido algunos por algun problema. Debemos analizarlo. Saliendo..." 2>>${ LOG_INTEGRACION} 1>>${ LOG_INTEGRACION}
-	exit -1
-fi
-
-NUM_FICHEROS_30x=$(ls -l ${DIR_ELABORADOS} | wc -l)
-echo -e "La capa 30X ha generado $NUM_FICHEROS_30x ficheros" 2>>${ LOG_INTEGRACION} 1>>${ LOG_INTEGRACION}
-if [ "$NUM_FICHEROS_30x" -lt "$NUM_FICHEROS_20x" ]; then
-	echo -e "El numero de ficheros es menor que el de la capa anterior. Asi que se han perdido algunos por algun problema. Debemos analizarlo. Saliendo..." 2>>${ LOG_INTEGRACION} 1>>${ LOG_INTEGRACION}
-	exit -1
-fi
 
 echo -e "******** FIN del test de integracion **************" >> ${LOG_INTEGRACION}
 

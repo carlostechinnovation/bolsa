@@ -12,7 +12,6 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -101,8 +100,6 @@ public class EstaticosNasdaqDescargarYParsear implements Serializable {
 
 		MY_LOGGER.info("descargarNasdaqEstaticos1...");
 
-		MY_LOGGER.info("Empresas de las que ya sabemos que falta info en alguna de las fuentes de datos: "
-				+ BrutosUtils.DESCONOCIDOS_CSV);
 		List<String> desconocidos = new ArrayList<String>();
 		try {
 			File file = new File(BrutosUtils.DESCONOCIDOS_CSV);
@@ -176,9 +173,8 @@ public class EstaticosNasdaqDescargarYParsear implements Serializable {
 			ioe.printStackTrace();
 		}
 
-		if (out != null && !out.isEmpty()) {
-			Collections.sort(out);
-		}
+		MY_LOGGER.info("Empresas DESCONOCIDAS (sabemos que falta info en alguna de las fuentes de datos): "
+				+ BrutosUtils.DESCONOCIDOS_CSV + " --> Son " + desconocidos.size() + " empresas");
 
 		return out;
 	}

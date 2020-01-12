@@ -115,7 +115,7 @@ public class YahooFinance01Descargar implements Serializable {
 				String URL_yahoo_ticker = getUrlYahooFinance(ticker, modo);
 
 				if (i % 10 == 1) {
-					MY_LOGGER.info("Empresa numero = " + (i + 1));
+					MY_LOGGER.info("Empresa numero = " + (i + 1) + " (" + ticker + ")");
 				}
 				MY_LOGGER.debug("pathOut=" + pathOut);
 				MY_LOGGER.debug("URL_yahoo_ticker=" + URL_yahoo_ticker);
