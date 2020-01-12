@@ -48,13 +48,37 @@ MIN_EMPRESAS_POR_CLUSTER=15
 #################### DIRECTORIOS ###############################################################
 DIR_CODIGOS_CARLOS="/home/carloslinux/Desktop/GIT_BOLSA/" #NO TOCAR
 DIR_CODIGOS_LUIS="/home/t151521/bolsa/" #NO TOCAR
-DIR_CODIGOS="${DIR_CODIGOS_CARLOS}"
+usuario=$(whoami)
+if [ $usuario == "carloslinux" ]
+then
+  DIR_CODIGOS="${DIR_CODIGOS_CARLOS}"
+elif [ $usuario == "t151521" ]
+then
+  DIR_CODIGOS="${DIR_CODIGOS_LUIS}"
+else
+  echo "ERROR: USUARIO NO CONTROLADO"
+  s1 -e
+fi
+
+
 
 PATH_SCRIPTS="${DIR_CODIGOS}BolsaScripts/"
 PYTHON_SCRIPTS="${DIR_CODIGOS}BolsaPython/"
 DIR_JAVA="${DIR_CODIGOS}BolsaJava/"
 PATH_JAR="${DIR_JAVA}target/bolsajava-1.0-jar-with-dependencies.jar"
-PYTHON_MOTOR="/home/carloslinux/Desktop/PROGRAMAS/anaconda3/envs/BolsaPython/bin/python"
+PYTHON_MOTOR_CARLOS="/home/carloslinux/Desktop/PROGRAMAS/anaconda3/envs/BolsaPython/bin/python"
+PYTHON_MOTOR_LUIS="/home/t151521/anaconda3/envs/BolsaPython/bin/python"
+usuario=$(whoami)
+if [ $usuario -eq carloslinux ]
+then
+  PYTHON_MOTOR="${PYTHON_MOTOR_CARLOS}"
+elif [ $usuario -eq t151521 ]
+then
+  PYTHON_MOTOR="${PYTHON_MOTOR_LUIS}"
+else
+  echo "ERROR: USUARIO NO CONTROLADO"
+  s1 -e
+fi
 
 DIR_BASE="/bolsa/"
 DIR_LOGS="${DIR_BASE}logs/"

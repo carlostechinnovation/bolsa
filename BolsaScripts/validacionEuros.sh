@@ -8,7 +8,7 @@ crearCarpetaSiNoExiste() {
 }
 
 ################################################################################################
-VELAS_RETROCESO="28" #INSTANTE ANALIZADO (T2). Su antiguedad siempre es mayor que M, para poder ver esas M velas del futuro
+VELAS_RETROCESO="60" #INSTANTE ANALIZADO (T2). Su antiguedad siempre es mayor que M, para poder ver esas M velas del futuro
 
 # PARAMETROS DE TARGET MEDIDOS EN VELAS
 S="10"  #Subida durante [t1,t2]
@@ -21,7 +21,18 @@ DIR_BASE="/bolsa/"
 
 DIR_CODIGOS_CARLOS="/home/carloslinux/Desktop/GIT_BOLSA/" #NO TOCAR
 DIR_CODIGOS_LUIS="/home/t151521/bolsa/" #NO TOCAR
-DIR_CODIGOS="${DIR_CODIGOS_CARLOS}"
+usuario=$(whoami)
+if [ $usuario == "carloslinux" ]
+then
+  DIR_CODIGOS="${DIR_CODIGOS_CARLOS}"
+elif [ $usuario == "t151521" ]
+then
+  DIR_CODIGOS="${DIR_CODIGOS_LUIS}"
+else
+  echo "ERROR: USUARIO NO CONTROLADO"
+  s1 -e
+fi
+
 
 PATH_SCRIPTS="${DIR_CODIGOS}BolsaScripts/"
 DIR_LOGS="${DIR_BASE}logs/"
@@ -86,7 +97,8 @@ cp -R "/bolsa/futuro/" $dir_val_futuro_atras
 
 rm -Rf /bolsa/futuro/ >>${LOG_VALIDADOR}
 
-vela_futuro_predicho="$((${VELAS_RETROCESO}-${M}))"
+#vela_futuro_predicho="$((${VELAS_RETROCESO}-${M}))"
+vela_futuro_predicho=0
 
 echo -e "Ejecución del futuro (para velas de anttiguedad=${vela_futuro_predicho}) con OTRAS empresas (lista REVERTIDA)..." >>${LOG_VALIDADOR}
 ${PATH_SCRIPTS}master.sh "futuro" "$vela_futuro_predicho" "1" "S" "${S}" "${X}" "${R}" "${M}" "${F}" 2>>${LOG_VALIDADOR} 1>>${LOG_VALIDADOR}
