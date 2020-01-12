@@ -41,7 +41,7 @@ crearCarpetaSiNoExisteYVaciarRecursivo() {
 ID_EJECUCION=$( date "+%Y%m%d%H%M%S" )
 echo -e "ID_EJECUCION = "${ID_EJECUCION}
 
-NUM_MAX_EMPRESAS_DESCARGADAS=60
+NUM_MAX_EMPRESAS_DESCARGADAS=1000
 MIN_COBERTURA_CLUSTER=60  #Porcentaje de empresas con al menos una vela positiva
 MIN_EMPRESAS_POR_CLUSTER=15
 

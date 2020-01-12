@@ -64,10 +64,11 @@ public class Validador implements Serializable {
 		Integer X = ElaboradosUtils.X; // DEFAULT
 		Integer R = ElaboradosUtils.R; // DEFAULT
 		Integer M = ElaboradosUtils.M; // DEFAULT
+		Integer F = ElaboradosUtils.F; // DEFAULT
 
 		if (args.length == 0) {
 			MY_LOGGER.info("Sin parametros de entrada. Rellenamos los DEFAULT...");
-		} else if (args.length != 6) {
+		} else if (args.length != 7) {
 			MY_LOGGER.error("Parametros de entrada incorrectos!!");
 			System.exit(-1);
 		} else {
@@ -77,6 +78,7 @@ public class Validador implements Serializable {
 			X = Integer.valueOf(args[3]);
 			R = Integer.valueOf(args[4]);
 			M = Integer.valueOf(args[5]);
+			F = Integer.valueOf(args[6]);
 		}
 
 		analizarPrediccion(velasRetroceso, pathValidacion, S, X, R, M);
