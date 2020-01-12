@@ -41,7 +41,7 @@ crearCarpetaSiNoExisteYVaciarRecursivo() {
 ID_EJECUCION=$( date "+%Y%m%d%H%M%S" )
 echo -e "ID_EJECUCION = "${ID_EJECUCION}
 
-NUM_MAX_EMPRESAS_DESCARGADAS=600
+NUM_MAX_EMPRESAS_DESCARGADAS=60
 MIN_COBERTURA_CLUSTER=60  #Porcentaje de empresas con al menos una vela positiva
 MIN_EMPRESAS_POR_CLUSTER=15
 
@@ -69,10 +69,10 @@ PATH_JAR="${DIR_JAVA}target/bolsajava-1.0-jar-with-dependencies.jar"
 PYTHON_MOTOR_CARLOS="/home/carloslinux/Desktop/PROGRAMAS/anaconda3/envs/BolsaPython/bin/python"
 PYTHON_MOTOR_LUIS="/home/t151521/anaconda3/envs/BolsaPython/bin/python"
 usuario=$(whoami)
-if [ $usuario -eq carloslinux ]
+if [ $usuario == "carloslinux" ]
 then
   PYTHON_MOTOR="${PYTHON_MOTOR_CARLOS}"
-elif [ $usuario -eq t151521 ]
+elif [ $usuario == "t151521" ]
 then
   PYTHON_MOTOR="${PYTHON_MOTOR_LUIS}"
 else

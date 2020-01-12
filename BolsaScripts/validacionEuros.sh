@@ -43,13 +43,14 @@ DIR_JAVA="${DIR_CODIGOS}BolsaJava/"
 PATH_JAR="${DIR_JAVA}target/bolsajava-1.0-jar-with-dependencies.jar"
 
 
-rm -Rf ${DIR_VALIDACION} >>${LOG_VALIDADOR}
+rm -Rf ${DIR_LOGS}
+rm -Rf ${DIR_VALIDACION}
+crearCarpetaSiNoExiste "${DIR_LOGS}"
 crearCarpetaSiNoExiste "${DIR_VALIDACION}"
 
 ############### LOGS ########################################################
-rm -f "${DIR_LOGS}log4j.log" >>${LOG_VALIDADOR}
-
-rm -f "${LOG_VALIDADOR}" >>${LOG_VALIDADOR}
+rm -f "${DIR_LOGS}log4j.log"
+rm -f "${LOG_VALIDADOR}"
 
 ################################################################################################
 
