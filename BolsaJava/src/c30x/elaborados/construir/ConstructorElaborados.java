@@ -449,7 +449,7 @@ public class ConstructorElaborados implements Serializable {
 		Double closeAntiguedadX = Double.valueOf(datosAntiguedadX.get("close"));
 
 		boolean closeActualSuperaCloseXConSubidaS = closeAntiguedad >= closeAntiguedadX * subidaSPrecioTantoPorUno;
-
+		Double closeAntiguedadM, closeAntiguedadI;
 		if (closeActualSuperaCloseXConSubidaS) {
 
 			if (datosAntiguedadM == null) {
@@ -458,7 +458,7 @@ public class ConstructorElaborados implements Serializable {
 						+ " Posible causa: el mercado estaba abierto cuando hemos ejecutado la descarga de datos");
 			} else {
 
-				Double closeAntiguedadM = Double.valueOf(datosAntiguedadM.get("close"));
+				closeAntiguedadM = Double.valueOf(datosAntiguedadM.get("close"));
 
 				// En la vela M el precio debe ser un F% mejor que en la vela actual
 				boolean closeMSuperaCloseActualMayorQueF = closeAntiguedad < caidaFPrecioTantoPorUno * closeAntiguedadM;
@@ -467,7 +467,7 @@ public class ConstructorElaborados implements Serializable {
 					for (int i = 1; i <= M; i++) {
 						Integer antiguedadI = antiguedad - i; // Voy hacia el futuro
 
-						Double closeAntiguedadI = Double.valueOf(datosEmpresaEntrada.get(antiguedadI).get("close"));
+						closeAntiguedadI = Double.valueOf(datosEmpresaEntrada.get(antiguedadI).get("close"));
 						if (closeAntiguedad * caidaRPrecioTantoPorUno < closeAntiguedadI) {
 							// El precio puede haber caido, pero nunca más de R
 							mCumplida = Boolean.TRUE;
@@ -479,6 +479,8 @@ public class ConstructorElaborados implements Serializable {
 							break;
 						}
 					}
+				} else {
+					mCumplida = Boolean.FALSE;
 				}
 
 				if (mCumplida) {

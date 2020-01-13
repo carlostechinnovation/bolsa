@@ -105,12 +105,10 @@ public class Validador implements Serializable {
 			final Integer X, final Integer R, final Integer M) throws IOException {
 
 		int antiguedadAnalizada = velasRetroceso;
-//		int antiguedadValidacionB = velasRetroceso - M;
-		int antiguedadValidacionB = 0;
 
 		Predicate<Path> filtroFicheroPrediccion = s -> s.getFileName().toString().contains(DEFINICION_PREDICCION);
 		Predicate<Path> filtroPredichos = p -> p.getFileName().toString().startsWith(antiguedadAnalizada + "_");
-		Predicate<Path> filtroValidaciones = p -> p.getFileName().toString().startsWith(antiguedadValidacionB + "_");
+		Predicate<Path> filtroValidaciones = p -> p.getFileName().toString().startsWith("0_");
 
 		List<Path> ficherosPredichos = Files.walk(Paths.get(pathValidacion), 2)
 				.filter(filtroFicheroPrediccion.and(filtroPredichos)).collect(Collectors.toList());
@@ -206,6 +204,7 @@ public class Validador implements Serializable {
 
 								if (empresaPredicha.compareTo(empresaValidacion) == 0
 										&& fechaPredicha.compareTo(fechaValidacion) == 0) {
+
 									// Tengo ya las posiciones en empresa+fecha en predicha y en validación.
 
 									// RENTABILIDAD ACIERTOS/FALLOS para TARGET=1
@@ -259,6 +258,9 @@ public class Validador implements Serializable {
 
 												MY_LOGGER.info("----------------NUEVO CASO---------------");
 												MY_LOGGER.info(
+														"----ATENCION, IMPORTANTE: Se predice TARGET=1 para la empresa: "
+																+ empresaPredicha);
+												MY_LOGGER.info(
 														"filaPredicha:                             " + filaPredicha);
 												MY_LOGGER.info(
 														"filaValidacion:                           " + filaValidacion);
@@ -304,30 +306,32 @@ public class Validador implements Serializable {
 			mediaRendimientoClose = performanceClose.getMean();
 			stdRendimientoClose = performanceClose.getStandardDeviation();
 			MY_LOGGER.info("RENTABILIDAD - Porcentaje medio de SUBIDA del precio en subgrupo " + predicho.getFileName()
-					+ ": " + mediaRendimientoClose * 100 + " % de " + totalTargetUnoEnSubgrupo
+					+ ": " + mediaRendimientoClose * 100 + " % de " + Math.round(performanceClose.getN())
 					+ " elementos PREDICHOS a TARGET=1");
 			MY_LOGGER.info("RENTABILIDAD - Desviación estándar de SUBIDA del precio en subgrupo "
-					+ predicho.getFileName() + ": " + stdRendimientoClose + " para " + totalTargetUnoEnSubgrupo
-					+ " elementos PREDICHOS a TARGET=1");
+					+ predicho.getFileName() + ": " + stdRendimientoClose + " para "
+					+ Math.round(performanceClose.getN()) + " elementos PREDICHOS a TARGET=1");
 
 			// ANALISIS
 			mediaRendimientoCloseAcertados = performanceCloseAcertados.getMean();
 			stdRendimientoCloseAcertados = performanceCloseAcertados.getStandardDeviation();
 			MY_LOGGER.info("ANALISIS - ACERTADOS - Porcentaje medio de SUBIDA del precio en subgrupo "
 					+ predicho.getFileName() + ": " + mediaRendimientoCloseAcertados * 100 + " % de "
-					+ totalTargetUnoEnSubgrupo + " elementos PREDICHOS a TARGET=1");
+					+ Math.round(performanceCloseAcertados.getN()) + " elementos PREDICHOS a TARGET=1");
 			MY_LOGGER.info("ANALISIS - ACERTADOS - Desviación estándar de SUBIDA del precio en subgrupo "
-					+ predicho.getFileName() + ": " + stdRendimientoCloseAcertados + " para " + totalTargetUnoEnSubgrupo
-					+ " elementos PREDICHOS a TARGET=1");
+					+ predicho.getFileName() + ": " + stdRendimientoCloseAcertados + " para "
+					+ Math.round(performanceCloseAcertados.getN()) + " elementos PREDICHOS a TARGET=1");
 
 			mediaRendimientoCloseFallados = performanceCloseFallados.getMean();
 			stdRendimientoCloseFallados = performanceCloseFallados.getStandardDeviation();
 			MY_LOGGER.info("ANALISIS - FALLADOS - Porcentaje medio de SUBIDA del precio en subgrupo "
 					+ predicho.getFileName() + ": " + mediaRendimientoCloseFallados * 100 + " % de "
-					+ totalTargetUnoEnSubgrupo + " elementos PREDICHOS a TARGET=1");
+					+ Math.round(performanceCloseFallados.getN())
+					+ " elementos PREDICHOS (y además ACERTADOS) a TARGET=1");
 			MY_LOGGER.info("ANALISIS - FALLADOS - Desviación estándar de SUBIDA del precio en subgrupo "
-					+ predicho.getFileName() + ": " + stdRendimientoCloseFallados + " para " + totalTargetUnoEnSubgrupo
-					+ " elementos PREDICHOS a TARGET=1");
+					+ predicho.getFileName() + ": " + stdRendimientoCloseFallados + " para "
+					+ Math.round(performanceCloseFallados.getN())
+					+ " elementos PREDICHOS (y además FALLADOS) a TARGET=1");
 
 		}
 
