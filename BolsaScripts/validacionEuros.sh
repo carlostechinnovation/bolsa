@@ -8,14 +8,20 @@ crearCarpetaSiNoExiste() {
 }
 
 ################################################################################################
-VELAS_RETROCESO="60" #INSTANTE ANALIZADO (T2). Su antiguedad siempre es mayor que M, para poder ver esas M velas del futuro
+VELAS_RETROCESO="100" #INSTANTE ANALIZADO (T1). Su antiguedad siempre es mayor que M, para poder ver esas M velas del futuro
 
 # PARAMETROS DE TARGET MEDIDOS EN VELAS
-S="30"  #Subida durante [t1,t2]
+S="11"  #Subida durante [t1,t2]
 X="28"  #Duracion en velas de [t1,t2]
-R="15"  #Caida ligera máxima permitida durante [t2,t3], en TODAS esas velas.
-M="7"  #Duración en velas de [t2,t3]
-F="10"  #Caida ligera permitida durante [t2,t3], en la ÚLTIMA vela
+R="6"  #Caida ligera máxima permitida durante [t2,t3], en TODAS esas velas.
+M="14"  #Duración en velas de [t2,t3]
+F="5"  #Caida ligera permitida durante [t2,t3], en la ÚLTIMA vela
+NUM_EMPRESAS="1000"  #Numero de empresas descargadas
+
+#Instantes de las descargas
+PASADO_t1="0"
+FUTURO1_t1="$VELAS_RETROCESO"
+FUTURO2_t1="$((${VELAS_RETROCESO}-${X}-${M}))"
 
 DIR_BASE="/bolsa/"
 
@@ -54,14 +60,15 @@ rm -f "${LOG_VALIDADOR}"
 
 ################################################################################################
 
-echo -e "PARAMETROS --> VELAS_RETROCESO|S|X|R|M|F --> ${VELAS_RETROCESO}|${S}|${X}|${R}|${M}|${F}" >>${LOG_VALIDADOR}
+echo -e "PARAMETROS --> VELAS_RETROCESO|S|X|R|M|F|NUM_EMPRESAS --> ${VELAS_RETROCESO}|${S}|${X}|${R}|${M}|${F}|${NUM_EMPRESAS}" >>${LOG_VALIDADOR}
+echo -e "PARAMETROS -->  PASADO_t1 | FUTURO1_t1 | FUTURO2_t1--> ${PASADO_t1}|${FUTURO1_t1}|${FUTURO2_t1}" >>${LOG_VALIDADOR}
 
 rm -Rf /bolsa/pasado/ >>${LOG_VALIDADOR}
 mkdir -p /bolsa/logs/ >>${LOG_VALIDADOR}
 echo -e ""  >>${LOG_VALIDADOR}
 
-echo -e "Ejecución del PASADO (para entrenar los modelos a dia de HOY con la lista normal de empresas)..." >>${LOG_VALIDADOR}
-${PATH_SCRIPTS}master.sh "pasado" "0" "0" "S" "${S}" "${X}" "${R}" "${M}" "${F}" 2>>${LOG_VALIDADOR} 1>>${LOG_VALIDADOR}
+echo -e $( date '+%Y%m%d_%H%M%S' )" Ejecución del PASADO (para entrenar los modelos a dia de HOY con la lista normal de empresas)..." >>${LOG_VALIDADOR}
+${PATH_SCRIPTS}master.sh "pasado" "${PASADO_t1}" "0" "S" "S" "${S}" "${X}" "${R}" "${M}" "${F}" "${NUM_EMPRESAS}" 2>>${LOG_VALIDADOR} 1>>${LOG_VALIDADOR}
 
 dir_val_pasado="/bolsa/validacion/E600_VR${VELAS_RETROCESO}_S${S}_X${X}_R${R}_M${M}_F${F}_pasado/"
 rm -Rf $dir_val_pasado
@@ -74,10 +81,10 @@ cp -R "/bolsa/pasado/" $dir_val_pasado
 
 rm -Rf /bolsa/futuro/ >>${LOG_VALIDADOR}
 
-echo -e "Ejecución del futuro (para velas de antiguedad=${VELAS_RETROCESO}) con OTRAS empresas (lista REVERTIDA)..." >>${LOG_VALIDADOR}
-${PATH_SCRIPTS}master.sh "futuro" "$VELAS_RETROCESO" "1" "S" "${S}" "${X}" "${R}" "${M}" "${F}"  2>>${LOG_VALIDADOR} 1>>${LOG_VALIDADOR}
+echo -e $( date '+%Y%m%d_%H%M%S' )" Ejecución del futuro (para velas de antiguedad=${FUTURO1_t1}) con OTRAS empresas (lista REVERTIDA)..." >>${LOG_VALIDADOR}
+${PATH_SCRIPTS}master.sh "futuro" "$FUTURO1_t1" "1" "S" "S" "${S}" "${X}" "${R}" "${M}" "${F}" "${NUM_EMPRESAS}"  2>>${LOG_VALIDADOR} 1>>${LOG_VALIDADOR}
 
-echo -e "ATRAS $VELAS_RETROCESO velas --> Guardamos la prediccion de todos los SUBGRUPOS en la carpeta de validacion, para analizarla luego..." >>${LOG_VALIDADOR}
+echo -e "Atrás $VELAS_RETROCESO velas --> Guardamos la prediccion de todos los SUBGRUPOS en la carpeta de validacion, para analizarla luego..." >>${LOG_VALIDADOR}
 while IFS= read -r -d '' -u 9
 do
 	if [[ $REPLY == *"COMPLETO_PREDICCION"* ]]; then
@@ -94,17 +101,14 @@ cp -R "/bolsa/futuro/" $dir_val_futuro_atras
 ################################################################################################
 
 #En esta ejecucion SOLO NOS INTERESA COGER el tablon analítico de entrada, para extraer el resultado REAL y compararlo con las predicciones que hicimos unas velas atrás.
-#En esta ejecucion, no miramos la predicción. --> Realmente esta PREDICCION DEL FUTURO en este instante es donde vamos a PONER EL DINERO REAL. 
+#En esta ejecucion, no miramos la predicción. --> Esta NO es la predicción del futuro en el instante de ahora mismo (t1=0) para poner dinero real, sino de del futuro de que hemos predicho en la ejecucion de arriba, es decir, t1= -1* VELAS_RETROCESO + S + M
 
 rm -Rf /bolsa/futuro/ >>${LOG_VALIDADOR}
 
-#vela_futuro_predicho="$((${VELAS_RETROCESO}-${M}))"
-vela_futuro_predicho=0
+echo -e $( date '+%Y%m%d_%H%M%S' )" Ejecución del futuro (para velas de anttiguedad=${FUTURO2_t1}) con OTRAS empresas (lista REVERTIDA)..." >>${LOG_VALIDADOR}
+${PATH_SCRIPTS}master.sh "futuro" "${FUTURO2_t1}" "1" "S" "N" "${S}" "${X}" "${R}" "${M}" "${F}" "${NUM_EMPRESAS}" 2>>${LOG_VALIDADOR} 1>>${LOG_VALIDADOR}
 
-echo -e "Ejecución del futuro (para velas de anttiguedad=${vela_futuro_predicho}) con OTRAS empresas (lista REVERTIDA)..." >>${LOG_VALIDADOR}
-${PATH_SCRIPTS}master.sh "futuro" "$vela_futuro_predicho" "1" "S" "${S}" "${X}" "${R}" "${M}" "${F}" 2>>${LOG_VALIDADOR} 1>>${LOG_VALIDADOR}
-
-echo -e "VELAS_50 --> Guardamos la prediccion de todos los SUBGRUPOS en la carpeta de validacion, para analizarla luego..." >>${LOG_VALIDADOR}
+echo -e "Velas con antiguedad=FUTURO2_t1 --> Guardamos la prediccion de todos los SUBGRUPOS en la carpeta de validacion, para analizarla luego..." >>${LOG_VALIDADOR}
 while IFS= read -r -d '' -u 9
 do
 	if [[ $REPLY == *"COMPLETO_PREDICCION"* ]]; then
@@ -119,21 +123,17 @@ mkdir -p $dir_val_futuro_2
 cp -R "/bolsa/futuro/" $dir_val_futuro_2
 
 ################################################################################################
-echo -e "-------------------------------------------------" >> ${LOG_VALIDADOR}
+echo -e $( date '+%Y%m%d_%H%M%S' )" -------------------------------------------------" >> ${LOG_VALIDADOR}
 echo -e "Validacion de rendimiento: COMPARAR el ATRAS_PREDICHO con HOY_REAL para empresas de la lista REVERTIDA..." >> ${LOG_VALIDADOR}
 
-echo -e "Nuestro sistema se situa en el instante t2." >> ${LOG_VALIDADOR}
-echo -e "Para calcular el TARGET, trabaja usando los periodos [t1,t2] (X velas hacia atrás) y [t2,t3] (M velas hacia adelante)." >> ${LOG_VALIDADOR}
+echo -e "Nuestro sistema se situa en el instante t1." >> ${LOG_VALIDADOR}
+echo -e "Para calcular el TARGET, trabaja usando los periodos [t1,t2] (X velas hacia adelante) y [t2,t3] (M velas hacia más adelante)." >> ${LOG_VALIDADOR}
 echo -e "En el script de validacion, ejecutamos:" >> ${LOG_VALIDADOR}
-echo -e "- Pasado con t2=0" >> ${LOG_VALIDADOR}
-echo -e "- Futuro con t2 -> 50 velas atrás ==> Predice el target para el instante t3 (= t2 - 50 +M)" >> ${LOG_VALIDADOR}
-echo -e "- Futuro con t2=0  ==> Descarga los datos reales en t2=0 y predice el target para t3 ( t2 + M)" >> ${LOG_VALIDADOR}
-echo -e "Lo CORRECTO es comparar el target PREDICHO para (t2 -50 +M) y compararlo con un target GENERADO mirando si se han cumplido las condiciones en (t2 -50 +M)" >> ${LOG_VALIDADOR}
-echo -e "Además, es importante situar t2 en un instante del pasado (no vale justo ahora), porque tenemos que ver las M velas siguientes." >> ${LOG_VALIDADOR}
-echo -e "Al menos, t2 debe estar -50+M velas más atrás que ahora mismo" >> ${LOG_VALIDADOR}
+echo -e "- Pasado con t1=${PASADO_t1}" >> ${LOG_VALIDADOR}
+echo -e "- Futuro con t1 =${FUTURO1_t1} velas atras ==> Predice el target para el instante t3 = ${FUTURO2_t1}" >> ${LOG_VALIDADOR}
+echo -e "- Futuro con t1=${FUTURO2_t1} ==> Nos sirve para descargar qué pasó realmente en ese t3 que hemos predicho antes y que ahora es el t1." >> ${LOG_VALIDADOR}
+echo -e "Lo CORRECTO es comparar el target PREDICHO en ejecucion futuro1 y compararlo con un target GENERADO en futuro2" >> ${LOG_VALIDADOR}
 
-echo -e "-------" >> ${LOG_VALIDADOR}
-echo -e "Para poder calcular la RENTABILIDAD comparando predicho y real, los parámetros de entrada siempre deben ser X<=VELAS_RETROCESO, es decir: ${X} <= ${VELAS_RETROCESO}" >> ${LOG_VALIDADOR}
 echo -e "-------" >> ${LOG_VALIDADOR}
 java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n" -jar ${PATH_JAR} --class "coordinador.Principal" "c70X.validacion.Validador" "${VELAS_RETROCESO}" "${DIR_VALIDACION}" "${S}" "${X}" "${R}" "${M}" "${F}" 2>>${LOG_VALIDADOR} 1>>${LOG_VALIDADOR}
 

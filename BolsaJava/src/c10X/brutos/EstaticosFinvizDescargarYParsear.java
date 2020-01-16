@@ -109,12 +109,14 @@ public class EstaticosFinvizDescargarYParsear {
 		long msegEspera = -1;
 
 		for (int i = 0; i < Math.min(numMaxEmpresas, nasdaqEstaticos1.size()); i++) {
-			if (i % 10 == 1) {
-				MY_LOGGER.info("Empresa numero = " + (i + 1));
-			}
+
 			mapaExtraidos.clear();
 
 			String empresa = nasdaqEstaticos1.get(i).symbol;
+
+			if (i % 10 == 1) {
+				MY_LOGGER.info("Empresa numero = " + (i + 1) + " (" + empresa + ")");
+			}
 
 			String urlFinvizEmpresa = "https://finviz.com/quote.ashx?t=" + empresa;
 			rutaHtmlBruto = dirBruto + BrutosUtils.FINVIZ + "_" + BrutosUtils.MERCADO_NQ + "_" + empresa + ".html";

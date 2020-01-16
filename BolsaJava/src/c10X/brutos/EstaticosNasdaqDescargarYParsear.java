@@ -94,6 +94,7 @@ public class EstaticosNasdaqDescargarYParsear implements Serializable {
 	/**
 	 * NASDAQ - ESTATICOS-1: datos cargados desde un fichero local.
 	 * 
+	 * @param entornoDeValidacion
 	 * @return Lista de empresas del NASDAQ con algunos datos ESTATICOS
 	 */
 	public static List<EstaticoNasdaqModelo> descargarNasdaqEstaticosSoloLocal1(final Integer entornoDeValidacion) {
