@@ -11,11 +11,11 @@ crearCarpetaSiNoExiste() {
 VELAS_RETROCESO="60" #INSTANTE ANALIZADO (T2). Su antiguedad siempre es mayor que M, para poder ver esas M velas del futuro
 
 # PARAMETROS DE TARGET MEDIDOS EN VELAS
-S="30"  #Subida durante [t1,t2]
+S="15"  #Subida durante [t1,t2]
 X="28"  #Duracion en velas de [t1,t2]
-R="15"  #Caida ligera máxima permitida durante [t2,t3], en TODAS esas velas.
+R="12"  #Caida ligera máxima permitida durante [t2,t3], en TODAS esas velas.
 M="7"  #Duración en velas de [t2,t3]
-F="10"  #Caida ligera permitida durante [t2,t3], en la ÚLTIMA vela
+F="5"  #Caida ligera permitida durante [t2,t3], en la ÚLTIMA vela
 
 DIR_BASE="/bolsa/"
 
@@ -43,53 +43,53 @@ DIR_JAVA="${DIR_CODIGOS}BolsaJava/"
 PATH_JAR="${DIR_JAVA}target/bolsajava-1.0-jar-with-dependencies.jar"
 
 
-rm -Rf ${DIR_LOGS}
-rm -Rf ${DIR_VALIDACION}
-crearCarpetaSiNoExiste "${DIR_LOGS}"
+#rm -Rf ${DIR_LOGS}
+#rm -Rf ${DIR_VALIDACION}
+#crearCarpetaSiNoExiste "${DIR_LOGS}"
 crearCarpetaSiNoExiste "${DIR_VALIDACION}"
 
 ############### LOGS ########################################################
-rm -f "${DIR_LOGS}log4j.log"
+#rm -f "${DIR_LOGS}log4j.log"
 rm -f "${LOG_VALIDADOR}"
 
 ################################################################################################
 
 echo -e "PARAMETROS --> VELAS_RETROCESO|S|X|R|M|F --> ${VELAS_RETROCESO}|${S}|${X}|${R}|${M}|${F}" >>${LOG_VALIDADOR}
 
-rm -Rf /bolsa/pasado/ >>${LOG_VALIDADOR}
-mkdir -p /bolsa/logs/ >>${LOG_VALIDADOR}
-echo -e ""  >>${LOG_VALIDADOR}
+#rm -Rf /bolsa/pasado/ >>${LOG_VALIDADOR}
+#mkdir -p /bolsa/logs/ >>${LOG_VALIDADOR}
+#echo -e ""  >>${LOG_VALIDADOR}
 
-echo -e "Ejecución del PASADO (para entrenar los modelos a dia de HOY con la lista normal de empresas)..." >>${LOG_VALIDADOR}
-${PATH_SCRIPTS}master.sh "pasado" "0" "0" "S" "${S}" "${X}" "${R}" "${M}" "${F}" 2>>${LOG_VALIDADOR} 1>>${LOG_VALIDADOR}
+#echo -e "Ejecución del PASADO (para entrenar los modelos a dia de HOY con la lista normal de empresas)..." >>${LOG_VALIDADOR}
+#${PATH_SCRIPTS}master.sh "pasado" "0" "0" "S" "${S}" "${X}" "${R}" "${M}" "${F}" 2>>${LOG_VALIDADOR} 1>>${LOG_VALIDADOR}
 
-dir_val_pasado="/bolsa/validacion/E600_VR${VELAS_RETROCESO}_S${S}_X${X}_R${R}_M${M}_F${F}_pasado/"
-rm -Rf $dir_val_pasado
-mkdir -p $dir_val_pasado
-cp -R "/bolsa/pasado/" $dir_val_pasado
+#dir_val_pasado="/bolsa/validacion/E600_VR${VELAS_RETROCESO}_S${S}_X${X}_R${R}_M${M}_F${F}_pasado/"
+#rm -Rf $dir_val_pasado
+#mkdir -p $dir_val_pasado
+#cp -R "/bolsa/pasado/" $dir_val_pasado
 
 ################################################################################################
 
 #En esta ejecucion, nos situamos unas velas atras y PREDECIMOS el futuro. Guardaremos esa predicción y la comparamos con lo que ha pasado hoy (dato REAL)
 
-rm -Rf /bolsa/futuro/ >>${LOG_VALIDADOR}
+#rm -Rf /bolsa/futuro/ >>${LOG_VALIDADOR}
 
-echo -e "Ejecución del futuro (para velas de antiguedad=${VELAS_RETROCESO}) con OTRAS empresas (lista REVERTIDA)..." >>${LOG_VALIDADOR}
-${PATH_SCRIPTS}master.sh "futuro" "$VELAS_RETROCESO" "1" "S" "${S}" "${X}" "${R}" "${M}" "${F}"  2>>${LOG_VALIDADOR} 1>>${LOG_VALIDADOR}
+#echo -e "Ejecución del futuro (para velas de antiguedad=${VELAS_RETROCESO}) con OTRAS empresas (lista REVERTIDA)..." >>${LOG_VALIDADOR}
+#${PATH_SCRIPTS}master.sh "futuro" "$VELAS_RETROCESO" "1" "S" "${S}" "${X}" "${R}" "${M}" "${F}"  2>>${LOG_VALIDADOR} 1>>${LOG_VALIDADOR}
 
-echo -e "ATRAS $VELAS_RETROCESO velas --> Guardamos la prediccion de todos los SUBGRUPOS en la carpeta de validacion, para analizarla luego..." >>${LOG_VALIDADOR}
-while IFS= read -r -d '' -u 9
-do
-	if [[ $REPLY == *"COMPLETO_PREDICCION"* ]]; then
-		echo "Copiando este fichero   $REPLY   ..." >>${LOG_VALIDADOR}
-		cp $REPLY $DIR_VALIDACION
-	fi
-done 9< <( find $DIR_FUT_SUBGRUPOS -type f -exec printf '%s\0' {} + )
+#echo -e "ATRAS $VELAS_RETROCESO velas --> Guardamos la prediccion de todos los SUBGRUPOS en la carpeta de validacion, para analizarla luego..." >>${LOG_VALIDADOR}
+#while IFS= read -r -d '' -u 9
+#do
+#	if [[ $REPLY == *"COMPLETO_PREDICCION"* ]]; then
+#		echo "Copiando este fichero   $REPLY   ..." >>${LOG_VALIDADOR}
+#		cp $REPLY $DIR_VALIDACION
+#	fi
+#done 9< <( find $DIR_FUT_SUBGRUPOS -type f -exec printf '%s\0' {} + )
 
-dir_val_futuro_atras="/bolsa/validacion/E600_VR${VELAS_RETROCESO}_S${S}_X${X}_R${R}_M${M}_F${F}_futuro1/"
-rm -Rf $dir_val_futuro_atras
-mkdir -p $dir_val_futuro_atras
-cp -R "/bolsa/futuro/" $dir_val_futuro_atras
+#dir_val_futuro_atras="/bolsa/validacion/E600_VR${VELAS_RETROCESO}_S${S}_X${X}_R${R}_M${M}_F${F}_futuro1/"
+#rm -Rf $dir_val_futuro_atras
+#mkdir -p $dir_val_futuro_atras
+#cp -R "/bolsa/futuro/" $dir_val_futuro_atras
 
 ################################################################################################
 
