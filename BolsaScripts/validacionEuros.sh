@@ -16,7 +16,7 @@ X="28"  #Duracion en velas de [t1,t2]
 R="10"  #Caida ligera máxima permitida durante [t2,t3], en TODAS esas velas.
 M="7"  #Duración en velas de [t2,t3]
 F="5"  #Caida ligera permitida durante [t2,t3], en la ÚLTIMA vela
-B="5"  #Caida ligera permitida durante [t1,t2], en todas esas velas
+B="10"  #Caida ligera permitida durante [t1,t2], en todas esas velas
 NUM_EMPRESAS="60"  #Numero de empresas descargadas
 
 #Instantes de las descargas
@@ -61,7 +61,7 @@ rm -f "${LOG_VALIDADOR}"
 
 ################################################################################################
 
-echo -e "PARAMETROS --> VELAS_RETROCESO|S|X|R|M|F|NUM_EMPRESAS --> ${VELAS_RETROCESO}|${S}|${X}|${R}|${M}|${F}|${NUM_EMPRESAS}" >>${LOG_VALIDADOR}
+echo -e "PARAMETROS --> VELAS_RETROCESO|S|X|R|M|F|B|NUM_EMPRESAS --> ${VELAS_RETROCESO}|${S}|${X}|${R}|${M}|${F}|${B}|${NUM_EMPRESAS}" >>${LOG_VALIDADOR}
 echo -e "PARAMETROS -->  PASADO_t1 | FUTURO1_t1 | FUTURO2_t1--> ${PASADO_t1}|${FUTURO1_t1}|${FUTURO2_t1}" >>${LOG_VALIDADOR}
 
 rm -Rf /bolsa/pasado/ >>${LOG_VALIDADOR}
