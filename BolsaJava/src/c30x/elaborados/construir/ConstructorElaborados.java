@@ -70,10 +70,11 @@ public class ConstructorElaborados implements Serializable {
 		Integer R = ElaboradosUtils.R; // DEFAULT
 		Integer M = ElaboradosUtils.M; // DEFAULT
 		Integer F = ElaboradosUtils.F; // DEFAULT
+		Integer B = ElaboradosUtils.B; // DEFAULT
 
 		if (args.length == 0) {
 			MY_LOGGER.info("Sin parametros de entrada. Rellenamos los DEFAULT...");
-		} else if (args.length != 7) {
+		} else if (args.length != 8) {
 			MY_LOGGER.error("Parametros de entrada incorrectos!!");
 			System.exit(-1);
 		} else {
@@ -84,6 +85,7 @@ public class ConstructorElaborados implements Serializable {
 			R = Integer.valueOf(args[4]);
 			M = Integer.valueOf(args[5]);
 			F = Integer.valueOf(args[6]);
+			B = Integer.valueOf(args[7]);
 		}
 
 		File directorioEntrada = new File(directorioIn);
@@ -116,7 +118,7 @@ public class ConstructorElaborados implements Serializable {
 			destino = directorioSalida + "/" + ficheroGestionado.getName();
 			MY_LOGGER.debug("Ficheros entrada|salida -> " + ficheroGestionado.getAbsolutePath() + " | " + destino);
 			ordenNombresParametros = gestorFicheros.getOrdenNombresParametrosLeidos();
-			anadirParametrosElaboradosDeSoloUnaEmpresa(datosEntrada, ordenNombresParametros, S, X, R, M, F);
+			anadirParametrosElaboradosDeSoloUnaEmpresa(datosEntrada, ordenNombresParametros, S, X, R, M, F, B);
 			gestorFicheros.creaFicheroDeSoloUnaEmpresa(datosEntrada, ordenNombresParametros, destino);
 		}
 
@@ -135,12 +137,13 @@ public class ConstructorElaborados implements Serializable {
 	 * @param X
 	 * @param R
 	 * @param M
+	 * @param B
 	 * @throws Exception
 	 */
 	public static void anadirParametrosElaboradosDeSoloUnaEmpresa(
 			HashMap<String, HashMap<Integer, HashMap<String, String>>> datos,
-			HashMap<Integer, String> ordenNombresParametros, Integer S, Integer X, Integer R, Integer M, Integer F)
-			throws Exception {
+			HashMap<Integer, String> ordenNombresParametros, Integer S, Integer X, Integer R, Integer M, Integer F,
+			Integer B) throws Exception {
 
 		HashMap<String, HashMap<Integer, HashMap<String, String>>> datosSalida = new HashMap<String, HashMap<Integer, HashMap<String, String>>>();
 		HashMap<Integer, HashMap<String, String>> datosEmpresaEntrada = new HashMap<Integer, HashMap<String, String>>();
@@ -333,7 +336,7 @@ public class ConstructorElaborados implements Serializable {
 					break;
 
 				} else {
-					target = calcularTarget(empresa, datosEmpresaEntrada, antiguedad, S, X, R, M, F);
+					target = calcularTarget(empresa, datosEmpresaEntrada, antiguedad, S, X, R, M, F, B);
 				}
 			} else {
 				// La antiguedad es demasiado reciente para ver si es estable en X+M
@@ -418,16 +421,19 @@ public class ConstructorElaborados implements Serializable {
 	 * @param M            Duración del periodo [t2,t3]
 	 * @param F            Caida ligera permitida durante [t2,t3], en la ÚLTIMA
 	 *                     vela.
+	 * @param B            Caida ligera permitida durante [t1,t2], en TODAS esas
+	 *                     velas.
 	 * @return
 	 */
 	public static String calcularTarget(String empresa, HashMap<Integer, HashMap<String, String>> datosEmpresaEntrada,
-			Integer antiguedad, Integer S, Integer X, Integer R, Integer M, Integer F) {
+			Integer antiguedad, Integer S, Integer X, Integer R, Integer M, Integer F, Integer B) {
 
 		String targetOut = TARGET_INVALIDO; // default
 
 		Double subidaSPrecioTantoPorUno = (100 + S) / 100.0;
 		Double subidaSmenosRPrecioTantoPorUno = (100 + S - R) / 100.0;
 		Double subidaSmenosFPrecioTantoPorUno = (100 + S - F) / 100.0;
+		Double bajadaBPrecioTantoPorUno = (100 - B) / 100.0;
 
 		Boolean mCumplida = Boolean.FALSE;
 
@@ -449,7 +455,7 @@ public class ConstructorElaborados implements Serializable {
 		Double closeAntiguedadX = Double.valueOf(datosAntiguedadX.get("close"));
 
 		boolean cumpleSubidaS = closeAntiguedad * subidaSPrecioTantoPorUno < closeAntiguedadX;
-		Double closeAntiguedadXyM, closeAntiguedadI;
+		Double closeAntiguedadXyM, closeAntiguedadI, closeAntiguedadZ;
 		if (cumpleSubidaS) {
 
 			if (datosAntiguedadXyM == null) {
@@ -465,20 +471,39 @@ public class ConstructorElaborados implements Serializable {
 				// actual
 				boolean cumpleSubidaSmenosF = closeAntiguedad < subidaSmenosFPrecioTantoPorUno * closeAntiguedadXyM;
 				if (cumpleSubidaSmenosF) {
-
-					for (int i = X + 1; i <= X + M; i++) {
-						Integer antiguedadI = antiguedad - i; // Voy hacia el muy futuro
+					for (int i = 1; i <= X; i++) {
+						Integer antiguedadI = antiguedad - i; // Voy hacia el futuro
 
 						closeAntiguedadI = Double.valueOf(datosEmpresaEntrada.get(antiguedadI).get("close"));
-						if (closeAntiguedad < subidaSmenosRPrecioTantoPorUno * closeAntiguedadI) {
-							// El precio no debe bajar más de X-R
+						if (closeAntiguedad < bajadaBPrecioTantoPorUno * closeAntiguedadI) {
+							// El precio no debe bajar más de B
 							mCumplida = Boolean.TRUE;
 						} else {
-							// Se ha encontrado AL MENOS una vela posterior, en las (X+1 a X+M) siguientes,
-							// con el  precio por debajo de la caída mínima (S-R)
-							// TODAS LAS VELAS de ese periodo TIENEN QUE ESTAR POR ENCIMA DE ESE UMBRAL DE CAIDA
+							// Se ha encontrado AL MENOS una vela posterior, en las (1 a X) siguientes,
+							// con el precio por debajo de la caída mínima B
+							// TODAS LAS VELAS de ese periodo TIENEN QUE ESTAR POR ENCIMA DE ESE UMBRAL DE
+							// CAIDA
 							mCumplida = Boolean.FALSE;
 							break;
+						}
+
+						if (mCumplida) {
+							for (int z = X + 1; z <= X + M; z++) {
+								Integer antiguedadZ = antiguedad - z; // Voy hacia el muy futuro
+
+								closeAntiguedadZ = Double.valueOf(datosEmpresaEntrada.get(antiguedadZ).get("close"));
+								if (closeAntiguedad < subidaSmenosRPrecioTantoPorUno * closeAntiguedadZ) {
+									// El precio no debe bajar más de X-R
+									mCumplida = Boolean.TRUE;
+								} else {
+									// Se ha encontrado AL MENOS una vela posterior, en las (X+1 a X+M) siguientes,
+									// con el precio por debajo de la caída mínima (S-R)
+									// TODAS LAS VELAS de ese periodo TIENEN QUE ESTAR POR ENCIMA DE ESE UMBRAL DE
+									// CAIDA
+									mCumplida = Boolean.FALSE;
+									break;
+								}
+							}
 						}
 					}
 				} else {
@@ -488,7 +513,8 @@ public class ConstructorElaborados implements Serializable {
 				if (mCumplida) {
 					// La S sí se cumple, y la M también en todo el rango
 					targetOut = "1";
-					//System.out.println("TARGET 1 en Empresa: " + empresa + " y antigüedad:" + antiguedad);
+					// System.out.println("TARGET 1 en Empresa: " + empresa + " y antigüedad:" +
+					// antiguedad);
 				} else {
 					targetOut = "0";
 				}

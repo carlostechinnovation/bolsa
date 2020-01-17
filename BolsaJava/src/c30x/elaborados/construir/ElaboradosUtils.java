@@ -12,4 +12,5 @@ public class ElaboradosUtils {
 	public static final Integer R = 15;
 	public static final Integer M = 1 * HORAS_AL_DIA;
 	public static final Integer F = 10;
+	public static final Integer B = 5;
 }
