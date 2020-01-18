@@ -103,10 +103,11 @@ public class Validador implements Serializable {
 			final Integer X, final Integer R, final Integer M) throws IOException {
 
 		int antiguedadAnalizada = velasRetroceso;
+		int prefijoFicheroValidacion = velasRetroceso - X - M;
 
 		Predicate<Path> filtroFicheroPrediccion = s -> s.getFileName().toString().contains(DEFINICION_PREDICCION);
 		Predicate<Path> filtroPredichos = p -> p.getFileName().toString().startsWith(antiguedadAnalizada + "_");
-		Predicate<Path> filtroValidaciones = p -> p.getFileName().toString().startsWith("0_");
+		Predicate<Path> filtroValidaciones = p -> p.getFileName().toString().startsWith(prefijoFicheroValidacion + "_");
 
 		List<Path> ficherosPredichos = Files.walk(Paths.get(pathValidacion), 2)
 				.filter(filtroFicheroPrediccion.and(filtroPredichos)).collect(Collectors.toList());

@@ -11,13 +11,13 @@ crearCarpetaSiNoExiste() {
 VELAS_RETROCESO="100" #INSTANTE ANALIZADO (T1). Su antiguedad debe ser mayor que X+M, para poder ver esas X+M velas del futuro
 
 # PARAMETROS DE TARGET MEDIDOS EN VELAS
-S="30"  #Subida durante [t1,t2]
+S="12"  #Subida durante [t1,t2]
 X="28"  #Duracion en velas de [t1,t2]
-R="10"  #Caida ligera máxima permitida durante [t2,t3], en TODAS esas velas.
+R="6"  #Caida ligera máxima permitida durante [t2,t3], en TODAS esas velas.
 M="7"  #Duración en velas de [t2,t3]
-F="5"  #Caida ligera permitida durante [t2,t3], en la ÚLTIMA vela
-B="10"  #Caida ligera permitida durante [t1,t2], en todas esas velas
-NUM_EMPRESAS="60"  #Numero de empresas descargadas
+F="4"  #Caida ligera permitida durante [t2,t3], en la ÚLTIMA vela
+B="5"  #Caida ligera permitida durante [t1,t2], en todas esas velas
+NUM_EMPRESAS="700"  #Numero de empresas descargadas
 
 #Instantes de las descargas
 PASADO_t1="0"
@@ -95,7 +95,7 @@ do
 	fi
 done 9< <( find $DIR_FUT_SUBGRUPOS -type f -exec printf '%s\0' {} + )
 
-dir_val_futuro_atras="/bolsa/validacion/E${NUM_EMPRESAS}_VR${VELAS_RETROCESO}_S${S}_X${X}_R${R}_M${M}_F${F}_futuro1/"
+dir_val_futuro_atras="/bolsa/validacion/E${NUM_EMPRESAS}_VR${VELAS_RETROCESO}_S${S}_X${X}_R${R}_M${M}_F${F}_B${B}_futuro1/"
 rm -Rf $dir_val_futuro_atras
 mkdir -p $dir_val_futuro_atras
 cp -R "/bolsa/futuro/" $dir_val_futuro_atras
@@ -109,7 +109,7 @@ rm -Rf /bolsa/futuro/ >>${LOG_VALIDADOR}
 crearCarpetaSiNoExiste "${DIR_FUT_SUBGRUPOS}"
 
 echo -e $( date '+%Y%m%d_%H%M%S' )" Ejecución del futuro (para velas de anttiguedad=${FUTURO2_t1}) con OTRAS empresas (lista REVERTIDA)..." >>${LOG_VALIDADOR}
-${PATH_SCRIPTS}master.sh "futuro" "${FUTURO2_t1}" "1" "S" "N" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" "${NUM_EMPRESAS}" 2>>${LOG_VALIDADOR} 1>>${LOG_VALIDADOR}
+${PATH_SCRIPTS}master.sh "futuro" "${FUTURO2_t1}" "1" "S" "S" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" "${NUM_EMPRESAS}" 2>>${LOG_VALIDADOR} 1>>${LOG_VALIDADOR}
 
 echo -e "Velas con antiguedad=FUTURO2_t1 --> Guardamos la prediccion de todos los SUBGRUPOS en la carpeta de validacion, para analizarla luego..." >>${LOG_VALIDADOR}
 while IFS= read -r -d '' -u 9
@@ -120,7 +120,7 @@ do
 	fi
 done 9< <( find $DIR_FUT_SUBGRUPOS -type f -exec printf '%s\0' {} + )
 
-dir_val_futuro_2="/bolsa/validacion/E${NUM_EMPRESAS}_VR${VELAS_RETROCESO}_${S}_${X}_${R}_${M}_${F}_futuro2/"
+dir_val_futuro_2="/bolsa/validacion/E${NUM_EMPRESAS}_VR${VELAS_RETROCESO}_S${S}_X${X}_R${R}_M${M}_F${F}_B${B}_futuro2/"
 rm -Rf $dir_val_futuro_2
 mkdir -p $dir_val_futuro_2
 cp -R "/bolsa/futuro/" $dir_val_futuro_2
@@ -138,11 +138,11 @@ echo -e "- Futuro con t1=${FUTURO2_t1} ==> Nos sirve para descargar qué pasó r
 echo -e "Lo CORRECTO es comparar el target PREDICHO en ejecucion futuro1 y compararlo con un target GENERADO en futuro2" >> ${LOG_VALIDADOR}
 
 echo -e "-------" >> ${LOG_VALIDADOR}
-java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n" -jar ${PATH_JAR} --class "coordinador.Principal" "c70X.validacion.Validador" "${VELAS_RETROCESO}" "${DIR_VALIDACION}" "${S}" "${X}" "${R}" "${M}" "${F}" 2>>${LOG_VALIDADOR} 1>>${LOG_VALIDADOR}
+java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n" -jar ${PATH_JAR} --class "coordinador.Principal" "c70X.validacion.Validador" "${VELAS_RETROCESO}" "${DIR_VALIDACION}" "${S}" "${X}" "${R}" "${M}" 2>>${LOG_VALIDADOR} 1>>${LOG_VALIDADOR}
 
 echo -e "Un sistema CLASIFICADOR BINOMIAL tonto acierta el 50% de las veces. El nuestro..." >> ${LOG_VALIDADOR}
 
-dir_val_logs="/bolsa/validacion/E${NUM_EMPRESAS}_VR${VELAS_RETROCESO}_S${S}_X${X}_R${R}_M${M}_F${F}_F${B}_log/"
+dir_val_logs="/bolsa/validacion/E${NUM_EMPRESAS}_VR${VELAS_RETROCESO}_S${S}_X${X}_R${R}_M${M}_F${F}_B${B}_log/"
 rm -Rf $dir_val_logs
 mkdir -p $dir_val_logs
 cp -R "/bolsa/logs/" $dir_val_logs
