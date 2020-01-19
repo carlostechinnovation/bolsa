@@ -42,8 +42,7 @@ public class ConstructorElaborados implements Serializable {
 	// x dias
 
 	// Se usan los periodos típicos que suelen usar los robots: 3, 7, 20, 50 días
-	public final static Integer[] periodosHParaParametros = new Integer[] { 3 * ElaboradosUtils.HORAS_AL_DIA,
-			7 * ElaboradosUtils.HORAS_AL_DIA, 20 * ElaboradosUtils.HORAS_AL_DIA, 50 * ElaboradosUtils.HORAS_AL_DIA };
+	public final static Integer[] periodosDParaParametros = new Integer[] { 3, 7, 20, 50 };
 
 	// IMPORTANTE: se asume que los datos estan ordenados de menor a mayor
 	// antiguedad, y agrupados por empresa
@@ -190,7 +189,7 @@ public class ConstructorElaborados implements Serializable {
 		String auxPrecio, auxVolumen;
 		Integer antiguedadHistoricaMaxima;
 
-		for (Integer periodo : periodosHParaParametros) {
+		for (Integer periodo : periodosDParaParametros) {
 
 			// Se guarda el orden de los datos elaborados
 			for (int i = 0; i < ordenPrecioNombresParametrosElaborados.size(); i++) {
@@ -365,28 +364,6 @@ public class ConstructorElaborados implements Serializable {
 	}
 
 	/**
-	 * Traducción a horas (hábiles, con Bolsa abierta)
-	 * 
-	 * @param T
-	 * @return
-	 * @throws Exception
-	 */
-	public static Integer tiempoEnHoras(String T) throws Exception {
-
-		Integer horas = 0;
-		if (T == "H") {
-			horas = 1;
-		} else if (T == "D") {
-			// HAY DÍAS QUE LA BOLSA ABRE SÓLO MEDIA JORNADA, ASÍ QUE ESTO NO ES TOTALMENTE
-			// CORRECTO. Normalmente son 7h al día
-			horas = ElaboradosUtils.HORAS_AL_DIA;
-		} else if (T == "H") {
-			throw new Exception("Tiempo erróneo");
-		}
-		return horas;
-	}
-
-	/**
 	 * @param S
 	 * @param X
 	 * @param R
@@ -455,7 +432,7 @@ public class ConstructorElaborados implements Serializable {
 		Double closeAntiguedad = Double.valueOf(datosAntiguedad.get("close"));
 		Double closeAntiguedadX = Double.valueOf(datosAntiguedadX.get("close"));
 
-		boolean cumpleSubidaS = closeAntiguedadX > closeAntiguedad * subidaSPrecioTantoPorUno;
+		boolean cumpleSubidaS = closeAntiguedad * subidaSPrecioTantoPorUno < closeAntiguedadX;
 		Double closeAntiguedadXyM, closeAntiguedadI, closeAntiguedadZ;
 		if (cumpleSubidaS) {
 
@@ -471,47 +448,48 @@ public class ConstructorElaborados implements Serializable {
 
 				// En la vela X+M el precio no debe caer más de un (X-F)% respecto del precio
 				// actual
-				boolean cumpleSubidaSmenosF = closeAntiguedadXyM > subidaSmenosFPrecioTantoPorUno * closeAntiguedad;
+				boolean cumpleSubidaSmenosF = closeAntiguedad < subidaSmenosFPrecioTantoPorUno * closeAntiguedadXyM;
 				if (cumpleSubidaSmenosF) {
 
 					for (int i = 1; i <= X; i++) {
 						Integer antiguedadI = antiguedad - i; // Voy hacia el futuro
 
-						closeAntiguedadI = Double.valueOf(datosEmpresaEntrada.get(antiguedadI).get("close"));
-						if (closeAntiguedadI > bajadaBPrecioTantoPorUno * closeAntiguedad) {
-							// El precio no debe bajar más de B
-							mCumplida = Boolean.TRUE;
-						} else {
-							// Se ha encontrado AL MENOS una vela posterior, en las (1 a X) siguientes,
-							// con el precio por debajo de la caída mínima B
-							// TODAS LAS VELAS de ese periodo TIENEN QUE ESTAR POR ENCIMA DE ESE UMBRAL DE
-							// CAIDA
-							mCumplida = Boolean.FALSE;
-							break;
-						}
+//						closeAntiguedadI = Double.valueOf(datosEmpresaEntrada.get(antiguedadI).get("close"));
+//						if (closeAntiguedad < bajadaBPrecioTantoPorUno * closeAntiguedadI) {
+//							// El precio no debe bajar más de B
+//							System.out.println(
+//									"-----ATENCION ENCONTRADO TARGET 1--->>>>>> EMPRESA: " + empresa + " y antigüedad: "
+//											+ antiguedad + ". Mes: " + datosAntiguedad.get("mes") + ". Dia: "
+//											+ datosAntiguedad.get("dia") + ". Hora: " + datosAntiguedad.get("hora"));
+//							mCumplida = Boolean.TRUE;
+//						} else {
+//							// Se ha encontrado AL MENOS una vela posterior, en las (1 a X) siguientes,
+//							// con el precio por debajo de la caída mínima B
+//							// TODAS LAS VELAS de ese periodo TIENEN QUE ESTAR POR ENCIMA DE ESE UMBRAL DE
+//							// CAIDA
+//							mCumplida = Boolean.FALSE;
+//							break;
+//						}
 
-						if (mCumplida) {
+//						if (mCumplida) {
+						for (int z = X + 1; z <= X + M; z++) {
+							Integer antiguedadZ = antiguedad - z; // Voy hacia el muy futuro
 
-							for (int z = X + 1; z <= X + M; z++) {
-								Integer antiguedadZ = antiguedad - z; // Voy hacia el muy futuro
-
-								closeAntiguedadZ = Double.valueOf(datosEmpresaEntrada.get(antiguedadZ).get("close"));
-								if (closeAntiguedadZ > subidaSmenosRPrecioTantoPorUno * closeAntiguedad) {
-									// El precio no debe bajar más de X-R, respecto de la vela antiguedad
-									mCumplida = Boolean.TRUE;
-								} else {
-									// Se ha encontrado AL MENOS una vela posterior, en las (X+1 a X+M) siguientes,
-									// con el precio por debajo de la caída mínima (S-R)
-									// TODAS LAS VELAS de ese periodo TIENEN QUE ESTAR POR ENCIMA DE ESE UMBRAL DE
-									// CAIDA
-									mCumplida = Boolean.FALSE;
-									break;
-								}
-
+							closeAntiguedadZ = Double.valueOf(datosEmpresaEntrada.get(antiguedadZ).get("close"));
+							if (closeAntiguedad < subidaSmenosRPrecioTantoPorUno * closeAntiguedadZ) {
+								// El precio no debe bajar más de X-R
+								mCumplida = Boolean.TRUE;
+							} else {
+								// Se ha encontrado AL MENOS una vela posterior, en las (X+1 a X+M) siguientes,
+								// con el precio por debajo de la caída mínima (S-R)
+								// TODAS LAS VELAS de ese periodo TIENEN QUE ESTAR POR ENCIMA DE ESE UMBRAL DE
+								// CAIDA
+								mCumplida = Boolean.FALSE;
+								break;
 							}
 						}
+//						}
 					}
-
 				} else {
 					mCumplida = Boolean.FALSE;
 				}
@@ -526,7 +504,7 @@ public class ConstructorElaborados implements Serializable {
 		if (mCumplida) {
 			// La S sí se cumple, y la M también en todo el rango
 			targetOut = "1";
-			MY_LOGGER.debug("-----ATENCION ENCONTRADO TARGET 1--->>>>>> EMPRESA: " + empresa + " y antigüedad: "
+			MY_LOGGER.info("-----ATENCION ENCONTRADO TARGET 1--->>>>>> EMPRESA: " + empresa + " y antigüedad: "
 					+ antiguedad + ". Mes: " + datosAntiguedad.get("mes") + ". Dia: " + datosAntiguedad.get("dia")
 					+ ". Hora: " + datosAntiguedad.get("hora"));
 		} else {

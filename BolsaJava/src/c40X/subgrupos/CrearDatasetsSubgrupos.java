@@ -270,7 +270,7 @@ public class CrearDatasetsSubgrupos implements Serializable {
 
 		// Almacenamiento del tipo de empresa en la lista
 		empresasPorTipo = new HashMap<Integer, ArrayList<String>>();
-		// empresasPorTipo.put(0, pathEmpresasTipo0);
+		empresasPorTipo.put(0, pathEmpresasTipo0);
 		empresasPorTipo.put(1, pathEmpresasTipo1);
 		empresasPorTipo.put(2, pathEmpresasTipo2);
 		empresasPorTipo.put(3, pathEmpresasTipo3);

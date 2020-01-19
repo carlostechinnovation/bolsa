@@ -47,7 +47,7 @@ public class YahooFinance01Descargar implements Serializable {
 		if (appendersAcumulados instanceof NullEnumeration) {
 			MY_LOGGER.addAppender(new ConsoleAppender(new PatternLayout(PatternLayout.TTCC_CONVERSION_PATTERN)));
 		}
-		MY_LOGGER.setLevel(Level.INFO);
+		MY_LOGGER.setLevel(Level.DEBUG);
 		MY_LOGGER.info("INICIO");
 
 		Integer numMaxEmpresas = BrutosUtils.NUM_EMPRESAS_PRUEBAS; // DEFAULT
@@ -235,9 +235,9 @@ public class YahooFinance01Descargar implements Serializable {
 		String url = "https://query1.finance.yahoo.com/v8/finance/chart/" + ticker + "?symbol=" + ticker;
 
 		if (modo.equals(BrutosUtils.PASADO)) {
-			url += "&range=6mo&interval=60m";
+			url += "&range=6mo&interval=1d";
 		} else if (modo.equals(BrutosUtils.FUTURO)) {
-			url += "&range=6mo&interval=60m";
+			url += "&range=6mo&interval=1d";
 		} else {
 			throw new Exception("Modo pasado/futuro no explicito. Saliendo...");
 		}

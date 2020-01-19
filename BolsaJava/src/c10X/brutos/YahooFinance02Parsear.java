@@ -61,7 +61,7 @@ public class YahooFinance02Parsear implements Serializable {
 		if (appendersAcumulados instanceof NullEnumeration) {
 			MY_LOGGER.addAppender(new ConsoleAppender(new PatternLayout(PatternLayout.TTCC_CONVERSION_PATTERN)));
 		}
-		MY_LOGGER.setLevel(Level.INFO);
+		MY_LOGGER.setLevel(Level.DEBUG);
 		MY_LOGGER.info("INICIO");
 
 		String directorioIn = BrutosUtils.DIR_BRUTOS; // DEFAULT
@@ -357,7 +357,7 @@ public class YahooFinance02Parsear implements Serializable {
 
 	/**
 	 * Dado un fichero CSV de Yahoo Finance (con precios, etc), rellena las velas
-	 * horarias (antiguedad). Genera las filas HUECO que falten, poniendo PRECIO
+	 * (antiguedad). Genera las filas HUECO que falten, poniendo PRECIO
 	 * ARRASTRADO (de la ultima vela conocida) y VOLUMEN CERO.
 	 * 
 	 * @param pathFicheroIn

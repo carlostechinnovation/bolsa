@@ -8,16 +8,16 @@ crearCarpetaSiNoExiste() {
 }
 
 ################################################################################################
-VELAS_RETROCESO="100" #INSTANTE ANALIZADO (T1). Su antiguedad debe ser mayor que X+M, para poder ver esas X+M velas del futuro
+VELAS_RETROCESO="6" #INSTANTE ANALIZADO (T1). Su antiguedad debe ser mayor que X+M, para poder ver esas X+M velas del futuro
 
 # PARAMETROS DE TARGET MEDIDOS EN VELAS
-S="12"  #Subida durante [t1,t2]
-X="28"  #Duracion en velas de [t1,t2]
-R="5"  #Caida ligera máxima permitida durante [t2,t3], en TODAS esas velas.
-M="14"  #Duración en velas de [t2,t3]
+S="25"  #Subida durante [t1,t2]
+X="4"  #Duracion en velas de [t1,t2]
+R="10"  #Caida ligera máxima permitida durante [t2,t3], en TODAS esas velas.
+M="1"  #Duración en velas de [t2,t3]
 F="5"  #Caida ligera permitida durante [t2,t3], en la ÚLTIMA vela
 B="5"  #Caida ligera permitida durante [t1,t2], en todas esas velas
-NUM_EMPRESAS="1000"  #Numero de empresas descargadas
+NUM_EMPRESAS="400"  #Numero de empresas descargadas
 
 #Instantes de las descargas
 PASADO_t1="0"
