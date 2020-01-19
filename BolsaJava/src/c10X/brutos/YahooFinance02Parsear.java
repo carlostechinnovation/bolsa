@@ -282,6 +282,10 @@ public class YahooFinance02Parsear implements Serializable {
 				int numVelas = listaVolumenes.size();
 				for (i = 0; i < numVelas; i++) {
 
+					if (empresa.equals("PHIO")) {// debug Carlos
+						MY_LOGGER.info("i=" + i + " empresa=" + empresa);
+					}
+
 					long msegDesde1970 = (Long) tiemposEnSegundosDesde1970.get(i) * 1000L;
 
 					if (soloVelas) {

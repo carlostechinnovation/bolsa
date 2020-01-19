@@ -13,11 +13,11 @@ VELAS_RETROCESO="100" #INSTANTE ANALIZADO (T1). Su antiguedad debe ser mayor que
 # PARAMETROS DE TARGET MEDIDOS EN VELAS
 S="12"  #Subida durante [t1,t2]
 X="28"  #Duracion en velas de [t1,t2]
-R="6"  #Caida ligera máxima permitida durante [t2,t3], en TODAS esas velas.
-M="7"  #Duración en velas de [t2,t3]
-F="4"  #Caida ligera permitida durante [t2,t3], en la ÚLTIMA vela
+R="5"  #Caida ligera máxima permitida durante [t2,t3], en TODAS esas velas.
+M="14"  #Duración en velas de [t2,t3]
+F="5"  #Caida ligera permitida durante [t2,t3], en la ÚLTIMA vela
 B="5"  #Caida ligera permitida durante [t1,t2], en todas esas velas
-NUM_EMPRESAS="700"  #Numero de empresas descargadas
+NUM_EMPRESAS="1000"  #Numero de empresas descargadas
 
 #Instantes de las descargas
 PASADO_t1="0"

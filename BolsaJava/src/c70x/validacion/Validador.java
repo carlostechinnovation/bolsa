@@ -105,6 +105,10 @@ public class Validador implements Serializable {
 		int antiguedadAnalizada = velasRetroceso;
 		int prefijoFicheroValidacion = velasRetroceso - X - M;
 
+		MY_LOGGER.info("analizarPrediccion: velasRetroceso|S|X|R|M|antiguedadAnalizada|prefijoFicheroValidacion --> "
+				+ velasRetroceso + "|" + S + "|" + X + "|" + R + "|" + M + "|" + antiguedadAnalizada + "|"
+				+ prefijoFicheroValidacion);
+
 		Predicate<Path> filtroFicheroPrediccion = s -> s.getFileName().toString().contains(DEFINICION_PREDICCION);
 		Predicate<Path> filtroPredichos = p -> p.getFileName().toString().startsWith(antiguedadAnalizada + "_");
 		Predicate<Path> filtroValidaciones = p -> p.getFileName().toString().startsWith(prefijoFicheroValidacion + "_");
@@ -229,7 +233,9 @@ public class Validador implements Serializable {
 										// Para esto, debo buscar la fila de validación del futuro, X velas más allá
 										// (menor en antigüedad) que la actual
 										antiguedadFutura = Integer.valueOf(antiguedadValidacion) - X;
+
 										for (String filaValidacionFutura : filasValidacion) {
+
 											if (filaValidacionFutura.startsWith(
 													empresaValidacion + "|" + antiguedadFutura.toString())) {
 
@@ -260,13 +266,13 @@ public class Validador implements Serializable {
 														"----ATENCION, IMPORTANTE: Se predice TARGET=1 para la empresa: "
 																+ empresaPredicha);
 												MY_LOGGER.info(
-														"filaPredicha:                             " + filaPredicha);
+														"filaPredicha:     							" + filaPredicha);
 												MY_LOGGER.info(
-														"filaValidacion:                           " + filaValidacion);
-												MY_LOGGER.info("filaValidacionFutura (para rentabilidad): "
+														"filaValidacion:   							" + filaValidacion);
+												MY_LOGGER.info("filaValidacionFutura (para rentabilidad): 	"
 														+ filaValidacionFutura);
-												MY_LOGGER.info("closeValidacionActual: " + closeValidacionActual);
-												MY_LOGGER.info("closeValidacionFutura: " + closeValidacionFutura);
+												MY_LOGGER.info("closeValidacionActual:	" + closeValidacionActual);
+												MY_LOGGER.info("closeValidacionFutura:	" + closeValidacionFutura);
 												if (acertado) {
 													MY_LOGGER.info("EL SISTEMA HA ACERTADO, con rentabilidad: "
 															+ performance * 100 + " %");
