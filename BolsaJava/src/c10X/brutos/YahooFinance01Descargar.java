@@ -47,7 +47,7 @@ public class YahooFinance01Descargar implements Serializable {
 		if (appendersAcumulados instanceof NullEnumeration) {
 			MY_LOGGER.addAppender(new ConsoleAppender(new PatternLayout(PatternLayout.TTCC_CONVERSION_PATTERN)));
 		}
-		MY_LOGGER.setLevel(Level.DEBUG);
+		MY_LOGGER.setLevel(Level.INFO);
 		MY_LOGGER.info("INICIO");
 
 		Integer numMaxEmpresas = BrutosUtils.NUM_EMPRESAS_PRUEBAS; // DEFAULT

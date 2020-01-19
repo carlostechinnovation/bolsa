@@ -61,7 +61,7 @@ public class YahooFinance02Parsear implements Serializable {
 		if (appendersAcumulados instanceof NullEnumeration) {
 			MY_LOGGER.addAppender(new ConsoleAppender(new PatternLayout(PatternLayout.TTCC_CONVERSION_PATTERN)));
 		}
-		MY_LOGGER.setLevel(Level.DEBUG);
+		MY_LOGGER.setLevel(Level.INFO);
 		MY_LOGGER.info("INICIO");
 
 		String directorioIn = BrutosUtils.DIR_BRUTOS; // DEFAULT

@@ -36,11 +36,6 @@ public class ConstructorElaborados implements Serializable {
 		return instancia;
 	}
 
-	// META-PARAMETRIZACION
-	// Periodo de la vela de entrada
-	public final static String T_velaEntrada = "H";
-	// x dias
-
 	// Se usan los periodos típicos que suelen usar los robots: 3, 7, 20, 50 días
 	public final static Integer[] periodosDParaParametros = new Integer[] { 3, 7, 20, 50 };
 
