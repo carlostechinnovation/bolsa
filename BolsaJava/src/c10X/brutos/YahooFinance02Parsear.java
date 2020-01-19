@@ -264,6 +264,9 @@ public class YahooFinance02Parsear implements Serializable {
 				MY_LOGGER.debug("Tamanios --> " + listaVolumenes.size() + "|" + listaPreciosHigh.size() + "|"
 						+ listaPreciosLow.size() + "|" + listaPreciosClose.size() + "|" + listaPreciosOpen.size());
 
+				// Detectar anomalias gigantes (posibles Splits o contrasplits)
+				detectarAnomaliasGigantes(empresa, listaPreciosClose, listaPreciosOpen);
+
 				// ---------------------------- ESCRITURA ---------------
 				MY_LOGGER.debug("Escritura...");
 				File fout = new File(pathBrutoCsvSalida);
@@ -282,15 +285,12 @@ public class YahooFinance02Parsear implements Serializable {
 				int numVelas = listaVolumenes.size();
 				for (i = 0; i < numVelas; i++) {
 
-					if (empresa.equals("PHIO")) {// debug Carlos
-						MY_LOGGER.info("i=" + i + " empresa=" + empresa);
-					}
-
 					long msegDesde1970 = (Long) tiemposEnSegundosDesde1970.get(i) * 1000L;
 
 					if (soloVelas) {
 						cad = String.valueOf(numVelas - i - 1);
 						cad += "|" + df.format(new Date(msegDesde1970));
+
 					} else {
 
 						cad = mercado + "|" + empresa;
@@ -309,6 +309,7 @@ public class YahooFinance02Parsear implements Serializable {
 						cad += "|" + BrutosUtils.tratamientoLigero(
 								listaPreciosOpen.get(i) == null ? BrutosUtils.NULO : listaPreciosOpen.get(i).toString(),
 								BrutosUtils.ESCALA_UNO);
+
 					}
 
 					bw.write(cad);
@@ -522,4 +523,46 @@ public class YahooFinance02Parsear implements Serializable {
 		bw.close();
 
 	}
+
+	/**
+	 * @param listaPreciosClose
+	 * @param listaPreciosOpen
+	 */
+	public static void detectarAnomaliasGigantes(String empresa, JSONArray listaPreciosClose,
+			JSONArray listaPreciosOpen) {
+
+		if (listaPreciosClose.size() == listaPreciosOpen.size()) {
+
+			for (int i = 0; i < listaPreciosClose.size(); i++) {
+
+				if (i > 0) { // la primera vela no me vale para poder comparar
+
+					Double close1 = listaPreciosOpen.get(i) == null ? null
+							: Double.valueOf(listaPreciosOpen.get(i).toString());
+					Double close0 = listaPreciosOpen.get(i - 1) == null ? null
+							: Double.valueOf(listaPreciosOpen.get(i - 1).toString());
+
+					if (close1 != null && close0 != null) {
+
+						Double ratioDeCambio = (close1 > close0) ? Math.abs(close1 / close0) - 1
+								: Math.abs(close0 / close1);
+
+						if (ratioDeCambio > 2) {
+							MY_LOGGER.warn("Empresa=" + empresa
+									+ " Tiene anomalia gigante (posible split o contraSplit) en vela = " + i
+									+ " con ratio de cambio = " + ratioDeCambio);
+						}
+
+					}
+
+				}
+
+			}
+
+		} else {
+			MY_LOGGER.error("Listas de distinto tamanio! Ejemplo de una fila: " + listaPreciosClose.get(0).toString());
+		}
+
+	}
+
 }
