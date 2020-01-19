@@ -357,8 +357,8 @@ public class YahooFinance02Parsear implements Serializable {
 
 	/**
 	 * Dado un fichero CSV de Yahoo Finance (con precios, etc), rellena las velas
-	 * (antiguedad). Genera las filas HUECO que falten, poniendo PRECIO
-	 * ARRASTRADO (de la ultima vela conocida) y VOLUMEN CERO.
+	 * (antiguedad). Genera las filas HUECO que falten, poniendo PRECIO ARRASTRADO
+	 * (de la ultima vela conocida) y VOLUMEN CERO.
 	 * 
 	 * @param pathFicheroIn
 	 * @param velas
