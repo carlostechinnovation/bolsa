@@ -38,6 +38,8 @@ public class YahooFinance02Parsear implements Serializable {
 	static Logger MY_LOGGER = Logger.getLogger(YahooFinance02Parsear.class);
 	static DateFormat df = new SimpleDateFormat("yyyy|MM|dd|HH|mm");
 
+	static Double UMBRAL_RATIO_ANOMALIAS = 2.0D;
+
 	private static YahooFinance02Parsear instancia = null;
 
 	private YahooFinance02Parsear() {
@@ -236,7 +238,6 @@ public class YahooFinance02Parsear implements Serializable {
 			}
 
 			// ---------------------------- LECTURA ------------------
-			MY_LOGGER.debug("Lectura...");
 
 			JSONObject primerJson = (JSONObject) parser.parse(contenido);
 
@@ -265,60 +266,64 @@ public class YahooFinance02Parsear implements Serializable {
 						+ listaPreciosLow.size() + "|" + listaPreciosClose.size() + "|" + listaPreciosOpen.size());
 
 				// Detectar anomalias gigantes (posibles Splits o contrasplits)
-				detectarAnomaliasGigantes(empresa, listaPreciosClose, listaPreciosOpen);
+				boolean tieneAnomalias = detectarAnomaliasGigantes(empresa, listaPreciosClose, listaPreciosOpen);
 
-				// ---------------------------- ESCRITURA ---------------
-				MY_LOGGER.debug("Escritura...");
-				File fout = new File(pathBrutoCsvSalida);
-				FileOutputStream fos = new FileOutputStream(fout, false);
-				BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
+				if (tieneAnomalias == false) {
 
-				// Cabecera
-				String cabecera = soloVelas ? "antiguedad|anio|mes|dia|hora|minuto"
-						: "mercado|empresa|antiguedad|anio|mes|dia|hora|minuto|volumen|high|low|close|open";
-				bw.write(cabecera);
-				bw.newLine();
+					// ---------------------------- ESCRITURA ---------------
+					File fout = new File(pathBrutoCsvSalida);
+					FileOutputStream fos = new FileOutputStream(fout, false);
+					BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
 
-				int i = 0;
+					// Cabecera
+					String cabecera = soloVelas ? "antiguedad|anio|mes|dia|hora|minuto"
+							: "mercado|empresa|antiguedad|anio|mes|dia|hora|minuto|volumen|high|low|close|open";
+					bw.write(cabecera);
+					bw.newLine();
 
-				String cad;
-				int numVelas = listaVolumenes.size();
-				for (i = 0; i < numVelas; i++) {
+					int i = 0;
 
-					long msegDesde1970 = (Long) tiemposEnSegundosDesde1970.get(i) * 1000L;
+					String cad;
+					int numVelas = listaVolumenes.size();
+					for (i = 0; i < numVelas; i++) {
 
-					if (soloVelas) {
-						cad = String.valueOf(numVelas - i - 1);
-						cad += "|" + df.format(new Date(msegDesde1970));
+						long msegDesde1970 = (Long) tiemposEnSegundosDesde1970.get(i) * 1000L;
 
-					} else {
+						if (soloVelas) {
+							cad = String.valueOf(numVelas - i - 1);
+							cad += "|" + df.format(new Date(msegDesde1970));
 
-						cad = mercado + "|" + empresa;
-						cad += "|" + df.format(new Date(msegDesde1970));
-						cad += "|" + BrutosUtils.tratamientoLigero(
-								listaVolumenes.get(i) == null ? BrutosUtils.NULO : listaVolumenes.get(i).toString(),
-								BrutosUtils.ESCALA_M);
-						cad += "|" + BrutosUtils.tratamientoLigero(
-								listaPreciosHigh.get(i) == null ? BrutosUtils.NULO : listaPreciosHigh.get(i).toString(),
-								BrutosUtils.ESCALA_UNO);
-						cad += "|" + BrutosUtils.tratamientoLigero(
-								listaPreciosLow.get(i) == null ? BrutosUtils.NULO : listaPreciosLow.get(i).toString(),
-								BrutosUtils.ESCALA_UNO);
-						cad += "|" + BrutosUtils.tratamientoLigero(listaPreciosClose.get(i) == null ? BrutosUtils.NULO
-								: listaPreciosClose.get(i).toString(), BrutosUtils.ESCALA_UNO);
-						cad += "|" + BrutosUtils.tratamientoLigero(
-								listaPreciosOpen.get(i) == null ? BrutosUtils.NULO : listaPreciosOpen.get(i).toString(),
-								BrutosUtils.ESCALA_UNO);
+						} else {
 
+							cad = mercado + "|" + empresa;
+							cad += "|" + df.format(new Date(msegDesde1970));
+							cad += "|" + BrutosUtils.tratamientoLigero(
+									listaVolumenes.get(i) == null ? BrutosUtils.NULO : listaVolumenes.get(i).toString(),
+									BrutosUtils.ESCALA_M);
+							cad += "|"
+									+ BrutosUtils.tratamientoLigero(listaPreciosHigh.get(i) == null ? BrutosUtils.NULO
+											: listaPreciosHigh.get(i).toString(), BrutosUtils.ESCALA_UNO);
+							cad += "|" + BrutosUtils.tratamientoLigero(listaPreciosLow.get(i) == null ? BrutosUtils.NULO
+									: listaPreciosLow.get(i).toString(), BrutosUtils.ESCALA_UNO);
+							cad += "|"
+									+ BrutosUtils.tratamientoLigero(listaPreciosClose.get(i) == null ? BrutosUtils.NULO
+											: listaPreciosClose.get(i).toString(), BrutosUtils.ESCALA_UNO);
+							cad += "|"
+									+ BrutosUtils.tratamientoLigero(listaPreciosOpen.get(i) == null ? BrutosUtils.NULO
+											: listaPreciosOpen.get(i).toString(), BrutosUtils.ESCALA_UNO);
+
+						}
+
+						bw.write(cad);
+						bw.newLine();
 					}
 
-					bw.write(cad);
-					bw.newLine();
+					bw.close();
+
+					out = true;
+				} else {
+					MY_LOGGER.error("Empresa=" + empresa + " tiene anomalias. No cogemos sus datos.");
 				}
-
-				bw.close();
-
-				out = true;
 
 			}
 
@@ -525,11 +530,15 @@ public class YahooFinance02Parsear implements Serializable {
 	}
 
 	/**
+	 * @param empresa
 	 * @param listaPreciosClose
 	 * @param listaPreciosOpen
+	 * @return
 	 */
-	public static void detectarAnomaliasGigantes(String empresa, JSONArray listaPreciosClose,
+	public static boolean detectarAnomaliasGigantes(String empresa, JSONArray listaPreciosClose,
 			JSONArray listaPreciosOpen) {
+
+		boolean detectado = false;
 
 		if (listaPreciosClose.size() == listaPreciosOpen.size()) {
 
@@ -544,13 +553,15 @@ public class YahooFinance02Parsear implements Serializable {
 
 					if (close1 != null && close0 != null) {
 
-						Double ratioDeCambio = (close1 > close0) ? Math.abs(close1 / close0) - 1
+						Double ratioDeCambio = (close1 > close0) ? Math.abs(close1 / close0)
 								: Math.abs(close0 / close1);
 
-						if (ratioDeCambio > 2) {
+						if (ratioDeCambio >= UMBRAL_RATIO_ANOMALIAS) {
+							detectado = true;
 							MY_LOGGER.warn("Empresa=" + empresa
-									+ " Tiene anomalia gigante (posible split o contraSplit) en vela = " + i
-									+ " con ratio de cambio = " + ratioDeCambio);
+									+ " Tiene anomalia gigante (posible split o contraSplit) al pasar de vela = " + i
+									+ "  vela = " + (i - 1) + " con ratio de cambio = " + ratioDeCambio
+									+ " (ratio umbral = " + UMBRAL_RATIO_ANOMALIAS + ")");
 						}
 
 					}
@@ -562,6 +573,8 @@ public class YahooFinance02Parsear implements Serializable {
 		} else {
 			MY_LOGGER.error("Listas de distinto tamanio! Ejemplo de una fila: " + listaPreciosClose.get(0).toString());
 		}
+
+		return detectado;
 
 	}
 
