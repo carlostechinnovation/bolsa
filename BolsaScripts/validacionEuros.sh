@@ -18,7 +18,7 @@ M="1"  #Duración en velas de [t2,t3]
 F="5"  #Caida ligera permitida durante [t2,t3], en la ÚLTIMA vela
 B="5"  #Caida ligera permitida durante [t1,t2], en todas esas velas
 NUM_EMPRESAS="1000"  #Numero de empresas descargadas
-ACTIVAR_DESCARGAS="S" #Descargar datos nuevos (S) o usar datos locales (N)
+ACTIVAR_DESCARGAS="N" #Descargar datos nuevos (S) o usar datos locales (N)
 
 #Instantes de las descargas
 PASADO_t1="0"
@@ -69,10 +69,10 @@ rm -Rf /bolsa/pasado/ >>${LOG_VALIDADOR}
 mkdir -p /bolsa/logs/ >>${LOG_VALIDADOR}
 echo -e ""  >>${LOG_VALIDADOR}
 
-if [ "${ACTIVAR_DESCARGA}" = "N" ];  then
+if [ "${ACTIVAR_DESCARGAS}" = "N" ];  then
 	echo -e "PASADO - Usamos datos LOCALES (sin Internet) de la ruta /bolsa/datos_validacion/" >>${LOG_VALIDADOR}
 	crearCarpetaSiNoExiste "/bolsa/pasado/brutos_csv/"
-	cp "/bolsa/validacion_datos/pasado_brutos_csv/*" "/bolsa/pasado/brutos_csv/" >>${LOG_VALIDADOR}
+	cp -a "/bolsa/validacion_datos/pasado_brutos_csv/." "/bolsa/pasado/brutos_csv/" >>${LOG_VALIDADOR}
 fi;
 
 echo -e $( date '+%Y%m%d_%H%M%S' )" Ejecución del PASADO (para entrenar los modelos a dia de HOY con la lista normal de empresas)..." >>${LOG_VALIDADOR}
@@ -90,10 +90,10 @@ cp -R "/bolsa/pasado/" $dir_val_pasado
 rm -Rf /bolsa/futuro/ >>${LOG_VALIDADOR}
 crearCarpetaSiNoExiste "${DIR_FUT_SUBGRUPOS}"
 
-if [ "${ACTIVAR_DESCARGA}" = "N" ];  then
+if [ "${ACTIVAR_DESCARGAS}" = "N" ];  then
 	echo -e "FUTURO1 - Usamos datos LOCALES (sin Internet) de la ruta /bolsa/datos_validacion/" >>${LOG_VALIDADOR}
 	crearCarpetaSiNoExiste "/bolsa/futuro/brutos_csv/"
-	cp "/bolsa/validacion_datos/futuro1_brutos_csv/*" "/bolsa/futuro/brutos_csv/" >>${LOG_VALIDADOR}
+	cp -a "/bolsa/validacion_datos/futuro1_brutos_csv/." "/bolsa/futuro/brutos_csv/" >>${LOG_VALIDADOR}
 fi;
 
 echo -e $( date '+%Y%m%d_%H%M%S' )" Ejecución del futuro (para velas de antiguedad=${FUTURO1_t1}) con OTRAS empresas (lista REVERTIDA)..." >>${LOG_VALIDADOR}
@@ -121,10 +121,10 @@ cp -R "/bolsa/futuro/" $dir_val_futuro_1
 rm -Rf /bolsa/futuro/ >>${LOG_VALIDADOR}
 crearCarpetaSiNoExiste "${DIR_FUT_SUBGRUPOS}"
 
-if [ "${ACTIVAR_DESCARGA}" = "N" ];  then
+if [ "${ACTIVAR_DESCARGAS}" = "N" ];  then
 	echo -e "FUTURO2 - Usamos datos LOCALES (sin Internet) de la ruta /bolsa/datos_validacion/" >>${LOG_VALIDADOR}
 	crearCarpetaSiNoExiste "/bolsa/futuro/brutos_csv/"
-	cp "/bolsa/validacion_datos/futuro2_brutos_csv/*" "/bolsa/futuro/brutos_csv/" >>${LOG_VALIDADOR}
+	cp -a "/bolsa/validacion_datos/futuro2_brutos_csv/." "/bolsa/futuro/brutos_csv/" >>${LOG_VALIDADOR}
 fi;
 
 echo -e $( date '+%Y%m%d_%H%M%S' )" Ejecución del futuro (para velas de anttiguedad=${FUTURO2_t1}) con OTRAS empresas (lista REVERTIDA)..." >>${LOG_VALIDADOR}
