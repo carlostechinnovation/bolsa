@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Locale;
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
+import org.apache.commons.math3.util.ResizableDoubleArray;
 
 public class Estadisticas extends DescriptiveStatistics {
 
@@ -26,6 +27,36 @@ public class Estadisticas extends DescriptiveStatistics {
 
 	static Locale locale;
 	static DecimalFormat df;
+
+	public static void main(String[] args) {
+
+		Estadisticas e1 = new Estadisticas();
+		e1.addValue(1D);
+		e1.addValue(1D);
+		e1.addValue(1D);
+		e1.addValue(1D);
+		e1.addValue(1D);
+		e1.addValue(1D);
+		e1.addValue(1D);
+		e1.addValue(1D);
+		e1.addValue(1D);
+		e1.addValue(1D);
+		Estadisticas e5 = new Estadisticas();
+		e5.addValue(1D);
+		e5.addValue(1D);
+		e5.addValue(5D);
+		e5.addValue(1D);
+		e5.addValue(1D);
+		e5.addValue(1D);
+		e5.addValue(1D);
+		e5.addValue(1D);
+		e5.addValue(1D);
+		e5.addValue(1D);
+
+		System.out.println("e1.getVariacionRelativaMaximaDePendiente(): " + e1.getVariacionRelativaMaximaDePendiente());
+		System.out.println("e5.getVariacionRelativaMaximaDePendiente(): " + e5.getVariacionRelativaMaximaDePendiente());
+
+	}
 
 	/**
 	 * 
@@ -170,6 +201,29 @@ public class Estadisticas extends DescriptiveStatistics {
 	 */
 	public HashMap<Integer, String> getOrdenNombresParametrosElaborados() {
 		return ordenNombresParametrosElaborados;
+	}
+
+	/**
+	 * @return Para un conjunto de valores, se obtienen sus diferencias en
+	 *         porcentaje sin signo 
+	 *         y_t=ABS((x_i+1 - x_i)/x_i). 
+	 *         Se devuelve:
+	 *         ABS(max(y_t)/media(y_t))
+	 */
+	public Double getVariacionRelativaMaximaDePendiente() {
+		ResizableDoubleArray y = new ResizableDoubleArray();
+		for (int i = 0; i < getN() - 1; i++) {
+			y.addElement(Math.abs((getElement(i + 1) - getElement(i)) / getElement(i)));
+		}
+		Double max = 0D, average = 0D;
+		for (int counter = 1; counter < y.getNumElements(); counter++) {
+			if (y.getElement(counter) > max) {
+				max = y.getElement(counter);
+			}
+			average += y.getElement(counter);
+		}
+		average = Double.valueOf(average / y.getNumElements());
+		return Math.abs(max / average);
 	}
 
 }

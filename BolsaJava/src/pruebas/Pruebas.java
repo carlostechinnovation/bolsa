@@ -1,5 +1,7 @@
 package pruebas;
 
+import c30x.elaborados.construir.Estadisticas;
+
 /**
  * @author casa
  *

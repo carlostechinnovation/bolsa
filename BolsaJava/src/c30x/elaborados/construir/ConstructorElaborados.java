@@ -449,42 +449,42 @@ public class ConstructorElaborados implements Serializable {
 					for (int i = 1; i <= X; i++) {
 						Integer antiguedadI = antiguedad - i; // Voy hacia el futuro
 						closeAntiguedadI = Double.valueOf(datosEmpresaEntrada.get(antiguedadI).get("close"));
-						boolean cumpleEncimaDeB = closeAntiguedadI > bajadaBPrecioTantoPorUno * closeAntiguedad;
-						if (cumpleEncimaDeB) {
-							// El precio no debe bajar más de B
-							MY_LOGGER.debug("---ATENCION ENCONTRADO TARGET 1---> EMPRESA: " + empresa
-									+ " y antigüedad: " + antiguedad + " (Mes: " + datosAntiguedad.get("mes") + " Dia: "
-									+ datosAntiguedad.get("dia") + " Hora: " + datosAntiguedad.get("hora") + ")");
-							mCumplida = Boolean.TRUE;
-						} else {
-							// Se ha encontrado AL MENOS una vela posterior, en las (1 a X) siguientes,
-							// con el precio por debajo de la caída mínima B
-							// TODAS LAS VELAS de ese periodo TIENEN QUE ESTAR POR ENCIMA DE ESE UMBRAL DE
-							// CAIDA
-							mCumplida = Boolean.FALSE;
-							break;
-						}
+//						boolean cumpleEncimaDeB = closeAntiguedadI > bajadaBPrecioTantoPorUno * closeAntiguedad;
+//						if (cumpleEncimaDeB) {
+//							// El precio no debe bajar más de B
+//							MY_LOGGER.debug("---ATENCION ENCONTRADO TARGET 1---> EMPRESA: " + empresa
+//									+ " y antigüedad: " + antiguedad + " (Mes: " + datosAntiguedad.get("mes") + " Dia: "
+//									+ datosAntiguedad.get("dia") + " Hora: " + datosAntiguedad.get("hora") + ")");
+//							mCumplida = Boolean.TRUE;
+//						} else {
+//							// Se ha encontrado AL MENOS una vela posterior, en las (1 a X) siguientes,
+//							// con el precio por debajo de la caída mínima B
+//							// TODAS LAS VELAS de ese periodo TIENEN QUE ESTAR POR ENCIMA DE ESE UMBRAL DE
+//							// CAIDA
+//							mCumplida = Boolean.FALSE;
+//							break;
+//						}
+//
+//						if (mCumplida) {
+						for (int z = X + 1; z <= X + M; z++) {
+							Integer antiguedadZ = antiguedad - z; // Voy hacia el muy futuro
 
-						if (mCumplida) {
-							for (int z = X + 1; z <= X + M; z++) {
-								Integer antiguedadZ = antiguedad - z; // Voy hacia el muy futuro
-
-								closeAntiguedadZ = Double.valueOf(datosEmpresaEntrada.get(antiguedadZ).get("close"));
-								boolean cumpleUmbralVelaZ = closeAntiguedadZ > subidaSmenosRPrecioTantoPorUno
-										* closeAntiguedad;
-								if (cumpleUmbralVelaZ) {
-									// El precio no debe bajar más de X-R
-									mCumplida = Boolean.TRUE;
-								} else {
-									// Se ha encontrado AL MENOS una vela posterior, en las (X+1 a X+M) siguientes,
-									// con el precio por debajo de la caída mínima (S-R)
-									// TODAS LAS VELAS de ese periodo TIENEN QUE ESTAR POR ENCIMA DE ESE UMBRAL DE
-									// CAIDA
-									mCumplida = Boolean.FALSE;
-									break;
-								}
+							closeAntiguedadZ = Double.valueOf(datosEmpresaEntrada.get(antiguedadZ).get("close"));
+							boolean cumpleUmbralVelaZ = closeAntiguedadZ > subidaSmenosRPrecioTantoPorUno
+									* closeAntiguedad;
+							if (cumpleUmbralVelaZ) {
+								// El precio no debe bajar más de X-R
+								mCumplida = Boolean.TRUE;
+							} else {
+								// Se ha encontrado AL MENOS una vela posterior, en las (X+1 a X+M) siguientes,
+								// con el precio por debajo de la caída mínima (S-R)
+								// TODAS LAS VELAS de ese periodo TIENEN QUE ESTAR POR ENCIMA DE ESE UMBRAL DE
+								// CAIDA
+								mCumplida = Boolean.FALSE;
+								break;
 							}
 						}
+//						}
 					}
 
 				} else {
@@ -496,6 +496,23 @@ public class ConstructorElaborados implements Serializable {
 		} else {
 			// La S no se cumple
 			mCumplida = Boolean.FALSE;
+		}
+
+		// Se descartan los targets=1 que no cumplan esta condición
+		if (mCumplida) {
+			Double umbralMaximo = 2D;
+			Estadisticas e = new Estadisticas();
+			for (int i = 1; i <= X; i++) {
+				Integer antiguedadI = antiguedad - i; // Voy hacia el futuro
+				closeAntiguedadI = Double.valueOf(datosEmpresaEntrada.get(antiguedadI).get("close"));
+				e.addValue(closeAntiguedadI);
+			}
+			System.out.println("ANÁLISIS VARIABILIDAD--> EMPRESA: " + empresa + " -> Antigüedad: " + antiguedad
+					+ " (Mes: " + datosAntiguedad.get("mes") + " Dia: " + datosAntiguedad.get("dia") + " Hora: "
+					+ datosAntiguedad.get("hora") + ". Variabilidad: " + e.getVariacionRelativaMaximaDePendiente());
+			if (e.getVariacionRelativaMaximaDePendiente() > umbralMaximo) {
+				mCumplida = Boolean.FALSE;
+			}
 		}
 
 		if (mCumplida) {
