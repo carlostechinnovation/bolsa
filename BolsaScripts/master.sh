@@ -17,6 +17,7 @@ M="${9}" #default=7
 F="${10}" #default=5
 B="${11}" #default=5
 NUM_MAX_EMPRESAS_DESCARGADAS="${12}"  #default=100
+UMBRAL_SUBIDA_POR_VELA="${13}"  #default=0.5
 
 
 ################## FUNCIONES #############################################################
@@ -160,7 +161,7 @@ echo -e $( date '+%Y%m%d_%H%M%S' )" -------- VARIABLES ELABORADAS -------------"
 crearCarpetaSiNoExisteYVaciar "${DIR_ELABORADOS}"
 
 echo -e "Calculando elaborados y target..." >> ${LOG_MASTER}
-java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n" -jar ${PATH_JAR} --class "coordinador.Principal" "c30X.elaborados.ConstructorElaborados" "${DIR_LIMPIOS}" "${DIR_ELABORADOS}" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
+java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n" -jar ${PATH_JAR} --class "coordinador.Principal" "c30X.elaborados.ConstructorElaborados" "${DIR_LIMPIOS}" "${DIR_ELABORADOS}" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" "${UMBRAL_SUBIDA_POR_VELA}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 
 echo -e "Elaborados (incluye la variable elaborada TARGET) ya calculados" >> ${LOG_MASTER}
 

@@ -65,10 +65,11 @@ public class ConstructorElaborados implements Serializable {
 		Integer M = ElaboradosUtils.M; // DEFAULT
 		Integer F = ElaboradosUtils.F; // DEFAULT
 		Integer B = ElaboradosUtils.B; // DEFAULT
+		Double umbralMaximo = ElaboradosUtils.SUBIDA_MAXIMA_POR_VELA; // DEFAULT
 
 		if (args.length == 0) {
 			MY_LOGGER.info("Sin parametros de entrada. Rellenamos los DEFAULT...");
-		} else if (args.length != 8) {
+		} else if (args.length != 9) {
 			MY_LOGGER.error("Parametros de entrada incorrectos!!");
 			System.exit(-1);
 		} else {
@@ -80,6 +81,7 @@ public class ConstructorElaborados implements Serializable {
 			M = Integer.valueOf(args[5]);
 			F = Integer.valueOf(args[6]);
 			B = Integer.valueOf(args[7]);
+			umbralMaximo = Double.valueOf(args[8]);
 		}
 
 		File directorioEntrada = new File(directorioIn);
@@ -113,7 +115,8 @@ public class ConstructorElaborados implements Serializable {
 			destino = directorioSalida + "/" + ficheroGestionado.getName();
 			MY_LOGGER.debug("Ficheros entrada|salida -> " + ficheroGestionado.getAbsolutePath() + " | " + destino);
 			ordenNombresParametros = gestorFicheros.getOrdenNombresParametrosLeidos();
-			anadirParametrosElaboradosDeSoloUnaEmpresa(datosEntrada, ordenNombresParametros, S, X, R, M, F, B);
+			anadirParametrosElaboradosDeSoloUnaEmpresa(datosEntrada, ordenNombresParametros, S, X, R, M, F, B,
+					umbralMaximo);
 			gestorFicheros.creaFicheroDeSoloUnaEmpresa(datosEntrada, ordenNombresParametros, destino);
 		}
 
@@ -133,12 +136,13 @@ public class ConstructorElaborados implements Serializable {
 	 * @param R
 	 * @param M
 	 * @param B
+	 * @param umbralMaximo
 	 * @throws Exception
 	 */
 	public static void anadirParametrosElaboradosDeSoloUnaEmpresa(
 			HashMap<String, HashMap<Integer, HashMap<String, String>>> datos,
 			HashMap<Integer, String> ordenNombresParametros, Integer S, Integer X, Integer R, Integer M, Integer F,
-			Integer B) throws Exception {
+			Integer B, Double umbralMaximo) throws Exception {
 
 		HashMap<String, HashMap<Integer, HashMap<String, String>>> datosSalida = new HashMap<String, HashMap<Integer, HashMap<String, String>>>();
 		HashMap<Integer, HashMap<String, String>> datosEmpresaEntrada = new HashMap<Integer, HashMap<String, String>>();
@@ -331,7 +335,7 @@ public class ConstructorElaborados implements Serializable {
 					break;
 
 				} else {
-					target = calcularTarget(empresa, datosEmpresaEntrada, antiguedad, S, X, R, M, F, B);
+					target = calcularTarget(empresa, datosEmpresaEntrada, antiguedad, S, X, R, M, F, B, umbralMaximo);
 				}
 			} else {
 				// La antiguedad es demasiado reciente para ver si es estable en X+M
@@ -396,10 +400,13 @@ public class ConstructorElaborados implements Serializable {
 	 *                     vela.
 	 * @param B            Caida ligera permitida durante [t1,t2], en TODAS esas
 	 *                     velas.
+	 * @param umbralMaximo Porcentaje máximo aceptado para la subida de cada vela
+	 *                     respecto del total de 1 a X.
+	 * 
 	 * @return
 	 */
 	public static String calcularTarget(String empresa, HashMap<Integer, HashMap<String, String>> datosEmpresaEntrada,
-			Integer antiguedad, Integer S, Integer X, Integer R, Integer M, Integer F, Integer B) {
+			Integer antiguedad, Integer S, Integer X, Integer R, Integer M, Integer F, Integer B, Double umbralMaximo) {
 
 		String targetOut = TARGET_INVALIDO; // default
 
@@ -500,7 +507,6 @@ public class ConstructorElaborados implements Serializable {
 
 		// Se descartan los targets=1 que no cumplan esta condición
 		if (mCumplida) {
-			Double umbralMaximo = 0.5D;
 			Estadisticas e = new Estadisticas();
 			for (int i = 1; i <= X; i++) {
 				Integer antiguedadI = antiguedad - i; // Voy hacia el futuro
@@ -509,7 +515,8 @@ public class ConstructorElaborados implements Serializable {
 			}
 			System.out.println("ANÁLISIS VARIABILIDAD--> EMPRESA: " + empresa + " -> Antigüedad: " + antiguedad
 					+ " (Mes: " + datosAntiguedad.get("mes") + " Dia: " + datosAntiguedad.get("dia") + " Hora: "
-					+ datosAntiguedad.get("hora") + ". Variabilidad: " + e.getVariacionRelativaMaxima());
+					+ datosAntiguedad.get("hora") + ". Variabilidad: " + e.getVariacionRelativaMaxima()
+					+ " pero umbral máximo: " + umbralMaximo);
 			if (e.getVariacionRelativaMaxima() < umbralMaximo) {
 				mCumplida = Boolean.FALSE;
 			}
