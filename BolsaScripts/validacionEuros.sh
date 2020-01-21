@@ -19,7 +19,7 @@ F="5"  #Caida ligera permitida durante [t2,t3], en la ÚLTIMA vela
 B="5"  #Caida ligera permitida durante [t1,t2], en todas esas velas
 NUM_EMPRESAS="1000"  #Numero de empresas descargadas
 ACTIVAR_DESCARGAS="N" #Descargar datos nuevos (S) o usar datos locales (N)
-UMBRAL_SUBIDA_POR_VELA="0.3" #Umbral de subida máxima relativa de una vela respecto de la subida de 1 a X velas. Se recomienda poner un valor ligeramente inferior a "1/X".  Por ejemplo, si X=4, tomar 0.3 
+UMBRAL_SUBIDA_POR_VELA="0.3" #Umbral de subida máxima relativa de una vela respecto de la subida de 1 a X velas. Se recomienda poner un valor ligeramente inferior a "1/X".  Por ejemplo, si X=4, tomar 0.3. NO poner justamente 1/X, porque da peores resultados 
 
 #Instantes de las descargas
 PASADO_t1="0"
