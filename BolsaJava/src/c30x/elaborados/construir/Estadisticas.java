@@ -53,8 +53,8 @@ public class Estadisticas extends DescriptiveStatistics {
 		e5.addValue(1D);
 		e5.addValue(1D);
 
-		System.out.println("e1.getVariacionRelativaMaximaDePendiente(): " + e1.getVariacionRelativaMaximaDePendiente());
-		System.out.println("e5.getVariacionRelativaMaximaDePendiente(): " + e5.getVariacionRelativaMaximaDePendiente());
+		System.out.println("e1.getVariacionRelativaMaximaDePendiente(): " + e1.getVariacionRelativaMaxima());
+		System.out.println("e5.getVariacionRelativaMaximaDePendiente(): " + e5.getVariacionRelativaMaxima());
 
 	}
 
@@ -206,24 +206,23 @@ public class Estadisticas extends DescriptiveStatistics {
 	/**
 	 * @return Para un conjunto de valores, se obtienen sus diferencias en
 	 *         porcentaje sin signo 
-	 *         y_t=ABS((x_i+1 - x_i)/x_i). 
+	 *         y_t=ABS(x_i+1 - x_i). 
 	 *         Se devuelve:
-	 *         ABS(max(y_t)/media(y_t))
+	 *         ABS(max(y_t)/(x_ultimo-x_1))
 	 */
-	public Double getVariacionRelativaMaximaDePendiente() {
+	public Double getVariacionRelativaMaxima() {
 		ResizableDoubleArray y = new ResizableDoubleArray();
 		for (int i = 0; i < getN() - 1; i++) {
-			y.addElement(Math.abs((getElement(i + 1) - getElement(i)) / getElement(i)));
+			y.addElement(Math.abs(getElement(i + 1) - getElement(i)));
 		}
-		Double max = 0D, average = 0D;
+		Double max = 0D, total = 0D;
 		for (int counter = 1; counter < y.getNumElements(); counter++) {
 			if (y.getElement(counter) > max) {
 				max = y.getElement(counter);
 			}
-			average += y.getElement(counter);
 		}
-		average = Double.valueOf(average / y.getNumElements());
-		return Math.abs(max / average);
+		total = getElement((int)getN() - 1) - getElement(0);
+		return Math.abs(max / total);
 	}
 
 }

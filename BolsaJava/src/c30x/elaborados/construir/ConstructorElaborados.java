@@ -500,7 +500,7 @@ public class ConstructorElaborados implements Serializable {
 
 		// Se descartan los targets=1 que no cumplan esta condición
 		if (mCumplida) {
-			Double umbralMaximo = 2D;
+			Double umbralMaximo = 0.5D;
 			Estadisticas e = new Estadisticas();
 			for (int i = 1; i <= X; i++) {
 				Integer antiguedadI = antiguedad - i; // Voy hacia el futuro
@@ -509,8 +509,8 @@ public class ConstructorElaborados implements Serializable {
 			}
 			System.out.println("ANÁLISIS VARIABILIDAD--> EMPRESA: " + empresa + " -> Antigüedad: " + antiguedad
 					+ " (Mes: " + datosAntiguedad.get("mes") + " Dia: " + datosAntiguedad.get("dia") + " Hora: "
-					+ datosAntiguedad.get("hora") + ". Variabilidad: " + e.getVariacionRelativaMaximaDePendiente());
-			if (e.getVariacionRelativaMaximaDePendiente() > umbralMaximo) {
+					+ datosAntiguedad.get("hora") + ". Variabilidad: " + e.getVariacionRelativaMaxima());
+			if (e.getVariacionRelativaMaxima() < umbralMaximo) {
 				mCumplida = Boolean.FALSE;
 			}
 		}
