@@ -31,16 +31,14 @@ public class Estadisticas extends DescriptiveStatistics {
 	public static void main(String[] args) {
 
 		Estadisticas e1 = new Estadisticas();
-		e1.addValue(1D);
-		e1.addValue(1D);
-		e1.addValue(1D);
-		e1.addValue(1D);
-		e1.addValue(1D);
-		e1.addValue(1D);
-		e1.addValue(1D);
-		e1.addValue(1D);
-		e1.addValue(1D);
-		e1.addValue(1D);
+		e1.addValue(3.46D);
+		e1.addValue(4.21D);
+		e1.addValue(4.87D);
+		e1.addValue(4.97D);
+		e1.addValue(5.55D);
+		e1.addValue(6.29D);
+		e1.addValue(5.32D);
+		e1.addValue(6.07D);
 		Estadisticas e5 = new Estadisticas();
 		e5.addValue(1D);
 		e5.addValue(1D);
@@ -77,9 +75,12 @@ public class Estadisticas extends DescriptiveStatistics {
 		df.applyPattern("#0.#");
 	}
 
-	/** Como si fuera la derivada, pero s�lo con el primer y �ltimo valores */
+	/**
+	 * En porcentaje. Como si fuera la derivada, pero s�lo con el primer y �ltimo
+	 * valores
+	 */
 	public double getPendiente() {
-		return (this.getElement((int) (this.getN() - 1)) - this.getElement(0)) / this.getN();
+		return 100 * (this.getElement((int) (this.getN() - 1)) - this.getElement(0)) / this.getN();
 	}
 
 	/**
@@ -205,24 +206,24 @@ public class Estadisticas extends DescriptiveStatistics {
 
 	/**
 	 * @return Para un conjunto de valores, se obtienen sus diferencias en
-	 *         porcentaje sin signo 
-	 *         y_t=ABS(x_i+1 - x_i). 
-	 *         Se devuelve:
-	 *         ABS(max(y_t)/(x_ultimo-x_1))
+	 *         porcentaje sin signo y_t=ABS(x_i+1 - x_i). Se devuelve:
+	 *         ABS(max(y_t)/average(y_t))
 	 */
 	public Double getVariacionRelativaMaxima() {
 		ResizableDoubleArray y = new ResizableDoubleArray();
 		for (int i = 0; i < getN() - 1; i++) {
 			y.addElement(Math.abs(getElement(i + 1) - getElement(i)));
 		}
-		Double max = 0D, total = 0D;
-		for (int counter = 1; counter < y.getNumElements(); counter++) {
-			if (y.getElement(counter) > max) {
+		Double max = 0D, average = 0D;
+		for (int counter = 0; counter < y.getNumElements(); counter++) {
+			if (max < y.getElement(counter)) {
 				max = y.getElement(counter);
 			}
+			average += y.getElement(counter);
 		}
-		total = getElement((int)getN() - 1) - getElement(0);
-		return Math.abs(max / total);
+		Double n = Double.valueOf(y.getNumElements());
+		average = average / n;
+		return Math.abs(max / average);
 	}
 
 }

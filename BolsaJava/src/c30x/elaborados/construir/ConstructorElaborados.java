@@ -515,12 +515,13 @@ public class ConstructorElaborados implements Serializable {
 				Integer antiguedadI = antiguedad - i; // Voy hacia el futuro
 				closeAntiguedadI = Double.valueOf(datosEmpresaEntrada.get(antiguedadI).get("close"));
 				e.addValue(closeAntiguedadI);
+				System.out.print(closeAntiguedadI + ", ");
 			}
 			System.out.println("ANÁLISIS VARIABILIDAD--> EMPRESA: " + empresa + " -> Antigüedad: " + antiguedad
 					+ " (Mes: " + datosAntiguedad.get("mes") + " Dia: " + datosAntiguedad.get("dia") + " Hora: "
 					+ datosAntiguedad.get("hora") + ". Variabilidad: " + e.getVariacionRelativaMaxima()
-					+ " pero umbral máximo: " + umbralMaximo);
-			if (e.getVariacionRelativaMaxima() < umbralMaximo) {
+					+ " y umbral máximo: " + umbralMaximo);
+			if (e.getVariacionRelativaMaxima() > umbralMaximo) {
 				mCumplida = Boolean.FALSE;
 			}
 		}

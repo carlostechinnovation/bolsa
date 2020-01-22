@@ -12,14 +12,14 @@ VELAS_RETROCESO="10" #INSTANTE ANALIZADO (T1). Su antiguedad debe ser mayor que 
 
 # PARAMETROS DE TARGET MEDIDOS EN VELAS
 S="15"  #Subida durante [t1,t2]
-X="4"  #Duracion en velas de [t1,t2]
+X="6"  #Duracion en velas de [t1,t2]
 R="10"  #Caida ligera máxima permitida durante [t2,t3], en TODAS esas velas.
 M="1"  #Duración en velas de [t2,t3]
 F="5"  #Caida ligera permitida durante [t2,t3], en la ÚLTIMA vela
-B="5"  #Usar B = F. Caida ligera permitida durante [t1,t2], en todas esas velas
+B="5"  #Caida ligera permitida durante [t1,t2], en todas esas velas
 NUM_EMPRESAS="1000"  #Numero de empresas descargadas
 ACTIVAR_DESCARGAS="N" #Descargar datos nuevos (S) o usar datos locales (N)
-UMBRAL_SUBIDA_POR_VELA="0.3" #Usar = (1/X + 0.05). Umbral de subida máxima relativa de una vela respecto de la subida de 1 a X velas. Se recomienda poner un valor ligeramente inferior a "1/X".  Por ejemplo, si X=4, tomar 0.3. NO poner justamente 1/X, porque da peores resultados 
+UMBRAL_SUBIDA_POR_VELA="3" #Recomendable: 3. Umbral de subida máxima relativa de una vela respecto de subida media de velas 1 a X. 
 
 #Instantes de las descargas
 PASADO_t1="0"
@@ -128,7 +128,7 @@ if [ "${ACTIVAR_DESCARGAS}" = "N" ];  then
 	cp -a "/bolsa/validacion_datos/futuro2_brutos_csv/." "/bolsa/futuro/brutos_csv/" >>${LOG_VALIDADOR}
 fi;
 
-echo -e $( date '+%Y%m%d_%H%M%S' )" Ejecución del futuro (para velas de anttiguedad=${FUTURO2_t1}) con OTRAS empresas (lista REVERTIDA)..." >>${LOG_VALIDADOR}
+echo -e $( date '+%Y%m%d_%H%M%S' )" Ejecución del futuro (para velas de antiguedad=${FUTURO2_t1}) con OTRAS empresas (lista REVERTIDA)..." >>${LOG_VALIDADOR}
 ${PATH_SCRIPTS}master.sh "futuro" "${FUTURO2_t1}" "1" "${ACTIVAR_DESCARGAS}" "S" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" "${NUM_EMPRESAS}" "${UMBRAL_SUBIDA_POR_VELA}" 2>>${LOG_VALIDADOR} 1>>${LOG_VALIDADOR}
 
 echo -e "Velas con antiguedad=FUTURO2_t1 --> Guardamos la prediccion de todos los SUBGRUPOS en la carpeta de validacion, para analizarla luego..." >>${LOG_VALIDADOR}
