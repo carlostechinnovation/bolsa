@@ -91,7 +91,7 @@ public class ConstructorElaborados implements Serializable {
 		GestorFicheros gestorFicheros = new GestorFicheros();
 		ArrayList<File> ficherosEntradaEmpresas = gestorFicheros.listaFicherosDeDirectorio(directorioEntrada);
 
-		MY_LOGGER.info(crearDefinicionTarget(S, X, R, M, F));
+		MY_LOGGER.info(crearDefinicionTarget(S, X, R, M, F, B));
 
 		String destino = "";
 		Iterator<File> iterator = ficherosEntradaEmpresas.iterator();
@@ -370,10 +370,12 @@ public class ConstructorElaborados implements Serializable {
 	 * @param F
 	 * @return
 	 */
-	public static String crearDefinicionTarget(Integer S, Integer X, Integer R, Integer M, Integer F) {
+	public static String crearDefinicionTarget(Integer S, Integer X, Integer R, Integer M, Integer F, Integer B) {
 
 		String definicion = "DEFINICION DE TARGET --> Vemos los instantes [t1,t2,t3]. Ahora estamos en t1. El periodo [t1,t2] dura "
-				+ X + " velas, en el que el precio debe subir >= " + S + "% . El periodo [t2,t3] dura " + M
+				+ X + " velas, en el que el precio debe subir >= " + S
+				+ "% . Durante todas ellas, el precio de cierre nunca puede estar debajo del de t1*(1-B%), con B=" + B
+				+ "% . El periodo [t2,t3] dura " + M
 				+ " velas; durante TODAS ellas, el precio de cierre puede caer un poco, pero nunca por debajo de un "
 				+ R + "% respecto del precio de t2. El precio en el instante t3 (es decir, tras "
 				+ Integer.valueOf(X + M) + " velas desde ahora) debe ser >= " + F
