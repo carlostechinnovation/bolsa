@@ -356,6 +356,7 @@ public class YahooFinance02Parsear implements Serializable {
 
 		for (String pathFichero : result) {
 			MY_LOGGER.debug(pathFichero);
+
 			rellenarVelasDiariasHuecoyAntiguedadPorFichero03(pathFichero, velas);
 		}
 	}
@@ -384,10 +385,12 @@ public class YahooFinance02Parsear implements Serializable {
 		boolean primeraLinea = true;
 		boolean filaActualEsCompleta = false;
 
-		long num = 1;
+		long numLineaFichero = 0;
 		String[] actualArray = {};
 
 		while ((actual = br.readLine()) != null) {
+
+			numLineaFichero++; // Linea del fichero, en la que estamos
 
 			filaActualEsCompleta = false; // default
 
@@ -413,93 +416,115 @@ public class YahooFinance02Parsear implements Serializable {
 							&& !lineArray[10].equalsIgnoreCase(BrutosUtils.NULO);
 					filaActualEsCompleta = parte7NoNula && parte10NoNula;
 
+					// Si la fila actual es completa, la acumulo. Si no, dejo la que hubiera.
 					ultimaLineaRellenaCompletaConocida = filaActualEsCompleta ? actual
 							: ultimaLineaRellenaCompletaConocida;
 
-					if (anterior != null && ultimaLineaRellenaCompletaConocida != null) {
-						String[] anteriorArray = actual.split("\\|");
-						String claveAnterior = anteriorArray[2] + "|" + anteriorArray[3] + "|" + anteriorArray[4] + "|"
-								+ anteriorArray[5] + "|" + anteriorArray[6];
-						velaAnterior = velas.get(claveAnterior);
+					// ----------------------------------------------------------------------------------
+					if (filaActualEsCompleta == true) { // Caso NORMAL: Si la fila actual es COMPLETA
 
-						// Si entre la vela anterior y la actual faltan filas, las CREO con precio
-						// arrastrado y volumen cero
+						if (anterior != null) { // Construimos VELAS HUECO usando la vela anterior conocida (si la
+												// conocemos)
 
-						String[] completaAnteriorArray = ultimaLineaRellenaCompletaConocida.split("\\|");
+							String[] anteriorArray = actual.split("\\|");
+							String claveAnterior = anteriorArray[2] + "|" + anteriorArray[3] + "|" + anteriorArray[4]
+									+ "|" + anteriorArray[5] + "|" + anteriorArray[6];
+							velaAnterior = velas.get(claveAnterior);
 
-						if (velaActual != null && velaAnterior != null) {
+							// DETECTAMOS HUECOS: Si entre la vela anterior y la actual faltan filas, las
+							// CREO con precio arrastrado y volumen cero
 
-							for (int numVelaHueco = (velaAnterior + 1); numVelaHueco < velaActual; numVelaHueco++) {
+							String[] completaAnteriorArray = ultimaLineaRellenaCompletaConocida.split("\\|");
 
-								String corregida = actualArray[0];// mercado
-								corregida += "|" + actualArray[1];// empresa
-								corregida += "|" + String.valueOf(numVelaHueco);// antiguedad (vela)
-								corregida += "|" + actualArray[2];// anio
-								corregida += "|" + actualArray[3];// mes
-								corregida += "|" + actualArray[4];// dia
-								corregida += "|" + actualArray[5];// hora
-								corregida += "|" + actualArray[6];// minuto
-								corregida += "|" + "0";// CORRIJO volumen: pongo un CERO
-								corregida += "|" + completaAnteriorArray[8];// CORRIJO high
-								corregida += "|" + completaAnteriorArray[9];// CORRIJO low
-								corregida += "|" + completaAnteriorArray[10];// CORRIJO close
-								corregida += "|" + completaAnteriorArray[11];// CORRIJO open
+							if (velaActual != null && velaAnterior != null) {
 
-								// FILA CORREGIDA
-								lista.add(corregida);
+								if (velaActual > (velaAnterior + 1)) {// Rellenar HUECOS (si los hay)
+
+									for (int numVelaHueco = (velaAnterior
+											+ 1); numVelaHueco < velaActual; numVelaHueco++) {
+
+										// HUECOS: generamos velas nuevas
+										String corregida = actualArray[0];// mercado
+										corregida += "|" + actualArray[1];// empresa
+										corregida += "|" + String.valueOf(numVelaHueco);// antiguedad (vela)
+										corregida += "|" + actualArray[2];// anio
+										corregida += "|" + actualArray[3];// mes
+										corregida += "|" + actualArray[4];// dia
+										corregida += "|" + actualArray[5];// hora
+										corregida += "|" + actualArray[6];// minuto
+										corregida += "|" + "0";// CORRIJO volumen: pongo un CERO
+										corregida += "|" + completaAnteriorArray[8];// CORRIJO high
+										corregida += "|" + completaAnteriorArray[9];// CORRIJO low
+										corregida += "|" + completaAnteriorArray[10];// CORRIJO close
+										corregida += "|" + completaAnteriorArray[11];// CORRIJO open
+
+										// FILA CORREGIDA
+										lista.add(corregida);
+									}
+								}
+
 							}
 
 						}
 
+						// Hayamos detectado huecos o no, parseamos y añadimos la VELA ACTUAL
+						String[] originalArray = actual.split("\\|");
+
+						String originalconVela = originalArray[0];// mercado
+						originalconVela += "|" + originalArray[1];// empresa
+						originalconVela += "|" + String.valueOf(velaActual);// antiguedad (vela)
+						originalconVela += "|" + originalArray[2];// anio
+						originalconVela += "|" + originalArray[3];// mes
+						originalconVela += "|" + originalArray[4];// dia
+						originalconVela += "|" + originalArray[5];// hora
+						originalconVela += "|" + originalArray[6];// minuto
+						originalconVela += "|" + originalArray[7];// volumen
+						originalconVela += "|" + originalArray[8];// high
+						originalconVela += "|" + originalArray[9];// low
+						originalconVela += "|" + originalArray[10];// close
+						originalconVela += "|" + originalArray[11];// open
+
+						lista.add(originalconVela);
+
+					} else {
+						// Si la fila actual es INCOMPLETA y puedo rellenarla con datos de alguna vela
+						// anterior, lo hago
+
+						if (ultimaLineaRellenaCompletaConocida != null) {
+
+							// En FILAS YA EXISTENTES (no son huecos), que tengan datos null, tambien
+							// relleno con precio arrastrado y volumen cero
+
+							String[] completaAnteriorArray = ultimaLineaRellenaCompletaConocida.split("\\|");
+
+							String corregida = actualArray[0];// mercado
+							corregida += "|" + actualArray[1];// empresa
+							corregida += "|" + String.valueOf(velaActual);// antiguedad (vela)
+							corregida += "|" + actualArray[2];// anio
+							corregida += "|" + actualArray[3];// mes
+							corregida += "|" + actualArray[4];// dia
+							corregida += "|" + actualArray[5];// hora
+							corregida += "|" + actualArray[6];// minuto
+							corregida += "|" + "0";// CORRIJO volumen: pongo un CERO
+							corregida += "|" + completaAnteriorArray[8];// CORRIJO high
+							corregida += "|" + completaAnteriorArray[9];// CORRIJO low
+							corregida += "|" + completaAnteriorArray[10];// CORRIJO close
+							corregida += "|" + completaAnteriorArray[11];// CORRIJO open
+
+							// FILA CORREGIDA
+							lista.add(corregida);
+
+						}
+
 					}
-				}
 
-				// En FILAS YA EXISTENTES (no son huecos), que tengan datos null, tambien
-				// relleno con precio arrastrado y volumen cero
-				if (ultimaLineaRellenaCompletaConocida != null
-						&& (filaActualEsCompleta == false || numeroCamposActual >= 12)) {
-
-					String[] completaAnteriorArray = ultimaLineaRellenaCompletaConocida.split("\\|");
-
-					String corregida = actualArray[0];// mercado
-					corregida += "|" + actualArray[1];// empresa
-					corregida += "|" + String.valueOf(velaActual);// antiguedad (vela)
-					corregida += "|" + actualArray[2];// anio
-					corregida += "|" + actualArray[3];// mes
-					corregida += "|" + actualArray[4];// dia
-					corregida += "|" + actualArray[5];// hora
-					corregida += "|" + actualArray[6];// minuto
-					corregida += "|" + "0";// CORRIJO volumen: pongo un CERO
-					corregida += "|" + completaAnteriorArray[8];// CORRIJO high
-					corregida += "|" + completaAnteriorArray[9];// CORRIJO low
-					corregida += "|" + completaAnteriorArray[10];// CORRIJO close
-					corregida += "|" + completaAnteriorArray[11];// CORRIJO open
-
-					// FILA CORREGIDA
-					lista.add(corregida);
+					// GUARDO PARA LA SIGUIENTE ITERACION (salvo la cabecera, que no la quiero)
+					anterior = actual;
 
 				} else {
-
-					String[] originalArray = actual.split("\\|");
-
-					String originalconVela = originalArray[0];// mercado
-					originalconVela += "|" + originalArray[1];// empresa
-					originalconVela += "|" + String.valueOf(velaActual);// antiguedad (vela)
-					originalconVela += "|" + originalArray[2];// anio
-					originalconVela += "|" + originalArray[3];// mes
-					originalconVela += "|" + originalArray[4];// dia
-					originalconVela += "|" + originalArray[5];// hora
-					originalconVela += "|" + originalArray[6];// minuto
-					originalconVela += "|" + originalArray[7];// volumen
-					originalconVela += "|" + originalArray[8];// high
-					originalconVela += "|" + originalArray[9];// low
-					originalconVela += "|" + originalArray[10];// close
-					originalconVela += "|" + originalArray[11];// open
-
-					lista.add(originalconVela);
+					MY_LOGGER.warn("La linea " + numLineaFichero + " del fichero: " + pathFicheroIn
+							+ " está incompleta o tiene datos extraños");
 				}
-
-				anterior = actual;// GUARDO PARA LA SIGUIENTE ITERACION (salvo la cabecera, que no la quiero)
 
 			} else {
 				// CABECERA INTACTA
@@ -546,21 +571,20 @@ public class YahooFinance02Parsear implements Serializable {
 
 				if (i > 0) { // la primera vela no me vale para poder comparar
 
-					Double close1 = listaPreciosOpen.get(i) == null ? null
+					Double open1 = listaPreciosOpen.get(i) == null ? null
 							: Double.valueOf(listaPreciosOpen.get(i).toString());
-					Double close0 = listaPreciosOpen.get(i - 1) == null ? null
-							: Double.valueOf(listaPreciosOpen.get(i - 1).toString());
+					Double close0 = listaPreciosClose.get(i - 1) == null ? null
+							: Double.valueOf(listaPreciosClose.get(i - 1).toString());
 
-					if (close1 != null && close0 != null) {
+					if (open1 != null && close0 != null) {
 
-						Double ratioDeCambio = (close1 > close0) ? Math.abs(close1 / close0)
-								: Math.abs(close0 / close1);
+						Double ratioDeCambio = (open1 > close0) ? Math.abs(open1 / close0) : Math.abs(close0 / open1);
 
 						if (ratioDeCambio >= UMBRAL_RATIO_ANOMALIAS) {
 							detectado = true;
 							MY_LOGGER.warn("Empresa=" + empresa
-									+ " Tiene anomalia gigante (posible split o contraSplit) al pasar de vela = " + i
-									+ "  vela = " + (i - 1) + " con ratio de cambio = " + ratioDeCambio
+									+ " Tiene anomalia gigante (posible split o contraSplit) al pasar de vela = "
+									+ (i - 1) + " a vela = " + i + " con ratio de cambio = " + ratioDeCambio
 									+ " (ratio umbral = " + UMBRAL_RATIO_ANOMALIAS + ")");
 						}
 
