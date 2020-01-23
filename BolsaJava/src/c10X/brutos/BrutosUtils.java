@@ -7,6 +7,9 @@ import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ *
+ */
 public class BrutosUtils implements Serializable {
 
 	public static final String DIR_BRUTOS = "/bolsa/pasado/brutos/";

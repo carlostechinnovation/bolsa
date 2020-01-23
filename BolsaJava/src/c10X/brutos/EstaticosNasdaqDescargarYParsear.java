@@ -12,6 +12,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -209,10 +210,22 @@ public class EstaticosNasdaqDescargarYParsear implements Serializable {
 
 			listaOrdenada.add(enmRef);
 
+			// Quitar la empresa de referencia
 			lista.remove(indiceItemReferencia);
+
+			// Ahora que ya hemos sacado a la empresa de referencia, ordenamos
+			// alfabeticamente
+			Collections.sort(lista);
+
+			// Añadimos todos a la lista de salida
+			listaOrdenada.addAll(lista);
+
+		} else {
+			MY_LOGGER.error("La empresa de referencia " + BrutosUtils.NASDAQ_REFERENCIA
+					+ " no aparece en la lista de empresas descargables. Abortamos!!");
+			System.exit(-1);
 		}
 
-		listaOrdenada.addAll(lista);
 		return listaOrdenada;
 
 	}
