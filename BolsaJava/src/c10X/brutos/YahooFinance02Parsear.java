@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
@@ -70,7 +71,7 @@ public class YahooFinance02Parsear implements Serializable {
 
 		String directorioIn = BrutosUtils.DIR_BRUTOS; // DEFAULT
 		String directorioOut = BrutosUtils.DIR_BRUTOS_CSV; // DEFAULT
-		String modo = BrutosUtils.PASADO; // DEFAULT
+		String modo = BrutosUtils.FUTURO; // DEFAULT
 		Integer entornoDeValidacion = BrutosUtils.ES_ENTORNO_VALIDACION;// DEFAULT
 
 		if (args.length == 0) {
@@ -203,6 +204,10 @@ public class YahooFinance02Parsear implements Serializable {
 		if (Files.exists(Paths.get(pathBruto))) {
 			Files.deleteIfExists(Paths.get(pathBrutoCsv)); // Borramos el fichero de salida si existe
 
+			if (pathBruto.contains("YF_NASDAQ_ZYXI")) {
+				int x = 0;
+			}
+
 			out = parsearJson(mercado, ticker, pathBruto, pathBrutoCsv, soloVelas, modo);
 
 			if (out.booleanValue() == false) {
@@ -261,6 +266,7 @@ public class YahooFinance02Parsear implements Serializable {
 			JSONObject a2 = (JSONObject) a1.get(0);
 
 			JSONObject indicators = (JSONObject) a2.get("indicators");
+			JSONObject events = (JSONObject) a2.get("events");
 			JSONArray tiemposEnSegundosDesde1970 = (JSONArray) a2.get("timestamp");
 
 			JSONArray quote1 = (JSONArray) indicators.get("quote");
@@ -276,6 +282,21 @@ public class YahooFinance02Parsear implements Serializable {
 
 				MY_LOGGER.debug("Tamanios --> " + listaVolumenes.size() + "|" + listaPreciosHigh.size() + "|"
 						+ listaPreciosLow.size() + "|" + listaPreciosClose.size() + "|" + listaPreciosOpen.size());
+
+				// Extraer dividendos (si los hay).
+				if (events != null && events.containsKey("dividends")) {
+					JSONObject dividendosObj = (JSONObject) events.get("dividends");
+					Set<String> dividendosKeys = dividendosObj.keySet();
+
+					for (String dividendosKey : dividendosKeys) {
+
+						JSONObject dividendo = (JSONObject) dividendosObj.get(dividendosKey);
+
+						// TODO YAHOO FINANCE ya los tiene en cuenta en el precio!! Por tanto, no lo
+						// implementamos.
+					}
+
+				}
 
 				// Detectar anomalias gigantes (posibles Splits o contrasplits)
 				boolean tieneAnomalias = detectarAnomaliasGigantes(empresa, listaPreciosClose, listaPreciosOpen);
