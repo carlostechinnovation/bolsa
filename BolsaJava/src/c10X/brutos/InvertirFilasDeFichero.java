@@ -36,7 +36,7 @@ public class InvertirFilasDeFichero {
 			values.remove(0);
 		}
 
-		Collections.reverse(values);
+		Collections.reverse(values); // Leer las filas de final a inicio, sin ordenar alfabeticamente
 
 		if (hayCabecera) {
 			writer.write(cabecera + System.lineSeparator());

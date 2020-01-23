@@ -218,7 +218,8 @@ public class JuntarEstaticosYDinamicosCSVunico {
 		// -------- HACEMOS REVERSE DE LOS DATOS, poniendo primero los datos más
 		// recientes (optimiza los pasos siguientes en rendimiento, pero no afecta a los
 		// modelos porque son casos independientes) ----
-		Collections.reverse(dinamicosDatos);
+		Collections.sort(dinamicosDatos); // orden alfabetico directo
+		Collections.reverse(dinamicosDatos); // ordenar inverso
 
 		// ------- ESCRITURA a fichero
 		FileOutputStream fos = new FileOutputStream(fjuntos, false);

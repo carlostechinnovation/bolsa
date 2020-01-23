@@ -68,6 +68,7 @@ public class EstaticosNasdaqDescargarYParsear implements Serializable {
 		Integer numMaxEmpresas = BrutosUtils.NUM_EMPRESAS_PRUEBAS; // DEFAULT
 		String dirBruto = BrutosUtils.DIR_BRUTOS; // DEFAULT
 		String dirBrutoCsv = BrutosUtils.DIR_BRUTOS_CSV; // DEFAULT
+		Integer entornoDeValidacion = 1; // DEFAULT
 
 		if (args.length != 0) {
 			MY_LOGGER.error("Parametros de entrada incorrectos!!");
@@ -85,9 +86,8 @@ public class EstaticosNasdaqDescargarYParsear implements Serializable {
 			dirBrutoCsv = args[2];
 		}
 
-//		List<EstaticoNasdaqModelo> nasdaqEstaticos1 = descargarNasdaqEstaticosSoloLocal1();
-		// TODO descargarYparsearNasdaqEstaticos2(nasdaqEstaticos1, dirBruto,
-		// dirBrutoCsv, numMaxEmpresas);
+		List<EstaticoNasdaqModelo> nasdaqEstaticos1 = descargarNasdaqEstaticosSoloLocal1(entornoDeValidacion);
+		descargarYparsearNasdaqEstaticos2(nasdaqEstaticos1, dirBruto, dirBrutoCsv, numMaxEmpresas);
 
 		MY_LOGGER.info("FIN");
 	}
@@ -186,14 +186,15 @@ public class EstaticosNasdaqDescargarYParsear implements Serializable {
 				+ BrutosUtils.DESCONOCIDOS_CSV + " --> Son " + desconocidos.size() + " empresas");
 
 		// Colocar a la empresa de referencia la primera!!
-		return colocar(out);
+		return colocar(out, entornoDeValidacion);
 	}
 
 	/**
 	 * @param lista
+	 * @param ordenAlfabeticoDirecto True=directo, False=inverso
 	 * @return
 	 */
-	public static List<EstaticoNasdaqModelo> colocar(List<EstaticoNasdaqModelo> lista) {
+	public static List<EstaticoNasdaqModelo> colocar(List<EstaticoNasdaqModelo> lista, Integer ordenAlfabeticoDirecto) {
 
 		// Empresa de referencia
 		int indiceItemReferencia = -1;
@@ -215,7 +216,14 @@ public class EstaticosNasdaqDescargarYParsear implements Serializable {
 
 			// Ahora que ya hemos sacado a la empresa de referencia, ordenamos
 			// alfabeticamente
-			Collections.sort(lista);
+
+			if (ordenAlfabeticoDirecto == 0) {
+				Collections.sort(lista);
+
+			} else if (ordenAlfabeticoDirecto == 1) {
+				Collections.sort(lista);// primero ordenamos alfabeticamente
+				Collections.reverse(lista); // le damos la vuelta
+			}
 
 			// Añadimos todos a la lista de salida
 			listaOrdenada.addAll(lista);
