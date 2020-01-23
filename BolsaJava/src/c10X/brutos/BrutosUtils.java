@@ -24,7 +24,7 @@ public class BrutosUtils implements Serializable {
 
 	public static final int ESPERA_ALEATORIA_MSEG_MIN = 200;
 	public static final int ESPERA_ALEATORIA_SEG_MAX = 2;
-	public static final int NUM_EMPRESAS_PRUEBAS = 4;
+	public static final int NUM_EMPRESAS_PRUEBAS = 10;
 	public static final int DESPLAZAMIENTO_ANTIGUEDAD = 0;
 
 	public static final String NULO = "null";

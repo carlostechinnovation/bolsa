@@ -97,9 +97,14 @@ public class YahooFinance02Parsear implements Serializable {
 		extraerVelasReferencia(velas, directorioIn, directorioOut, modo);// coger todas las velas pasadas
 																			// de la empresa de referencia
 
-		// DATOS DINAMICOS DE TODAS LAS EMPRESAS
-		parsearDinamicos01(nasdaqEstaticos1, directorioIn, directorioOut, false, modo);
-		rellenarVelasDiariasHuecoyAntiguedad02(nasdaqEstaticos1, directorioOut, velas);
+		if (velas != null && velas.size() > 0) {
+			// DATOS DINAMICOS DE TODAS LAS EMPRESAS
+			parsearDinamicos01(nasdaqEstaticos1, directorioIn, directorioOut, false, modo);
+			rellenarVelasDiariasHuecoyAntiguedad02(nasdaqEstaticos1, directorioOut, velas);
+		} else {
+			MY_LOGGER.error("No se han podido generar de velas de referencia. Abortamos!!");
+			System.exit(-1);
+		}
 
 		MY_LOGGER.info("FIN");
 	}
@@ -206,6 +211,11 @@ public class YahooFinance02Parsear implements Serializable {
 		} else {
 			MY_LOGGER.debug("Fichero de entrada no existe: " + pathBruto + " Continua...");
 		}
+
+		if (soloVelas.booleanValue()) {
+			MY_LOGGER.info("VELAS --> pathBruto|pathBrutoCsv =" + pathBruto + "|" + pathBrutoCsv);
+		}
+
 		return pathBrutoCsv;
 	}
 

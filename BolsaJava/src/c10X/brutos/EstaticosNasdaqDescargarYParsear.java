@@ -12,6 +12,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -124,12 +125,14 @@ public class EstaticosNasdaqDescargarYParsear implements Serializable {
 
 		String pathTickers;
 
-		if (entornoDeValidacion == 1)
+		if (entornoDeValidacion == 1) {
 			pathTickers = BrutosUtils.NASDAQ_TICKERS_CSV_INVERTIDOS;
-		else
+		} else {
 			pathTickers = BrutosUtils.NASDAQ_TICKERS_CSV;
+		}
 
 		MY_LOGGER.info("Cargando NASDAQ-TICKERS de: " + pathTickers);
+		List<String> empresasDescargables = new ArrayList<String>();
 		List<EstaticoNasdaqModelo> out = new ArrayList<EstaticoNasdaqModelo>();
 		try {
 			File file = new File(pathTickers);
@@ -161,8 +164,13 @@ public class EstaticosNasdaqDescargarYParsear implements Serializable {
 								+ tempArr[0]);
 					} else {
 
-						out.add(new EstaticoNasdaqModelo(tempArr[0], tempArr[1], tempArr[2], tempArr[3], tempArr[4],
-								tempArr[5], tempArr[6], tempArr[7]));
+						if (!empresasDescargables.contains(tempArr[0])) { // evitamos que haya empresas duplicadas
+
+							out.add(new EstaticoNasdaqModelo(tempArr[0], tempArr[1], tempArr[2], tempArr[3], tempArr[4],
+									tempArr[5], tempArr[6], tempArr[7]));
+							empresasDescargables.add(tempArr[0]);
+						}
+
 					}
 				}
 			}
@@ -176,6 +184,9 @@ public class EstaticosNasdaqDescargarYParsear implements Serializable {
 
 		MY_LOGGER.info("Empresas DESCONOCIDAS (sabemos que falta info en alguna de las fuentes de datos): "
 				+ BrutosUtils.DESCONOCIDOS_CSV + " --> Son " + desconocidos.size() + " empresas");
+
+		// Ordenar alfabeticamente
+		Collections.sort(out);
 
 		return out;
 	}
