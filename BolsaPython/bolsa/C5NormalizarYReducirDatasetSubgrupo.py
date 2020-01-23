@@ -340,7 +340,8 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, 
     # The "accuracy" scoring is proportional to the number of correct classifications
     rfecv_modelo = RFECV(estimator=svc_model, step=1, min_features_to_select=3, cv=StratifiedKFold(3), scoring='accuracy', verbose=0, n_jobs=8)
     print("rfecv_modelo -> fit ...")
-    rfecv_modelo.fit(featuresFicheroNorm, targetsFichero)
+    targetsLista = targetsFichero["TARGET"].tolist()
+    rfecv_modelo.fit(featuresFicheroNorm, targetsLista)
     print("rfecv_modelo -> dump ...")
     pickle.dump(rfecv_modelo, open(path_modelo_reductor_features, 'wb'))
 
