@@ -7,6 +7,9 @@ import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ *
+ */
 public class InvertirFilasDeFichero {
 
 	public static final String NASDAQ_TICKERS_CSV = "src/main/resources/nasdaq_tickers.csv";
@@ -14,10 +17,14 @@ public class InvertirFilasDeFichero {
 
 	public static void main(String[] args) throws IOException {
 		invertir(NASDAQ_TICKERS_CSV, SALIDA, Boolean.TRUE);
-
-		System.out.println("FIN");
 	}
 
+	/**
+	 * @param pathEntrada
+	 * @param pathSalida
+	 * @param hayCabecera
+	 * @throws IOException
+	 */
 	public static void invertir(final String pathEntrada, final String pathSalida, final Boolean hayCabecera)
 			throws IOException {
 		List<String> values = Files.readAllLines(Paths.get(pathEntrada));

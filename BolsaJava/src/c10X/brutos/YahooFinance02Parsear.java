@@ -35,6 +35,8 @@ import org.json.simple.parser.ParseException;
  */
 public class YahooFinance02Parsear implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+
 	static Logger MY_LOGGER = Logger.getLogger(YahooFinance02Parsear.class);
 	static DateFormat df = new SimpleDateFormat("yyyy|MM|dd|HH|mm");
 
@@ -122,7 +124,7 @@ public class YahooFinance02Parsear implements Serializable {
 			String modo) throws IOException {
 
 		String mercadoReferencia = BrutosUtils.MERCADO_NQ;
-		String valorReferencia = "AAPL";
+		String valorReferencia = BrutosUtils.NASDAQ_REFERENCIA;
 
 		String ficheroConVelasYTiempos = parsearDinamicosEmpresa01(mercadoReferencia, valorReferencia, directorioIn,
 				directorioOut, true, modo);

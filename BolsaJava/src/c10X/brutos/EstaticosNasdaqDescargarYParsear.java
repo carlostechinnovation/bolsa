@@ -12,7 +12,6 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -185,10 +184,37 @@ public class EstaticosNasdaqDescargarYParsear implements Serializable {
 		MY_LOGGER.info("Empresas DESCONOCIDAS (sabemos que falta info en alguna de las fuentes de datos): "
 				+ BrutosUtils.DESCONOCIDOS_CSV + " --> Son " + desconocidos.size() + " empresas");
 
-		// Ordenar alfabeticamente
-		Collections.sort(out);
+		// Colocar a la empresa de referencia la primera!!
+		return colocar(out);
+	}
 
-		return out;
+	/**
+	 * @param lista
+	 * @return
+	 */
+	public static List<EstaticoNasdaqModelo> colocar(List<EstaticoNasdaqModelo> lista) {
+
+		// Empresa de referencia
+		int indiceItemReferencia = -1;
+		for (EstaticoNasdaqModelo item : lista) {
+			if (item.getSymbol().equals(BrutosUtils.NASDAQ_REFERENCIA)) {
+				indiceItemReferencia = lista.indexOf(item);
+			}
+		}
+
+		List<EstaticoNasdaqModelo> listaOrdenada = new ArrayList<EstaticoNasdaqModelo>();
+
+		if (indiceItemReferencia > -1) {
+			EstaticoNasdaqModelo enmRef = lista.get(indiceItemReferencia);
+
+			listaOrdenada.add(enmRef);
+
+			lista.remove(indiceItemReferencia);
+		}
+
+		listaOrdenada.addAll(lista);
+		return listaOrdenada;
+
 	}
 
 	/**

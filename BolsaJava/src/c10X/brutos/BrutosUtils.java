@@ -21,6 +21,7 @@ public class BrutosUtils implements Serializable {
 	public static final String BRUTO_FINAL = "BR"; // Prefijo del fichero final
 
 	public static final String MERCADO_NQ = "NASDAQ";
+	public static final String NASDAQ_REFERENCIA = "AAPL";
 
 	public static final int ESPERA_ALEATORIA_MSEG_MIN = 200;
 	public static final int ESPERA_ALEATORIA_SEG_MAX = 2;
