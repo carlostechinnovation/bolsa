@@ -8,11 +8,11 @@ crearCarpetaSiNoExiste() {
 }
 
 ################################################################################################
-VELAS_RETROCESO="10" #INSTANTE ANALIZADO (T1). Su antiguedad debe ser mayor que X+M, para poder ver esas X+M velas del futuro
+VELAS_RETROCESO="20" #INSTANTE ANALIZADO (T1). Su antiguedad debe ser mayor que X+M, para poder ver esas X+M velas del futuro
 
 # PARAMETROS DE TARGET MEDIDOS EN VELAS
 S="15"  #Subida durante [t1,t2]
-X="6"  #Duracion en velas de [t1,t2]
+X="4"  #Duracion en velas de [t1,t2]
 R="10"  #Caida ligera máxima permitida durante [t2,t3], en TODAS esas velas.
 M="1"  #Duración en velas de [t2,t3]
 F="5"  #Caida ligera permitida durante [t2,t3], en la ÚLTIMA vela
@@ -109,10 +109,10 @@ do
 	fi
 done 9< <( find $DIR_FUT_SUBGRUPOS -type f -exec printf '%s\0' {} + )
 
-dir_val_futuro_1="/bolsa/validacion/E${NUM_EMPRESAS}_VR${VELAS_RETROCESO}_S${S}_X${X}_R${R}_M${M}_F${F}_B${B}_futuro1/"
-rm -Rf $dir_val_futuro_1
-mkdir -p $dir_val_futuro_1
-cp -R "/bolsa/futuro/" $dir_val_futuro_1
+#dir_val_futuro_1="/bolsa/validacion/E${NUM_EMPRESAS}_VR${VELAS_RETROCESO}_S${S}_X${X}_R${R}_M${M}_F${F}_B${B}_futuro1/"
+#rm -Rf $dir_val_futuro_1
+#mkdir -p $dir_val_futuro_1
+#cp -R "/bolsa/futuro/" $dir_val_futuro_1
 
 ################################################################################################
 
@@ -140,10 +140,10 @@ do
 	fi
 done 9< <( find $DIR_FUT_SUBGRUPOS -type f -exec printf '%s\0' {} + )
 
-dir_val_futuro_2="/bolsa/validacion/E${NUM_EMPRESAS}_VR${VELAS_RETROCESO}_S${S}_X${X}_R${R}_M${M}_F${F}_B${B}_futuro2/"
-rm -Rf $dir_val_futuro_2
-mkdir -p $dir_val_futuro_2
-cp -R "/bolsa/futuro/" $dir_val_futuro_2
+#dir_val_futuro_2="/bolsa/validacion/E${NUM_EMPRESAS}_VR${VELAS_RETROCESO}_S${S}_X${X}_R${R}_M${M}_F${F}_B${B}_futuro2/"
+#rm -Rf $dir_val_futuro_2
+#mkdir -p $dir_val_futuro_2
+#cp -R "/bolsa/futuro/" $dir_val_futuro_2
 
 ################################################################################################
 echo -e $( date '+%Y%m%d_%H%M%S' )" -------------------------------------------------" >> ${LOG_VALIDADOR}
@@ -162,13 +162,15 @@ java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%
 
 echo -e "Un sistema CLASIFICADOR BINOMIAL tonto acierta el 50% de las veces. El nuestro..." >> ${LOG_VALIDADOR}
 
-dir_val_logs="/bolsa/validacion/E${NUM_EMPRESAS}_VR${VELAS_RETROCESO}_S${S}_X${X}_R${R}_M${M}_F${F}_B${B}_umbral${UMBRAL_SUBIDA_POR_VELA}_log/"
-rm -Rf $dir_val_logs
-mkdir -p $dir_val_logs
-cp -R "/bolsa/logs/" $dir_val_logs
+#dir_val_logs="/bolsa/validacion/E${NUM_EMPRESAS}_VR${VELAS_RETROCESO}_S${S}_X${X}_R${R}_M${M}_F${F}_B${B}_umbral${UMBRAL_SUBIDA_POR_VELA}_log/"
+#rm -Rf $dir_val_logs
+#mkdir -p $dir_val_logs
+#cp -R "/bolsa/logs/" $dir_val_logs
 
 echo -e "******** FIN de validacion **************" >> ${LOG_VALIDADOR}
 
-
-
-
+LOG_ESCENARIO="/bolsa/escenario_E${NUM_EMPRESAS}_VR${VELAS_RETROCESO}_S${S}_X${X}_R${R}_M${M}_F${F}_B${B}.log"
+echo -e "PARAMETROS --> VELAS_RETROCESO|S|X|R|M|F|B|NUM_EMPRESAS|SUBIDA_MAXIMA_POR_VELA --> ${VELAS_RETROCESO}|${S}|${X}|${R}|${M}|${F}|${B}|${NUM_EMPRESAS}|${UMBRAL_SUBIDA_POR_VELA}" >${$LOG_ESCENARIO}
+echo -e "\nPARAMETROS -->  PASADO_t1 | FUTURO1_t1 | FUTURO2_t1--> ${PASADO_t1}|${FUTURO1_t1}|${FUTURO2_t1}" >>$LOG_ESCENARIO
+echo -e  "\n\n" >> $LOG_ESCENARIO
+grep 'COBERTURA' /bolsa/logs/validador.log >> $LOG_ESCENARIO
