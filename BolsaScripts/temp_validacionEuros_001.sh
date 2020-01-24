@@ -170,7 +170,7 @@ echo -e "Un sistema CLASIFICADOR BINOMIAL tonto acierta el 50% de las veces. El 
 echo -e "******** FIN de validacion **************" >> ${LOG_VALIDADOR}
 
 LOG_ESCENARIO="/bolsa/escenario_E${NUM_EMPRESAS}_VR${VELAS_RETROCESO}_S${S}_X${X}_R${R}_M${M}_F${F}_B${B}.log"
-echo -e "PARAMETROS --> VELAS_RETROCESO|S|X|R|M|F|B|NUM_EMPRESAS|SUBIDA_MAXIMA_POR_VELA --> ${VELAS_RETROCESO}|${S}|${X}|${R}|${M}|${F}|${B}|${NUM_EMPRESAS}|${UMBRAL_SUBIDA_POR_VELA}" >${$LOG_ESCENARIO}
+echo -e "PARAMETROS --> VELAS_RETROCESO|S|X|R|M|F|B|NUM_EMPRESAS|SUBIDA_MAXIMA_POR_VELA --> ${VELAS_RETROCESO}|${S}|${X}|${R}|${M}|${F}|${B}|${NUM_EMPRESAS}|${UMBRAL_SUBIDA_POR_VELA}" >${LOG_ESCENARIO}
 echo -e "\nPARAMETROS -->  PASADO_t1 | FUTURO1_t1 | FUTURO2_t1--> ${PASADO_t1}|${FUTURO1_t1}|${FUTURO2_t1}" >>$LOG_ESCENARIO
 echo -e  "\n\n" >> $LOG_ESCENARIO
 grep 'COBERTURA' /bolsa/logs/validador.log >> $LOG_ESCENARIO
