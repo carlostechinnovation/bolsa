@@ -527,7 +527,7 @@ public class ConstructorElaborados implements Serializable {
 				e.addValue(closeAntiguedadI);
 				MY_LOGGER.debug(closeAntiguedadI + ", ");
 			}
-			MY_LOGGER.info("ANÁLISIS VARIABILIDAD--> EMPRESA: " + empresa + " -> Antigüedad: " + antiguedad + " (Mes: "
+			MY_LOGGER.debug("ANÁLISIS VARIABILIDAD--> EMPRESA: " + empresa + " -> Antigüedad: " + antiguedad + " (Mes: "
 					+ datosAntiguedad.get("mes") + " Dia: " + datosAntiguedad.get("dia") + " Hora: "
 					+ datosAntiguedad.get("hora") + ". Variabilidad: " + e.getVariacionRelativaMaxima()
 					+ " y umbral máximo: " + umbralMaximo);

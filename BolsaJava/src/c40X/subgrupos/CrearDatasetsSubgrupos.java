@@ -211,7 +211,7 @@ public class CrearDatasetsSubgrupos implements Serializable {
 					pathEmpresasTipo1.add(ficheroGestionado.getAbsolutePath());
 
 			} else {
-				MY_LOGGER.warn(ficheroGestionado.getAbsolutePath() + " -> Market Cap: " + mcStr);
+				MY_LOGGER.debug(ficheroGestionado.getAbsolutePath() + " -> Market Cap: " + mcStr);
 			}
 
 			// ------ SUBGRUPOS según SECTOR ------------
