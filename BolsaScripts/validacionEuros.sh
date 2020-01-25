@@ -8,8 +8,6 @@ crearCarpetaSiNoExiste() {
 }
 
 ################################################################################################
-VELAS_RETROCESO="10" #INSTANTE ANALIZADO (T1). Su antiguedad debe ser mayor que X+M, para poder ver esas X+M velas del futuro
-
 # PARAMETROS DE TARGET MEDIDOS EN VELAS
 S="15"  #Subida durante [t1,t2]
 X="6"  #Duracion en velas de [t1,t2]
@@ -20,6 +18,8 @@ B="5"  #Caida ligera permitida durante [t1,t2], en todas esas velas
 NUM_EMPRESAS="400"  #Numero de empresas descargadas
 ACTIVAR_DESCARGAS="N" #Descargar datos nuevos (S) o usar datos locales (N)
 UMBRAL_SUBIDA_POR_VELA="3" #Recomendable: 3. Umbral de subida máxima relativa de una vela respecto de subida media de velas 1 a X. 
+
+VELAS_RETROCESO="$((${X}+${M}+2))" #INSTANTE ANALIZADO (T1). Su antiguedad debe ser mayor que X+M, para poder ver esas X+M velas del futuro
 
 #Instantes de las descargas
 PASADO_t1="0"
