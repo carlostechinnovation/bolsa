@@ -112,8 +112,9 @@ public class BrutosUtils implements Serializable {
 
 				// TODO Pendiente sacar la fecha de earnings prevista en el futuro. Será una
 				// fecha en [-6,+6] meses al día de hoy;so nos permite adivinar el año.
-				MY_LOGGER.info("FINVIZ-Fecha: " + out);
-				System.out.println("FINVIZ-Fecha: " + out);
+
+				// MY_LOGGER.info("FINVIZ-Fecha: " + out);
+				// System.out.println("FINVIZ-Fecha: " + out);
 			}
 		}
 
