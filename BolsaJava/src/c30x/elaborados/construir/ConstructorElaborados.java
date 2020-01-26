@@ -6,14 +6,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.math3.ml.clustering.CentroidCluster;
-import org.apache.commons.math3.ml.clustering.KMeansPlusPlusClusterer;
-import org.apache.commons.math3.ml.clustering.KMeansPlusPlusClusterer.EmptyClusterStrategy;
-import org.apache.commons.math3.ml.distance.EuclideanDistance;
-import org.apache.commons.math3.random.JDKRandomGenerator;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -22,8 +16,6 @@ import org.apache.log4j.helpers.NullEnumeration;
 
 import c20X.limpios.LimpiosUtils;
 import c30x.elaborados.construir.Estadisticas.FINAL_NOMBRES_PARAMETROS_ELABORADOS;
-import c40X.subgrupos.Empresa;
-import c40X.subgrupos.EmpresaWrapper;
 
 public class ConstructorElaborados implements Serializable {
 
@@ -235,7 +227,7 @@ public class ConstructorElaborados implements Serializable {
 
 						if (parametros == null) {
 
-							MY_LOGGER.error("Empresa=" + empresa + " No hay datos para la vela --> " + (i + antiguedad)
+							MY_LOGGER.debug("Empresa=" + empresa + " No hay datos para la vela --> " + (i + antiguedad)
 									+ " Posible causa: el mercado estaba abierto cuando hemos ejecutado la descarga de datos");
 
 						} else {

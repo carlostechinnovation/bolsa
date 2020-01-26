@@ -7,10 +7,14 @@ import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.log4j.Logger;
+
 /**
  *
  */
 public class BrutosUtils implements Serializable {
+
+	static Logger MY_LOGGER = Logger.getLogger(BrutosUtils.class);
 
 	public static final String DIR_BRUTOS = "/bolsa/pasado/brutos/";
 	public static final String DIR_BRUTOS_CSV = "/bolsa/pasado/brutos_csv/";
@@ -42,10 +46,11 @@ public class BrutosUtils implements Serializable {
 
 	/**
 	 * @param in
-	 * @param escala Numero en escala "uno" o en "millones"
+	 * @param escala  Numero en escala "uno" o en "millones"
+	 * @param esFecha
 	 * @return
 	 */
-	public static String tratamientoLigero(String in, String escala) {
+	public static String tratamientoLigero(String in, String escala, boolean esFecha) {
 
 		String out = NULO;
 
@@ -56,7 +61,7 @@ public class BrutosUtils implements Serializable {
 		if (in != null) {
 			out = in.trim();
 
-			if (!out.isEmpty() && !out.equals("-") && !out.equals("--") && !out.equals("N/A")) {
+			if (!out.isEmpty() && !out.equals("-") && !out.equals("--") && !out.equals("N/A") && !esFecha) {
 
 				// TIENE DATO. Entonces lo trato
 
@@ -93,6 +98,22 @@ public class BrutosUtils implements Serializable {
 
 				}
 
+			} else if (!out.isEmpty() && !out.equals("-") && esFecha) {
+
+				String[] fechaPartes = out.split(" ");
+
+				// BMO=(Before Market Open), AMC=(After Market Close)
+				boolean impactaEnDiaSiguiente = false;
+				if (out.contains("AMC")) {
+					impactaEnDiaSiguiente = true;
+				} else if (out.contains("BMO")) {
+					impactaEnDiaSiguiente = false;
+				}
+
+				// TODO Pendiente sacar la fecha de earnings prevista en el futuro. Será una
+				// fecha en [-6,+6] meses al día de hoy;so nos permite adivinar el año.
+				MY_LOGGER.info("FINVIZ-Fecha: " + out);
+				System.out.println("FINVIZ-Fecha: " + out);
 			}
 		}
 

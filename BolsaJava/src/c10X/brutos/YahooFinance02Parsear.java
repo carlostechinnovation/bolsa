@@ -332,18 +332,24 @@ public class YahooFinance02Parsear implements Serializable {
 							cad += "|" + df.format(new Date(msegDesde1970));
 							cad += "|" + BrutosUtils.tratamientoLigero(
 									listaVolumenes.get(i) == null ? BrutosUtils.NULO : listaVolumenes.get(i).toString(),
-									BrutosUtils.ESCALA_M);
+									BrutosUtils.ESCALA_M, false);
 							cad += "|"
-									+ BrutosUtils.tratamientoLigero(listaPreciosHigh.get(i) == null ? BrutosUtils.NULO
-											: listaPreciosHigh.get(i).toString(), BrutosUtils.ESCALA_UNO);
+									+ BrutosUtils.tratamientoLigero(
+											listaPreciosHigh.get(i) == null ? BrutosUtils.NULO
+													: listaPreciosHigh.get(i).toString(),
+											BrutosUtils.ESCALA_UNO, false);
 							cad += "|" + BrutosUtils.tratamientoLigero(listaPreciosLow.get(i) == null ? BrutosUtils.NULO
-									: listaPreciosLow.get(i).toString(), BrutosUtils.ESCALA_UNO);
+									: listaPreciosLow.get(i).toString(), BrutosUtils.ESCALA_UNO, false);
 							cad += "|"
-									+ BrutosUtils.tratamientoLigero(listaPreciosClose.get(i) == null ? BrutosUtils.NULO
-											: listaPreciosClose.get(i).toString(), BrutosUtils.ESCALA_UNO);
+									+ BrutosUtils.tratamientoLigero(
+											listaPreciosClose.get(i) == null ? BrutosUtils.NULO
+													: listaPreciosClose.get(i).toString(),
+											BrutosUtils.ESCALA_UNO, false);
 							cad += "|"
-									+ BrutosUtils.tratamientoLigero(listaPreciosOpen.get(i) == null ? BrutosUtils.NULO
-											: listaPreciosOpen.get(i).toString(), BrutosUtils.ESCALA_UNO);
+									+ BrutosUtils.tratamientoLigero(
+											listaPreciosOpen.get(i) == null ? BrutosUtils.NULO
+													: listaPreciosOpen.get(i).toString(),
+											BrutosUtils.ESCALA_UNO, false);
 
 						}
 

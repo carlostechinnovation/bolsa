@@ -56,6 +56,11 @@ public class CrearDatasetsSubgrupos implements Serializable {
 
 	private final static Float PER_umbral1 = 5.0F;
 	private final static Float PER_umbral2 = 25.0F;
+	private final static Float PER_umbral3 = 50.0F;
+
+	private final static Float DE_umbral1 = 1.0F;
+	private final static Float DE_umbral2 = 2.5F;
+	private final static Float DE_umbral3 = 5.0F;
 
 	private static HashMap<Integer, ArrayList<String>> empresasPorTipo;
 
@@ -127,7 +132,7 @@ public class CrearDatasetsSubgrupos implements Serializable {
 		// Tipo 4: MARKETCAP=SMALL
 		// Tipo 5: MARKETCAP=MICRO
 		// Tipo 6: MARKETCAP=NANO
-		ArrayList<String> pathEmpresasTipo0 = new ArrayList<String>();
+		// ArrayList<String> pathEmpresasTipo0 = new ArrayList<String>();
 		ArrayList<String> pathEmpresasTipo1 = new ArrayList<String>();
 		ArrayList<String> pathEmpresasTipo2 = new ArrayList<String>();
 		ArrayList<String> pathEmpresasTipo3 = new ArrayList<String>();
@@ -151,7 +156,15 @@ public class CrearDatasetsSubgrupos implements Serializable {
 		ArrayList<String> pathEmpresasTipo17 = new ArrayList<String>(); // PER bajo
 		ArrayList<String> pathEmpresasTipo18 = new ArrayList<String>(); // PER medio
 		ArrayList<String> pathEmpresasTipo19 = new ArrayList<String>(); // PER alto
-		ArrayList<String> pathEmpresasTipo20 = new ArrayList<String>(); // PER desconocido
+		ArrayList<String> pathEmpresasTipo20 = new ArrayList<String>(); // PER muy alto
+		ArrayList<String> pathEmpresasTipo21 = new ArrayList<String>(); // PER desconocido
+
+		// Tipos de empresa segun DEUDA/ACTIVOS
+		ArrayList<String> pathEmpresasTipo22 = new ArrayList<String>(); // bajo
+		ArrayList<String> pathEmpresasTipo23 = new ArrayList<String>(); // medio
+		ArrayList<String> pathEmpresasTipo24 = new ArrayList<String>(); // alto
+		ArrayList<String> pathEmpresasTipo25 = new ArrayList<String>(); // muy alto
+		ArrayList<String> pathEmpresasTipo26 = new ArrayList<String>(); // desconocido
 
 		// Para cada EMPRESA
 		while (iterator.hasNext()) {
@@ -194,7 +207,7 @@ public class CrearDatasetsSubgrupos implements Serializable {
 				Float marketCapValor = Float.valueOf(mcStr);
 
 				// default, incluye a todos. LO quitamos, porque es inutil
-				pathEmpresasTipo0.add(ficheroGestionado.getAbsolutePath());
+				// pathEmpresasTipo0.add(ficheroGestionado.getAbsolutePath());
 
 				// CLASIFICACIÓN DEL TIPO DE EMPRESA
 				if (marketCapValor < marketCap_nano_max)
@@ -254,23 +267,47 @@ public class CrearDatasetsSubgrupos implements Serializable {
 			if (perStr != null && !perStr.isEmpty() && !"-".equals(perStr)) {
 				Float per = Float.valueOf(perStr);
 
-				if (per < PER_umbral1) {
+				if (per > 0 && per < PER_umbral1) {
 					pathEmpresasTipo17.add(ficheroGestionado.getAbsolutePath());
 				} else if (per >= PER_umbral1 && per < PER_umbral2) {
 					pathEmpresasTipo18.add(ficheroGestionado.getAbsolutePath());
-				} else {
+				} else if (per >= PER_umbral2 && per < PER_umbral3) {
 					pathEmpresasTipo19.add(ficheroGestionado.getAbsolutePath());
+				} else {
+					pathEmpresasTipo20.add(ficheroGestionado.getAbsolutePath());
 				}
 
 			} else {
-				pathEmpresasTipo20.add(ficheroGestionado.getAbsolutePath());
+				pathEmpresasTipo21.add(ficheroGestionado.getAbsolutePath());
+			}
+
+			// ------ SUBGRUPOS según PER ------------
+			String debtEqStr = parametros.get("Debt/Eq");
+
+			if (debtEqStr != null && !debtEqStr.isEmpty() && !"-".equals(debtEqStr)) {
+				Float debtEq = Float.valueOf(debtEqStr);
+
+				if (debtEq > 0 && debtEq < DE_umbral1) {
+					pathEmpresasTipo22.add(ficheroGestionado.getAbsolutePath());
+				} else if (debtEq >= DE_umbral1 && debtEq < DE_umbral2) {
+					pathEmpresasTipo23.add(ficheroGestionado.getAbsolutePath());
+				} else if (debtEq >= DE_umbral2 && debtEq < DE_umbral3) {
+					pathEmpresasTipo24.add(ficheroGestionado.getAbsolutePath());
+				} else {
+					pathEmpresasTipo25.add(ficheroGestionado.getAbsolutePath());
+					// MY_LOGGER.warn("Empresa = " + empresa + " con Debt/Eq = " + debtEqStr);
+				}
+
+			} else {
+				pathEmpresasTipo26.add(ficheroGestionado.getAbsolutePath());
+				// MY_LOGGER.warn("Empresa = " + empresa + " con Debt/Eq = " + debtEqStr);
 			}
 
 		}
 
 		// Almacenamiento del tipo de empresa en la lista
 		empresasPorTipo = new HashMap<Integer, ArrayList<String>>();
-		empresasPorTipo.put(0, pathEmpresasTipo0);
+		// empresasPorTipo.put(0, pathEmpresasTipo0);
 		empresasPorTipo.put(1, pathEmpresasTipo1);
 		empresasPorTipo.put(2, pathEmpresasTipo2);
 		empresasPorTipo.put(3, pathEmpresasTipo3);
@@ -293,6 +330,13 @@ public class CrearDatasetsSubgrupos implements Serializable {
 		empresasPorTipo.put(18, pathEmpresasTipo18);
 		empresasPorTipo.put(19, pathEmpresasTipo19);
 		empresasPorTipo.put(20, pathEmpresasTipo20);
+		empresasPorTipo.put(21, pathEmpresasTipo21);
+
+		empresasPorTipo.put(22, pathEmpresasTipo22);
+		empresasPorTipo.put(23, pathEmpresasTipo23);
+		empresasPorTipo.put(24, pathEmpresasTipo24);
+		empresasPorTipo.put(25, pathEmpresasTipo25);
+		empresasPorTipo.put(26, pathEmpresasTipo26);
 
 		// Se crea un CSV para cada subgrupo
 		Set<Integer> tipos = empresasPorTipo.keySet();

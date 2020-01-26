@@ -264,17 +264,18 @@ public class EstaticosFinvizDescargarYParsear {
 
 		for (Element t : tablas) {
 
-			extraerInfoDeFila("P/E", t, mapaExtraidos, BrutosUtils.ESCALA_UNO);
-			extraerInfoDeFila("Insider Own", t, mapaExtraidos, BrutosUtils.ESCALA_UNO);
-			extraerInfoDeFila("Market Cap", t, mapaExtraidos, BrutosUtils.ESCALA_M);
-			extraerInfoDeFila("EPS next Y", t, mapaExtraidos, BrutosUtils.ESCALA_UNO);
-			extraerInfoDeFila("Inst Own", t, mapaExtraidos, BrutosUtils.ESCALA_UNO);
-			extraerInfoDeFila("Dividend %", t, mapaExtraidos, BrutosUtils.ESCALA_UNO);
-			extraerInfoDeFila("Quick Ratio", t, mapaExtraidos, BrutosUtils.ESCALA_UNO);
-			extraerInfoDeFila("Employees", t, mapaExtraidos, BrutosUtils.ESCALA_UNO);
-			extraerInfoDeFila("Current Ratio", t, mapaExtraidos, BrutosUtils.ESCALA_UNO);
-			extraerInfoDeFila("Debt/Eq", t, mapaExtraidos, BrutosUtils.ESCALA_UNO);
-			extraerInfoDeFila("LT Debt/Eq", t, mapaExtraidos, BrutosUtils.ESCALA_UNO);
+			extraerInfoDeFila("P/E", t, mapaExtraidos, BrutosUtils.ESCALA_UNO, false);
+			extraerInfoDeFila("Insider Own", t, mapaExtraidos, BrutosUtils.ESCALA_UNO, false);
+			extraerInfoDeFila("Market Cap", t, mapaExtraidos, BrutosUtils.ESCALA_M, false);
+			extraerInfoDeFila("EPS next Y", t, mapaExtraidos, BrutosUtils.ESCALA_UNO, false);
+			extraerInfoDeFila("Inst Own", t, mapaExtraidos, BrutosUtils.ESCALA_UNO, false);
+			extraerInfoDeFila("Dividend %", t, mapaExtraidos, BrutosUtils.ESCALA_UNO, false);
+			extraerInfoDeFila("Quick Ratio", t, mapaExtraidos, BrutosUtils.ESCALA_UNO, false);
+			extraerInfoDeFila("Employees", t, mapaExtraidos, BrutosUtils.ESCALA_UNO, false);
+			extraerInfoDeFila("Current Ratio", t, mapaExtraidos, BrutosUtils.ESCALA_UNO, false);
+			extraerInfoDeFila("Debt/Eq", t, mapaExtraidos, BrutosUtils.ESCALA_UNO, false);
+			extraerInfoDeFila("LT Debt/Eq", t, mapaExtraidos, BrutosUtils.ESCALA_UNO, false);
+			extraerInfoDeFila("Earnings", t, mapaExtraidos, BrutosUtils.ESCALA_UNO, true);
 
 		}
 
@@ -316,7 +317,7 @@ public class EstaticosFinvizDescargarYParsear {
 	 * @param mapaExtraidos
 	 */
 	private static void extraerInfoDeFila(String datoBuscado, Element t, Map<String, String> mapaExtraidos,
-			String escala) {
+			String escala, boolean esFecha) {
 
 		int i = 0;
 		if (t.toString().contains(">" + datoBuscado + "<")) {
@@ -326,7 +327,7 @@ public class EstaticosFinvizDescargarYParsear {
 				if (parejas.get(i).toString().contains(">" + datoBuscado + "<")) {
 
 					Element dato = parejas.get(i + 1).children().get(0);
-					String datoString = BrutosUtils.tratamientoLigero(dato.text(), escala);
+					String datoString = BrutosUtils.tratamientoLigero(dato.text(), escala, esFecha);
 
 					mapaExtraidos.put(datoBuscado, datoString);
 					break;

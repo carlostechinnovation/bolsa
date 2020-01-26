@@ -33,7 +33,17 @@ public class Pruebas {
 		Collections.reverse(lista);
 
 		// ----------------------------------------------------
+		String fechaEarningsStr = "Jan 28 AMC"; // BMO=(Before Market Open), AMC=(After Market Close)
+		String[] earningsFechaPartes = fechaEarningsStr.split(" ");
+		boolean earningsImpactaEnDiaSiguiente = false;
+		if (fechaEarningsStr.contains("AMC")) {
+			earningsImpactaEnDiaSiguiente = false;
 
+		} else if (fechaEarningsStr.contains("BMO")) {
+			earningsImpactaEnDiaSiguiente = false;
+		}
+
+		// ----------------------------------------------------
 	}
 
 }
