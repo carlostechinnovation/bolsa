@@ -45,8 +45,8 @@ crearCarpetaSiNoExisteYVaciarRecursivo() {
 ID_EJECUCION=$( date "+%Y%m%d%H%M%S" )
 echo -e "ID_EJECUCION = "${ID_EJECUCION}
 
-MIN_COBERTURA_CLUSTER=50  #Porcentaje de empresas con al menos una vela positiva
-MIN_EMPRESAS_POR_CLUSTER=10
+MIN_COBERTURA_CLUSTER=60  #Porcentaje de empresas con al menos una vela positiva
+MIN_EMPRESAS_POR_CLUSTER=20
 
 #################### DIRECTORIOS ###############################################################
 DIR_CODIGOS_CARLOS="/home/carloslinux/Desktop/GIT_BOLSA/" #NO TOCAR

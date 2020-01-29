@@ -2,7 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="22edbd2f-b3d9-42f0-a7dd-659033ab601a" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/c30x/elaborados/construir/ConstructorElaborados.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/c30x/elaborados/construir/ConstructorElaborados.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/c40X/subgrupos/CrearDatasetsSubgrupos.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/c40X/subgrupos/CrearDatasetsSubgrupos.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bolsa/C6CreadorModelosDeSubgrupo.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/C6CreadorModelosDeSubgrupo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BolsaScripts/master.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/master.sh" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../BolsaScripts/validacionEuros.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/validacionEuros.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
