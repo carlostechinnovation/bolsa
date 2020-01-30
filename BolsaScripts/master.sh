@@ -17,7 +17,7 @@ M="${9}" #default=7
 F="${10}" #default=5
 B="${11}" #default=5
 NUM_MAX_EMPRESAS_DESCARGADAS="${12}"  #default=100
-UMBRAL_SUBIDA_POR_VELA="${13}"  #default=0.5
+UMBRAL_SUBIDA_POR_VELA="${13}"  #default=3
 
 
 ################## FUNCIONES #############################################################
@@ -46,7 +46,7 @@ ID_EJECUCION=$( date "+%Y%m%d%H%M%S" )
 echo -e "ID_EJECUCION = "${ID_EJECUCION}
 
 MIN_COBERTURA_CLUSTER=60  #Porcentaje de empresas con al menos una vela positiva
-MIN_EMPRESAS_POR_CLUSTER=20
+MIN_EMPRESAS_POR_CLUSTER=10
 
 #################### DIRECTORIOS ###############################################################
 DIR_CODIGOS_CARLOS="/home/carloslinux/Desktop/GIT_BOLSA/" #NO TOCAR
