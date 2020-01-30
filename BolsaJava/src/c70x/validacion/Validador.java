@@ -304,8 +304,9 @@ public class Validador implements Serializable {
 			MY_LOGGER.info("COBERTURA - aciertosTargetUnoSubgrupo (PREDICHOS)=" + aciertosTargetUnoSubgrupo);
 			MY_LOGGER.info("COBERTURA - totalTargetUnoEnSubgrupo (REALES)=" + totalTargetUnoEnSubgrupo);
 			MY_LOGGER.info("COBERTURA - Porcentaje aciertos subgrupo " + predicho.getFileName() + ": "
-					+ (aciertosTargetUnoSubgrupo / totalTargetUnoEnSubgrupo) * 100 + "% de " + totalTargetUnoEnSubgrupo
-					+ " elementos PREDICHOS con TARGET=1");
+					+ aciertosTargetUnoSubgrupo + "/" + totalTargetUnoEnSubgrupo + " = "
+					+ (aciertosTargetUnoSubgrupo / totalTargetUnoEnSubgrupo) * 100
+					+ "% de elementos PREDICHOS con TARGET=1");
 
 			// RENTABILIDAD PRECIOS por SUBGRUPO
 			mediaRendimientoClose = performanceClose.getMean();

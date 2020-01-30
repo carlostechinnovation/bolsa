@@ -16,7 +16,7 @@ M="1"  #Duración en velas de [t2,t3]
 F="5"  #Caida ligera permitida durante [t2,t3], en la ÚLTIMA vela
 B="5"  #Caida ligera permitida durante [t1,t2], en todas esas velas
 NUM_EMPRESAS="1000"  #Numero de empresas descargadas
-ACTIVAR_DESCARGAS="N" #Descargar datos nuevos (S) o usar datos locales (N)
+ACTIVAR_DESCARGAS="S" #Descargar datos nuevos (S) o usar datos locales (N)
 UMBRAL_SUBIDA_POR_VELA="3" #Recomendable: 3. Umbral de subida máxima relativa de una vela respecto de subida media, en velas de 1 a X. 
 
 VELAS_RETROCESO="$((${X}+${M}+2))" #INSTANTE ANALIZADO (T1). Su antiguedad debe ser mayor que X+M, para poder ver esas X+M velas del futuro
@@ -169,6 +169,41 @@ cp -R "/bolsa/logs/" $dir_val_logs
 
 echo -e "******** FIN de validacion **************" >> ${LOG_VALIDADOR}
 
+
+################################################################################################
+# Prediccion del FUTURO para poner dinero. Esto va a crontab
+################################################################################################
+
+LOG_REAL="/bolsa/logs/predictor.log"
+rm -Rf /bolsa/futuro/ >>${LOG_REAL}
+crearCarpetaSiNoExiste "${DIR_FUT_SUBGRUPOS}"
+AHORA="0"
+NUM_EMPRESAS_REAL="1500"
+DIR_REAL="${DIR_BASE}real/"
+
+crearCarpetaSiNoExiste "${DIR_REAL}"
+
+echo -e $( date '+%Y%m%d_%H%M%S' )" Ejecución del futuro (para velas de antiguedad=${AHORA}) con empresas donde poner dinero REAL..." >>${LOG_REAL}
+${PATH_SCRIPTS}master.sh "futuro" "${AHORA}" "1" "S" "S" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" "${NUM_EMPRESAS_REAL}" "${UMBRAL_SUBIDA_POR_VELA}" 2>>${LOG_REAL} 1>>${LOG_REAL}
+
+echo -e "Velas con antiguedad=AHORA --> Guardamos la prediccion de todos los SUBGRUPOS en la carpeta de validacion, para analizarla luego..." >>${LOG_REAL}
+while IFS= read -r -d '' -u 9
+do
+	if [[ $REPLY == *"COMPLETO_PREDICCION"* ]]; then
+		echo "Copiando este fichero   $REPLY   ..." >>${LOG_REAL}
+		cp $REPLY $DIR_REAL
+	fi
+done 9< <( find $DIR_FUT_SUBGRUPOS -type f -exec printf '%s\0' {} + )
+
+
+echo -e "" > "${DIR_REAL}/caracteristicas.log"
+echo -e "Instante de ejecución: "$( date '+%Y%m%d_%H%M%S' )"\n\n" >>${LOG_VALIDADOR}
+echo -e "\n------------------------ COBERTURA --------------------------" >> "${DIR_REAL}/caracteristicas.log"
+cat "/bolsa/logs/validador.log" | grep 'COBERTURA' >> "${DIR_REAL}/caracteristicas.log"
+echo -e "\n------------------------ RENTABILIDAD --------------------------" >> "${DIR_REAL}/caracteristicas.log"
+cat "/bolsa/logs/validador.log" | grep 'RENTABILIDAD' >> "${DIR_REAL}/caracteristicas.log"
+echo -e "\n----------------------------------------------------------------------------" >> "${DIR_REAL}/caracteristicas.log"
+################################################################################################
 
 
 
