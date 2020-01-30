@@ -9,7 +9,7 @@ crearCarpetaSiNoExiste() {
 
 ################################################################################################
 # PARAMETROS DE TARGET MEDIDOS EN VELAS
-S="10"  #Subida durante [t1,t2]
+S="15"  #Subida durante [t1,t2]
 X="4"  #Duracion en velas de [t1,t2]
 R="10"  #Caida ligera máxima permitida durante [t2,t3], en TODAS esas velas.
 M="1"  #Duración en velas de [t2,t3]
