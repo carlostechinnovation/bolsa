@@ -7,6 +7,13 @@ crearCarpetaSiNoExiste() {
 	mkdir -p ${param1}
 }
 
+crearCarpetaSiNoExisteYVaciarRecursivo() {
+	param1=${1} 			#directorio
+	echo "Creando carpeta: $param1"
+	mkdir -p ${param1}
+	rm -Rf ${param1}*
+}
+
 ################################################################################################
 # PARAMETROS DE TARGET MEDIDOS EN VELAS
 S="15"  #Subida durante [t1,t2]
@@ -15,7 +22,7 @@ R="10"  #Caida ligera máxima permitida durante [t2,t3], en TODAS esas velas.
 M="1"  #Duración en velas de [t2,t3]
 F="5"  #Caida ligera permitida durante [t2,t3], en la ÚLTIMA vela
 B="5"  #Caida ligera permitida durante [t1,t2], en todas esas velas
-NUM_EMPRESAS="1000"  #Numero de empresas descargadas
+NUM_EMPRESAS="1500"  #Numero de empresas descargadas
 ACTIVAR_DESCARGAS="S" #Descargar datos nuevos (S) o usar datos locales (N)
 UMBRAL_SUBIDA_POR_VELA="3" #Recomendable: 3. Umbral de subida máxima relativa de una vela respecto de subida media, en velas de 1 a X. 
 
@@ -174,14 +181,19 @@ echo -e "******** FIN de validacion **************" >> ${LOG_VALIDADOR}
 # Prediccion del FUTURO para poner dinero. Esto va a crontab
 ################################################################################################
 
-LOG_REAL="/bolsa/logs/predictor.log"
+DIR_REAL="/home/carloslinux/Dropbox/BOLSA_PREDICTOR/"
+crearCarpetaSiNoExisteYVaciarRecursivo "${DIR_REAL}"
+
+LOG_REAL="${DIR_REAL}predictor.log"
+rm -Rf $LOG_REAL
+echo -e "" > $LOG_REAL
+
 rm -Rf /bolsa/futuro/ >>${LOG_REAL}
 crearCarpetaSiNoExiste "${DIR_FUT_SUBGRUPOS}"
 AHORA="0"
 NUM_EMPRESAS_REAL="1500"
-DIR_REAL="${DIR_BASE}real/"
+LOG_ENTREGABLE="${DIR_REAL}caracteristicas.log"
 
-crearCarpetaSiNoExiste "${DIR_REAL}"
 
 echo -e $( date '+%Y%m%d_%H%M%S' )" Ejecución del futuro (para velas de antiguedad=${AHORA}) con empresas donde poner dinero REAL..." >>${LOG_REAL}
 ${PATH_SCRIPTS}master.sh "futuro" "${AHORA}" "1" "S" "S" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" "${NUM_EMPRESAS_REAL}" "${UMBRAL_SUBIDA_POR_VELA}" 2>>${LOG_REAL} 1>>${LOG_REAL}
@@ -196,14 +208,17 @@ do
 done 9< <( find $DIR_FUT_SUBGRUPOS -type f -exec printf '%s\0' {} + )
 
 
-echo -e "" > "${DIR_REAL}/caracteristicas.log"
-echo -e "Instante de ejecución: "$( date '+%Y%m%d_%H%M%S' )"\n\n" >>${LOG_VALIDADOR}
-echo -e "\n------------------------ COBERTURA --------------------------" >> "${DIR_REAL}/caracteristicas.log"
-cat "/bolsa/logs/validador.log" | grep 'COBERTURA' >> "${DIR_REAL}/caracteristicas.log"
-echo -e "\n------------------------ RENTABILIDAD --------------------------" >> "${DIR_REAL}/caracteristicas.log"
-cat "/bolsa/logs/validador.log" | grep 'RENTABILIDAD' >> "${DIR_REAL}/caracteristicas.log"
-echo -e "\n----------------------------------------------------------------------------" >> "${DIR_REAL}/caracteristicas.log"
+echo -e "" > "${LOG_ENTREGABLE}"
+echo -e "Instante de ejecución: "$( date '+%Y%m%d_%H%M%S' )"\n\n" >> "${LOG_ENTREGABLE}"
+echo -e "\n------------------------ COBERTURA --------------------------" >> "${LOG_ENTREGABLE}"
+cat "/bolsa/logs/validador.log" | grep 'COBERTURA' >> "${LOG_ENTREGABLE}"
+echo -e "\n------------------------ RENTABILIDAD --------------------------" >> "${LOG_ENTREGABLE}"
+cat "/bolsa/logs/validador.log" | grep 'RENTABILIDAD' >> "${LOG_ENTREGABLE}"
+echo -e "\n----------------------------------------------------------------------------" >> "${LOG_ENTREGABLE}"
 ################################################################################################
+
+
+
 
 
 

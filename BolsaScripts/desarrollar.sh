@@ -13,5 +13,6 @@ ${DIR_PROGRAMAS}pycharm/bin/pycharm.sh &
 echo -e "Abriendo SmartGIT..." >> ${LOG_DESA}
 ${DIR_PROGRAMAS}smartgit/bin/smartgit.sh &
 
-
+echo -e "Abriendo DROPBOX..." >> ${LOG_DESA}
+${DIR_PROGRAMAS}dropbox/.dropbox-dist/dropboxd &
 
