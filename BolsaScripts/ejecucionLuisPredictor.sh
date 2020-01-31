@@ -11,15 +11,16 @@ crearCarpetaSiNoExiste() {
 # PARAMETROS DE TARGET MEDIDOS EN VELAS
 S="15"  #Subida durante [t1,t2]
 X="4"  #Duracion en velas de [t1,t2]
-R="5"  #Caida ligera máxima permitida durante [t2,t3], en TODAS esas velas.
+R="10"  #Caida ligera máxima permitida durante [t2,t3], en TODAS esas velas.
 M="1"  #Duración en velas de [t2,t3]
 F="5"  #Caida ligera permitida durante [t2,t3], en la ÚLTIMA vela
-B="10"  #Caida ligera permitida durante [t1,t2], en todas esas velas
+B="5"  #Caida ligera permitida durante [t1,t2], en todas esas velas
 NUM_EMPRESAS="50"  #Numero de empresas descargadas
-ACTIVAR_DESCARGAS="S" #Descargar datos nuevos (S) o usar datos locales (N)
+ACTIVAR_DESCARGAS="N" #Descargar datos nuevos (S) o usar datos locales (N)
 UMBRAL_SUBIDA_POR_VELA="3" #Recomendable: 3. Umbral de subida máxima relativa de una vela respecto de subida media, en velas de 1 a X. 
 
-VELAS_RETROCESO=0
+VELAS_RETROCESO="$((${X}+${M}+2))" #INSTANTE ANALIZADO (T1). Su antiguedad debe ser mayor que X+M, para poder ver esas X+M velas del futuro
+
 
 #Instantes de las descargas
 PASADO_t1="0"
@@ -63,21 +64,22 @@ rm -f "${LOG_VALIDADOR}"
 
 ################################################################################################
 
-#En esta ejecucion, nos situamos unas velas atras y PREDECIMOS el futuro. Guardaremos esa predicción y la comparamos con lo que ha pasado hoy (dato REAL)
+# PREDICCION REAL
+VELAS_RETROCESO=0
 
 rm -Rf /bolsa/futuro/ >>${LOG_VALIDADOR}
 crearCarpetaSiNoExiste "${DIR_FUT_SUBGRUPOS}"
 
 if [ "${ACTIVAR_DESCARGAS}" = "N" ];  then
-	echo -e "FUTURO1 - Usamos datos LOCALES (sin Internet) de la ruta /bolsa/datos_validacion/" >>${LOG_VALIDADOR}
+	echo -e "FUTURO2 - Usamos datos LOCALES (sin Internet) de la ruta /bolsa/datos_validacion/" >>${LOG_VALIDADOR}
 	crearCarpetaSiNoExiste "/bolsa/futuro/brutos_csv/"
-	cp -a "/bolsa/validacion_datos/futuro1_brutos_csv/." "/bolsa/futuro/brutos_csv/" >>${LOG_VALIDADOR}
+	cp -a "/bolsa/validacion_datos/futuro2_brutos_csv/." "/bolsa/futuro/brutos_csv/" >>${LOG_VALIDADOR}
 fi;
 
-echo -e $( date '+%Y%m%d_%H%M%S' )" Ejecución del futuro (para velas de antiguedad=${FUTURO1_t1}) con OTRAS empresas (lista REVERTIDA)..." >>${LOG_VALIDADOR}
-${PATH_SCRIPTS}master.sh "futuro" "0" "1" "${ACTIVAR_DESCARGAS}" "S" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" "${NUM_EMPRESAS}" "${UMBRAL_SUBIDA_POR_VELA}" 2>>${LOG_VALIDADOR} 1>>${LOG_VALIDADOR}
+echo -e $( date '+%Y%m%d_%H%M%S' )" Ejecución del futuro (para velas de antiguedad=${FUTURO2_t1}) con OTRAS empresas (lista REVERTIDA)..." >>${LOG_VALIDADOR}
+${PATH_SCRIPTS}master.sh "futuro" "${FUTURO2_t1}" "1" "${ACTIVAR_DESCARGAS}" "S" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" "${NUM_EMPRESAS}" "${UMBRAL_SUBIDA_POR_VELA}" 2>>${LOG_VALIDADOR} 1>>${LOG_VALIDADOR}
 
-echo -e "Atrás $VELAS_RETROCESO velas --> Guardamos la prediccion de todos los SUBGRUPOS en la carpeta de validacion, para analizarla luego..." >>${LOG_VALIDADOR}
+echo -e "Velas con antiguedad=FUTURO2_t1 --> Guardamos la prediccion de todos los SUBGRUPOS en la carpeta de validacion, para analizarla luego..." >>${LOG_VALIDADOR}
 while IFS= read -r -d '' -u 9
 do
 	if [[ $REPLY == *"COMPLETO_PREDICCION"* ]]; then
@@ -86,12 +88,10 @@ do
 	fi
 done 9< <( find $DIR_FUT_SUBGRUPOS -type f -exec printf '%s\0' {} + )
 
-dir_val_futuro_1="/bolsa/validacion/E${NUM_EMPRESAS}_VR0_S${S}_X${X}_R${R}_M${M}_F${F}_B${B}_futuro1/"
-rm -Rf $dir_val_futuro_1
-mkdir -p $dir_val_futuro_1
-cp -R "/bolsa/futuro/" $dir_val_futuro_1
-
-echo -e "******** FIN  **************" >> ${LOG_VALIDADOR}
+dir_val_futuro_2="/bolsa/validacion/E${NUM_EMPRESAS}_VR${VELAS_RETROCESO}_S${S}_X${X}_R${R}_M${M}_F${F}_B${B}_futuro2/"
+rm -Rf $dir_val_futuro_2
+mkdir -p $dir_val_futuro_2
+cp -R "/bolsa/futuro/" $dir_val_futuro_2
 
 
 
