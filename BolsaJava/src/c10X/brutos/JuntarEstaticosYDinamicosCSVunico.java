@@ -125,7 +125,7 @@ public class JuntarEstaticosYDinamicosCSVunico {
 		String actual;
 		boolean primeraLinea = true;
 
-		String estaticosCabecera = "industria|Insider Own|Quick Ratio|Current Ratio|P/E|Dividend %|Employees|geo|Debt/Eq|LT Debt/Eq|EPS next Y|sector|Inst Own|Market Cap";
+		String estaticosCabecera = "industria|Insider Own|Quick Ratio|Current Ratio|P/E|Dividend %|Employees|geo|Debt/Eq|LT Debt/Eq|EPS next Y|Earnings|sector|Inst Own|Market Cap";
 		String estaticosDatos = "";
 
 		while ((actual = br.readLine()) != null) {
@@ -133,20 +133,21 @@ public class JuntarEstaticosYDinamicosCSVunico {
 
 				String[] partes = actual.split("\\|");
 				// Descartamos: partes[0]=mercado y partes[1]=empresa
-				estaticosDatos += partes[2];
+				estaticosDatos += partes[2]; // industria
 				estaticosDatos += "|" + partes[3];
 				estaticosDatos += "|" + partes[4];
 				estaticosDatos += "|" + partes[5];
 				estaticosDatos += "|" + partes[6];
-				estaticosDatos += "|" + partes[7];
+				estaticosDatos += "|" + partes[7];// Dividend %
 				estaticosDatos += "|" + partes[8];
-				estaticosDatos += "|" + partes[9];
+				estaticosDatos += "|" + partes[9];// geo
 				estaticosDatos += "|" + partes[10];
 				estaticosDatos += "|" + partes[11];
 				estaticosDatos += "|" + partes[12];
-				estaticosDatos += "|" + partes[13];
-				estaticosDatos += "|" + partes[14];
+				estaticosDatos += "|" + partes[13];// presentacion resultados (Earnings date)
+				estaticosDatos += "|" + partes[14];// sector
 				estaticosDatos += "|" + partes[15];
+				estaticosDatos += "|" + partes[16];
 			}
 			primeraLinea = false;
 		}
