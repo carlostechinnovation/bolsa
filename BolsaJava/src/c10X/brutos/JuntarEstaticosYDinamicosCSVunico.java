@@ -10,7 +10,9 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
@@ -85,6 +87,8 @@ public class JuntarEstaticosYDinamicosCSVunico {
 
 	/**
 	 * @param dirBrutoCsv
+	 * @param desplazamientoAntiguedad
+	 * @param entornoDeValidacion
 	 * @throws IOException
 	 */
 	public static void nucleo(String dirBrutoCsv, Integer desplazamientoAntiguedad, final Integer entornoDeValidacion)
@@ -219,8 +223,8 @@ public class JuntarEstaticosYDinamicosCSVunico {
 		// -------- HACEMOS REVERSE DE LOS DATOS, poniendo primero los datos más
 		// recientes (optimiza los pasos siguientes en rendimiento, pero no afecta a los
 		// modelos porque son casos independientes) ----
-		Collections.sort(dinamicosDatos); // orden alfabetico directo
-		Collections.reverse(dinamicosDatos); // ordenar inverso
+
+		dinamicosDatos = ordenarAscendentePorAntiguedad(dinamicosDatos, 1);
 
 		// ------- ESCRITURA a fichero
 		FileOutputStream fos = new FileOutputStream(fjuntos, false);
@@ -233,6 +237,33 @@ public class JuntarEstaticosYDinamicosCSVunico {
 			bw.newLine();
 		}
 		bw.close();
+
+	}
+
+	/**
+	 * @param dinamicosDatos
+	 * @return El primer elemento será el de menor antiguedad.
+	 */
+	public static List<String> ordenarAscendentePorAntiguedad(List<String> dinamicosDatos, int indiceAntiguedad) {
+
+		Map<Integer, String> mapa = new HashMap<Integer, String>();
+		for (String item : dinamicosDatos) {
+			String[] partes = item.split("\\|");
+			Integer clave = Integer.valueOf(partes[indiceAntiguedad]);
+			mapa.put(clave, item);
+		}
+
+		// Claves ordenadas del mapa
+		List<Integer> clavesOrdenadas = new ArrayList(mapa.keySet());
+		Collections.sort(clavesOrdenadas); // orden directo de menor a mayor
+
+		List<String> out = new ArrayList<String>();
+
+		for (Integer clave : clavesOrdenadas) {
+			out.add(mapa.get(clave));
+		}
+
+		return out;
 
 	}
 
