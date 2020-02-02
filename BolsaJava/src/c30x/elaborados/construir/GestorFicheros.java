@@ -87,9 +87,10 @@ public class GestorFicheros {
 		ordenNombresParametrosLeidos.put(21, "Debt/Eq");
 		ordenNombresParametrosLeidos.put(22, "LT Debt/Eq");
 		ordenNombresParametrosLeidos.put(23, "EPS next Y");
-		ordenNombresParametrosLeidos.put(24, "sector");
-		ordenNombresParametrosLeidos.put(25, "Inst Own");
-		ordenNombresParametrosLeidos.put(26, "Market Cap");
+		ordenNombresParametrosLeidos.put(24, "Earnings");
+		ordenNombresParametrosLeidos.put(25, "sector");
+		ordenNombresParametrosLeidos.put(26, "Inst Own");
+		ordenNombresParametrosLeidos.put(27, "Market Cap");
 	}
 
 	/**
