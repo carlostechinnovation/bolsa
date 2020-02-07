@@ -242,7 +242,7 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
             ganador_recall_o_ROC = recall_o_ROC
             ganador_nombreModelo = nombreModelo
             ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
-
+        #
         #
         # nombreModelo = "logreg_grid"
         # pathModelo = dir_subgrupo + nombreModelo + ".modelo"
@@ -257,19 +257,19 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         #     ganador_nombreModelo = nombreModelo
         #     ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
 
-        nombreModelo = "rf_grid"
-        pathModelo = dir_subgrupo + nombreModelo + ".modelo"
-        modelo_base = CalibratedClassifierCV(base_estimator=RandomForestClassifier())
-        hiperparametros = {'base_estimator__max_depth': [25, 35, 45, 55, 65, 75, 85, 100]}
-        modelos_grid = GridSearchCV(modelo_base, hiperparametros, scoring='recall', n_jobs=-1, refit=True, return_train_score=False)
-        modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelos_grid, pathModelo, ds_train_f,
-                                                                  ds_train_t, True, modoDebug)
-        recall_o_ROC = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, modoDebug)
-        print(type(recall_o_ROC))
-        if recall_o_ROC > ganador_recall_o_ROC:
-            ganador_recall_o_ROC = recall_o_ROC
-            ganador_nombreModelo = nombreModelo
-            ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
+        # nombreModelo = "rf_grid"
+        # pathModelo = dir_subgrupo + nombreModelo + ".modelo"
+        # modelo_base = CalibratedClassifierCV(base_estimator=RandomForestClassifier())
+        # hiperparametros = {'base_estimator__max_depth': [25, 35, 45, 55, 65, 75, 85, 100]}
+        # modelos_grid = GridSearchCV(modelo_base, hiperparametros, scoring='recall', n_jobs=-1, refit=True, return_train_score=False)
+        # modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelos_grid, pathModelo, ds_train_f,
+        #                                                           ds_train_t, True, modoDebug)
+        # recall_o_ROC = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, modoDebug)
+        # print(type(recall_o_ROC))
+        # if recall_o_ROC > ganador_recall_o_ROC:
+        #     ganador_recall_o_ROC = recall_o_ROC
+        #     ganador_nombreModelo = nombreModelo
+        #     ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
 
 
         print("********* GANADOR de subgrupo *************")

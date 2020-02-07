@@ -11,12 +11,12 @@ crearCarpetaSiNoExiste() {
 # PARAMETROS DE TARGET MEDIDOS EN VELAS
 S="15"  #Subida durante [t1,t2]
 X="4"  #Duracion en velas de [t1,t2]
-R="10"  #Caida ligera máxima permitida durante [t2,t3], en TODAS esas velas.
+R="5"  #Caida ligera máxima permitida durante [t2,t3], en TODAS esas velas.
 M="1"  #Duración en velas de [t2,t3]
 F="5"  #Caida ligera permitida durante [t2,t3], en la ÚLTIMA vela
-B="5"  #Caida ligera permitida durante [t1,t2], en todas esas velas
+B="10"  #Caida ligera permitida durante [t1,t2], en todas esas velas
 NUM_EMPRESAS="50"  #Numero de empresas descargadas
-ACTIVAR_DESCARGAS="N" #Descargar datos nuevos (S) o usar datos locales (N)
+ACTIVAR_DESCARGAS="-" #Descargar datos nuevos (S) o usar datos locales (N)
 UMBRAL_SUBIDA_POR_VELA="3" #Recomendable: 3. Umbral de subida máxima relativa de una vela respecto de subida media, en velas de 1 a X. 
 
 VELAS_RETROCESO="$((${X}+${M}+2))" #INSTANTE ANALIZADO (T1). Su antiguedad debe ser mayor que X+M, para poder ver esas X+M velas del futuro
@@ -64,35 +64,38 @@ rm -f "${LOG_VALIDADOR}"
 
 ################################################################################################
 
-# PREDICCION REAL
-VELAS_RETROCESO=0
+################################################################################################
+# Prediccion del FUTURO para poner dinero. Esto va a crontab
+################################################################################################
 
-rm -Rf /bolsa/futuro/ >>${LOG_VALIDADOR}
+LOG_REAL="/bolsa/logs/predictor.log"
+rm -Rf /bolsa/futuro/ >>${LOG_REAL}
 crearCarpetaSiNoExiste "${DIR_FUT_SUBGRUPOS}"
+AHORA="0"
+NUM_EMPRESAS_REAL="50"
+DIR_REAL="${DIR_BASE}real/"
 
-if [ "${ACTIVAR_DESCARGAS}" = "N" ];  then
-	echo -e "FUTURO2 - Usamos datos LOCALES (sin Internet) de la ruta /bolsa/datos_validacion/" >>${LOG_VALIDADOR}
-	crearCarpetaSiNoExiste "/bolsa/futuro/brutos_csv/"
-	cp -a "/bolsa/validacion_datos/futuro2_brutos_csv/." "/bolsa/futuro/brutos_csv/" >>${LOG_VALIDADOR}
-fi;
+crearCarpetaSiNoExiste "${DIR_REAL}"
 
-echo -e $( date '+%Y%m%d_%H%M%S' )" Ejecución del futuro (para velas de antiguedad=${FUTURO2_t1}) con OTRAS empresas (lista REVERTIDA)..." >>${LOG_VALIDADOR}
-${PATH_SCRIPTS}master.sh "futuro" "${FUTURO2_t1}" "1" "${ACTIVAR_DESCARGAS}" "S" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" "${NUM_EMPRESAS}" "${UMBRAL_SUBIDA_POR_VELA}" 2>>${LOG_VALIDADOR} 1>>${LOG_VALIDADOR}
+echo -e $( date '+%Y%m%d_%H%M%S' )" Ejecución del futuro (para velas de antiguedad=${AHORA}) con empresas donde poner dinero REAL..." >>${LOG_REAL}
+${PATH_SCRIPTS}master.sh "futuro" "${AHORA}" "1" "S" "S" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" "${NUM_EMPRESAS_REAL}" "${UMBRAL_SUBIDA_POR_VELA}" 2>>${LOG_REAL} 1>>${LOG_REAL}
 
-echo -e "Velas con antiguedad=FUTURO2_t1 --> Guardamos la prediccion de todos los SUBGRUPOS en la carpeta de validacion, para analizarla luego..." >>${LOG_VALIDADOR}
+echo -e "Velas con antiguedad=AHORA --> Guardamos la prediccion de todos los SUBGRUPOS en la carpeta de validacion, para analizarla luego..." >>${LOG_REAL}
 while IFS= read -r -d '' -u 9
 do
 	if [[ $REPLY == *"COMPLETO_PREDICCION"* ]]; then
-		echo "Copiando este fichero   $REPLY   ..." >>${LOG_VALIDADOR}
-		cp $REPLY $DIR_VALIDACION
+		echo "Copiando este fichero   $REPLY   ..." >>${LOG_REAL}
+		cp $REPLY $DIR_REAL
 	fi
 done 9< <( find $DIR_FUT_SUBGRUPOS -type f -exec printf '%s\0' {} + )
 
-dir_val_futuro_2="/bolsa/validacion/E${NUM_EMPRESAS}_VR${VELAS_RETROCESO}_S${S}_X${X}_R${R}_M${M}_F${F}_B${B}_futuro2/"
-rm -Rf $dir_val_futuro_2
-mkdir -p $dir_val_futuro_2
-cp -R "/bolsa/futuro/" $dir_val_futuro_2
 
-
-
+echo -e "" > "${DIR_REAL}/caracteristicas.log"
+echo -e "Instante de ejecución: "$( date '+%Y%m%d_%H%M%S' )"\n\n" >>${LOG_VALIDADOR}
+echo -e "\n------------------------ COBERTURA --------------------------" >> "${DIR_REAL}/caracteristicas.log"
+cat "/bolsa/logs/validador.log" | grep 'COBERTURA' >> "${DIR_REAL}/caracteristicas.log"
+echo -e "\n------------------------ RENTABILIDAD --------------------------" >> "${DIR_REAL}/caracteristicas.log"
+cat "/bolsa/logs/validador.log" | grep 'RENTABILIDAD' >> "${DIR_REAL}/caracteristicas.log"
+echo -e "\n----------------------------------------------------------------------------" >> "${DIR_REAL}/caracteristicas.log"
+################################################################################################
 

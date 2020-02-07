@@ -6,7 +6,7 @@ public class ElaboradosUtils {
 
 	// Parametros del TARGET: ver definición dentro de ConstructorElaborados
 	public static final Integer S = 15;
-	public static final Integer X = 8;
+	public static final Integer X = 4;
 	public static final Integer R = 10;
 	public static final Integer M = 1;
 	public static final Integer F = 5;
