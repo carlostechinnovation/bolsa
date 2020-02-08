@@ -281,7 +281,7 @@ public class CrearDatasetsSubgrupos implements Serializable {
 				pathEmpresasTipo21.add(ficheroGestionado.getAbsolutePath());
 			}
 
-			// ------ SUBGRUPOS según PER ------------
+			// ------ SUBGRUPOS según Debt/Eq ------------
 			String debtEqStr = parametros.get("Debt/Eq");
 
 			if (debtEqStr != null && !debtEqStr.isEmpty() && !"-".equals(debtEqStr)) {
@@ -433,7 +433,8 @@ public class CrearDatasetsSubgrupos implements Serializable {
 
 					ficheroOut = dirSubgrupoOut + "COMPLETO.csv";
 					ficheroListadoOut = dirSubgrupoOut + "EMPRESAS.txt";
-					MY_LOGGER.info("Fichero a escribir: " + ficheroOut);
+					MY_LOGGER.info("CSV de subgrupo: " + ficheroOut);
+					MY_LOGGER.info("Lista de empresas de subgrupo: " + ficheroListadoOut);
 					csvWriter = new FileWriter(ficheroOut);
 					writerListadoEmpresas = new FileWriter(ficheroListadoOut);
 

@@ -22,8 +22,6 @@ R="10"  #Caida ligera máxima permitida durante [t2,t3], en TODAS esas velas.
 M="1"  #Duración en velas de [t2,t3]
 F="5"  #Caida ligera permitida durante [t2,t3], en la ÚLTIMA vela
 B="5"  #Caida ligera permitida durante [t1,t2], en todas esas velas
-NUM_EMPRESAS="200"  #Numero de empresas descargadas
-ACTIVAR_DESCARGAS="N" #Descargar datos nuevos (S) o usar datos locales (N)
 UMBRAL_SUBIDA_POR_VELA="3" #Recomendable: 3. Umbral de subida máxima relativa de una vela respecto de subida media, en velas de 1 a X. 
 
 

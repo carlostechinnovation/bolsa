@@ -45,6 +45,7 @@ pathCsvReducidoIndices = dir_subgrupo + "REDUCIDO.csv_indices"
 pathCsvPredichos = dir_subgrupo + "TARGETS_PREDICHOS.csv"
 pathCsvPredichosIndices = dir_subgrupo + "TARGETS_PREDICHOS.csv_indices"
 pathCsvFinalFuturo = dir_subgrupo + desplazamientoAntiguedad + "_" + id_subgrupo + "_COMPLETO_PREDICCION.csv"
+pathCsvFinalFuturoSoloPrediccion = dir_subgrupo + desplazamientoAntiguedad + "_" + id_subgrupo + "_SOLO_PREDICCION.csv"
 dir_subgrupo_img = dir_subgrupo + "img/"
 
 print("dir_subgrupo: %s" % dir_subgrupo)
@@ -52,6 +53,8 @@ print("modoTiempo: %s" % modoTiempo)
 print("desplazamientoAntiguedad: %s" % desplazamientoAntiguedad)
 print("pathCsvReducido: %s" % pathCsvReducido)
 print("dir_subgrupo_img = %s" % dir_subgrupo_img)
+print("pathCsvFinalFuturo = %s" % pathCsvFinalFuturo)
+print("pathCsvFinalFuturoSoloPrediccion = %s" % pathCsvFinalFuturoSoloPrediccion)
 
 
 ################# FUNCIONES ########################################
@@ -299,13 +302,14 @@ elif (modoTiempo == "futuro" and pathCsvReducido.endswith('.csv') and os.path.is
     print("inputFeatures_sinnulos (filas algun nulo borradas):" + str(inputFeatures_sinnulos.shape[0]) + " x " + str(inputFeatures_sinnulos.shape[1]))
 
     dir_modelo_predictor_ganador = dir_subgrupo.replace("futuro", "pasado")
+    print("dir_modelo_predictor_ganador (carpeta del pasado con el modelo ganador, SI EXISTE): " + dir_modelo_predictor_ganador)
+    path_modelo_predictor_ganador = ""
     for file in os.listdir(dir_modelo_predictor_ganador):
         if file.endswith("ganador"):
             path_modelo_predictor_ganador = os.path.join(dir_modelo_predictor_ganador, file)
 
-    print("Cargar modelo PREDICTOR ganador (de la carpeta del pasado, SI EXISTE): " + path_modelo_predictor_ganador)
     if os.path.isfile(path_modelo_predictor_ganador):
-
+        print("Cargar modelo PREDICTOR ganador (de la carpeta del pasado, SI EXISTE): " + path_modelo_predictor_ganador)
         modelo_predictor_ganador = pickle.load(open(path_modelo_predictor_ganador, 'rb'))
 
         print("Predecir:")
@@ -353,9 +357,13 @@ elif (modoTiempo == "futuro" and pathCsvReducido.endswith('.csv') and os.path.is
         df_juntos_2['TARGET_PREDICHO'] = (df_juntos_2['TARGET_PREDICHO'] * 1).astype(
             'Int64')  # Convertir de boolean a int64, manteniendo los nulos
 
-        print("Guardando: " + pathCsvFinalFuturo)
+        print("Guardando CSV final: " + pathCsvFinalFuturo)
         df_juntos_2.to_csv(pathCsvFinalFuturo, index=False, sep='|')
-                
+
+        print("Guardando CSV final (solo prediccion): " + pathCsvFinalFuturoSoloPrediccion)
+        df_juntos_2_solo_predichos = df_juntos_2.copy()
+        df_juntos_2_solo_predichos.dropna(subset=['TARGET_PREDICHO'], inplace=True)
+        df_juntos_2_solo_predichos.to_csv(pathCsvFinalFuturoSoloPrediccion, index=False, sep='|')
 
     else:
         print("No existe el modelo predictor del pasado que necesitamos (" + path_modelo_predictor_ganador + "). Por tanto, no predecimos.")

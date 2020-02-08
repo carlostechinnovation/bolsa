@@ -149,7 +149,7 @@ public class EstaticosFinvizDescargarYParsear {
 			}
 		}
 
-		MY_LOGGER.debug("FIN");
+		MY_LOGGER.info("FIN");
 	}
 
 	/**
@@ -269,6 +269,7 @@ public class EstaticosFinvizDescargarYParsear {
 			extraerInfoDeFila("Market Cap", t, mapaExtraidos, BrutosUtils.ESCALA_M, false);
 			extraerInfoDeFila("EPS next Y", t, mapaExtraidos, BrutosUtils.ESCALA_UNO, false);
 			extraerInfoDeFila("Inst Own", t, mapaExtraidos, BrutosUtils.ESCALA_UNO, false);
+			// extraerInfoDeFila("P/FCF", t, mapaExtraidos, BrutosUtils.ESCALA_UNO, false);
 			extraerInfoDeFila("Dividend %", t, mapaExtraidos, BrutosUtils.ESCALA_UNO, false);
 			extraerInfoDeFila("Quick Ratio", t, mapaExtraidos, BrutosUtils.ESCALA_UNO, false);
 			extraerInfoDeFila("Employees", t, mapaExtraidos, BrutosUtils.ESCALA_UNO, false);
