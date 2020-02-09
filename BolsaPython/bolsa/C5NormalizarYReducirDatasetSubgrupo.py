@@ -172,9 +172,9 @@ def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmp
     num_filas_azar = 5 * (num_copias_anhadidas + 1) * ift_minoritaria.shape[0]
     print("num_filas_azar:" + str(num_filas_azar))
     ift_mayoritaria = pd.DataFrame(index=ift_minoritaria.index.copy(), columns=ift_minoritaria.columns)
-    ift_mayoritaria = entradaFeaturesYTarget4.loc[np.random.choice(entradaFeaturesYTarget4.index, num_filas_azar )]
+    ift_mayoritaria = entradaFeaturesYTarget4.loc[np.random.choice(entradaFeaturesYTarget4.index, num_filas_azar)]
     ift_mayoritaria = ift_mayoritaria[ift_mayoritaria.TARGET == False]
-    ift_mayoritaria = ift_mayoritaria.head(ift_minoritaria.shape[0])
+    # ift_mayoritaria = ift_mayoritaria.head(ift_minoritaria.shape[0])
 
     print("ift_mayoritaria (se han borrado filas, pero no muchas):" + str(ift_mayoritaria.shape[0]) + " x " + str(ift_mayoritaria.shape[1]))
     print("ift_minoritaria (con oversampling):" + str(ift_minoritaria.shape[0]) + " x " + str(ift_minoritaria.shape[1]))
@@ -380,8 +380,6 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, 
   print("Las columnas seleccionadas son:")
   print(columnasSeleccionadas)
   featuresFicheroNormElegidas = featuresFicheroNorm[columnasSeleccionadas]
-  print(featuresFicheroNormElegidas.head())
-  print("featuresFicheroNormElegidas: " + str(featuresFicheroNormElegidas.shape[0]) + " x " + str(featuresFicheroNormElegidas.shape[1]))
 
   ####################### NO LO USAMOS pero lo dejo aqui ########
   #if modoDebug and False:
@@ -395,12 +393,12 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, 
       #print("Las features están ya normalizadas y reducidas. DESCRIBIMOS lo que hemos hecho y GUARDAMOS el dataset.")
 
   ### Guardar a fichero
-  print("Escribiendo las features a CSV...")
-  print("Muestro las features + targets antes de juntarlas...")
-  print("FEATURES (sample):")
-  print(featuresFicheroNormElegidas.head())
-  print("TARGETS (sample):")
-  print(targetsFichero.head())
+  # print("Muestro las features + targets antes de juntarlas...")
+  # print("FEATURES (sample):")
+  # print(featuresFicheroNormElegidas.head())
+  # print("featuresFicheroNormElegidas: " + str(featuresFicheroNormElegidas.shape[0]) + " x " + str(featuresFicheroNormElegidas.shape[1]))
+  # print("TARGETS (sample):")
+  # print(targetsFichero.head())
 
   featuresytargets = pd.concat([featuresFicheroNormElegidas.reset_index(drop=True), targetsFichero.reset_index(drop=True)], axis=1)
   print("FEATURES+TARGETS juntas (sample):")

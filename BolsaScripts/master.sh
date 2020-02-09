@@ -2,6 +2,26 @@
 
 echo -e "MASTER - INICIO: "$( date "+%Y%m%d%H%M%S" )
 
+#################### DIRECTORIOS ###############################################################
+DIR_CODIGOS_CARLOS="/home/carloslinux/Desktop/GIT_BOLSA/"
+DIR_CODIGOS_LUIS="/home/t151521/bolsa/"
+PYTHON_MOTOR_CARLOS="/home/carloslinux/Desktop/PROGRAMAS/anaconda3/envs/BolsaPython/bin/python"
+PYTHON_MOTOR_LUIS="/home/t151521/anaconda3/envs/BolsaPython/bin/python"
+
+usuario=$(whoami)
+if [ $usuario == "carloslinux" ]
+then
+  DIR_CODIGOS="${DIR_CODIGOS_CARLOS}"
+  PYTHON_MOTOR="${PYTHON_MOTOR_CARLOS}"
+elif [ $usuario == "t151521" ]
+then
+  DIR_CODIGOS="${DIR_CODIGOS_LUIS}"
+  PYTHON_MOTOR="${PYTHON_MOTOR_LUIS}"
+else
+  echo "ERROR: USUARIO NO CONTROLADO"
+  s1 -e
+fi
+
 ################## PARAMETROS DE ENTRADA ############################################
 DIR_TIEMPO="${1}" #pasado o futuro
 DESPLAZAMIENTO_ANTIGUEDAD="${2}"  #0, 50 ....
@@ -48,40 +68,12 @@ echo -e "ID_EJECUCION = "${ID_EJECUCION}
 MIN_COBERTURA_CLUSTER=60  #Porcentaje de empresas con al menos una vela positiva
 MIN_EMPRESAS_POR_CLUSTER=10
 
-#################### DIRECTORIOS ###############################################################
-DIR_CODIGOS_CARLOS="/home/carloslinux/Desktop/GIT_BOLSA/" #NO TOCAR
-DIR_CODIGOS_LUIS="/home/t151521/bolsa/" #NO TOCAR
-usuario=$(whoami)
-if [ $usuario == "carloslinux" ]
-then
-  DIR_CODIGOS="${DIR_CODIGOS_CARLOS}"
-elif [ $usuario == "t151521" ]
-then
-  DIR_CODIGOS="${DIR_CODIGOS_LUIS}"
-else
-  echo "ERROR: USUARIO NO CONTROLADO"
-  s1 -e
-fi
-
-
 
 PATH_SCRIPTS="${DIR_CODIGOS}BolsaScripts/"
 PYTHON_SCRIPTS="${DIR_CODIGOS}BolsaPython/"
 DIR_JAVA="${DIR_CODIGOS}BolsaJava/"
 PATH_JAR="${DIR_JAVA}target/bolsajava-1.0-jar-with-dependencies.jar"
-PYTHON_MOTOR_CARLOS="/home/carloslinux/Desktop/PROGRAMAS/anaconda3/envs/BolsaPython/bin/python"
-PYTHON_MOTOR_LUIS="/home/t151521/anaconda3/envs/BolsaPython/bin/python"
-usuario=$(whoami)
-if [ $usuario == "carloslinux" ]
-then
-  PYTHON_MOTOR="${PYTHON_MOTOR_CARLOS}"
-elif [ $usuario == "t151521" ]
-then
-  PYTHON_MOTOR="${PYTHON_MOTOR_LUIS}"
-else
-  echo "ERROR: USUARIO NO CONTROLADO"
-  s1 -e
-fi
+
 
 DIR_BASE="/bolsa/"
 DIR_LOGS="${DIR_BASE}logs/"

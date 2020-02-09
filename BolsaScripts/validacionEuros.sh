@@ -1,5 +1,27 @@
 #!/bin/bash
 
+echo -e "VALIDACION - INICIO: "$( date "+%Y%m%d%H%M%S" )
+
+#################### DIRECTORIOS ###############################################################
+DIR_CODIGOS_CARLOS="/home/carloslinux/Desktop/GIT_BOLSA/"
+DIR_CODIGOS_LUIS="/home/t151521/bolsa/"
+PYTHON_MOTOR_CARLOS="/home/carloslinux/Desktop/PROGRAMAS/anaconda3/envs/BolsaPython/bin/python"
+PYTHON_MOTOR_LUIS="/home/t151521/anaconda3/envs/BolsaPython/bin/python"
+
+usuario=$(whoami)
+if [ $usuario == "carloslinux" ]
+then
+  DIR_CODIGOS="${DIR_CODIGOS_CARLOS}"
+  PYTHON_MOTOR="${PYTHON_MOTOR_CARLOS}"
+elif [ $usuario == "t151521" ]
+then
+  DIR_CODIGOS="${DIR_CODIGOS_LUIS}"
+  PYTHON_MOTOR="${PYTHON_MOTOR_LUIS}"
+else
+  echo "ERROR: USUARIO NO CONTROLADO"
+  s1 -e
+fi
+
 ################## FUNCIONES #############################################################
 crearCarpetaSiNoExiste() {
 	param1=${1} 			#directorio
@@ -15,16 +37,10 @@ crearCarpetaSiNoExisteYVaciarRecursivo() {
 }
 
 ################################################################################################
-# PARAMETROS DE TARGET MEDIDOS EN VELAS
-S="15"  #Subida durante [t1,t2]
-X="4"  #Duracion en velas de [t1,t2]
-R="10"  #Caida ligera máxima permitida durante [t2,t3], en TODAS esas velas.
-M="1"  #Duración en velas de [t2,t3]
-F="5"  #Caida ligera permitida durante [t2,t3], en la ÚLTIMA vela
-B="5"  #Caida ligera permitida durante [t1,t2], en todas esas velas
-NUM_EMPRESAS="1200"  #Numero de empresas descargadas
-ACTIVAR_DESCARGAS="N" #Descargar datos nuevos (S) o usar datos locales (N)
-UMBRAL_SUBIDA_POR_VELA="3" #Recomendable: 3. Umbral de subida máxima relativa de una vela respecto de subida media, en velas de 1 a X. 
+PATH_SCRIPTS="${DIR_CODIGOS}BolsaScripts/"
+PARAMS_CONFIG="${PATH_SCRIPTS}parametros.config"
+echo -e "Importando parametros generales..."
+source ${PARAMS_CONFIG}
 
 VELAS_RETROCESO="$((${X}+${M}+2))" #INSTANTE ANALIZADO (T1). Su antiguedad debe ser mayor que X+M, para poder ver esas X+M velas del futuro
 
@@ -34,23 +50,6 @@ FUTURO1_t1="${VELAS_RETROCESO}"
 FUTURO2_t1="$((${VELAS_RETROCESO}-${X}-${M}))"
 
 DIR_BASE="/bolsa/"
-
-DIR_CODIGOS_CARLOS="/home/carloslinux/Desktop/GIT_BOLSA/" #NO TOCAR
-DIR_CODIGOS_LUIS="/home/t151521/bolsa/" #NO TOCAR
-usuario=$(whoami)
-if [ $usuario == "carloslinux" ]
-then
-  DIR_CODIGOS="${DIR_CODIGOS_CARLOS}"
-elif [ $usuario == "t151521" ]
-then
-  DIR_CODIGOS="${DIR_CODIGOS_LUIS}"
-else
-  echo "ERROR: USUARIO NO CONTROLADO"
-  s1 -e
-fi
-
-
-PATH_SCRIPTS="${DIR_CODIGOS}BolsaScripts/"
 DIR_LOGS="${DIR_BASE}logs/"
 LOG_VALIDADOR="${DIR_LOGS}validador.log"
 DIR_VALIDACION="${DIR_BASE}validacion/"
@@ -187,6 +186,6 @@ echo -e "******** FIN de validacion **************" >> ${LOG_VALIDADOR}
 
 
 
-
+echo -e "VALIDACION - FIN: "$( date "+%Y%m%d%H%M%S" )
 
 

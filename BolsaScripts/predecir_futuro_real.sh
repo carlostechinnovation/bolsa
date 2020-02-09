@@ -1,5 +1,27 @@
 #!/bin/bash
 
+echo -e "PREDECIR FUTURO REAL - INICIO: "$( date "+%Y%m%d%H%M%S" )
+
+#################### DIRECTORIOS ###############################################################
+DIR_CODIGOS_CARLOS="/home/carloslinux/Desktop/GIT_BOLSA/"
+DIR_CODIGOS_LUIS="/home/t151521/bolsa/"
+PYTHON_MOTOR_CARLOS="/home/carloslinux/Desktop/PROGRAMAS/anaconda3/envs/BolsaPython/bin/python"
+PYTHON_MOTOR_LUIS="/home/t151521/anaconda3/envs/BolsaPython/bin/python"
+
+usuario=$(whoami)
+if [ $usuario == "carloslinux" ]
+then
+  DIR_CODIGOS="${DIR_CODIGOS_CARLOS}"
+  PYTHON_MOTOR="${PYTHON_MOTOR_CARLOS}"
+elif [ $usuario == "t151521" ]
+then
+  DIR_CODIGOS="${DIR_CODIGOS_LUIS}"
+  PYTHON_MOTOR="${PYTHON_MOTOR_LUIS}"
+else
+  echo "ERROR: USUARIO NO CONTROLADO"
+  s1 -e
+fi
+
 ################## FUNCIONES #############################################################
 crearCarpetaSiNoExiste() {
 	param1=${1} 			#directorio
@@ -15,34 +37,12 @@ crearCarpetaSiNoExisteYVaciarRecursivo() {
 }
 
 ################################################################################################
-# PARAMETROS DE TARGET MEDIDOS EN VELAS
-S="15"  #Subida durante [t1,t2]
-X="4"  #Duracion en velas de [t1,t2]
-R="10"  #Caida ligera máxima permitida durante [t2,t3], en TODAS esas velas.
-M="1"  #Duración en velas de [t2,t3]
-F="5"  #Caida ligera permitida durante [t2,t3], en la ÚLTIMA vela
-B="5"  #Caida ligera permitida durante [t1,t2], en todas esas velas
-UMBRAL_SUBIDA_POR_VELA="3" #Recomendable: 3. Umbral de subida máxima relativa de una vela respecto de subida media, en velas de 1 a X. 
-
+PATH_SCRIPTS="${DIR_CODIGOS}BolsaScripts/"
+PARAMS_CONFIG="${PATH_SCRIPTS}parametros.config"
+echo -e "Importando parametros generales..."
+source ${PARAMS_CONFIG}
 
 DIR_BASE="/bolsa/"
-
-DIR_CODIGOS_CARLOS="/home/carloslinux/Desktop/GIT_BOLSA/" #NO TOCAR
-DIR_CODIGOS_LUIS="/home/t151521/bolsa/" #NO TOCAR
-usuario=$(whoami)
-if [ $usuario == "carloslinux" ]
-then
-  DIR_CODIGOS="${DIR_CODIGOS_CARLOS}"
-elif [ $usuario == "t151521" ]
-then
-  DIR_CODIGOS="${DIR_CODIGOS_LUIS}"
-else
-  echo "ERROR: USUARIO NO CONTROLADO"
-  s1 -e
-fi
-
-
-PATH_SCRIPTS="${DIR_CODIGOS}BolsaScripts/"
 DIR_FUT_SUBGRUPOS="${DIR_BASE}futuro/subgrupos/"
 
 ################################################################################################
@@ -84,4 +84,6 @@ echo -e "\n------------------------ RENTABILIDAD --------------------------" >> 
 cat "/bolsa/logs/validador.log" | grep 'RENTABILIDAD' >> "${LOG_ENTREGABLE}"
 echo -e "\n----------------------------------------------------------------------------" >> "${LOG_ENTREGABLE}"
 ################################################################################################
+
+echo -e "PREDECIR FUTURO REAL - FIN: "$( date "+%Y%m%d%H%M%S" )
 
