@@ -64,7 +64,7 @@ LOG_ENTREGABLE="${DIR_REAL}caracteristicas.log"
 
 
 echo -e $( date '+%Y%m%d_%H%M%S' )" Ejecución del futuro (para velas de antiguedad=${AHORA}) con empresas donde poner dinero REAL..." >>${LOG_REAL}
-${PATH_SCRIPTS}master.sh "futuro" "${AHORA}" "1" "S" "S" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" "${NUM_EMPRESAS_REAL}" "${UMBRAL_SUBIDA_POR_VELA}" "${MIN_COBERTURA_CLUSTER}" "${MIN_EMPRESAS_POR_CLUSTER}" "20001111" "20991111" 2>>${LOG_REAL} 1>>${LOG_REAL}
+${PATH_SCRIPTS}master.sh "futuro" "${AHORA}" "1" "S" "S" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" "${NUM_EMPRESAS_REAL}" "${UMBRAL_SUBIDA_POR_VELA}" "${MIN_COBERTURA_CLUSTER}" "${MIN_EMPRESAS_POR_CLUSTER}" "20001111" "20991111" "${MAX_NUM_FEAT_REDUCIDAS}" 2>>${LOG_REAL} 1>>${LOG_REAL}
 
 echo -e "Velas con antiguedad=AHORA --> Guardamos la prediccion de todos los SUBGRUPOS en la carpeta de validacion, para analizarla luego..." >>${LOG_REAL}
 while IFS= read -r -d '' -u 9

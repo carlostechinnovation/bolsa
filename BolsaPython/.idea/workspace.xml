@@ -2,14 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="22edbd2f-b3d9-42f0-a7dd-659033ab601a" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/c10X/brutos/BrutosUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/c10X/brutos/BrutosUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/c20X/limpios/LimpiarOperaciones.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/c20X/limpios/LimpiarOperaciones.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/c20X/limpios/LimpiosUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/c20X/limpios/LimpiosUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/c30x/elaborados/construir/ConstructorElaborados.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/c30x/elaborados/construir/ConstructorElaborados.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/c30x/elaborados/construir/GestorFicheros.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/c30x/elaborados/construir/GestorFicheros.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bolsa/C5NormalizarYReducirDatasetSubgrupo.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/C5NormalizarYReducirDatasetSubgrupo.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bolsa/C6CreadorModelosDeSubgrupo.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/C6CreadorModelosDeSubgrupo.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../BolsaScripts/master.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/master.sh" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../BolsaScripts/parametros.config" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/parametros.config" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../BolsaScripts/predecir_futuro_real.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/predecir_futuro_real.sh" afterDir="false" />
@@ -357,7 +351,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/bolsa/C5NormalizarYReducirDatasetSubgrupo.py</url>
-          <line>343</line>
+          <line>345</line>
           <option name="timeStamp" value="27" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -367,32 +361,32 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/bolsa/C5NormalizarYReducirDatasetSubgrupo.py</url>
-          <line>427</line>
+          <line>488</line>
           <option name="timeStamp" value="35" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/bolsa/C5NormalizarYReducirDatasetSubgrupo.py</url>
-          <line>425</line>
+          <line>486</line>
           <option name="timeStamp" value="41" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/bolsa/C5NormalizarYReducirDatasetSubgrupo.py</url>
-          <line>311</line>
+          <line>313</line>
           <option name="timeStamp" value="42" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/bolsa/C5NormalizarYReducirDatasetSubgrupo.py</url>
-          <line>309</line>
+          <line>311</line>
           <option name="timeStamp" value="43" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/bolsa/C5NormalizarYReducirDatasetSubgrupo.py</url>
-          <line>340</line>
+          <line>342</line>
           <option name="timeStamp" value="44" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/bolsa/C5NormalizarYReducirDatasetSubgrupo.py</url>
-          <line>349</line>
+          <line>351</line>
           <option name="timeStamp" value="45" />
         </line-breakpoint>
       </breakpoints>

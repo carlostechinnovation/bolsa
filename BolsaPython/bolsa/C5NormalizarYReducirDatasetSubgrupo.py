@@ -39,8 +39,10 @@ print("URL Feature Selection: https://scikit-learn.org/stable/modules/feature_se
 print("PARAMETROS: ")
 dir_subgrupo = sys.argv[1]
 modoTiempo = sys.argv[2]
+maxFeatReducidas = sys.argv[3]
 print("dir_subgrupo = %s" % dir_subgrupo)
 print("modoTiempo = %s" % modoTiempo)
+print("maxFeatReducidas = %s" % maxFeatReducidas)
 
 varianza=0.90
 compatibleParaMuchasEmpresas = True  # Si hay muchas empresas, debo hacer ya el undersampling (en vez de capa 6)
@@ -171,7 +173,7 @@ def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmp
         ift_minoritaria = ift_minoritaria_aux
         print("ift_minoritaria (con oversampling):" + str(ift_minoritaria.shape[0]) + " x " + str(ift_minoritaria.shape[1]))
 
-    num_filas_azar = 8 * (num_copias_anhadidas + 1) * ift_minoritaria.shape[0]
+    num_filas_azar = 5 * (num_copias_anhadidas + 1) * ift_minoritaria.shape[0]
     print("num_filas_azar:" + str(num_filas_azar))
     #ift_mayoritaria = pd.DataFrame(index=ift_minoritaria.index.copy(), columns=ift_minoritaria.columns)
     ift_mayoritaria = entradaFeaturesYTarget4.loc[np.random.choice(entradaFeaturesYTarget4.index, num_filas_azar)]
@@ -288,7 +290,7 @@ def comprobarSuficientesClasesTarget(featuresFicheroNorm, targetsFichero, modoDe
   return y_unicos.size
 
 
-def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, targetsFichero, pathCsvReducido, varianzaAcumuladaDeseada, dir_subgrupo_img, modoTiempo, indiceFilasFuturasTransformadas, modoDebug):
+def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, targetsFichero, pathCsvReducido, varianzaAcumuladaDeseada, dir_subgrupo_img, modoTiempo, indiceFilasFuturasTransformadas, maxFeatReducidas, modoDebug):
   print("----- reducirFeaturesYGuardar ------")
   print("path_modelo_reductor_features --> " + path_modelo_reductor_features)
   print("featuresFicheroNorm: " + str(featuresFicheroNorm.shape[0]) + " x " + str(featuresFicheroNorm.shape[1]))
@@ -298,7 +300,7 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, 
   print("dir_subgrupo_img --> " + dir_subgrupo_img)
   print("modoTiempo: " + modoTiempo)
   print("indiceFilasFuturasTransformadas (numero de items): " + str(indiceFilasFuturasTransformadas.shape[0]))
-
+  print("maxFeatReducidas: " + maxFeatReducidas)
 
   print("**** REDUCCION DE DIMENSIONES*****")
 
@@ -314,6 +316,7 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, 
     probarVariosClasificadores=False
 
     svc_model = AdaBoostClassifier(n_estimators=20, learning_rate=1.)
+    rfecv_scoring = 'f1'  # accuracy,balanced_accuracy,average_precision,neg_brier_score,f1,f1_micro,f1_macro,f1_weighted,roc_auc,roc_auc_ovr,roc_auc_ovo,roc_auc_ovr_weighted,roc_auc_ovo_weighted
 
     if probarVariosClasificadores:
         classifiers = [
@@ -327,7 +330,7 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, 
         scoreAnterior = 0
         numFeaturesAnterior=9999
         for clasificadorActual in classifiers:
-            rfecv = RFECV(estimator=clasificadorActual, step=1, min_features_to_select=3, cv=StratifiedKFold(3), scoring='accuracy', verbose=0, n_jobs=8)
+            rfecv = RFECV(estimator=clasificadorActual, step=0.05, min_features_to_select=4, cv=StratifiedKFold(n_splits=10, shuffle=True), scoring=rfecv_scoring, verbose=0, n_jobs=-1)
             rfecv.fit(featuresFicheroNorm, targetsFichero)
             print('Accuracy del clasificadorActual: {:.2f}'.format(rfecv.score(featuresFicheroNorm, targetsFichero)))
             print("Optimal number of features : %d" % rfecv.n_features_)
@@ -340,7 +343,7 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, 
                     numFeaturesAnterior=rfecv.n_features_
 
     # The "accuracy" scoring is proportional to the number of correct classifications
-    rfecv_modelo = RFECV(estimator=svc_model, step=1, min_features_to_select=3, cv=StratifiedKFold(3), scoring='accuracy', verbose=0, n_jobs=8)
+    rfecv_modelo = RFECV(estimator=svc_model, step=0.05, min_features_to_select=4, cv=StratifiedKFold(n_splits=10, shuffle=True), scoring=rfecv_scoring, verbose=0, n_jobs=-1)
     print("rfecv_modelo -> fit ...")
     targetsLista = targetsFichero["TARGET"].tolist()
     rfecv_modelo.fit(featuresFicheroNorm, targetsLista)
@@ -353,65 +356,68 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, 
   print("Numero original de features: %d" % featuresFicheroNorm.shape[1])
   print("Numero optimo de features: %d" % rfecv_modelo.n_features_)
 
-  # Plot number of features VS. cross-validation scores
-  if modoDebug:
-    path_dibujo_rfecv = dir_subgrupo_img + "SELECCION_VARIABLES_RFECV" ".png"
-    plt.figure()
-    plt.xlabel("Number of features selected")
-    plt.ylabel("Cross validation score (nb of correct classifications)")
-    plt.plot(range(1, len(rfecv_modelo.grid_scores_) + 1), rfecv_modelo.grid_scores_)
-    plt.title("RFECV", fontsize=10)
-    plt.savefig(path_dibujo_rfecv, bbox_inches='tight')
-    # Limpiando dibujo:
-    plt.clf()
-    plt.cla()
-    plt.close()
+  if rfecv_modelo.n_features_ > int(maxFeatReducidas):
+      print("El reductor de dimensiones no es capaz de reducir a un numero razonable/manejable de dimensiones (pocas). Por tanto, no seguimos calculando nada para este subgrupo.")
 
-  columnas = featuresFicheroNorm.columns
-  numColumnas = columnas.shape[0]
-  columnasSeleccionadas =[]
-  for i in range(numColumnas):
-      if(rfecv_modelo.support_[i] == True):
-          columnasSeleccionadas.append(columnas[i])
+  else:
 
-  # print("Mascara de features seleccionadas (rfecv_modelo.support_):")
-  # print(rfecv_modelo.support_)
-  print("El ranking de importancia de las features (rfecv_modelo.ranking_) no distingue las features mas importantes dentro de las seleccionadas...")
-  # print(rfecv_modelo.ranking_)
-  print("Las columnas seleccionadas son:")
-  print(columnasSeleccionadas)
-  featuresFicheroNormElegidas = featuresFicheroNorm[columnasSeleccionadas]
-  # print(featuresFicheroNormElegidas.head())
-  print("featuresFicheroNormElegidas: " + str(featuresFicheroNormElegidas.shape[0]) + " x " + str(featuresFicheroNormElegidas.shape[1]))
+      # Plot number of features VS. cross-validation scores
+      if modoDebug:
+          path_dibujo_rfecv = dir_subgrupo_img + "SELECCION_VARIABLES_RFECV" ".png"
+          plt.figure()
+          plt.xlabel("Number of features selected")
+          plt.ylabel("Cross validation score (nb of correct classifications)")
+          plt.plot(range(1, len(rfecv_modelo.grid_scores_) + 1), rfecv_modelo.grid_scores_)
+          plt.title("RFECV", fontsize=10)
+          plt.savefig(path_dibujo_rfecv, bbox_inches='tight')
+          # Limpiando dibujo:
+          plt.clf()
+          plt.cla()
+          plt.close()
 
-  ####################### NO LO USAMOS pero lo dejo aqui ########
-  #if modoDebug and False:
-      #print("** PCA (Principal Components Algorithm) **")
-      #print("Usando PCA, cogemos las features que tengan un impacto agregado sobre el X% de la varianza del target. Descartamos el resto.")
-      #modelo_pca_subgrupo = PCA(n_components=varianzaAcumuladaDeseada, svd_solver='full')
-      #print(modelo_pca_subgrupo)
-      #featuresFicheroNorm_pca = modelo_pca_subgrupo.fit_transform(featuresFicheroNorm)
-      #print(featuresFicheroNorm_pca)
-      #print('Dimensiones del dataframe reducido: ' + str(featuresFicheroNorm_pca.shape[0]) + ' x ' + str(featuresFicheroNorm_pca.shape[1]))
-      #print("Las features están ya normalizadas y reducidas. DESCRIBIMOS lo que hemos hecho y GUARDAMOS el dataset.")
+      columnas = featuresFicheroNorm.columns
+      numColumnas = columnas.shape[0]
+      columnasSeleccionadas =[]
+      for i in range(numColumnas):
+          if(rfecv_modelo.support_[i] == True):
+              columnasSeleccionadas.append(columnas[i])
 
-  ### Guardar a fichero
-  print("Escribiendo las features a CSV...")
-  # print("Muestro las features + targets antes de juntarlas...")
-  # print("FEATURES (sample):")
-  # print(featuresFicheroNormElegidas.head())
-  # print("TARGETS (sample):")
-  # print(targetsFichero.head())
+      print("Mascara de features seleccionadas (rfecv_modelo.support_):")
+      print(rfecv_modelo.support_)
+      print("El ranking de importancia de las features (rfecv_modelo.ranking_) no distingue las features mas importantes dentro de las seleccionadas:")
+      print(rfecv_modelo.ranking_)
+      print("Las columnas seleccionadas son:")
+      print(columnasSeleccionadas)
+      featuresFicheroNormElegidas = featuresFicheroNorm[columnasSeleccionadas]
 
-  featuresytargets = pd.concat([featuresFicheroNormElegidas.reset_index(drop=True), targetsFichero.reset_index(drop=True)], axis=1)
-  # print("FEATURES+TARGETS juntas (sample):")
-  # print(featuresytargets.head())
-  print("Justo antes de guardar, featuresytargets: " + str(featuresytargets.shape[0]) + " x " + str(featuresytargets.shape[1]))
-  featuresytargets.to_csv(pathCsvReducido, index=False, sep='|')
+      ####################### NO LO USAMOS pero lo dejo aqui ########
+      #if modoDebug and False:
+          #print("** PCA (Principal Components Algorithm) **")
+          #print("Usando PCA, cogemos las features que tengan un impacto agregado sobre el X% de la varianza del target. Descartamos el resto.")
+          #modelo_pca_subgrupo = PCA(n_components=varianzaAcumuladaDeseada, svd_solver='full')
+          #print(modelo_pca_subgrupo)
+          #featuresFicheroNorm_pca = modelo_pca_subgrupo.fit_transform(featuresFicheroNorm)
+          #print(featuresFicheroNorm_pca)
+          #print('Dimensiones del dataframe reducido: ' + str(featuresFicheroNorm_pca.shape[0]) + ' x ' + str(featuresFicheroNorm_pca.shape[1]))
+          #print("Las features están ya normalizadas y reducidas. DESCRIBIMOS lo que hemos hecho y GUARDAMOS el dataset.")
 
-  if modoTiempo == "futuro":
-      print("Guardamos a CSV los indices de las filas de REDUCIDO respeto a COMPLETO (para cuando haya que reconstruir el final")
-      np.savetxt(pathCsvReducido+"_indices", indiceFilasFuturasTransformadas, header="indice", delimiter="|", fmt='%f')
+      ### Guardar a fichero
+      # print("Muestro las features + targets antes de juntarlas...")
+      # print("FEATURES (sample):")
+      # print(featuresFicheroNormElegidas.head())
+      # print("featuresFicheroNormElegidas: " + str(featuresFicheroNormElegidas.shape[0]) + " x " + str(featuresFicheroNormElegidas.shape[1]))
+      # print("TARGETS (sample):")
+      # print(targetsFichero.head())
+
+      featuresytargets = pd.concat([featuresFicheroNormElegidas.reset_index(drop=True), targetsFichero.reset_index(drop=True)], axis=1)
+      print("FEATURES+TARGETS juntas (sample):")
+      print(featuresytargets.head())
+      print("Justo antes de guardar, featuresytargets: " + str(featuresytargets.shape[0]) + " x " + str(featuresytargets.shape[1]))
+      featuresytargets.to_csv(pathCsvReducido, index=False, sep='|')
+
+      if modoTiempo == "futuro":
+          print("Guardamos a CSV los indices de las filas de REDUCIDO respeto a COMPLETO (para cuando haya que reconstruir el final")
+          np.savetxt(pathCsvReducido+"_indices", indiceFilasFuturasTransformadas, header="indice", delimiter="|", fmt='%f')
 
 
 
@@ -426,7 +432,7 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
     if(modoTiempo == "pasado" and numclases <= 1):
         print("El subgrupo solo tiene " + str(numclases) + " clases en el target. Abortamos...")
     else:
-        reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, targetsFichero, pathCsvReducido, varianza, dir_subgrupo_img, modoTiempo, indiceFilasFuturasTransformadas, modoDebug)
+        reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, targetsFichero, pathCsvReducido, varianza, dir_subgrupo_img, modoTiempo, indiceFilasFuturasTransformadas, maxFeatReducidas, modoDebug)
 
 print("------------ FIN de capa 5 ----------------")
 
