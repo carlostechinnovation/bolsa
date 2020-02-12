@@ -244,7 +244,7 @@ public class ConstructorElaborados implements Serializable {
 					}
 
 				} else {
-					// Para los datos de antiguuedad excesiva, se sale del bucle
+					// Para los datos de antiguedad excesiva, se sale del bucle
 					break;
 				}
 
@@ -313,6 +313,42 @@ public class ConstructorElaborados implements Serializable {
 			}
 		}
 
+		// Se calculan parámetros elaborados ESTÁTICOS (por eso se coge sólo la vela 0).
+		// Parámetro SCREENER1: basado en el screener que hemos visto que
+		// funciona:
+		// EPSgrowthNextYear > 0, CurrentRatio > 2,QuickRatio > 2, LongTermDebt <
+		// 0.0, InstitutionalOwnership > 10(%)
+		// Valores: Si no se tienen los datos o no se cumplen las condiciones, será 0.
+		// Si sí se cumple todo, será 1
+		String SCREENER1 = "0";
+
+		try {
+			parametros = datosEmpresaEntrada.get(0);
+			String EPSgrowthNextYear = parametros.get("EPS next Y");
+			String CurrentRatio = parametros.get("Current Ratio");
+			String QuickRatio = parametros.get("Quick Ratio");
+			String LongTermDebt = parametros.get("LT Debt/Eq");
+			String InstitutionalOwnership = parametros.get("Inst Own");
+
+			Float EPSgrowthNextYearF = Float.valueOf(EPSgrowthNextYear);
+			Float CurrentRatioF = Float.valueOf(CurrentRatio);
+			Float QuickRatioF = Float.valueOf(QuickRatio);
+			Float LongTermDebtF = Float.valueOf(LongTermDebt);
+			Float InstitutionalOwnershipF = Float.valueOf(InstitutionalOwnership);
+
+			// Cálculo del parámetro
+			if (EPSgrowthNextYearF > 0F && CurrentRatioF > 2F && QuickRatioF > 2F && LongTermDebtF > 0F
+					&& InstitutionalOwnershipF > 10F) {
+				SCREENER1 = "1";
+			}
+
+		} catch (Exception e) {
+			MY_LOGGER.warn("La empresa " + empresa + " no tiene alguno de los parámetros necesarios para calcular "
+					+ "el parámetro elaborado SCREENER1, o directamente no tiene ningún parámetro para la primera vela. Se pone SCREENER1=0");
+		}
+
+		System.out.println("SCREENER1: " + SCREENER1 + " para la empresa " + empresa);
+
 		// Aniado el TARGET
 		// Target=0 es que no se cumple. 1 es que sí. TARGET_INVALIDO es que no se puede
 		// calcular
@@ -351,6 +387,11 @@ public class ConstructorElaborados implements Serializable {
 		while (itAntiguedadDatos.hasNext()) {
 			antiguedad = itAntiguedadDatos.next();
 			parametros = datosEmpresaFinales.get(antiguedad);
+
+			// Se AÑADEN parámetros elaborados ESTÁTICOS
+			parametros.put("SCREENER1", SCREENER1);
+
+			// SE AÑADE EL TARGET
 			parametros.put("TARGET", String.valueOf(antiguedadYTarget.get(antiguedad)));
 			datosEmpresaFinales.replace(antiguedad, parametros);
 		}

@@ -4,6 +4,8 @@ import pandas as pd
 from pathlib import Path
 from random import sample, choice
 
+from imblearn.combine import SMOTETomek
+from imblearn.under_sampling import TomekLinks
 from sklearn.covariance import EllipticEnvelope
 from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 from sklearn.gaussian_process import GaussianProcessClassifier
@@ -159,9 +161,9 @@ def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmp
     # Se seleccionan tantos target=0 (mayoritaria) como entradas tengo de Target=1 (minoritaria). Se coge una muestra al azar de 2xminoritarias, para asegurar que cogemos suficientes valores con target=0. Luego ya nos quedamos sólo con un tamaño mayoriaria=minoritaria
     num_copias_anhadidas = 0 #default
     if(ift_minoritaria.shape[0] > 2000 and ift_minoritaria.shape[0] < 8000):
-        num_copias_anhadidas = 0  # 1 LUIS
+        num_copias_anhadidas = 0  #1 LUIS
     elif(ift_minoritaria.shape[0] <= 2000):
-        num_copias_anhadidas = 0  # 3 LUIS
+        num_copias_anhadidas = 0  #3 LUIS
 
     if (num_copias_anhadidas > 0):
         print("OVERSAMPLING DE CLASE MINORITARIA: copiamos " + str(num_copias_anhadidas) + " veces los casos de clase minoritaria --> Eso evitará que tengamos la obligacion de borrar muchas filas de la clase mayoritaria")
@@ -169,12 +171,12 @@ def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmp
         ift_minoritaria = ift_minoritaria_aux
         print("ift_minoritaria (con oversampling):" + str(ift_minoritaria.shape[0]) + " x " + str(ift_minoritaria.shape[1]))
 
-    num_filas_azar = 5 * (num_copias_anhadidas + 1) * ift_minoritaria.shape[0]
+    num_filas_azar = 8 * (num_copias_anhadidas + 1) * ift_minoritaria.shape[0]
     print("num_filas_azar:" + str(num_filas_azar))
-    ift_mayoritaria = pd.DataFrame(index=ift_minoritaria.index.copy(), columns=ift_minoritaria.columns)
+    #ift_mayoritaria = pd.DataFrame(index=ift_minoritaria.index.copy(), columns=ift_minoritaria.columns)
     ift_mayoritaria = entradaFeaturesYTarget4.loc[np.random.choice(entradaFeaturesYTarget4.index, num_filas_azar)]
     ift_mayoritaria = ift_mayoritaria[ift_mayoritaria.TARGET == False]
-    # ift_mayoritaria = ift_mayoritaria.head(ift_minoritaria.shape[0])
+    #ift_mayoritaria = ift_mayoritaria.head(ift_minoritaria.shape[0])
 
     print("ift_mayoritaria (se han borrado filas, pero no muchas):" + str(ift_mayoritaria.shape[0]) + " x " + str(ift_mayoritaria.shape[1]))
     print("ift_minoritaria (con oversampling):" + str(ift_minoritaria.shape[0]) + " x " + str(ift_minoritaria.shape[1]))
@@ -312,7 +314,6 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, 
     probarVariosClasificadores=False
 
     svc_model = AdaBoostClassifier(n_estimators=20, learning_rate=1.)
-    rfecv_scoring = 'f1'  # accuracy,balanced_accuracy,average_precision,neg_brier_score,f1,f1_micro,f1_macro,f1_weighted,roc_auc,roc_auc_ovr,roc_auc_ovo,roc_auc_ovr_weighted,roc_auc_ovo_weighted
 
     if probarVariosClasificadores:
         classifiers = [
@@ -326,7 +327,7 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, 
         scoreAnterior = 0
         numFeaturesAnterior=9999
         for clasificadorActual in classifiers:
-            rfecv = RFECV(estimator=clasificadorActual, step=0.05, min_features_to_select=4, cv=StratifiedKFold(n_splits=10, shuffle=True), scoring=rfecv_scoring, verbose=0, n_jobs=-1)
+            rfecv = RFECV(estimator=clasificadorActual, step=1, min_features_to_select=3, cv=StratifiedKFold(3), scoring='accuracy', verbose=0, n_jobs=8)
             rfecv.fit(featuresFicheroNorm, targetsFichero)
             print('Accuracy del clasificadorActual: {:.2f}'.format(rfecv.score(featuresFicheroNorm, targetsFichero)))
             print("Optimal number of features : %d" % rfecv.n_features_)
@@ -339,7 +340,7 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, 
                     numFeaturesAnterior=rfecv.n_features_
 
     # The "accuracy" scoring is proportional to the number of correct classifications
-    rfecv_modelo = RFECV(estimator=svc_model, step=0.05, min_features_to_select=4, cv=StratifiedKFold(n_splits=10, shuffle=True), scoring=rfecv_scoring, verbose=0, n_jobs=-1)
+    rfecv_modelo = RFECV(estimator=svc_model, step=1, min_features_to_select=3, cv=StratifiedKFold(3), scoring='accuracy', verbose=0, n_jobs=8)
     print("rfecv_modelo -> fit ...")
     targetsLista = targetsFichero["TARGET"].tolist()
     rfecv_modelo.fit(featuresFicheroNorm, targetsLista)
@@ -380,6 +381,8 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, 
   print("Las columnas seleccionadas son:")
   print(columnasSeleccionadas)
   featuresFicheroNormElegidas = featuresFicheroNorm[columnasSeleccionadas]
+  print(featuresFicheroNormElegidas.head())
+  print("featuresFicheroNormElegidas: " + str(featuresFicheroNormElegidas.shape[0]) + " x " + str(featuresFicheroNormElegidas.shape[1]))
 
   ####################### NO LO USAMOS pero lo dejo aqui ########
   #if modoDebug and False:
@@ -393,12 +396,12 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, 
       #print("Las features están ya normalizadas y reducidas. DESCRIBIMOS lo que hemos hecho y GUARDAMOS el dataset.")
 
   ### Guardar a fichero
-  # print("Muestro las features + targets antes de juntarlas...")
-  # print("FEATURES (sample):")
-  # print(featuresFicheroNormElegidas.head())
-  # print("featuresFicheroNormElegidas: " + str(featuresFicheroNormElegidas.shape[0]) + " x " + str(featuresFicheroNormElegidas.shape[1]))
-  # print("TARGETS (sample):")
-  # print(targetsFichero.head())
+  print("Escribiendo las features a CSV...")
+  print("Muestro las features + targets antes de juntarlas...")
+  print("FEATURES (sample):")
+  print(featuresFicheroNormElegidas.head())
+  print("TARGETS (sample):")
+  print(targetsFichero.head())
 
   featuresytargets = pd.concat([featuresFicheroNormElegidas.reset_index(drop=True), targetsFichero.reset_index(drop=True)], axis=1)
   print("FEATURES+TARGETS juntas (sample):")
