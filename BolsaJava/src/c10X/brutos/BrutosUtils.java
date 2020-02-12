@@ -44,6 +44,8 @@ public class BrutosUtils implements Serializable {
 
 	public static final int ES_ENTORNO_VALIDACION = 0;
 
+	public static final String COL_ANIO = "anio", COL_MES = "mes", COL_DIA = "dia";
+
 	/**
 	 * @param in
 	 * @param escala  Numero en escala "uno" o en "millones"

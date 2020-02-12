@@ -9,6 +9,9 @@ import java.util.List;
 public class LimpiosUtils {
 
 	public static final String DIR_LIMPIOS = "/bolsa/pasado/limpios/";
+	public static final String P_INICIO = "20001111"; // default
+	public static final String P_FIN = "20991111"; // default
+	public static final String SEPARADOR = "|";
 
 	/**
 	 * Lee un fichero y carga los datos en una lista de listas. Es decir, una lista

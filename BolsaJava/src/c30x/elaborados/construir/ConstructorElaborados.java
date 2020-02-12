@@ -343,11 +343,11 @@ public class ConstructorElaborados implements Serializable {
 			}
 
 		} catch (Exception e) {
-			MY_LOGGER.warn("La empresa " + empresa + " no tiene alguno de los parámetros necesarios para calcular "
+			MY_LOGGER.debug("La empresa " + empresa + " no tiene alguno de los parámetros necesarios para calcular "
 					+ "el parámetro elaborado SCREENER1, o directamente no tiene ningún parámetro para la primera vela. Se pone SCREENER1=0");
 		}
 
-		System.out.println("SCREENER1: " + SCREENER1 + " para la empresa " + empresa);
+		MY_LOGGER.debug("SCREENER1: " + SCREENER1 + " para la empresa " + empresa);
 
 		// Aniado el TARGET
 		// Target=0 es que no se cumple. 1 es que sí. TARGET_INVALIDO es que no se puede
@@ -355,52 +355,58 @@ public class ConstructorElaborados implements Serializable {
 		String target = TARGET_INVALIDO;
 
 		antiguedades = datosEmpresaEntrada.keySet();
-		Integer antiguedadMaxima = Collections.max(antiguedades);
-		Iterator<Integer> itAntiguedadTarget = datosEmpresaEntrada.keySet().iterator();
-		HashMap<Integer, String> antiguedadYTarget = new HashMap<Integer, String>();
 
-		while (itAntiguedadTarget.hasNext()) {
+		if (antiguedades != null && !antiguedades.isEmpty()) {
 
-			antiguedad = itAntiguedadTarget.next();
+			Integer antiguedadMaxima = Collections.max(antiguedades);
+			Iterator<Integer> itAntiguedadTarget = datosEmpresaEntrada.keySet().iterator();
+			HashMap<Integer, String> antiguedadYTarget = new HashMap<Integer, String>();
 
-			if (antiguedad >= X + M) {
+			while (itAntiguedadTarget.hasNext()) {
 
-				if (antiguedadMaxima < antiguedad + X) {
-					// El periodo hacia atrás en el tiempo son X velas, desde el instante analizado
-					target = TARGET_INVALIDO;
-					break;
+				antiguedad = itAntiguedadTarget.next();
 
+				if (antiguedad >= X + M) {
+
+					if (antiguedadMaxima < antiguedad + X) {
+						// El periodo hacia atrás en el tiempo son X velas, desde el instante analizado
+						target = TARGET_INVALIDO;
+						break;
+
+					} else {
+						target = calcularTarget(empresa, datosEmpresaEntrada, antiguedad, S, X, R, M, F, B,
+								umbralMaximo);
+					}
 				} else {
-					target = calcularTarget(empresa, datosEmpresaEntrada, antiguedad, S, X, R, M, F, B, umbralMaximo);
+					// La antiguedad es demasiado reciente para ver si es estable en X+M
+					target = TARGET_INVALIDO;
 				}
-			} else {
-				// La antiguedad es demasiado reciente para ver si es estable en X+M
-				target = TARGET_INVALIDO;
+				antiguedadYTarget.put(antiguedad, target);
 			}
-			antiguedadYTarget.put(antiguedad, target);
+
+			// Se rellena el target en los datos de entrada tras el analisis, al final de
+			// todos los parametros
+			Iterator<Integer> itAntiguedadDatos = datosEmpresaFinales.keySet().iterator();
+			ordenNombresParametrosSalida.put(ordenNombresParametrosSalida.size(), "TARGET");
+			while (itAntiguedadDatos.hasNext()) {
+				antiguedad = itAntiguedadDatos.next();
+				parametros = datosEmpresaFinales.get(antiguedad);
+
+				// Se AÑADEN parámetros elaborados ESTÁTICOS
+				parametros.put("SCREENER1", SCREENER1);
+
+				// SE AÑADE EL TARGET
+				parametros.put("TARGET", String.valueOf(antiguedadYTarget.get(antiguedad)));
+				datosEmpresaFinales.replace(antiguedad, parametros);
+			}
+
+			// Vuelco todos los parámetros
+			datosSalida.put(empresa, datosEmpresaFinales);
+			datos = datosSalida;
+			ordenNombresParametros.clear();
+			ordenNombresParametros.putAll(ordenNombresParametrosSalida);
 		}
 
-		// Se rellena el target en los datos de entrada tras el analisis, al final de
-		// todos los parametros
-		Iterator<Integer> itAntiguedadDatos = datosEmpresaFinales.keySet().iterator();
-		ordenNombresParametrosSalida.put(ordenNombresParametrosSalida.size(), "TARGET");
-		while (itAntiguedadDatos.hasNext()) {
-			antiguedad = itAntiguedadDatos.next();
-			parametros = datosEmpresaFinales.get(antiguedad);
-
-			// Se AÑADEN parámetros elaborados ESTÁTICOS
-			parametros.put("SCREENER1", SCREENER1);
-
-			// SE AÑADE EL TARGET
-			parametros.put("TARGET", String.valueOf(antiguedadYTarget.get(antiguedad)));
-			datosEmpresaFinales.replace(antiguedad, parametros);
-		}
-
-		// Vuelco todos los parámetros
-		datosSalida.put(empresa, datosEmpresaFinales);
-		datos = datosSalida;
-		ordenNombresParametros.clear();
-		ordenNombresParametros.putAll(ordenNombresParametrosSalida);
 	}
 
 	/**

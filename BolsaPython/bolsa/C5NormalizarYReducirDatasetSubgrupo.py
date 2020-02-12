@@ -85,7 +85,7 @@ def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmp
       print("Nos quedamos solo con las velas con antiguedad=0 (futuras)...")
       entradaFeaturesYTarget2b = entradaFeaturesYTarget2[entradaFeaturesYTarget2.antiguedad == 0]
       print("entradaFeaturesYTarget2b:" + str(entradaFeaturesYTarget2b.shape[0]) + " x " + str(entradaFeaturesYTarget2b.shape[1]))
-      print(entradaFeaturesYTarget2b.head())
+      #print(entradaFeaturesYTarget2b.head())
       print("Transformacion en la que borro o barajo filas. Por tanto, guardo el indice...")
       indiceFilasFuturasTransformadas = entradaFeaturesYTarget2b.index.values
       print("indiceFilasFuturasTransformadas: " + str(indiceFilasFuturasTransformadas.shape[0]))
@@ -97,8 +97,8 @@ def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmp
   print("Borrar columnas especiales (informativas): empresa | antiguedad | mercado | anio | mes | dia | hora | minuto...")
   entradaFeaturesYTarget2 = entradaFeaturesYTarget2.drop('empresa', axis=1).drop('antiguedad', axis=1).drop('mercado', axis=1).drop('anio', axis=1).drop('mes', axis=1).drop('dia', axis=1).drop('hora', axis=1).drop('minuto', axis=1)
 
-  print("entradaFeaturesYTarget2:" + str(entradaFeaturesYTarget2.shape[0]) + " x " + str(entradaFeaturesYTarget2.shape[1]))
-  print(entradaFeaturesYTarget2.head())
+  print("entradaFeaturesYTarget2: " + str(entradaFeaturesYTarget2.shape[0]) + " x " + str(entradaFeaturesYTarget2.shape[1]))
+  # print(entradaFeaturesYTarget2.head())
 
   if modoTiempo == "pasado":
       print("MISSING VALUES (FILAS) - Borramos las FILAS que tengan 1 o mas valores NaN porque son huecos que no deberían estar...")
@@ -113,11 +113,11 @@ def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmp
       print("Transformacion en la que borro o barajo filas. Por tanto, guardo el indice...")
       indiceFilasFuturasTransformadas2 = entradaFeaturesYTarget3.index.values
       print("indiceFilasFuturasTransformadas2: " + str(indiceFilasFuturasTransformadas2.shape[0]))
-      print(indiceFilasFuturasTransformadas2)
+      #print(indiceFilasFuturasTransformadas2)
 
 
-  print("Mostramos las 5 primeras filas de entradaFeaturesYTarget3:")
-  print(entradaFeaturesYTarget3.head())
+  # print("Mostramos las 5 primeras filas de entradaFeaturesYTarget3:")
+  # print(entradaFeaturesYTarget3.head())
 
   # Limpiar OUTLIERS
   # URL: https://scikit-learn.org/stable/modules/outlier_detection.html
@@ -136,8 +136,8 @@ def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmp
   elif modoTiempo == "futuro":  # Para el futuro no podemos quitar OUTLIERS porque la funcion no acepta nulos!!!
       entradaFeaturesYTarget4 = entradaFeaturesYTarget3
 
-  print("Mostramos las 5 primeras filas de entradaFeaturesYTarget4:")
-  print(entradaFeaturesYTarget4.head())
+  # print("Mostramos las 5 primeras filas de entradaFeaturesYTarget4:")
+  # print(entradaFeaturesYTarget4.head())
 
   # ENTRADA: features (+ target)
 
@@ -179,7 +179,7 @@ def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmp
     #ift_mayoritaria = ift_mayoritaria.head(ift_minoritaria.shape[0])
 
     print("ift_mayoritaria (se han borrado filas, pero no muchas):" + str(ift_mayoritaria.shape[0]) + " x " + str(ift_mayoritaria.shape[1]))
-    print("ift_minoritaria (con oversampling):" + str(ift_minoritaria.shape[0]) + " x " + str(ift_minoritaria.shape[1]))
+    print("ift_minoritaria (con oversampling): " + str(ift_minoritaria.shape[0]) + " x " + str(ift_minoritaria.shape[1]))
 
     print("Tasa de desbalanceo entre clases = " + str(ift_mayoritaria.shape[0]) + "/" + str(
         ift_minoritaria.shape[0]) + " = " + str(ift_mayoritaria.shape[0] / ift_minoritaria.shape[0]))
@@ -203,10 +203,10 @@ def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmp
 
   ##################################################
 
-  print("FEATURES (sample):")
-  print(featuresFichero.head())
-  print("TARGETS (sample):")
-  print(targetsFichero.head())
+  # print("FEATURES (sample):")
+  # print(featuresFichero.head())
+  # print("TARGETS (sample):")
+  # print(targetsFichero.head())
 
   if modoDebug:
     print("FUNCIONES DE DENSIDAD (sin nulos, pero antes de normalizar):")
@@ -250,15 +250,15 @@ def normalizarFeatures(featuresFichero, path_modelo_normalizador, dir_subgrupo_i
       modelo_normalizador = pickle.load(open(path_modelo_normalizador, 'rb'))
 
   print("Aplicando normalizacion...")
-  print(list(featuresFichero.columns.values))
+  # print(list(featuresFichero.columns.values))
   featuresFicheroNorm = modelo_normalizador.transform(featuresFichero)
 
   print("Metiendo cabeceras...")
   featuresFicheroNorm2 = pd.DataFrame(data=featuresFicheroNorm, columns=featuresFichero.columns)
 
-  print("Features NORMALIZADAS (sample):")
-  print(featuresFicheroNorm2.head())
-  print("featuresFicheroNorm2:" + str(featuresFicheroNorm2.shape[0]) + " x " + str(featuresFicheroNorm2.shape[1]))
+  # print("Features NORMALIZADAS (sample):")
+  # print(featuresFicheroNorm2.head())
+  print("Features NORMALIZADAS (featuresFicheroNorm2):" + str(featuresFicheroNorm2.shape[0]) + " x " + str(featuresFicheroNorm2.shape[1]))
 
   if modoDebug:
     print("FUNCIONES DE DENSIDAD (normalizadas):")
@@ -374,14 +374,14 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, 
       if(rfecv_modelo.support_[i] == True):
           columnasSeleccionadas.append(columnas[i])
 
-  print("Mascara de features seleccionadas (rfecv_modelo.support_):")
-  print(rfecv_modelo.support_)
-  print("El ranking de importancia de las features (rfecv_modelo.ranking_) no distingue las features mas importantes dentro de las seleccionadas:")
-  print(rfecv_modelo.ranking_)
+  # print("Mascara de features seleccionadas (rfecv_modelo.support_):")
+  # print(rfecv_modelo.support_)
+  print("El ranking de importancia de las features (rfecv_modelo.ranking_) no distingue las features mas importantes dentro de las seleccionadas...")
+  # print(rfecv_modelo.ranking_)
   print("Las columnas seleccionadas son:")
   print(columnasSeleccionadas)
   featuresFicheroNormElegidas = featuresFicheroNorm[columnasSeleccionadas]
-  print(featuresFicheroNormElegidas.head())
+  # print(featuresFicheroNormElegidas.head())
   print("featuresFicheroNormElegidas: " + str(featuresFicheroNormElegidas.shape[0]) + " x " + str(featuresFicheroNormElegidas.shape[1]))
 
   ####################### NO LO USAMOS pero lo dejo aqui ########
@@ -397,15 +397,15 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, 
 
   ### Guardar a fichero
   print("Escribiendo las features a CSV...")
-  print("Muestro las features + targets antes de juntarlas...")
-  print("FEATURES (sample):")
-  print(featuresFicheroNormElegidas.head())
-  print("TARGETS (sample):")
-  print(targetsFichero.head())
+  # print("Muestro las features + targets antes de juntarlas...")
+  # print("FEATURES (sample):")
+  # print(featuresFicheroNormElegidas.head())
+  # print("TARGETS (sample):")
+  # print(targetsFichero.head())
 
   featuresytargets = pd.concat([featuresFicheroNormElegidas.reset_index(drop=True), targetsFichero.reset_index(drop=True)], axis=1)
-  print("FEATURES+TARGETS juntas (sample):")
-  print(featuresytargets.head())
+  # print("FEATURES+TARGETS juntas (sample):")
+  # print(featuresytargets.head())
   print("Justo antes de guardar, featuresytargets: " + str(featuresytargets.shape[0]) + " x " + str(featuresytargets.shape[1]))
   featuresytargets.to_csv(pathCsvReducido, index=False, sep='|')
 

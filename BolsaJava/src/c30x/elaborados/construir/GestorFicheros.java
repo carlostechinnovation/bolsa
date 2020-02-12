@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -387,6 +388,27 @@ public class GestorFicheros {
 	 */
 	public HashMap<Integer, String> getOrdenNombresParametrosLeidos() {
 		return ordenNombresParametrosLeidos;
+	}
+
+	/**
+	 * Escribe filas en un fichero
+	 * 
+	 * @param filasAEscribir
+	 * @param pathAbsolutoFichero
+	 * @throws IOException
+	 */
+	public static void crearFicheroyEscribirCadenas(Collection<String> filasAEscribir, final String pathAbsolutoFichero)
+			throws IOException {
+
+		MY_LOGGER.debug("crearFicheroyEscribirCadenas --> " + filasAEscribir.size() + " --> " + pathAbsolutoFichero);
+		FileWriter csvWriter = new FileWriter(pathAbsolutoFichero);
+
+		for (String cadena : filasAEscribir) {
+			csvWriter.append(cadena + "\n");
+			csvWriter.flush();
+
+		}
+		csvWriter.close();
 	}
 
 }

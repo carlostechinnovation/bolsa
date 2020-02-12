@@ -38,6 +38,10 @@ F="${10}" #default=5
 B="${11}" #default=5
 NUM_MAX_EMPRESAS_DESCARGADAS="${12}"  #default=100
 UMBRAL_SUBIDA_POR_VELA="${13}"  #default=3
+MIN_COBERTURA_CLUSTER="${14}"  #Porcentaje de empresas con al menos una vela positiva
+MIN_EMPRESAS_POR_CLUSTER="${15}"
+P_INICIO="${16}" #Periodo de entrenamiento (inicio)
+P_FIN="${17}" #Periodo de entrenamiento (fin)
 
 
 ################## FUNCIONES #############################################################
@@ -65,15 +69,10 @@ crearCarpetaSiNoExisteYVaciarRecursivo() {
 ID_EJECUCION=$( date "+%Y%m%d%H%M%S" )
 echo -e "ID_EJECUCION = "${ID_EJECUCION}
 
-MIN_COBERTURA_CLUSTER=60  #Porcentaje de empresas con al menos una vela positiva
-MIN_EMPRESAS_POR_CLUSTER=10
-
-
 PATH_SCRIPTS="${DIR_CODIGOS}BolsaScripts/"
 PYTHON_SCRIPTS="${DIR_CODIGOS}BolsaPython/"
 DIR_JAVA="${DIR_CODIGOS}BolsaJava/"
 PATH_JAR="${DIR_JAVA}target/bolsajava-1.0-jar-with-dependencies.jar"
-
 
 DIR_BASE="/bolsa/"
 DIR_LOGS="${DIR_BASE}logs/"
@@ -133,12 +132,12 @@ fi
 ################################################################################################
 echo -e $( date '+%Y%m%d_%H%M%S' )" -------- DATOS LIMPIOS -------------" >> ${LOG_MASTER}
 
-#######echo -e "Operaciones de limpieza: quitar outliers, rellenar missing values..." >> ${LOG_MASTER}
-#######java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n" -jar ${PATH_JAR} --class "coordinador.Principal" "c30X.elaborados.LimpiarOperaciones" "${DIR_BRUTOS_CSV}" "${DIR_LIMPIOS}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
-
 crearCarpetaSiNoExisteYVaciar "${DIR_LIMPIOS}"
 
-cp ${DIR_BRUTOS_CSV}*.csv ${DIR_LIMPIOS} 2>>${LOG_MASTER} 1>>${LOG_MASTER}
+echo -e "Operaciones de limpieza: limitar periodo..." >> ${LOG_MASTER}
+java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n" -jar ${PATH_JAR} --class "coordinador.Principal" "c30X.elaborados.LimpiarOperaciones" "${DIR_BRUTOS_CSV}" "${DIR_LIMPIOS}" "${P_INICIO}" "${P_FIN}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
+
+# cp ${DIR_BRUTOS_CSV}*.csv ${DIR_LIMPIOS} 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 
 NUM_FICHEROS_20x=$(ls -l ${DIR_LIMPIOS} | wc -l)
 echo -e "La capa 20X ha generado $NUM_FICHEROS_20x ficheros" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
