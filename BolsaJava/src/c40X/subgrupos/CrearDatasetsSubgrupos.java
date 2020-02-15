@@ -62,6 +62,10 @@ public class CrearDatasetsSubgrupos implements Serializable {
 	private final static Float DE_umbral2 = 2.5F;
 	private final static Float DE_umbral3 = 5.0F;
 
+	private final static Integer SMA50RATIOPRECIO_umbral1 = 80;
+	private final static Integer SMA50RATIOPRECIO_umbral2 = 100;
+	private final static Integer SMA50RATIOPRECIO_umbral3 = 120;
+
 	private static HashMap<Integer, ArrayList<String>> empresasPorTipo;
 
 	/**
@@ -166,6 +170,13 @@ public class CrearDatasetsSubgrupos implements Serializable {
 		ArrayList<String> pathEmpresasTipo25 = new ArrayList<String>(); // muy alto
 		ArrayList<String> pathEmpresasTipo26 = new ArrayList<String>(); // desconocido
 
+		// Tipos de empresa segun ratio SMA50 de precio
+		ArrayList<String> pathEmpresasTipo27 = new ArrayList<String>(); // bajo
+		ArrayList<String> pathEmpresasTipo28 = new ArrayList<String>(); // medio
+		ArrayList<String> pathEmpresasTipo29 = new ArrayList<String>(); // alto
+		ArrayList<String> pathEmpresasTipo30 = new ArrayList<String>(); // muy alto
+		ArrayList<String> pathEmpresasTipo31 = new ArrayList<String>(); // desconocido
+
 		// Para cada EMPRESA
 		while (iterator.hasNext()) {
 
@@ -176,7 +187,7 @@ public class CrearDatasetsSubgrupos implements Serializable {
 			// Sólo leo la cabecera y la primera línea de datos, con antigüedad=0. Así
 			// optimizo la lectura
 			datosEntrada = gestorFicheros
-					.leeSoloParametrosNoElaboradosFicheroDeSoloUnaEmpresa(ficheroGestionado.getPath(), Boolean.TRUE);
+					.leeTodosLosParametrosFicheroDeSoloUnaEmpresaYNFilasDeDatosRecientes(ficheroGestionado.getPath(), 1);
 
 			String empresa = "";
 			Set<String> empresas = datosEntrada.keySet();
@@ -303,6 +314,33 @@ public class CrearDatasetsSubgrupos implements Serializable {
 				// MY_LOGGER.warn("Empresa = " + empresa + " con Debt/Eq = " + debtEqStr);
 			}
 
+			// ------ SUBGRUPOS según ratio de SMA50 de precio ------------
+			String ratioSMA50PrecioStr = parametros.get("RATIO_SMA_50_PRECIO");
+			//System.out.println("--ratioSMA50PrecioStr---: " + ratioSMA50PrecioStr);
+			
+			if (!ratioSMA50PrecioStr.contains("null") && !ratioSMA50PrecioStr.isEmpty() && !"-".equals(ratioSMA50PrecioStr)) {
+				Integer ratioSMA50Precio = Integer.valueOf(ratioSMA50PrecioStr);
+
+				if (ratioSMA50Precio > 0 && ratioSMA50Precio < SMA50RATIOPRECIO_umbral1) {
+					pathEmpresasTipo27.add(ficheroGestionado.getAbsolutePath());
+				} else if (ratioSMA50Precio >= SMA50RATIOPRECIO_umbral1
+						&& ratioSMA50Precio < SMA50RATIOPRECIO_umbral2) {
+					pathEmpresasTipo28.add(ficheroGestionado.getAbsolutePath());
+				} else if (ratioSMA50Precio >= SMA50RATIOPRECIO_umbral2
+						&& ratioSMA50Precio < SMA50RATIOPRECIO_umbral3) {
+					pathEmpresasTipo29.add(ficheroGestionado.getAbsolutePath());
+				} else {
+					pathEmpresasTipo30.add(ficheroGestionado.getAbsolutePath());
+					// MY_LOGGER.warn("Empresa = " + empresa + " con RATIO_SMA_50_PRECIO = " +
+					// ratioSMA50PrecioStr);
+				}
+
+			} else {
+				pathEmpresasTipo31.add(ficheroGestionado.getAbsolutePath());
+				// MY_LOGGER.warn("Empresa = " + empresa + " con RATIO_SMA_50_PRECIO = " +
+				// ratioSMA50PrecioStr);
+			}
+
 		}
 
 		// Almacenamiento del tipo de empresa en la lista
@@ -337,6 +375,12 @@ public class CrearDatasetsSubgrupos implements Serializable {
 		empresasPorTipo.put(24, pathEmpresasTipo24);
 		empresasPorTipo.put(25, pathEmpresasTipo25);
 		empresasPorTipo.put(26, pathEmpresasTipo26);
+
+		empresasPorTipo.put(27, pathEmpresasTipo27);
+		empresasPorTipo.put(28, pathEmpresasTipo28);
+		empresasPorTipo.put(29, pathEmpresasTipo29);
+		empresasPorTipo.put(30, pathEmpresasTipo30);
+		empresasPorTipo.put(31, pathEmpresasTipo31);
 
 		// Se crea un CSV para cada subgrupo
 		Set<Integer> tipos = empresasPorTipo.keySet();

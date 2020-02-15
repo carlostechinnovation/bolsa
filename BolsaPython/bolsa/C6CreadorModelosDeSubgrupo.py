@@ -5,12 +5,14 @@ from imblearn.combine import SMOTEENN
 from imblearn.pipeline import Pipeline
 from imblearn.under_sampling import RandomUnderSampler
 from numpy import mean
+from scipy.stats import stats
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.utils.fixes import loguniform
 
 np.random.seed(12345)
 from pathlib import Path
 from sklearn import svm
-from sklearn.linear_model import LogisticRegression
+from sklearn.linear_model import LogisticRegression, SGDClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.neural_network import MLPClassifier
 import pickle
@@ -37,7 +39,9 @@ modoTiempo = sys.argv[2]
 desplazamientoAntiguedad = sys.argv[3]
 modoDebug = False  # En modo debug se pintan los dibujos. En otro caso, se evita calculo innecesario
 umbralCasosSuficientesClasePositiva = 100
-RecallOAreaROC = True  # True si se toma recall para seleccionar el modelo. False si se toma Area Bajo ROC
+RecallOAreaROC = False  # True si se toma recall para seleccionar el modelo. False si se toma Area Bajo ROC
+pequenaProbTargetUno = 100  # De todos los target=1, nos quedaremos con los pequenaProbTargetUno (en tanto por cien) MENOS probables. Un valor de 100 o mayor anula este parámetro
+granProbTargetUno = 100 # De todos los target=1, nos quedaremos con los granProbTargetUno (en tanto por cien) MAS probables. Un valor de 100 o mayor anula este parámetro
 
 ######### ID de subgrupo #######
 partes = dir_subgrupo.split("/")
@@ -52,31 +56,17 @@ pathCsvReducido = dir_subgrupo + "REDUCIDO.csv"
 pathCsvReducidoIndices = dir_subgrupo + "REDUCIDO.csv_indices"
 pathCsvPredichos = dir_subgrupo + "TARGETS_PREDICHOS.csv"
 pathCsvPredichosIndices = dir_subgrupo + "TARGETS_PREDICHOS.csv_indices"
-pathCsvPredichosProba = dir_subgrupo + "TARGETS_PREDICHOS_PROBA.csv"
 pathCsvFinalFuturo = dir_subgrupo + desplazamientoAntiguedad + "_" + id_subgrupo + "_COMPLETO_PREDICCION.csv"
 dir_subgrupo_img = dir_subgrupo + "img/"
-umbral_decision_target = float("0.7")
 
 print("dir_subgrupo: %s" % dir_subgrupo)
 print("modoTiempo: %s" % modoTiempo)
 print("desplazamientoAntiguedad: %s" % desplazamientoAntiguedad)
 print("pathCsvReducido: %s" % pathCsvReducido)
 print("dir_subgrupo_img = %s" % dir_subgrupo_img)
-print("umbral_decision_target = " + str(umbral_decision_target))
 
 
 ################# FUNCIONES ########################################
-def aplicarUmbralATargetsPredichos(targets_predichos_entrada, umbral_proba):
-    """
-    URL: https://towardsdatascience.com/fine-tuning-a-classifier-in-scikit-learn-66e048c21e65
-    Aplica un UMBRAL al vector de elementos de entrada (aplica una sigmoide), decidiendo si son TRUE o FALSE.
-    Obviamente, esta funcion solo es para variables dicotómicas (clasificación binaria, 2 clases)
-    """
-    print("Aplicando umbral para decidir target. UMBRAL = " + str(umbral_proba))
-    arraySalida = np.asarray([True if y >= umbral_proba else False for y in targets_predichos_entrada])
-    return arraySalida
-
-
 def ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_train_t, modeloEsGrid, modoDebug):
     print("** " + nombreModelo + " **")
     out_grid_best_params = []
@@ -93,15 +83,8 @@ def ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_tr
 
 def cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, modoDebug):
     modelo_loaded = pickle.load(open(pathModelo, 'rb'))
-
-    #Probabilidad por defecto UMBRAL=0.5
-    # ds_test_t_pred = modelo_loaded.predict(ds_test_f)  # PREDICCION de los targets de TEST (los compararemos con los que tenemos)
-
-    #Probabilidad aplicando un UMBRAL explícito
-    ds_test_t_pred_proba = modelo_loaded.predict_proba(ds_test_f)[:, 1]  # PREDICCION de los targets de TEST (los compararemos con los que tenemos)
-    print("PROBA - La variable TARGET es dicotómica (2 clases) con umbral sobre la probabilidad de ser target=1 en ds_test_t_pred_proba...")
-    ds_test_t_pred = aplicarUmbralATargetsPredichos(ds_test_t_pred_proba, umbral_decision_target)
-
+    ds_test_t_pred = modelo_loaded.predict(
+        ds_test_f)  # PREDICCION de los targets de TEST (los compararemos con los que tenemos)
     area_bajo_roc = roc_auc_score(ds_test_t, ds_test_t_pred)
 
     print(nombreModelo + ".roc_auc_score = " + str(round(area_bajo_roc, 4)))
@@ -176,17 +159,20 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
     else:
 
         print("num_muestras_minoria: " + str(num_muestras_minoria))
-        ift_mayoritaria_downsampled = resample(ift_mayoritaria, replace=False, n_samples=num_muestras_minoria,
-                                               random_state=123)
+
+        # CORRECCIÓN LUIS: no debo hacer resample aquí, sino sólo en los datos de training
+        # ift_mayoritaria_downsampled = resample(ift_mayoritaria, replace=False, n_samples=num_muestras_minoria,
+        #                                        random_state=123)
+        ift_mayoritaria_downsampled = ift_mayoritaria
 
         ift_balanceadas = pd.concat(
             [ift_mayoritaria_downsampled, ift_minoritaria])  # Juntar ambas clases ya BALANCEADAS
         print("Las clases ya están balanceadas:")
         print("ift_balanceadas:" + str(ift_balanceadas.shape[0]) + " x " + str(ift_balanceadas.shape[1]))
 
-        print("DIVIDIR EL DATASET DE ENTRADA EN 3 PARTES: TRAIN (70%), TEST (20%), VALIDACION (10%)...")
+        print("DIVIDIR EL DATASET DE ENTRADA EN 3 PARTES: TRAIN (50%), TEST (25%), VALIDACION (25%)...")
         ds_train, ds_test, ds_validacion = np.split(ift_balanceadas.sample(frac=1),
-                                                    [int(.7 * len(ift_balanceadas)), int(.9 * len(ift_balanceadas))])
+                                                    [int(.5 * len(ift_balanceadas)), int(.75 * len(ift_balanceadas))])
         print("TRAIN --> " + str(ds_train.shape[0]) + " x " + str(ds_train.shape[1]))
         print("TEST --> " + str(ds_test.shape[0]) + " x " + str(ds_test.shape[1]))
         print("VALIDACION --> " + str(ds_validacion.shape[0]) + " x " + str(ds_validacion.shape[1]))
@@ -223,7 +209,7 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
 
         # nombreModelo = "svc"
         # pathModelo = dir_subgrupo + nombreModelo + ".modelo"
-        # modelo = svm.SVC(C=1.0, kernel='rbf', degree=3, gamma='scale', coef0=0.0, shrinking=True, probability=False,
+        # modelo = svm.SVC(C=1.0, kernel='rbf', degree=3, gamma='scale', coef0=0.0, shrinking=True, probability=True,
         #              tol=0.001, cache_size=200, class_weight=None, verbose=False, max_iter=-1,
         #              decision_function_shape='ovr', break_ties=False, random_state=None)
         # modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_train_t, False, modoDebug)
@@ -301,14 +287,13 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         nombreModelo = "rf_grid"
         pathModelo = dir_subgrupo + nombreModelo + ".modelo"
         modelo_base = CalibratedClassifierCV(base_estimator=RandomForestClassifier())
-        hiperparametros = {'base_estimator__n_estimators': [14, 20, 40],
+        hiperparametros = {'base_estimator__n_estimators': [14, 20, 40, 70],
                            'base_estimator__max_features': ['log2', 'sqrt', 'auto'],
                            'base_estimator__criterion': ['entropy', 'gini'],
-                           'base_estimator__max_depth': [15, 25, 85, 100, 150, 300],
+                           'base_estimator__max_depth': [15, 25, 85, 300, 1000],
                            'base_estimator__min_samples_split': [3],
                            'base_estimator__min_samples_leaf': [1]}
-        # acc_scorer = make_scorer(roc_auc_score)
-        modelos_grid = GridSearchCV(modelo_base, hiperparametros, scoring='roc_auc', n_jobs=-1, refit=True,
+        modelos_grid = GridSearchCV(modelo_base, hiperparametros, scoring='recall', n_jobs=-1, refit=True,
                                     return_train_score=False)
         modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelos_grid, pathModelo, ds_train_f,
                                                                   ds_train_t, True, modoDebug)
@@ -328,6 +313,16 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         copyfile(pathModeloGanadorDeSubgrupoOrigen, pathModeloGanadorDeSubgrupoDestino)
         print("Modelo ganador guardado en: " + pathModeloGanadorDeSubgrupoDestino)
 
+        modelo_loaded = pickle.load(open(pathModelo, 'rb'))
+        ds_test_t_pred = modelo_loaded.predict(ds_test_f)
+
+        print("LOS RESULTADOS DE VALIDACION Y TEST DEBERÍAN SER SIMILARES. SI NO, ESTARIÁMOS COMETIENDO ERRORES...")
+        print("\nTest Results")
+        print("Accuracy: "+str(modelo_loaded.score(ds_test_f, ds_test_t)))
+        print("Recall: "+str(recall_score(ds_test_t, modelo_loaded.predict(ds_test_f))))
+        print("Validation Results")
+        print("Accuracy: "+str(modelo_loaded.score(ds_validac_f, ds_validac_t)))
+        print("Recall: "+str(recall_score(ds_validac_t, modelo_loaded.predict(ds_validac_f))))
 
 elif (modoTiempo == "futuro" and pathCsvReducido.endswith('.csv') and os.path.isfile(pathCsvReducido) and os.stat(
         pathCsvReducido).st_size > 0):
@@ -336,7 +331,7 @@ elif (modoTiempo == "futuro" and pathCsvReducido.endswith('.csv') and os.path.is
     print(
         "La columna TARGET que haya en el CSV de entrada no la queremos (es un NULL o False, por defecto), porque la vamos a PREDECIR...")
     inputFeatures = inputFeaturesyTarget.drop('TARGET', axis=1)
-    # print(inputFeatures.head())
+    print(inputFeatures.head())
     print("inputFeatures: " + str(inputFeatures.shape[0]) + " x " + str(inputFeatures.shape[1]))
 
     print("Capturamos el indice inicial de filas de entrada:")
@@ -355,30 +350,66 @@ elif (modoTiempo == "futuro" and pathCsvReducido.endswith('.csv') and os.path.is
         if file.endswith("ganador"):
             path_modelo_predictor_ganador = os.path.join(dir_modelo_predictor_ganador, file)
 
-
+    print("Cargar modelo PREDICTOR ganador (de la carpeta del pasado, SI EXISTE): " + path_modelo_predictor_ganador)
     if os.path.isfile(path_modelo_predictor_ganador):
-        print("Cargar modelo PREDICTOR ganador (de la carpeta del pasado, SI EXISTE): " + path_modelo_predictor_ganador)
 
         modelo_predictor_ganador = pickle.load(open(path_modelo_predictor_ganador, 'rb'))
 
         print("Predecir:")
+        targets_predichos = modelo_predictor_ganador.predict(inputFeatures_sinnulos)
 
-        # Probabilidad por defecto UMBRAL=0.5
-        # targets_predichos = modelo_predictor_ganador.predict(inputFeatures_sinnulos)
+        # probabilities
+        probs = modelo_predictor_ganador.predict_proba(inputFeatures_sinnulos)
 
-        # Probabilidad aplicando un UMBRAL explícito
-        targets_predichos_proba = modelo_predictor_ganador.predict_proba(inputFeatures_sinnulos)[:, 1]  # PREDICCION de los targets de TEST (los compararemos con los que tenemos)
-        print("PROBA - La variable TARGET es dicotómica (2 clases) con umbral. Guardamos la probabilidad de ser target=1 en targets_predichos_proba...")
-        targets_predichos = aplicarUmbralATargetsPredichos(targets_predichos_proba, umbral_decision_target)
+        # UMBRAL MENOS PROBABLES CON TARGET=1. Cuando el target es 1, se guarda su probabilidad
+        probabilidadesEnTargetUnoPeq = []
+        for row in probs:
+            if row[0] < row[1]:
+                # La probabilidad de un 1 es mayor que la de un 0
+                probabilidadesEnTargetUnoPeq.append(row[1])
 
-        print("Numero de targets_predichos: " + str(targets_predichos.shape[0]))
+        # De todos los target=1, nos quedaremos con los pequenaProbTargetUno % MENOS probables
+        probabilidadesEnTargetUnoPeq.sort(reverse=False)
+        numeroElementosPeq = len(probabilidadesEnTargetUnoPeq)
+        indiceUltimoElementoSeleccionadoPeq = int(pequenaProbTargetUno * numeroElementosPeq / 100)
+        probabsSeleccionadasPeq = probabilidadesEnTargetUnoPeq[0:indiceUltimoElementoSeleccionadoPeq]
+        probabUmbralPeq = probabsSeleccionadasPeq[-1]
 
-        print("Guardando las probabilidades de cada target predicho en: " + pathCsvPredichosProba)
-        pathCsvPredichosProba_df = pd.DataFrame(data=targets_predichos_proba, columns=['TARGET'])
-        pathCsvPredichosProba_df.to_csv(pathCsvPredichosProba, index=False, sep='|')
+        # UMBRAL MAS PROBABLES CON TARGET=1. Cuando el target es 1, se guarda su probabilidad
+        probabilidadesEnTargetUnoGran = []
+        for row in probs:
+            if row[0] < row[1]:
+                # La probabilidad de un 1 es mayor que la de un 0
+                probabilidadesEnTargetUnoGran.append(row[1])
 
+        # De todos los target=1, nos quedaremos con los pequenaProbTargetUno % MAS probables
+        probabilidadesEnTargetUnoGran.sort(reverse=True)
+        numeroElementosGran = len(probabilidadesEnTargetUnoGran)
+        indiceUltimoElementoSeleccionadoGran = int(pequenaProbTargetUno * numeroElementosGran / 100)
+        probabsSeleccionadasGran = probabilidadesEnTargetUnoGran[0:indiceUltimoElementoSeleccionadoGran]
+        probabUmbralGran = probabsSeleccionadasGran[-1]
+
+        targets_predichosCorregidos = []
+        probsSeleccionadasEnUno = []
+        print("Umbral de probabilidad pequeña para target = 1: " + str(probabUmbralPeq))
+        print("Umbral de probabilidad grande para target = 1: " + str(probabUmbralGran))
+        for i in range(probs.shape[0]):
+            prob = probs[i][1]
+            # True si es poco probable cuando target=1
+            if probs[i][0] < probs[i][1] and probabUmbralPeq >= prob >= probabUmbralGran:
+                targets_predichosCorregidos.append("True")
+                probsSeleccionadasEnUno.append(prob)
+            else:
+                targets_predichosCorregidos.append("False")
+
+        print("Numero de targets_predichos: " + str(len(targets_predichos)) + " con numero de TRUEs = " + str(
+            np.sum(targets_predichos, where=["True"])))
+        print("Numero de targets_predichos corregidos: " + str(
+            len(targets_predichosCorregidos)) + " con numero de TRUEs = " + str(len(probsSeleccionadasEnUno)))
+        print("Probabilidades de los target=1 seleccionados: ")
+        print(probsSeleccionadasEnUno)
         print("Guardando targets PREDICHOS en: " + pathCsvPredichos)
-        pathCsvPredichos_df = pd.DataFrame(data=targets_predichos, columns=['TARGET'])
+        pathCsvPredichos_df = pd.DataFrame(data=targets_predichosCorregidos, columns=['TARGET'])
         pathCsvPredichos_df.to_csv(pathCsvPredichos, index=False, sep='|')
 
         print("Guardando indices de filas de salida respecto de la entrada...")
@@ -433,5 +464,3 @@ else:
 
 ############################################################
 print("------------ FIN de capa 6----------------")
-
-
