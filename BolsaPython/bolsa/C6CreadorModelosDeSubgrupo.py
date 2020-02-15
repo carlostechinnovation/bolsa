@@ -52,17 +52,31 @@ pathCsvReducido = dir_subgrupo + "REDUCIDO.csv"
 pathCsvReducidoIndices = dir_subgrupo + "REDUCIDO.csv_indices"
 pathCsvPredichos = dir_subgrupo + "TARGETS_PREDICHOS.csv"
 pathCsvPredichosIndices = dir_subgrupo + "TARGETS_PREDICHOS.csv_indices"
+pathCsvPredichosProba = dir_subgrupo + "TARGETS_PREDICHOS_PROBA.csv"
 pathCsvFinalFuturo = dir_subgrupo + desplazamientoAntiguedad + "_" + id_subgrupo + "_COMPLETO_PREDICCION.csv"
 dir_subgrupo_img = dir_subgrupo + "img/"
+umbral_decision_target = float("0.7")
 
 print("dir_subgrupo: %s" % dir_subgrupo)
 print("modoTiempo: %s" % modoTiempo)
 print("desplazamientoAntiguedad: %s" % desplazamientoAntiguedad)
 print("pathCsvReducido: %s" % pathCsvReducido)
 print("dir_subgrupo_img = %s" % dir_subgrupo_img)
+print("umbral_decision_target = " + str(umbral_decision_target))
 
 
 ################# FUNCIONES ########################################
+def aplicarUmbralATargetsPredichos(targets_predichos_entrada, umbral_proba):
+    """
+    URL: https://towardsdatascience.com/fine-tuning-a-classifier-in-scikit-learn-66e048c21e65
+    Aplica un UMBRAL al vector de elementos de entrada (aplica una sigmoide), decidiendo si son TRUE o FALSE.
+    Obviamente, esta funcion solo es para variables dicotómicas (clasificación binaria, 2 clases)
+    """
+    print("Aplicando umbral para decidir target. UMBRAL = " + str(umbral_proba))
+    arraySalida = np.asarray([True if y >= umbral_proba else False for y in targets_predichos_entrada])
+    return arraySalida
+
+
 def ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_train_t, modeloEsGrid, modoDebug):
     print("** " + nombreModelo + " **")
     out_grid_best_params = []
@@ -79,8 +93,15 @@ def ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_tr
 
 def cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, modoDebug):
     modelo_loaded = pickle.load(open(pathModelo, 'rb'))
-    ds_test_t_pred = modelo_loaded.predict(
-        ds_test_f)  # PREDICCION de los targets de TEST (los compararemos con los que tenemos)
+
+    #Probabilidad por defecto UMBRAL=0.5
+    # ds_test_t_pred = modelo_loaded.predict(ds_test_f)  # PREDICCION de los targets de TEST (los compararemos con los que tenemos)
+
+    #Probabilidad aplicando un UMBRAL explícito
+    ds_test_t_pred_proba = modelo_loaded.predict_proba(ds_test_f)[:, 1]  # PREDICCION de los targets de TEST (los compararemos con los que tenemos)
+    print("PROBA - La variable TARGET es dicotómica (2 clases) con umbral sobre la probabilidad de ser target=1 en ds_test_t_pred_proba...")
+    ds_test_t_pred = aplicarUmbralATargetsPredichos(ds_test_t_pred_proba, umbral_decision_target)
+
     area_bajo_roc = roc_auc_score(ds_test_t, ds_test_t_pred)
 
     print(nombreModelo + ".roc_auc_score = " + str(round(area_bajo_roc, 4)))
@@ -334,14 +355,28 @@ elif (modoTiempo == "futuro" and pathCsvReducido.endswith('.csv') and os.path.is
         if file.endswith("ganador"):
             path_modelo_predictor_ganador = os.path.join(dir_modelo_predictor_ganador, file)
 
-    print("Cargar modelo PREDICTOR ganador (de la carpeta del pasado, SI EXISTE): " + path_modelo_predictor_ganador)
+
     if os.path.isfile(path_modelo_predictor_ganador):
+        print("Cargar modelo PREDICTOR ganador (de la carpeta del pasado, SI EXISTE): " + path_modelo_predictor_ganador)
 
         modelo_predictor_ganador = pickle.load(open(path_modelo_predictor_ganador, 'rb'))
 
         print("Predecir:")
-        targets_predichos = modelo_predictor_ganador.predict(inputFeatures_sinnulos)
+
+        # Probabilidad por defecto UMBRAL=0.5
+        # targets_predichos = modelo_predictor_ganador.predict(inputFeatures_sinnulos)
+
+        # Probabilidad aplicando un UMBRAL explícito
+        targets_predichos_proba = modelo_predictor_ganador.predict_proba(inputFeatures_sinnulos)[:, 1]  # PREDICCION de los targets de TEST (los compararemos con los que tenemos)
+        print("PROBA - La variable TARGET es dicotómica (2 clases) con umbral. Guardamos la probabilidad de ser target=1 en targets_predichos_proba...")
+        targets_predichos = aplicarUmbralATargetsPredichos(targets_predichos_proba, umbral_decision_target)
+
         print("Numero de targets_predichos: " + str(targets_predichos.shape[0]))
+
+        print("Guardando las probabilidades de cada target predicho en: " + pathCsvPredichosProba)
+        pathCsvPredichosProba_df = pd.DataFrame(data=targets_predichos_proba, columns=['TARGET'])
+        pathCsvPredichosProba_df.to_csv(pathCsvPredichosProba, index=False, sep='|')
+
         print("Guardando targets PREDICHOS en: " + pathCsvPredichos)
         pathCsvPredichos_df = pd.DataFrame(data=targets_predichos, columns=['TARGET'])
         pathCsvPredichos_df.to_csv(pathCsvPredichos, index=False, sep='|')

@@ -410,8 +410,8 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, 
       # print(targetsFichero.head())
 
       featuresytargets = pd.concat([featuresFicheroNormElegidas.reset_index(drop=True), targetsFichero.reset_index(drop=True)], axis=1)
-      print("FEATURES+TARGETS juntas (sample):")
-      print(featuresytargets.head())
+      # print("FEATURES+TARGETS juntas (sample):")
+      # print(featuresytargets.head())
       print("Justo antes de guardar, featuresytargets: " + str(featuresytargets.shape[0]) + " x " + str(featuresytargets.shape[1]))
       featuresytargets.to_csv(pathCsvReducido, index=False, sep='|')
 
