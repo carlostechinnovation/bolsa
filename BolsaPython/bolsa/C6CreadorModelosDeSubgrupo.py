@@ -167,7 +167,13 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
 
         ift_balanceadas = pd.concat(
             [ift_mayoritaria_downsampled, ift_minoritaria])  # Juntar ambas clases ya BALANCEADAS
+
+        # Desordeno la matriz, para que no se entrene/test/valide por fechas, o por patrones dependientes del tiempo
+        ift_balanceadas = ift_balanceadas.sample(frac=1).reset_index(drop=True)
+
         print("Las clases ya están balanceadas:")
+        print("ift_mayoritaria_downsampled:" + str(ift_mayoritaria_downsampled.shape[0]) + " x " + str(ift_mayoritaria_downsampled.shape[1]))
+        print("ift_minoritaria:" + str(ift_minoritaria.shape[0]) + " x " + str(ift_minoritaria.shape[1]))
         print("ift_balanceadas:" + str(ift_balanceadas.shape[0]) + " x " + str(ift_balanceadas.shape[1]))
 
         print("DIVIDIR EL DATASET DE ENTRADA EN 3 PARTES: TRAIN (50%), TEST (25%), VALIDACION (25%)...")
