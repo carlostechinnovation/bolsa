@@ -99,7 +99,7 @@ public class LimpiarOperaciones implements Serializable {
 	public static void operacionesLimpiezaFicheroYGuardar(String pathFicheroIn, String directorioOut, String p_inicio,
 			String p_fin) throws IOException {
 
-		List<List<String>> datos = LimpiosUtils.leerFicheroHaciaListasDeColumnas(pathFicheroIn);
+		List<List<String>> datos = LimpiosUtils.leerFicheroHaciaListasDeColumnas(pathFicheroIn, null);
 
 		Integer p_inicio_int = Integer.valueOf(p_inicio);
 		Integer p_fin_int = Integer.valueOf(p_fin);
@@ -143,19 +143,19 @@ public class LimpiarOperaciones implements Serializable {
 
 		// --------- EXTRAER LAS FILAS que están dentro del periodo --
 		Map<Integer, String> datosDentroDePeriodo = new HashMap<Integer, String>();
-		for (int i : indicesFilasSeleccionadas) {
-			datosDentroDePeriodo.put(i, "");
-		}
 
 		boolean primeraColumna = true;
 		for (List<String> columna : datos) {
 
+			if (primeraColumna) {
+				for (int j = 0; j < indicesFilasSeleccionadas.size(); j++) {
+					datosDentroDePeriodo.put(j, "");
+				}
+			}
+
 			for (int i : indicesFilasSeleccionadas) {
-
 				String separador = primeraColumna ? "" : "|";
-
 				datosDentroDePeriodo.put(i, datosDentroDePeriodo.get(i) + separador + columna.get(i));
-
 			}
 
 			primeraColumna = false;

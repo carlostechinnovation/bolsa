@@ -426,7 +426,8 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, 
 if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.stat(pathCsvCompleto).st_size > 0:
 
     featuresFichero, targetsFichero, indiceFilasFuturasTransformadas = leerFeaturesyTarget(pathCsvCompleto, dir_subgrupo_img, compatibleParaMuchasEmpresas, pathModeloOutliers, modoTiempo, modoDebug)
-    featuresFicheroNorm = normalizarFeatures(featuresFichero, path_modelo_normalizador, dir_subgrupo_img, modoTiempo, indiceFilasFuturasTransformadas, modoDebug)
+    #PENDIENTE featuresFicheroNorm = normalizarFeatures(featuresFichero, path_modelo_normalizador, dir_subgrupo_img, modoTiempo, indiceFilasFuturasTransformadas, modoDebug)
+    featuresFicheroNorm = featuresFichero #DEBUG
     numclases = comprobarSuficientesClasesTarget(featuresFicheroNorm, targetsFichero, modoDebug)
 
     if(modoTiempo == "pasado" and numclases <= 1):

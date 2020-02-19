@@ -249,46 +249,46 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         #     ganador_nombreModelo = nombreModelo
         #     ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
 
-        # nombreModelo = "nn"
-        # pathModelo = dir_subgrupo + nombreModelo + ".modelo"
-        # modelo = MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(5, 2), random_state=1)
-        # modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_train_t, False, modoDebug)
-        # recall_o_ROC = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, modoDebug)
-        # print(type(recall_o_ROC))
-        # if recall_o_ROC > ganador_recall_o_ROC:
-        #     ganador_recall_o_ROC = recall_o_ROC
-        #     ganador_nombreModelo = nombreModelo
-        #     ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
+        nombreModelo = "nn"
+        pathModelo = dir_subgrupo + nombreModelo + ".modelo"
+        modelo = MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(5, 2), random_state=1)
+        modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_train_t, False, modoDebug)
+        recall_o_ROC = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, modoDebug)
+        print(type(recall_o_ROC))
+        if recall_o_ROC > ganador_recall_o_ROC:
+            ganador_recall_o_ROC = recall_o_ROC
+            ganador_nombreModelo = nombreModelo
+            ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
 
         ####### HYPERPARAMETROS: GRID de parametros #######
         print("HYPERPARAMETROS - URL: https://scikit-learn.org/stable/modules/grid_search.html")
 
-        # nombreModelo = "svc_grid"
-        # pathModelo = dir_subgrupo + nombreModelo + ".modelo"
-        # modelo_base = svm.SVC()
-        # hiperparametros = [{'C':[1,3,5,10],'gamma':[1], 'kernel':['rbf']}]
-        # modelos_grid = GridSearchCV(modelo_base, hiperparametros, n_jobs=-1, refit=True, cv=5, pre_dispatch='2*n_jobs', return_train_score=False)
-        # modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelos_grid, pathModelo, ds_train_f, ds_train_t, True, modoDebug)
-        # recall_o_ROC = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, modoDebug)
-        # print(type(recall_o_ROC))
-        # if recall_o_ROC > ganador_recall_o_ROC:
-        #     ganador_recall_o_ROC = recall_o_ROC
-        #     ganador_nombreModelo = nombreModelo
-        #     ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
-        #
-        #
-        # nombreModelo = "logreg_grid"
-        # pathModelo = dir_subgrupo + nombreModelo + ".modelo"
-        # modelo_base = LogisticRegression()
-        # hiperparametros = dict(C=np.logspace(0, 4, 10), penalty=['l2'])
-        # modelos_grid = GridSearchCV(modelo_base, hiperparametros, n_jobs=-1, refit=True, cv=5, pre_dispatch='2*n_jobs', return_train_score=False)
-        # modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelos_grid, pathModelo, ds_train_f, ds_train_t, True, modoDebug)
-        # recall_o_ROC = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, modoDebug)
-        # print(type(recall_o_ROC))
-        # if recall_o_ROC > ganador_recall_o_ROC:
-        #     ganador_recall_o_ROC = recall_o_ROC
-        #     ganador_nombreModelo = nombreModelo
-        #     ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
+        nombreModelo = "svc_grid"
+        pathModelo = dir_subgrupo + nombreModelo + ".modelo"
+        modelo_base = svm.SVC()
+        hiperparametros = [{'C':[1,3,5,10],'gamma':[1], 'kernel':['rbf']}]
+        modelos_grid = GridSearchCV(modelo_base, hiperparametros, n_jobs=-1, refit=True, cv=5, pre_dispatch='2*n_jobs', return_train_score=False)
+        modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelos_grid, pathModelo, ds_train_f, ds_train_t, True, modoDebug)
+        recall_o_ROC = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, modoDebug)
+        print(type(recall_o_ROC))
+        if recall_o_ROC > ganador_recall_o_ROC:
+            ganador_recall_o_ROC = recall_o_ROC
+            ganador_nombreModelo = nombreModelo
+            ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
+
+
+        nombreModelo = "logreg_grid"
+        pathModelo = dir_subgrupo + nombreModelo + ".modelo"
+        modelo_base = LogisticRegression()
+        hiperparametros = dict(C=np.logspace(0, 4, 10), penalty=['l2'])
+        modelos_grid = GridSearchCV(modelo_base, hiperparametros, n_jobs=-1, refit=True, cv=5, pre_dispatch='2*n_jobs', return_train_score=False)
+        modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelos_grid, pathModelo, ds_train_f, ds_train_t, True, modoDebug)
+        recall_o_ROC = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, modoDebug)
+        print(type(recall_o_ROC))
+        if recall_o_ROC > ganador_recall_o_ROC:
+            ganador_recall_o_ROC = recall_o_ROC
+            ganador_nombreModelo = nombreModelo
+            ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
 
         nombreModelo = "rf_grid"
         pathModelo = dir_subgrupo + nombreModelo + ".modelo"

@@ -18,10 +18,14 @@ public class LimpiosUtils {
 	 * de columnas.
 	 * 
 	 * @param pathFicheroIn
+	 * @param numMaxLineasLeidas (opcional) Número máximo de líneas leídas del
+	 *                           fichero de entrada. Si no se indica, se leerá el
+	 *                           fichero hasta el final.
 	 * @return
 	 * @throws IOException
 	 */
-	public static List<List<String>> leerFicheroHaciaListasDeColumnas(String pathFicheroIn) throws IOException {
+	public static List<List<String>> leerFicheroHaciaListasDeColumnas(String pathFicheroIn, Long numMaxLineasLeidas)
+			throws IOException {
 
 		FileReader fr = new FileReader(pathFicheroIn);
 		BufferedReader br = new BufferedReader(fr);
@@ -29,29 +33,36 @@ public class LimpiosUtils {
 		boolean primeraLinea = true;
 
 		List<List<String>> datos = new ArrayList<List<String>>();
+		long numfila = 0;
 
 		while ((actual = br.readLine()) != null) {
-			if (primeraLinea == false && actual.contains("|")) {
 
-				String[] partes = actual.split("\\|");
+			numfila++;
+			if (numMaxLineasLeidas == null || numfila <= numMaxLineasLeidas) {
 
-				for (int j = 0; j < partes.length; j++) {
-					datos.get(j).add(partes[j]);
+				if (primeraLinea == false && actual.contains("|")) {
+
+					String[] partes = actual.split("\\|");
+
+					for (int j = 0; j < partes.length; j++) {
+						datos.get(j).add(partes[j]);
+					}
+
+				} else {
+					// La cabecera me dirá el numero de columnas
+					String[] partes = actual.split("\\|");
+					int numColumnas = partes.length;
+					datos = new ArrayList<List<String>>();
+
+					for (int i = 1; i <= numColumnas; i++) {
+						datos.add(new ArrayList<String>());
+						datos.get(i - 1).add(partes[i - 1]);
+					}
+
 				}
-
-			} else {
-				// La cabecera me dirá el numero de columnas
-				String[] partes = actual.split("\\|");
-				int numColumnas = partes.length;
-				datos = new ArrayList<List<String>>();
-
-				for (int i = 1; i <= numColumnas; i++) {
-					datos.add(new ArrayList<String>());
-					datos.get(i - 1).add(partes[i - 1]);
-				}
-
+				primeraLinea = false;
 			}
-			primeraLinea = false;
+
 		}
 		br.close();
 
