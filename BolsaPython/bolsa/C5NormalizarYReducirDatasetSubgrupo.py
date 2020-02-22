@@ -49,9 +49,11 @@ compatibleParaMuchasEmpresas = True  # Si hay muchas empresas, debo hacer ya el 
 modoDebug = False  # En modo debug se pintan los dibujos. En otro caso, se evita calculo innecesario
 pathCsvCompleto = dir_subgrupo + "COMPLETO.csv"
 dir_subgrupo_img = dir_subgrupo + "img/"
+pathCsvIntermedio = dir_subgrupo + "intermedio.csv"
 pathCsvReducido = dir_subgrupo + "REDUCIDO.csv"
 pathModeloOutliers = (dir_subgrupo + "DETECTOR_OUTLIERS.tool").replace("futuro", "pasado") # Siempre lo cojo del pasado
 path_modelo_normalizador = (dir_subgrupo + "NORMALIZADOR.tool").replace("futuro", "pasado") # Siempre lo cojo del pasado
+path_indices_out_capa5 = (dir_subgrupo + "indices_out_capa5.indices")
 path_modelo_reductor_features = (dir_subgrupo + "REDUCTOR.tool").replace("futuro", "pasado") # Siempre lo cojo del pasado
 
 print("pathCsvCompleto = %s" % pathCsvCompleto)
@@ -59,6 +61,7 @@ print("dir_subgrupo_img = %s" % dir_subgrupo_img)
 print("pathCsvReducido = %s" % pathCsvReducido)
 print("pathModeloOutliers = %s" % pathModeloOutliers)
 print("path_modelo_normalizador = %s" % path_modelo_normalizador)
+print("path_indices_out_capa5 = %s" % path_indices_out_capa5)
 print("path_modelo_reductor_features = %s" % path_modelo_reductor_features)
 
 
@@ -72,32 +75,30 @@ def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmp
   entradaFeaturesYTarget = pd.read_csv(filepath_or_buffer=path_csv_completo, sep='|')
   num_nulos_por_fila_1 = np.logical_not(entradaFeaturesYTarget.isnull()).sum()
   print("entradaFeaturesYTarget: " + str(entradaFeaturesYTarget.shape[0]) + " x " + str(entradaFeaturesYTarget.shape[1]))
-  indiceFilasFuturasTransformadas = entradaFeaturesYTarget.index.values  # DEFAULT
+  indiceFilasFuturasTransformadas1 = entradaFeaturesYTarget.index.values  # DEFAULT
   indiceFilasFuturasTransformadas2 = entradaFeaturesYTarget.index.values  # DEFAULT
 
   ################# Borrado de columnas nulas enteras ##########
   print("MISSING VALUES (COLUMNAS) - Borramos las columnas (features) que sean siempre NaN...")
   entradaFeaturesYTarget2 = entradaFeaturesYTarget.dropna(axis=1, how='all') #Borrar COLUMNA si TODOS sus valores tienen NaN
   print("entradaFeaturesYTarget2 (columnas nulas borradas): " + str(entradaFeaturesYTarget2.shape[0]) + " x " + str(entradaFeaturesYTarget2.shape[1]))
+  entradaFeaturesYTarget2.to_csv(path_csv_completo + "_TEMP01", index=True, sep='|')  # UTIL ara testIntegracion
 
 
   ################# Borrado de filas que tengan algun hueco (tratamiento espacial para el futuro con sus columnas: TARGET y otras) #####
   if modoTiempo == "futuro":
-
       print("Nos quedamos solo con las velas con antiguedad=0 (futuras)...")
-      entradaFeaturesYTarget2b = entradaFeaturesYTarget2[entradaFeaturesYTarget2.antiguedad == 0]
-      print("entradaFeaturesYTarget2b:" + str(entradaFeaturesYTarget2b.shape[0]) + " x " + str(entradaFeaturesYTarget2b.shape[1]))
-      #print(entradaFeaturesYTarget2b.head())
-      print("Transformacion en la que borro o barajo filas. Por tanto, guardo el indice...")
-      indiceFilasFuturasTransformadas = entradaFeaturesYTarget2b.index.values
-      print("indiceFilasFuturasTransformadas: " + str(indiceFilasFuturasTransformadas.shape[0]))
-      print(indiceFilasFuturasTransformadas)
+      entradaFeaturesYTarget2 = entradaFeaturesYTarget2[entradaFeaturesYTarget2.antiguedad == 0]
+      print("entradaFeaturesYTarget2:" + str(entradaFeaturesYTarget2.shape[0]) + " x " + str(entradaFeaturesYTarget2.shape[1]))
+      #print(entradaFeaturesYTarget2.head())
 
-      # Reponer el dataframe 2
-      entradaFeaturesYTarget2 = entradaFeaturesYTarget2b
+
+  print("Pasado o Futuro: Transformacion en la que borro filas. Por tanto, guardo el indice...")
+  indiceFilasFuturasTransformadas1 = entradaFeaturesYTarget2.index.values
 
   print("Borrar columnas especiales (informativas): empresa | antiguedad | mercado | anio | mes | dia | hora | minuto...")
   entradaFeaturesYTarget2 = entradaFeaturesYTarget2.drop('empresa', axis=1).drop('antiguedad', axis=1).drop('mercado', axis=1).drop('anio', axis=1).drop('mes', axis=1).drop('dia', axis=1).drop('hora', axis=1).drop('minuto', axis=1)
+  entradaFeaturesYTarget2.to_csv(path_csv_completo + "_TEMP02", index=True, sep='|')  # UTIL para testIntegracion
 
   print("entradaFeaturesYTarget2: " + str(entradaFeaturesYTarget2.shape[0]) + " x " + str(entradaFeaturesYTarget2.shape[1]))
   # print(entradaFeaturesYTarget2.head())
@@ -105,41 +106,47 @@ def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmp
   if modoTiempo == "pasado":
       print("MISSING VALUES (FILAS) - Borramos las FILAS que tengan 1 o mas valores NaN porque son huecos que no deberían estar...")
       entradaFeaturesYTarget3 = entradaFeaturesYTarget2.dropna(axis=0, how='any')  # Borrar FILA si ALGUNO sus valores tienen NaN
-      print("entradaFeaturesYTarget3 (filas algun nulo borradas):" + str(entradaFeaturesYTarget3.shape[0]) + " x " + str(entradaFeaturesYTarget3.shape[1]))
 
   elif modoTiempo == "futuro":
       print("MISSING VALUES (FILAS) - Para el FUTURO; el target es NULO siempre, pero borramos las filas que tengan ademas otros NULOS...")
       entradaFeaturesYTarget3 = entradaFeaturesYTarget2.drop('TARGET', axis=1).dropna(axis=0, how='any')  # Borrar FILA si ALGUNO sus valores tienen NaN
-      print("entradaFeaturesYTarget3 (filas algun nulo borradas):" + str(entradaFeaturesYTarget3.shape[0]) + " x " + str(entradaFeaturesYTarget3.shape[1]))
-
-      print("Transformacion en la que borro o barajo filas. Por tanto, guardo el indice...")
-      indiceFilasFuturasTransformadas2 = entradaFeaturesYTarget3.index.values
-      print("indiceFilasFuturasTransformadas2: " + str(indiceFilasFuturasTransformadas2.shape[0]))
-      #print(indiceFilasFuturasTransformadas2)
 
 
-  # print("Mostramos las 5 primeras filas de entradaFeaturesYTarget3:")
-  # print(entradaFeaturesYTarget3.head())
+  print("Pasado o futuro: Transformacion en la que he borrado filas. Por tanto, guardo el indice...")
+  indiceFilasFuturasTransformadas2 = entradaFeaturesYTarget3.index.values
+  print("indiceFilasFuturasTransformadas2: " + str(indiceFilasFuturasTransformadas2.shape[0]))
+  #print(indiceFilasFuturasTransformadas2)
+
+  print("entradaFeaturesYTarget3 (filas con algun nulo borradas):" + str(entradaFeaturesYTarget3.shape[0]) + " x " + str(entradaFeaturesYTarget3.shape[1]))
+  entradaFeaturesYTarget3.to_csv(path_csv_completo + "_TEMP03", index=True, sep='|')  # UTIL ara testIntegracion
+
 
   # Limpiar OUTLIERS
   # URL: https://scikit-learn.org/stable/modules/outlier_detection.html
   if modoTiempo == "pasado":
       detector_outliers = IsolationForest(contamination='auto', random_state=42)
-      detector_outliers.fit(entradaFeaturesYTarget3)  # fit 10 trees
+      df3aux = entradaFeaturesYTarget3.drop('TARGET', axis=1)
+      detector_outliers.fit(df3aux)  # fit 10 trees
       pickle.dump(detector_outliers, open(pathModeloOutliers, 'wb'))
+  else:
+      df3aux = entradaFeaturesYTarget3  # FUTURO
 
-      # Pasado y futuro:
-      print("Cargando modelo detector de outliers: " + pathModeloOutliers)
-      detector_outliers = pickle.load(open(pathModeloOutliers, 'rb'))
-      outliers_indices = detector_outliers.predict(entradaFeaturesYTarget3) #Si vale -1 es un outlier!!!
-      entradaFeaturesYTarget4 = entradaFeaturesYTarget3[np.where(outliers_indices == 1, True, False)]
-      print("entradaFeaturesYTarget4 (sin outliers):" + str(entradaFeaturesYTarget4.shape[0]) + " x " + str(entradaFeaturesYTarget4.shape[1]))
+  # Pasado y futuro:
+  print("Cargando modelo detector de outliers: " + pathModeloOutliers)
+  detector_outliers = pickle.load(open(pathModeloOutliers, 'rb'))
+  flagAnomaliasDf = pd.DataFrame({'marca_anomalia':detector_outliers.predict(df3aux)}) #vale -1 es un outlier; si es un 1, no lo es
 
-  elif modoTiempo == "futuro":  # Para el futuro no podemos quitar OUTLIERS porque la funcion no acepta nulos!!!
-      entradaFeaturesYTarget4 = entradaFeaturesYTarget3
+  indice3=entradaFeaturesYTarget3.index #lo guardo para pegarlo luego
+  entradaFeaturesYTarget3.reset_index(drop=True, inplace=True)
+  flagAnomaliasDf.reset_index(drop=True, inplace=True)
+  entradaFeaturesYTarget4 = pd.concat([entradaFeaturesYTarget3, flagAnomaliasDf], axis=1)  #Column Bind, manteniendo el índice del DF izquierdo
+  entradaFeaturesYTarget4.set_index(indice3, inplace = True) #ponemos el indice que tenia el DF de la izquierda
 
-  # print("Mostramos las 5 primeras filas de entradaFeaturesYTarget4:")
-  # print(entradaFeaturesYTarget4.head())
+  entradaFeaturesYTarget4 = entradaFeaturesYTarget4.loc[entradaFeaturesYTarget4['marca_anomalia'] == 1] #Cogemos solo las que no son anomalias
+  entradaFeaturesYTarget4 = entradaFeaturesYTarget4.drop('marca_anomalia', axis=1)  #Quitamos la columna auxiliar
+
+  print("entradaFeaturesYTarget4 (sin outliers):" + str(entradaFeaturesYTarget4.shape[0]) + " x " + str(entradaFeaturesYTarget4.shape[1]))
+  entradaFeaturesYTarget4.to_csv(path_csv_completo + "_TEMP04", index=True, sep='|')  # UTIL para testIntegracion
 
   # ENTRADA: features (+ target)
 
@@ -160,20 +167,7 @@ def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmp
     ift_minoritaria = entradaFeaturesYTarget4[entradaFeaturesYTarget4.TARGET == True]
     print("ift_minoritaria (original):" + str(ift_minoritaria.shape[0]) + " x " + str(ift_minoritaria.shape[1]))
 
-    # Se seleccionan tantos target=0 (mayoritaria) como entradas tengo de Target=1 (minoritaria). Se coge una muestra al azar de 2xminoritarias, para asegurar que cogemos suficientes valores con target=0. Luego ya nos quedamos sólo con un tamaño mayoriaria=minoritaria
-    num_copias_anhadidas = 0 #default
-    if(ift_minoritaria.shape[0] > 2000 and ift_minoritaria.shape[0] < 8000):
-        num_copias_anhadidas = 0  #1 LUIS
-    elif(ift_minoritaria.shape[0] <= 2000):
-        num_copias_anhadidas = 0  #3 LUIS
-
-    if (num_copias_anhadidas > 0):
-        print("OVERSAMPLING DE CLASE MINORITARIA: copiamos " + str(num_copias_anhadidas) + " veces los casos de clase minoritaria --> Eso evitará que tengamos la obligacion de borrar muchas filas de la clase mayoritaria")
-        ift_minoritaria_aux = ift_minoritaria.append([ift_minoritaria] * num_copias_anhadidas, ignore_index=True)
-        ift_minoritaria = ift_minoritaria_aux
-        print("ift_minoritaria (con oversampling):" + str(ift_minoritaria.shape[0]) + " x " + str(ift_minoritaria.shape[1]))
-
-    num_filas_azar = 5 * (num_copias_anhadidas + 1) * ift_minoritaria.shape[0]
+    num_filas_azar = 5 * ift_minoritaria.shape[0]
     print("num_filas_azar:" + str(num_filas_azar))
     #ift_mayoritaria = pd.DataFrame(index=ift_minoritaria.index.copy(), columns=ift_minoritaria.columns)
     ift_mayoritaria = entradaFeaturesYTarget4.loc[np.random.choice(entradaFeaturesYTarget4.index, num_filas_azar)]
@@ -187,21 +181,16 @@ def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmp
         ift_minoritaria.shape[0]) + " = " + str(ift_mayoritaria.shape[0] / ift_minoritaria.shape[0]))
 
     # Juntar ambas clases ya BALANCEADAS. Primero vacío el dataset
-    ift_mayoritaria.reset_index(drop=True, inplace=True)
-    ift_minoritaria.reset_index(drop=True, inplace=True)
-
-    entradaFeaturesYTarget5=ift_mayoritaria.append(ift_minoritaria)
+    entradaFeaturesYTarget5 = ift_mayoritaria.append(ift_minoritaria)
 
     print("Las clases ya están balanceadas:")
     print("ift_balanceadas:" + str(entradaFeaturesYTarget5.shape[0]) + " x " + str(entradaFeaturesYTarget5.shape[1]))
 
-    # Se realiza SHUFFLE para mezclar filas con Target True y False, y reseteo los índices
-    entradaFeaturesYTarget5=entradaFeaturesYTarget5.sample(frac=1)
-    entradaFeaturesYTarget5.reset_index(drop=True, inplace=True)
+    entradaFeaturesYTarget5.to_csv(path_csv_completo + "_TEMP05", index=True, sep='|')  # UTIL para testIntegracion
 
     featuresFichero = entradaFeaturesYTarget5.drop('TARGET', axis=1)
     targetsFichero = entradaFeaturesYTarget5[['TARGET']]
-    targetsFichero=(targetsFichero[['TARGET']] == 1)  # Convierto de int a boolean
+    targetsFichero = (targetsFichero[['TARGET']] == 1)  # Convierto de int a boolean
 
   ##################################################
 
@@ -210,7 +199,7 @@ def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmp
   # print("TARGETS (sample):")
   # print(targetsFichero.head())
 
-  if modoDebug:
+  if modoDebug and modoTiempo == "pasado":
     print("FUNCIONES DE DENSIDAD (sin nulos, pero antes de normalizar):")
     for column in featuresFichero:
       path_dibujo = path_dir_img + column + ".png"
@@ -224,50 +213,40 @@ def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmp
       plt.cla()
       plt.close()
 
-  return featuresFichero, targetsFichero, indiceFilasFuturasTransformadas2
+  return featuresFichero, targetsFichero
 
 
-def normalizarFeatures(featuresFichero, path_modelo_normalizador, dir_subgrupo_img, modoTiempo, indiceFilasFuturasTransformadas, modoDebug):
+def normalizarFeatures(featuresFichero, path_modelo_normalizador, dir_subgrupo_img, modoTiempo, path_indices_out_capa5, pathCsvIntermedio, modoDebug):
   print("----- normalizarFeatures ------")
   print("NORMALIZACION: hacemos que todas las features tengan distribución gaussiana media 0 y varianza 1. El target no se toca.")
   print("PARAMS --> " + path_modelo_normalizador + "|" + modoTiempo + "|" + str(modoDebug))
   print("featuresFichero: " + str(featuresFichero.shape[0]) + " x " + str(featuresFichero.shape[1]))
   print("path_modelo_normalizador: " + path_modelo_normalizador)
+  print("pathCsvIntermedio: " + pathCsvIntermedio)
 
   # Vamos a normalizar z-score (media 0, std_dvt=1), pero yeo-johnson tiene un bug (https://github.com/scipy/scipy/issues/10821) que se soluciona sumando una constante a toda la matriz, lo cual no afecta a la matriz normalizada
   featuresFichero = featuresFichero + 1.015815
 
   if modoTiempo == "pasado":
       modelo_normalizador = PowerTransformer(method='yeo-johnson', standardize=True, copy=True).fit(featuresFichero)
-      pickle.dump(modelo_normalizador, open(path_modelo_normalizador, 'wb')) # Luego basta cargarlo así --> modelo_normalizador=load(path_modelo_normalizador)
-  elif modoTiempo == "futuro":
-      print("Transformacion en la que borro o barajo filas. Por tanto, guardo el indice...")
-      indiceFilasFuturasTransformadas10 = indiceFilasFuturasTransformadas
-      print("indiceFilasFuturasTransformadas10: " + str(indiceFilasFuturasTransformadas10.shape[0]))
-      print(indiceFilasFuturasTransformadas10)
+      pickle.dump(modelo_normalizador, open(path_modelo_normalizador, 'wb'))
 
-      #Transformacion que afecta a los indices
-      featuresFichero = featuresFichero.reset_index().drop('index', axis=1)
 
-      modelo_normalizador = pickle.load(open(path_modelo_normalizador, 'rb'))
+  # Pasado o futuro: Cargar normalizador
+  modelo_normalizador = pickle.load(open(path_modelo_normalizador, 'rb'))
 
-  print("Aplicando normalizacion...")
-  # print(list(featuresFichero.columns.values))
-  featuresFicheroNorm = modelo_normalizador.transform(featuresFichero)
+  print("Aplicando normalizacion, manteniendo indices y nombres de columnas...")
+  featuresFicheroNorm = pd.DataFrame(data=modelo_normalizador.transform(featuresFichero), index=featuresFichero.index, columns=featuresFichero.columns)
 
-  print("Metiendo cabeceras...")
-  featuresFicheroNorm2 = pd.DataFrame(data=featuresFicheroNorm, columns=featuresFichero.columns)
+  print("featuresFicheroNorm:" + str(featuresFicheroNorm.shape[0]) + " x " + str(featuresFicheroNorm.shape[1]))
+  featuresFicheroNorm.to_csv(pathCsvIntermedio + "_TEMP_NORM01", index=True, sep='|')  # UTIL para testIntegracion
 
-  # print("Features NORMALIZADAS (sample):")
-  # print(featuresFicheroNorm2.head())
-  print("Features NORMALIZADAS (featuresFicheroNorm2):" + str(featuresFicheroNorm2.shape[0]) + " x " + str(featuresFicheroNorm2.shape[1]))
-
-  if modoDebug:
+  if modoDebug and modoTiempo == "pasado":
     print("FUNCIONES DE DENSIDAD (normalizadas):")
-    for column in featuresFicheroNorm2:
+    for column in featuresFicheroNorm:
         path_dibujo = dir_subgrupo_img + column + "_NORM.png"
         print("Guardando distrib de col normalizada: " + column + " en fichero: " + path_dibujo)
-        datos_columna = featuresFicheroNorm2[column]
+        datos_columna = featuresFicheroNorm[column]
         sns.distplot(datos_columna, kde=False, color='red', bins=10)
         plt.title(column+" (NORM)", fontsize=10)
         plt.savefig(path_dibujo, bbox_inches='tight')
@@ -276,7 +255,7 @@ def normalizarFeatures(featuresFichero, path_modelo_normalizador, dir_subgrupo_i
         plt.cla()
         plt.close()
 
-  return featuresFicheroNorm2
+  return featuresFicheroNorm
 
 
 def comprobarSuficientesClasesTarget(featuresFicheroNorm, targetsFichero, modoDebug):
@@ -290,7 +269,7 @@ def comprobarSuficientesClasesTarget(featuresFicheroNorm, targetsFichero, modoDe
   return y_unicos.size
 
 
-def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, targetsFichero, pathCsvReducido, varianzaAcumuladaDeseada, dir_subgrupo_img, modoTiempo, indiceFilasFuturasTransformadas, maxFeatReducidas, modoDebug):
+def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, targetsFichero, pathCsvReducido, varianzaAcumuladaDeseada, dir_subgrupo_img, modoTiempo, maxFeatReducidas, modoDebug):
   print("----- reducirFeaturesYGuardar ------")
   print("path_modelo_reductor_features --> " + path_modelo_reductor_features)
   print("featuresFicheroNorm: " + str(featuresFicheroNorm.shape[0]) + " x " + str(featuresFicheroNorm.shape[1]))
@@ -299,7 +278,6 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, 
   print("varianzaAcumuladaDeseada (PCA) --> " + str(varianzaAcumuladaDeseada))
   print("dir_subgrupo_img --> " + dir_subgrupo_img)
   print("modoTiempo: " + modoTiempo)
-  print("indiceFilasFuturasTransformadas (numero de items): " + str(indiceFilasFuturasTransformadas.shape[0]))
   print("maxFeatReducidas: " + maxFeatReducidas)
 
   print("**** REDUCCION DE DIMENSIONES*****")
@@ -362,7 +340,7 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, 
   else:
 
       # Plot number of features VS. cross-validation scores
-      if modoDebug:
+      if modoDebug and modoTiempo == "pasado":
           path_dibujo_rfecv = dir_subgrupo_img + "SELECCION_VARIABLES_RFECV" ".png"
           plt.figure()
           plt.xlabel("Number of features selected")
@@ -389,6 +367,7 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, 
       print("Las columnas seleccionadas son:")
       print(columnasSeleccionadas)
       featuresFicheroNormElegidas = featuresFicheroNorm[columnasSeleccionadas]
+      featuresFicheroNormElegidas.to_csv(pathCsvReducido + "_TEMP06", index=False, sep='|')  # UTIL ara testIntegracion
 
       ####################### NO LO USAMOS pero lo dejo aqui ########
       #if modoDebug and False:
@@ -402,38 +381,34 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, 
           #print("Las features están ya normalizadas y reducidas. DESCRIBIMOS lo que hemos hecho y GUARDAMOS el dataset.")
 
       ### Guardar a fichero
-      # print("Muestro las features + targets antes de juntarlas...")
-      # print("FEATURES (sample):")
-      # print(featuresFicheroNormElegidas.head())
-      # print("featuresFicheroNormElegidas: " + str(featuresFicheroNormElegidas.shape[0]) + " x " + str(featuresFicheroNormElegidas.shape[1]))
-      # print("TARGETS (sample):")
-      # print(targetsFichero.head())
+      print("Muestro las features + targets antes de juntarlas...")
+      print("FEATURES (sample):")
+      print(featuresFicheroNormElegidas.head())
+      print("featuresFicheroNormElegidas: " + str(featuresFicheroNormElegidas.shape[0]) + " x " + str(featuresFicheroNormElegidas.shape[1]))
+      print("TARGETS (sample):")
+      print(targetsFichero.head())
 
-      featuresytargets = pd.concat([featuresFicheroNormElegidas.reset_index(drop=True), targetsFichero.reset_index(drop=True)], axis=1)
+      featuresytargets = pd.concat([featuresFicheroNormElegidas.reset_index(drop=True), targetsFichero.reset_index(drop=True)], axis=1)  #Column bind
+      featuresytargets.set_index(featuresFicheroNormElegidas.index, inplace = True)
       # print("FEATURES+TARGETS juntas (sample):")
       # print(featuresytargets.head())
       print("Justo antes de guardar, featuresytargets: " + str(featuresytargets.shape[0]) + " x " + str(featuresytargets.shape[1]))
-      featuresytargets.to_csv(pathCsvReducido, index=False, sep='|')
-
-      if modoTiempo == "futuro":
-          print("Guardamos a CSV los indices de las filas de REDUCIDO respeto a COMPLETO (para cuando haya que reconstruir el final")
-          np.savetxt(pathCsvReducido+"_indices", indiceFilasFuturasTransformadas, header="indice", delimiter="|", fmt='%f')
-
+      featuresytargets.to_csv(pathCsvReducido, index=True, sep='|')
 
 
 ################## MAIN ###########################################################
 
 if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.stat(pathCsvCompleto).st_size > 0:
 
-    featuresFichero, targetsFichero, indiceFilasFuturasTransformadas = leerFeaturesyTarget(pathCsvCompleto, dir_subgrupo_img, compatibleParaMuchasEmpresas, pathModeloOutliers, modoTiempo, modoDebug)
-    #PENDIENTE featuresFicheroNorm = normalizarFeatures(featuresFichero, path_modelo_normalizador, dir_subgrupo_img, modoTiempo, indiceFilasFuturasTransformadas, modoDebug)
-    featuresFicheroNorm = featuresFichero #DEBUG
+    featuresFichero, targetsFichero = leerFeaturesyTarget(pathCsvCompleto, dir_subgrupo_img, compatibleParaMuchasEmpresas, pathModeloOutliers, modoTiempo, modoDebug)
+    featuresFicheroNorm = normalizarFeatures(featuresFichero, path_modelo_normalizador, dir_subgrupo_img, modoTiempo, path_indices_out_capa5, pathCsvIntermedio, modoDebug)
     numclases = comprobarSuficientesClasesTarget(featuresFicheroNorm, targetsFichero, modoDebug)
 
     if(modoTiempo == "pasado" and numclases <= 1):
         print("El subgrupo solo tiene " + str(numclases) + " clases en el target. Abortamos...")
     else:
-        reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, targetsFichero, pathCsvReducido, varianza, dir_subgrupo_img, modoTiempo, indiceFilasFuturasTransformadas, maxFeatReducidas, modoDebug)
+        reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, targetsFichero, pathCsvReducido, varianza, dir_subgrupo_img, modoTiempo, maxFeatReducidas, modoDebug)
+
 
 print("------------ FIN de capa 5 ----------------")
 

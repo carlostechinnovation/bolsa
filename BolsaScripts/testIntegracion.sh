@@ -64,7 +64,8 @@ echo -e "Cogemos una empresa y vemos su evolucion en cada capa."  >> ${LOG_INTEG
 
 echo -e "************************** Preparando escenario de INTEGRACION *******************" >> ${LOG_INTEGRACION}
 echo -e "Copiando fichero de configuracion..." >> ${LOG_INTEGRACION}
-cp -f "${DIR_DATOS_INTEGRACION}parametros.config" "${DIR_CODIGOS}parametros.config"
+rm -f "${DIR_CODIGOS}parametros.config"
+cp -f "${DIR_DATOS_INTEGRACION}parametros.config" "${DIR_CODIGOS}BolsaScripts/parametros.config"
 echo -e "Copiando datos de entrada (ya descargados)..." >> ${LOG_INTEGRACION}
 rm -Rf "/bolsa/validacion_datos/"
 crearCarpetaSiNoExisteYVaciarRecursivo "/bolsa/validacion_datos/"
@@ -79,7 +80,7 @@ ${DIR_CODIGOS}BolsaScripts/validacionEuros.sh
 
 #######################################################################################################
 echo -e "******************************** COMPROBACIONES del PASADO *******************************" >> ${LOG_INTEGRACION}
-empresa="ADXS"
+empresa="ABEO"
 echo -e "Empresa analizada: ${empresa}" >> ${LOG_INTEGRACION}
 
 LOG_PASADO=$(ls /bolsa/logs/ | grep 'pasado')
@@ -130,13 +131,25 @@ echo -e "\nLas features elegidas han sido:\n" >> ${LOG_INTEGRACION}
 FEATURES_ELEGIDAS=$(head -n 1 ${SG_REDUCIDO})
 echo -e "${FEATURES_ELEGIDAS}" >> ${LOG_INTEGRACION}
 
-echo -e "\nEntonces, nos fijamos solo en esas features elegidas de COMPLETO:\n" >> ${LOG_INTEGRACION}
+echo -e "\n\nEntonces, nos fijamos solo en esas features elegidas de COMPLETO:\n" >> ${LOG_INTEGRACION}
 TMP_ENTRADA_COLUMNAS_ELEGIDAS="/tmp/temp_bolsa_testintegracion_completosoloseleccionadas.csv"
 java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n" -jar ${PATH_JAR} --class "coordinador.Principal" "testIntegracion.ExtractorFeatures" "${FEATURES_ELEGIDAS}" "${SG_ENTRADA}" "${TMP_ENTRADA_COLUMNAS_ELEGIDAS}" "10"  1>>/dev/null  2>>${LOG_INTEGRACION}
 head -n 10 "${TMP_ENTRADA_COLUMNAS_ELEGIDAS}" >> ${LOG_INTEGRACION}
 
+echo -e "\nCapa 5 - Intermedio TEMP01:\n" >> ${LOG_INTEGRACION}
+head -n 10 "${SG_ENTRADA}_TEMP01" >> ${LOG_INTEGRACION}
+echo -e "\nCapa 5 - Intermedio TEMP02:\n" >> ${LOG_INTEGRACION}
+head -n 10 "${SG_ENTRADA}_TEMP02">> ${LOG_INTEGRACION}
+echo -e "\nCapa 5 - Intermedio TEMP03:\n" >> ${LOG_INTEGRACION}
+head -n 10 "${SG_ENTRADA}_TEMP03">> ${LOG_INTEGRACION}
+echo -e "\nCapa 5 - Intermedio TEMP04:\n" >> ${LOG_INTEGRACION}
+head -n 10 "${SG_ENTRADA}_TEMP04">> ${LOG_INTEGRACION}
+echo -e "\nCapa 5 - Intermedio TEMP05:\n" >> ${LOG_INTEGRACION}
+head -n 10 "${SG_ENTRADA}_TEMP05">> ${LOG_INTEGRACION}
+echo -e "\nCapa 5 - Intermedio TEMP06:\n" >> ${LOG_INTEGRACION}
+head -n 10 "${SG_REDUCIDO}_TEMP06">> ${LOG_INTEGRACION}
 
-echo -e "\nY vemos la transformacion de esas filas en REDUCIDO (fijarse en si la normalización de las columnas tiene sentido!!! ):\n" >> ${LOG_INTEGRACION}
+echo -e "\n\nY vemos la transformacion de esas filas en REDUCIDO (fijarse en si la normalización de las columnas tiene sentido!!! ):\n" >> ${LOG_INTEGRACION}
 head -n 10 ${SG_REDUCIDO}>> ${LOG_INTEGRACION}
 
 echo -e "\nSubgrupo ${SG_ANALIZADO} - Modelo ganador --> "$(ls ${DIR_SUBGRUPOS}${SG_ANALIZADO}/ | grep 'ganador')"\n" >> ${LOG_INTEGRACION}

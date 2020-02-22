@@ -8,8 +8,6 @@ from numpy import mean
 from scipy.stats import stats
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.utils.fixes import loguniform
-
-np.random.seed(12345)
 from pathlib import Path
 from sklearn import svm
 from sklearn.linear_model import LogisticRegression, SGDClassifier
@@ -29,6 +27,8 @@ import os.path
 from imblearn.over_sampling import SMOTE
 from sklearn.metrics import make_scorer, accuracy_score
 
+np.random.seed(12345)
+
 print("-------------------------------------------------------------------------------------------------")
 print("---- CAPA 6 - Crear almacenar y evaluar varios modelos (para cada subgrupo) -------")
 print("Tipo de problema: CLASIFICACION BINOMIAL (target es boolean)")
@@ -40,8 +40,7 @@ desplazamientoAntiguedad = sys.argv[3]
 modoDebug = False  # En modo debug se pintan los dibujos. En otro caso, se evita calculo innecesario
 umbralCasosSuficientesClasePositiva = 100
 RecallOAreaROC = False  # True si se toma recall para seleccionar el modelo. False si se toma Area Bajo ROC
-pequenaProbTargetUno = 100  # De todos los target=1, nos quedaremos con los pequenaProbTargetUno (en tanto por cien) MENOS probables. Un valor de 100 o mayor anula este parámetro
-granProbTargetUno = 100 # De todos los target=1, nos quedaremos con los granProbTargetUno (en tanto por cien) MAS probables. Un valor de 100 o mayor anula este parámetro
+granProbTargetUno = 60 # De todos los target=1, nos quedaremos con los granProbTargetUno (en tanto por cien) MAS probables. Un valor de 100 o mayor anula este parámetro
 
 ######### ID de subgrupo #######
 partes = dir_subgrupo.split("/")
@@ -53,17 +52,18 @@ for parte in partes:
 ########### Rutas #########
 pathCsvCompleto = dir_subgrupo + "COMPLETO.csv"
 pathCsvReducido = dir_subgrupo + "REDUCIDO.csv"
-pathCsvReducidoIndices = dir_subgrupo + "REDUCIDO.csv_indices"
 pathCsvPredichos = dir_subgrupo + "TARGETS_PREDICHOS.csv"
 pathCsvPredichosIndices = dir_subgrupo + "TARGETS_PREDICHOS.csv_indices"
 pathCsvFinalFuturo = dir_subgrupo + desplazamientoAntiguedad + "_" + id_subgrupo + "_COMPLETO_PREDICCION.csv"
 dir_subgrupo_img = dir_subgrupo + "img/"
+umbralProbTargetTrue = float("0.5")
 
 print("dir_subgrupo: %s" % dir_subgrupo)
 print("modoTiempo: %s" % modoTiempo)
 print("desplazamientoAntiguedad: %s" % desplazamientoAntiguedad)
 print("pathCsvReducido: %s" % pathCsvReducido)
 print("dir_subgrupo_img = %s" % dir_subgrupo_img)
+print("umbralProbTargetTrue = " + str(umbralProbTargetTrue))
 
 
 ################# FUNCIONES ########################################
@@ -137,13 +137,12 @@ ganador_grid_mejores_parametros = []
 if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfile(pathCsvReducido) and os.stat(
         pathCsvReducido).st_size > 0):
 
-    inputFeaturesyTarget = pd.read_csv(pathCsvReducido, sep='|')
+    inputFeaturesyTarget = pd.read_csv(pathCsvReducido, index_col = 0, sep='|')  #La columna 0 contiene el indice
     print("inputFeaturesyTarget: " + str(inputFeaturesyTarget.shape[0]) + " x " + str(inputFeaturesyTarget.shape[1]))
 
     print("BALANCEAR los casos positivos y negativos, haciendo downsampling de la clase mayoritaria...")
     print("URL: https://elitedatascience.com/imbalanced-classes")
-    ift_mayoritaria = inputFeaturesyTarget[
-        inputFeaturesyTarget.TARGET == False]  # En este caso los mayoritarios son los False
+    ift_mayoritaria = inputFeaturesyTarget[inputFeaturesyTarget.TARGET == False]  # En este caso los mayoritarios son los False
     ift_minoritaria = inputFeaturesyTarget[inputFeaturesyTarget.TARGET == True]
     print("ift_mayoritaria:" + str(ift_mayoritaria.shape[0]) + " x " + str(ift_mayoritaria.shape[1]))
     print("ift_minoritaria:" + str(ift_minoritaria.shape[0]) + " x " + str(ift_minoritaria.shape[1]))
@@ -157,28 +156,14 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         print("Numero de casos en clase minoritaria es INSUFICIENTE. Así que abandonamos este dataset y seguimos")
 
     else:
-
-        print("num_muestras_minoria: " + str(num_muestras_minoria))
-
-        # CORRECCIÓN LUIS: no debo hacer resample aquí, sino sólo en los datos de training
-        # ift_mayoritaria_downsampled = resample(ift_mayoritaria, replace=False, n_samples=num_muestras_minoria,
-        #                                        random_state=123)
-        ift_mayoritaria_downsampled = ift_mayoritaria
-
-        ift_balanceadas = pd.concat(
-            [ift_mayoritaria_downsampled, ift_minoritaria])  # Juntar ambas clases ya BALANCEADAS
-
-        # Desordeno la matriz, para que no se entrene/test/valide por fechas, o por patrones dependientes del tiempo
-        ift_balanceadas = ift_balanceadas.sample(frac=1).reset_index(drop=True)
-
-        print("Las clases ya están balanceadas:")
-        print("ift_mayoritaria_downsampled:" + str(ift_mayoritaria_downsampled.shape[0]) + " x " + str(ift_mayoritaria_downsampled.shape[1]))
-        print("ift_minoritaria:" + str(ift_minoritaria.shape[0]) + " x " + str(ift_minoritaria.shape[1]))
-        print("ift_balanceadas:" + str(ift_balanceadas.shape[0]) + " x " + str(ift_balanceadas.shape[1]))
+        ift_juntas = pd.concat([ift_mayoritaria.reset_index(drop=True), ift_minoritaria.reset_index(drop=True)], axis=0)  # Row bind
+        indices_juntos = ift_mayoritaria.index.append(ift_minoritaria.index)  # Row bind
+        ift_juntas.set_index(indices_juntos, inplace=True)
+        print("Las clases juntas son:")
+        print("ift_juntas:" + str(ift_juntas.shape[0]) + " x " + str(ift_juntas.shape[1]))
 
         print("DIVIDIR EL DATASET DE ENTRADA EN 3 PARTES: TRAIN (50%), TEST (25%), VALIDACION (25%)...")
-        ds_train, ds_test, ds_validacion = np.split(ift_balanceadas.sample(frac=1),
-                                                    [int(.5 * len(ift_balanceadas)), int(.75 * len(ift_balanceadas))])
+        ds_train, ds_test, ds_validacion = np.split(ift_juntas.sample(frac=1), [int(0.5 * len(ift_juntas)), int(0.75 * len(ift_juntas))])
         print("TRAIN --> " + str(ds_train.shape[0]) + " x " + str(ds_train.shape[1]))
         print("TEST --> " + str(ds_test.shape[0]) + " x " + str(ds_test.shape[1]))
         print("VALIDACION --> " + str(ds_validacion.shape[0]) + " x " + str(ds_validacion.shape[1]))
@@ -197,8 +182,7 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         ds_validac_t = ds_validacion[['TARGET']].to_numpy().ravel()
 
         # SMOTE (Over and undersampling on the train data):
-        print(
-            "Resampling con SMOTE del vector de training según: " + "https://machinelearningmastery.com/combine-oversampling-and-undersampling-for-imbalanced-classification/")
+        print("Resampling con SMOTE del vector de TRAINING (pero no a TEST ni a VALIDATION) según: " + "https://machinelearningmastery.com/combine-oversampling-and-undersampling-for-imbalanced-classification/")
         print("---------------- RESAMPLING con SMOTE --------")
         resample = SMOTEENN()
         print("SMOTE antes: %d" % ds_train_f.shape[0])
@@ -249,46 +233,46 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         #     ganador_nombreModelo = nombreModelo
         #     ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
 
-        nombreModelo = "nn"
-        pathModelo = dir_subgrupo + nombreModelo + ".modelo"
-        modelo = MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(5, 2), random_state=1)
-        modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_train_t, False, modoDebug)
-        recall_o_ROC = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, modoDebug)
-        print(type(recall_o_ROC))
-        if recall_o_ROC > ganador_recall_o_ROC:
-            ganador_recall_o_ROC = recall_o_ROC
-            ganador_nombreModelo = nombreModelo
-            ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
+        # nombreModelo = "nn"
+        # pathModelo = dir_subgrupo + nombreModelo + ".modelo"
+        # modelo = MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(5, 2), random_state=1)
+        # modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_train_t, False, modoDebug)
+        # recall_o_ROC = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, modoDebug)
+        # print(type(recall_o_ROC))
+        # if recall_o_ROC > ganador_recall_o_ROC:
+        #     ganador_recall_o_ROC = recall_o_ROC
+        #     ganador_nombreModelo = nombreModelo
+        #     ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
 
         ####### HYPERPARAMETROS: GRID de parametros #######
         print("HYPERPARAMETROS - URL: https://scikit-learn.org/stable/modules/grid_search.html")
 
-        nombreModelo = "svc_grid"
-        pathModelo = dir_subgrupo + nombreModelo + ".modelo"
-        modelo_base = svm.SVC()
-        hiperparametros = [{'C':[1,3,5,10],'gamma':[1], 'kernel':['rbf']}]
-        modelos_grid = GridSearchCV(modelo_base, hiperparametros, n_jobs=-1, refit=True, cv=5, pre_dispatch='2*n_jobs', return_train_score=False)
-        modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelos_grid, pathModelo, ds_train_f, ds_train_t, True, modoDebug)
-        recall_o_ROC = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, modoDebug)
-        print(type(recall_o_ROC))
-        if recall_o_ROC > ganador_recall_o_ROC:
-            ganador_recall_o_ROC = recall_o_ROC
-            ganador_nombreModelo = nombreModelo
-            ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
+        # nombreModelo = "svc_grid"
+        # pathModelo = dir_subgrupo + nombreModelo + ".modelo"
+        # modelo_base = svm.SVC()
+        # hiperparametros = [{'C':[1,3,5,10],'gamma':[1], 'kernel':['rbf']}]
+        # modelos_grid = GridSearchCV(modelo_base, hiperparametros, n_jobs=-1, refit=True, cv=5, pre_dispatch='2*n_jobs', return_train_score=False)
+        # modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelos_grid, pathModelo, ds_train_f, ds_train_t, True, modoDebug)
+        # recall_o_ROC = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, modoDebug)
+        # print(type(recall_o_ROC))
+        # if recall_o_ROC > ganador_recall_o_ROC:
+        #     ganador_recall_o_ROC = recall_o_ROC
+        #     ganador_nombreModelo = nombreModelo
+        #     ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
 
 
-        nombreModelo = "logreg_grid"
-        pathModelo = dir_subgrupo + nombreModelo + ".modelo"
-        modelo_base = LogisticRegression()
-        hiperparametros = dict(C=np.logspace(0, 4, 10), penalty=['l2'])
-        modelos_grid = GridSearchCV(modelo_base, hiperparametros, n_jobs=-1, refit=True, cv=5, pre_dispatch='2*n_jobs', return_train_score=False)
-        modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelos_grid, pathModelo, ds_train_f, ds_train_t, True, modoDebug)
-        recall_o_ROC = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, modoDebug)
-        print(type(recall_o_ROC))
-        if recall_o_ROC > ganador_recall_o_ROC:
-            ganador_recall_o_ROC = recall_o_ROC
-            ganador_nombreModelo = nombreModelo
-            ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
+        # nombreModelo = "logreg_grid"
+        # pathModelo = dir_subgrupo + nombreModelo + ".modelo"
+        # modelo_base = LogisticRegression()
+        # hiperparametros = dict(C=np.logspace(0, 4, 10), penalty=['l2'])
+        # modelos_grid = GridSearchCV(modelo_base, hiperparametros, n_jobs=-1, refit=True, cv=5, pre_dispatch='2*n_jobs', return_train_score=False)
+        # modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelos_grid, pathModelo, ds_train_f, ds_train_t, True, modoDebug)
+        # recall_o_ROC = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, modoDebug)
+        # print(type(recall_o_ROC))
+        # if recall_o_ROC > ganador_recall_o_ROC:
+        #     ganador_recall_o_ROC = recall_o_ROC
+        #     ganador_nombreModelo = nombreModelo
+        #     ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
 
         nombreModelo = "rf_grid"
         pathModelo = dir_subgrupo + nombreModelo + ".modelo"
@@ -310,6 +294,7 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
             ganador_nombreModelo = nombreModelo
             ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
 
+
         print("********* GANADOR de subgrupo *************")
         print("Modelo ganador es " + ganador_nombreModelo + " con un recall (o area bajo ROC) de " + str(
             round(ganador_recall_o_ROC, 4)) + " y con estos hiperparametros: ")
@@ -324,34 +309,25 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
 
         print("LOS RESULTADOS DE VALIDACION Y TEST DEBERÍAN SER SIMILARES. SI NO, ESTARIÁMOS COMETIENDO ERRORES...")
         print("\nTest Results")
-        print("Accuracy: "+str(modelo_loaded.score(ds_test_f, ds_test_t)))
-        print("Recall: "+str(recall_score(ds_test_t, modelo_loaded.predict(ds_test_f))))
+        print("Accuracy: " + str(modelo_loaded.score(ds_test_f, ds_test_t)))
+        print("Recall: " + str(recall_score(ds_test_t, modelo_loaded.predict(ds_test_f))))
         print("Validation Results")
-        print("Accuracy: "+str(modelo_loaded.score(ds_validac_f, ds_validac_t)))
-        print("Recall: "+str(recall_score(ds_validac_t, modelo_loaded.predict(ds_validac_f))))
+        print("Accuracy: " + str(modelo_loaded.score(ds_validac_f, ds_validac_t)))
+        print("Recall: " + str(recall_score(ds_validac_t, modelo_loaded.predict(ds_validac_f))))
 
 elif (modoTiempo == "futuro" and pathCsvReducido.endswith('.csv') and os.path.isfile(pathCsvReducido) and os.stat(
         pathCsvReducido).st_size > 0):
-    inputFeaturesyTarget = pd.read_csv(pathCsvReducido, sep='|')
+    inputFeaturesyTarget = pd.read_csv(pathCsvReducido, index_col=0, sep='|')
     print("inputFeaturesyTarget: " + str(inputFeaturesyTarget.shape[0]) + " x " + str(inputFeaturesyTarget.shape[1]))
-    print(
-        "La columna TARGET que haya en el CSV de entrada no la queremos (es un NULL o False, por defecto), porque la vamos a PREDECIR...")
+    print("La columna TARGET que haya en el CSV de entrada no la queremos (es un NULL o False, por defecto), porque la vamos a PREDECIR...")
     inputFeatures = inputFeaturesyTarget.drop('TARGET', axis=1)
     print(inputFeatures.head())
     print("inputFeatures: " + str(inputFeatures.shape[0]) + " x " + str(inputFeatures.shape[1]))
 
-    print("Capturamos el indice inicial de filas de entrada:")
-    indiceFilasFuturasTransformadas = inputFeaturesyTarget.index.values
-
-    print(
-        "MISSING VALUES (FILAS) - Borramos las FILAS que tengan 1 o mas valores NaN porque son huecos que no deberían estar...")
+    print("MISSING VALUES (FILAS) - Borramos las FILAS que tengan 1 o mas valores NaN porque son huecos que no deberían estar...")
     inputFeatures_sinnulos = inputFeatures.dropna(axis=0, how='any')  # Borrar FILA si ALGUNO sus valores tienen NaN
-    indiceFilasFuturasTransformadas2 = inputFeatures_sinnulos.index.values
-    inputFeatures_sinnulos = inputFeatures_sinnulos.to_numpy()
-    print("inputFeatures_sinnulos (filas algun nulo borradas):" + str(inputFeatures_sinnulos.shape[0]) + " x " + str(
-        inputFeatures_sinnulos.shape[1]))
 
-    dir_modelo_predictor_ganador = dir_subgrupo.replace("futuro", "pasado")
+    dir_modelo_predictor_ganador = dir_subgrupo.replace("futuro", "pasado")  #Siempre cojo el modelo entrenado en el pasado
     for file in os.listdir(dir_modelo_predictor_ganador):
         if file.endswith("ganador"):
             path_modelo_predictor_ganador = os.path.join(dir_modelo_predictor_ganador, file)
@@ -363,106 +339,50 @@ elif (modoTiempo == "futuro" and pathCsvReducido.endswith('.csv') and os.path.is
 
         print("Predecir:")
         targets_predichos = modelo_predictor_ganador.predict(inputFeatures_sinnulos)
+        print("Numero de targets_predichos: " + str(len(targets_predichos)) + " con numero de TRUEs = " + str(np.sum(targets_predichos, where=["True"])))
 
         # probabilities
-        probs = modelo_predictor_ganador.predict_proba(inputFeatures_sinnulos)
+        probs = pd.DataFrame(data=modelo_predictor_ganador.predict_proba(inputFeatures_sinnulos), index=inputFeatures_sinnulos.index)
 
         # UMBRAL MENOS PROBABLES CON TARGET=1. Cuando el target es 1, se guarda su probabilidad
-        probabilidadesEnTargetUnoPeq = []
-        for row in probs:
-            if row[0] < row[1]:
-                # La probabilidad de un 1 es mayor que la de un 0
-                probabilidadesEnTargetUnoPeq.append(row[1])
+        print(probs.columns)
+        probabilidadesEnTargetUnoPeq = probs.iloc[:,1]  # Cogemos solo la segunda columna: prob de que sea target=1
+        probabilidadesEnTargetUnoPeq2 = probabilidadesEnTargetUnoPeq.apply(lambda x: x if(x >= umbralProbTargetTrue) else np.nan)
+        probabilidadesEnTargetUnoPeq3 = probabilidadesEnTargetUnoPeq2[np.isnan(probabilidadesEnTargetUnoPeq2[:]) == False] # Cogemos todos los no nulos
+        probabilidadesEnTargetUnoPeq4 = probabilidadesEnTargetUnoPeq3.sort_values(ascending=False)
+        numfilasSeleccionadas = int(granProbTargetUno * probabilidadesEnTargetUnoPeq4.shape[0] / 100)  #Como están ordenadas en descendente, cojo estas NUM primeras filas
+        targets_predichosCorregidos_probs = probabilidadesEnTargetUnoPeq4[0:(numfilasSeleccionadas-1)]
+        targets_predichosCorregidos = targets_predichosCorregidos_probs.apply(lambda x: True)
 
-        # De todos los target=1, nos quedaremos con los pequenaProbTargetUno % MENOS probables
-        probabilidadesEnTargetUnoPeq.sort(reverse=False)
-        numeroElementosPeq = len(probabilidadesEnTargetUnoPeq)
-        indiceUltimoElementoSeleccionadoPeq = int(pequenaProbTargetUno * numeroElementosPeq / 100)
-        probabsSeleccionadasPeq = probabilidadesEnTargetUnoPeq[0:indiceUltimoElementoSeleccionadoPeq]
-        probabUmbralPeq = probabsSeleccionadasPeq[-1]
-
-        # UMBRAL MAS PROBABLES CON TARGET=1. Cuando el target es 1, se guarda su probabilidad
-        probabilidadesEnTargetUnoGran = []
-        for row in probs:
-            if row[0] < row[1]:
-                # La probabilidad de un 1 es mayor que la de un 0
-                probabilidadesEnTargetUnoGran.append(row[1])
-
-        # De todos los target=1, nos quedaremos con los pequenaProbTargetUno % MAS probables
-        probabilidadesEnTargetUnoGran.sort(reverse=True)
-        numeroElementosGran = len(probabilidadesEnTargetUnoGran)
-        indiceUltimoElementoSeleccionadoGran = int(pequenaProbTargetUno * numeroElementosGran / 100)
-        probabsSeleccionadasGran = probabilidadesEnTargetUnoGran[0:indiceUltimoElementoSeleccionadoGran]
-        probabUmbralGran = probabsSeleccionadasGran[-1]
-
-        targets_predichosCorregidos = []
-        probsSeleccionadasEnUno = []
-        print("Umbral de probabilidad pequeña para target = 1: " + str(probabUmbralPeq))
-        print("Umbral de probabilidad grande para target = 1: " + str(probabUmbralGran))
-        for i in range(probs.shape[0]):
-            prob = probs[i][1]
-            # True si es poco probable cuando target=1
-            if probs[i][0] < probs[i][1] and probabUmbralPeq >= prob >= probabUmbralGran:
-                targets_predichosCorregidos.append("True")
-                probsSeleccionadasEnUno.append(prob)
-            else:
-                targets_predichosCorregidos.append("False")
-
-        print("Numero de targets_predichos: " + str(len(targets_predichos)) + " con numero de TRUEs = " + str(
-            np.sum(targets_predichos, where=["True"])))
-        print("Numero de targets_predichos corregidos: " + str(
-            len(targets_predichosCorregidos)) + " con numero de TRUEs = " + str(len(probsSeleccionadasEnUno)))
-        print("Probabilidades de los target=1 seleccionados: ")
-        print(probsSeleccionadasEnUno)
         print("Guardando targets PREDICHOS en: " + pathCsvPredichos)
-        pathCsvPredichos_df = pd.DataFrame(data=targets_predichosCorregidos, columns=['TARGET'])
-        pathCsvPredichos_df.to_csv(pathCsvPredichos, index=False, sep='|')
+        df_predichos = targets_predichosCorregidos.to_frame()
+        df_predichos.columns = ['TARGET_PREDICHO']
+        df_predichos.to_csv(pathCsvPredichos, index=False, sep='|')  # Capa 6 - Salida (para el validador, sin indice)
 
-        print("Guardando indices de filas de salida respecto de la entrada...")
-        np.savetxt(pathCsvPredichos + "_indices", indiceFilasFuturasTransformadas2, delimiter="|", header="indice",
-                   fmt='%f')
+        df_predichos_probs = targets_predichosCorregidos_probs.to_frame()
+        df_predichos_probs.columns = ['TARGET_PREDICHO_PROB']
+        df_predichos_probs.to_csv(pathCsvPredichos + "_humano", index=True, sep='|')  # Capa 6 - Salida (para el humano)
 
         ############### RECONSTRUCCION DEL CSV FINAL IMPORTANTE, viendo los ficheros de indices #################
-        print(
-            "Partiendo de COMPLETO.csv llevamos la cuenta de los indices pasando por REDUCIDO.csv y por TARGETS_PREDICHOS.csv para generar el CSV final...")
-        df_completo = pd.read_csv(pathCsvCompleto, sep='|')
-        df_reducido = pd.read_csv(pathCsvReducido, sep='|')
-        df_reducido_indices = pd.read_csv(pathCsvReducidoIndices, sep='|').to_numpy()
-        df_predichos = pd.read_csv(pathCsvPredichos, sep='|')
-        df_predichos_indices = pd.read_csv(pathCsvPredichosIndices, sep='|').to_numpy()
+        print("Partiendo de COMPLETO.csv llevamos la cuenta de los indices pasando por REDUCIDO.csv y por TARGETS_PREDICHOS.csv para generar el CSV final...")
+        df_completo = pd.read_csv(pathCsvCompleto, sep='|')  #Capa 5 - Entrada
 
         print("df_completo: " + str(df_completo.shape[0]) + " x " + str(df_completo.shape[1]))
-        print("df_reducido: " + str(df_reducido.shape[0]) + " x " + str(df_reducido.shape[1]))
-        print("df_reducido_indices: " + str(df_reducido_indices.shape[0]) + " x " + str(df_reducido_indices.shape[1]))
         print("df_predichos: " + str(df_predichos.shape[0]) + " x " + str(df_predichos.shape[1]))
-        print(
-            "df_predichos_indices: " + str(df_predichos_indices.shape[0]) + " x " + str(df_predichos_indices.shape[1]))
-
-        print("COMPLETO_1 --> Del COMPLETO, cogemos solo las filas que se han usado para calcular el REDUCIDO...")
-        df_completo_1 = df_completo.loc[df_reducido_indices[:, 0].tolist()].reset_index(drop=False, inplace=False).drop(
-            'index', axis=1).drop('TARGET', axis=1)
-        print("df_completo_1: " + str(df_completo_1.shape[0]) + " x " + str(df_completo_1.shape[1]))
-
-        print("COMPLETO_2 --> Del COMPLETO_1, cogemos solo las filas que se han usado para calcular el PREDICHOS...")
-        df_completo_2 = df_completo_1.loc[df_predichos_indices[:, 0].tolist()]
-        print("df_completo_2: " + str(df_completo_2.shape[0]) + " x " + str(df_completo_2.shape[1]))
+        print("df_predichos_probs: " + str(df_predichos_probs.shape[0]) + " x " + str(df_predichos_probs.shape[1]))
 
         print("Juntar COMPLETO con TARGETS PREDICHOS... ")
-        df_juntos_1 = pd.concat([df_completo_2.reset_index(drop=True), df_predichos], axis=1)
-        lado_derecho = df_juntos_1[['empresa', 'mercado', 'antiguedad', 'TARGET']]
-        df_juntos_2 = pd.merge(df_completo, lado_derecho, how='left', on=['empresa', 'mercado', 'antiguedad'])
-        df_juntos_2.rename(columns={'TARGET_x': 'TARGET_REAL', 'TARGET_y': 'TARGET_PREDICHO'}, inplace=True)
+        df_juntos_1 = pd.concat([df_completo, df_predichos], axis=1)
+        df_juntos_2 = pd.concat([df_juntos_1, df_predichos_probs], axis=1)
 
-        df_juntos_2['TARGET_PREDICHO'] = (df_juntos_2['TARGET_PREDICHO'] * 1).astype(
-            'Int64')  # Convertir de boolean a int64, manteniendo los nulos
+        df_juntos_2['TARGET_PREDICHO'] = (df_juntos_2['TARGET_PREDICHO'] * 1).astype('Int64')  # Convertir de boolean a int64, manteniendo los nulos
 
         print("Guardando: " + pathCsvFinalFuturo)
         df_juntos_2.to_csv(pathCsvFinalFuturo, index=False, sep='|')
 
 
     else:
-        print(
-            "No existe el modelo predictor del pasado que necesitamos (" + path_modelo_predictor_ganador + "). Por tanto, no predecimos.")
+        print("No existe el modelo predictor del pasado que necesitamos (" + path_modelo_predictor_ganador + "). Por tanto, no predecimos.")
 
 
 else:

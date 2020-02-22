@@ -186,8 +186,8 @@ public class CrearDatasetsSubgrupos implements Serializable {
 			MY_LOGGER.debug("Fichero entrada: " + ficheroGestionado.getAbsolutePath());
 			// Sólo leo la cabecera y la primera línea de datos, con antigüedad=0. Así
 			// optimizo la lectura
-			datosEntrada = gestorFicheros
-					.leeTodosLosParametrosFicheroDeSoloUnaEmpresaYNFilasDeDatosRecientes(ficheroGestionado.getPath(), 1);
+			datosEntrada = gestorFicheros.leeTodosLosParametrosFicheroDeSoloUnaEmpresaYNFilasDeDatosRecientes(
+					ficheroGestionado.getPath(), 1);
 
 			String empresa = "";
 			Set<String> empresas = datosEntrada.keySet();
@@ -316,9 +316,10 @@ public class CrearDatasetsSubgrupos implements Serializable {
 
 			// ------ SUBGRUPOS según ratio de SMA50 de precio ------------
 			String ratioSMA50PrecioStr = parametros.get("RATIO_SMA_50_PRECIO");
-			//System.out.println("--ratioSMA50PrecioStr---: " + ratioSMA50PrecioStr);
-			
-			if (!ratioSMA50PrecioStr.contains("null") && !ratioSMA50PrecioStr.isEmpty() && !"-".equals(ratioSMA50PrecioStr)) {
+			// System.out.println("--ratioSMA50PrecioStr---: " + ratioSMA50PrecioStr);
+
+			if (!ratioSMA50PrecioStr.contains("null") && !ratioSMA50PrecioStr.isEmpty()
+					&& !"-".equals(ratioSMA50PrecioStr)) {
 				Integer ratioSMA50Precio = Integer.valueOf(ratioSMA50PrecioStr);
 
 				if (ratioSMA50Precio > 0 && ratioSMA50Precio < SMA50RATIOPRECIO_umbral1) {
@@ -441,29 +442,30 @@ public class CrearDatasetsSubgrupos implements Serializable {
 
 				// Se calcula la cobertura del target
 				coberturaEmpresasPorCluster = estadisticas.getMean();
-				MY_LOGGER.debug("COBERTURA DEL cluster " + tipo + ": " + coberturaEmpresasPorCluster * 100 + "%");
+				MY_LOGGER.debug(
+						"COBERTURA DEL cluster " + tipo + ": " + Math.round(coberturaEmpresasPorCluster * 100) + "%");
 
 				// Para generar un fichero de dataset del cluster, la cobertura debe ser mayor
 				// que un x%
 				if (coberturaEmpresasPorCluster * 100 < Double.valueOf(coberturaMinima)) {
-					MY_LOGGER.warn("El cluster " + tipo + " tiene un " + coberturaEmpresasPorCluster * 100
+					MY_LOGGER.warn("Cluster " + tipo + " tiene un " + Math.round(coberturaEmpresasPorCluster * 100)
 							+ "% de empresas (" + estadisticas.getSum() + " de " + estadisticas.getValues().length
 							+ ") con al menos una vela positiva (target=1). "
 							+ "Por tanto no se llega al mínimo deseado (" + coberturaMinima
 							+ "%). NO SE GENERA DATASET");
 
 				} else if (empresasConTarget.keySet().size() < Integer.valueOf(minEmpresasPorCluster)) {
-					MY_LOGGER.warn("El cluster " + tipo + ", tiene " + empresasConTarget.keySet().size()
+					MY_LOGGER.warn("Cluster " + tipo + ", tiene " + empresasConTarget.keySet().size()
 							+ " empresas. Es demasiado pequeño, porque debería tener al menos " + minEmpresasPorCluster
 							+ " empresas." + " NO SE GENERA DATASET");
 				} else {
 
-					MY_LOGGER.info("El cluster " + tipo + " tiene un " + coberturaEmpresasPorCluster * 100
+					MY_LOGGER.info("Cluster " + tipo + " tiene un " + Math.round(coberturaEmpresasPorCluster * 100)
 							+ "% de empresas (" + estadisticas.getSum() + " de " + estadisticas.getValues().length
-							+ ") con al menos una vela positiva (target=1)." + "Por tanto supera el mínimo deseado ("
+							+ ") con al menos una vela positiva (target=1)." + " => Supera el mínimo deseado ("
 							+ coberturaMinima + "%). SI SE GENERA DATASET");
-					MY_LOGGER.info("También el cluster " + tipo + ", tiene " + empresasConTarget.keySet().size()
-							+ " empresas. Es suficientemente grande, porque supera el umbral de tener al menos "
+					MY_LOGGER.info("También cluster " + tipo + " tiene " + empresasConTarget.keySet().size()
+							+ " empresas. Es suficientemente grande porque supera el umbral de tener al menos "
 							+ minEmpresasPorCluster + " empresas." + " SI SE GENERA DATASET");
 
 					// Hay alguna empresa de este tipo. Creo un CSV común para todas las del mismo
