@@ -179,6 +179,8 @@ public class Validador implements Serializable {
 					filasValidacion = Files.readAllLines(validacion);
 
 					// Elimino las filas de cabecera
+					MY_LOGGER.info("Header predicha -> " + filasPredichas.get(0));
+					MY_LOGGER.info("Header validacion -> " + filasValidacion.get(0));
 					filasPredichas.remove(0);
 					filasValidacion.remove(0);
 
@@ -195,7 +197,9 @@ public class Validador implements Serializable {
 						// Sólo se analizarán las predicciones. Es decir, las filas con antigüedad=0 en
 						// predichas
 						if (antiguedadPredicha.compareTo("0") == 0) {
+
 							for (String filaValidacion : filasValidacion) {
+
 								antiguedadValidacion = filaValidacion.substring(
 										SubgruposUtils.indiceDeAparicion("|".charAt(0), 1, filaValidacion) + 1,
 										SubgruposUtils.indiceDeAparicion("|".charAt(0), 2, filaValidacion));
@@ -213,15 +217,22 @@ public class Validador implements Serializable {
 									// RENTABILIDAD ACIERTOS/FALLOS para TARGET=1
 									// Cogeré el target predicho y el de validación, y los compararé
 									// Las dos últimas columnas son: TARGET_REAL (VALIDACIÓN), TARGET_PREDICHO
-									targetPredicho = filaPredicha.substring(filaPredicha.lastIndexOf("|") + 1);
-									Integer indice = SubgruposUtils.indiceDeAparicion("|".charAt(0),
-											(int) filaValidacion.chars().filter(ch -> ch == "|".charAt(0)).count(),
-											filaValidacion);
-									targetValidacion = filaValidacion.substring(indice - 3, indice - 2);
 
-									if (targetPredicho.compareTo("1") == 0) {
+									String[] filaPredichaPartes = filaPredicha.split("\\|", -1); // los vacios son
+																									// importantes
+									targetPredicho = filaPredichaPartes[filaPredichaPartes.length - 2]; // penultimo
+
+									String[] filaValidacionPartes = filaValidacion.split("\\|", -1); // los vacios son
+																										// importantes
+									targetValidacion = filaValidacionPartes[filaValidacionPartes.length - 3];
+
+									if (targetPredicho != null && !targetPredicho.isEmpty()
+											&& Integer.valueOf(targetPredicho).intValue() == 1) {
+
 										totalTargetUnoEnSubgrupo++;
-										if (targetPredicho.compareTo(targetValidacion) == 0) {
+
+										if (targetValidacion != null && !targetValidacion.isEmpty()
+												&& Float.valueOf(targetValidacion).intValue() == 1) {
 											aciertosTargetUnoSubgrupo++;
 											acertado = Boolean.TRUE;
 										} else {
@@ -305,14 +316,14 @@ public class Validador implements Serializable {
 			MY_LOGGER.info("COBERTURA - totalTargetUnoEnSubgrupo (REALES)=" + totalTargetUnoEnSubgrupo);
 			MY_LOGGER.info("COBERTURA - Porcentaje aciertos subgrupo " + predicho.getFileName() + ": "
 					+ aciertosTargetUnoSubgrupo + "/" + totalTargetUnoEnSubgrupo + " = "
-					+ (aciertosTargetUnoSubgrupo / totalTargetUnoEnSubgrupo) * 100
+					+ Math.round((aciertosTargetUnoSubgrupo / totalTargetUnoEnSubgrupo) * 100)
 					+ "% de elementos PREDICHOS con TARGET=1");
 
 			// RENTABILIDAD PRECIOS por SUBGRUPO
 			mediaRendimientoClose = performanceClose.getMean();
 			stdRendimientoClose = performanceClose.getStandardDeviation();
 			MY_LOGGER.info("RENTABILIDAD - Porcentaje medio de SUBIDA del precio en subgrupo " + predicho.getFileName()
-					+ ": " + mediaRendimientoClose * 100 + " % de " + Math.round(performanceClose.getN())
+					+ ": " + Math.round(mediaRendimientoClose * 100) + " % de " + Math.round(performanceClose.getN())
 					+ " elementos PREDICHOS a TARGET=1");
 			MY_LOGGER.info("RENTABILIDAD - Desviación estándar de SUBIDA del precio en subgrupo "
 					+ predicho.getFileName() + ": " + stdRendimientoClose + " para "

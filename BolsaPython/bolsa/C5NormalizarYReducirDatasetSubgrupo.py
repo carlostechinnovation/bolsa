@@ -55,6 +55,7 @@ pathModeloOutliers = (dir_subgrupo + "DETECTOR_OUTLIERS.tool").replace("futuro",
 path_modelo_normalizador = (dir_subgrupo + "NORMALIZADOR.tool").replace("futuro", "pasado") # Siempre lo cojo del pasado
 path_indices_out_capa5 = (dir_subgrupo + "indices_out_capa5.indices")
 path_modelo_reductor_features = (dir_subgrupo + "REDUCTOR.tool").replace("futuro", "pasado") # Siempre lo cojo del pasado
+balancear = False
 
 print("pathCsvCompleto = %s" % pathCsvCompleto)
 print("dir_subgrupo_img = %s" % dir_subgrupo_img)
@@ -63,6 +64,7 @@ print("pathModeloOutliers = %s" % pathModeloOutliers)
 print("path_modelo_normalizador = %s" % path_modelo_normalizador)
 print("path_indices_out_capa5 = %s" % path_indices_out_capa5)
 print("path_modelo_reductor_features = %s" % path_modelo_reductor_features)
+print("balancear = " + str(balancear))
 
 
 ######################## FUNCIONES #######################################################
@@ -162,35 +164,36 @@ def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmp
 
   # SOLO PARA EL PASADO Si hay MUCHAS empresas (UNDER-SAMPLING para reducir los datos -útil para miles de empresas, pero puede quedar sobreentrenado, si borro casi todas las minoritarias-)
   else:
-    print("BALANCEAR los casos positivos y negativos, haciendo downsampling de la clase mayoritaria...")
-    print("URL: https://elitedatascience.com/imbalanced-classes")
-    ift_minoritaria = entradaFeaturesYTarget4[entradaFeaturesYTarget4.TARGET == True]
-    print("ift_minoritaria (original):" + str(ift_minoritaria.shape[0]) + " x " + str(ift_minoritaria.shape[1]))
 
-    num_filas_azar = 5 * ift_minoritaria.shape[0]
-    print("num_filas_azar:" + str(num_filas_azar))
-    #ift_mayoritaria = pd.DataFrame(index=ift_minoritaria.index.copy(), columns=ift_minoritaria.columns)
-    ift_mayoritaria = entradaFeaturesYTarget4.loc[np.random.choice(entradaFeaturesYTarget4.index, num_filas_azar)]
-    ift_mayoritaria = ift_mayoritaria[ift_mayoritaria.TARGET == False]
-    #ift_mayoritaria = ift_mayoritaria.head(ift_minoritaria.shape[0])
 
-    print("ift_mayoritaria (se han borrado filas, pero no muchas):" + str(ift_mayoritaria.shape[0]) + " x " + str(ift_mayoritaria.shape[1]))
-    print("ift_minoritaria (con oversampling): " + str(ift_minoritaria.shape[0]) + " x " + str(ift_minoritaria.shape[1]))
+      if(balancear == True):
+          print("BALANCEAR los casos positivos y negativos, haciendo downsampling de la clase mayoritaria...")
+          print("URL: https://elitedatascience.com/imbalanced-classes")
+          ift_minoritaria = entradaFeaturesYTarget4[entradaFeaturesYTarget4.TARGET == True]
+          print("ift_minoritaria (original):" + str(ift_minoritaria.shape[0]) + " x " + str(ift_minoritaria.shape[1]))
+          num_filas_azar = 5 * ift_minoritaria.shape[0]
+          print("num_filas_azar:" + str(num_filas_azar))
+          ift_mayoritaria = entradaFeaturesYTarget4.loc[np.random.choice(entradaFeaturesYTarget4.index, num_filas_azar)]
+          ift_mayoritaria = ift_mayoritaria[ift_mayoritaria.TARGET == False]
+          print("ift_mayoritaria (se han borrado filas, pero no muchas):" + str(ift_mayoritaria.shape[0]) + " x " + str(ift_mayoritaria.shape[1]))
+          print("ift_minoritaria (con oversampling): " + str(ift_minoritaria.shape[0]) + " x " + str(ift_minoritaria.shape[1]))
+          print("Tasa de desbalanceo entre clases = " + str(ift_mayoritaria.shape[0]) + "/" + str(ift_minoritaria.shape[0]) + " = " + str(ift_mayoritaria.shape[0] / ift_minoritaria.shape[0]))
+          # Juntar ambas clases ya BALANCEADAS. Primero vacío el dataset
+          entradaFeaturesYTarget5 = ift_mayoritaria.append(ift_minoritaria)
+          print("Las clases ya están balanceadas:")
+          print("ift_balanceadas:" + str(entradaFeaturesYTarget5.shape[0]) + " x " + str(entradaFeaturesYTarget5.shape[1]))
 
-    print("Tasa de desbalanceo entre clases = " + str(ift_mayoritaria.shape[0]) + "/" + str(
-        ift_minoritaria.shape[0]) + " = " + str(ift_mayoritaria.shape[0] / ift_minoritaria.shape[0]))
+      else:
+          print("NO balanceamos clases!!!")
+          ift_minoritaria = entradaFeaturesYTarget4[entradaFeaturesYTarget4.TARGET == True]
+          ift_mayoritaria = entradaFeaturesYTarget4[entradaFeaturesYTarget4.TARGET == False]
+          print("Tasa de desbalanceo entre clases = " + str(ift_mayoritaria.shape[0]) + "/" + str(ift_minoritaria.shape[0]) + " = " + str(ift_mayoritaria.shape[0] / ift_minoritaria.shape[0]))
+          entradaFeaturesYTarget5 = entradaFeaturesYTarget4
 
-    # Juntar ambas clases ya BALANCEADAS. Primero vacío el dataset
-    entradaFeaturesYTarget5 = ift_mayoritaria.append(ift_minoritaria)
-
-    print("Las clases ya están balanceadas:")
-    print("ift_balanceadas:" + str(entradaFeaturesYTarget5.shape[0]) + " x " + str(entradaFeaturesYTarget5.shape[1]))
-
-    # entradaFeaturesYTarget5.to_csv(path_csv_completo + "_TEMP05", index=True, sep='|')  # UTIL para testIntegracion
-
-    featuresFichero = entradaFeaturesYTarget5.drop('TARGET', axis=1)
-    targetsFichero = entradaFeaturesYTarget5[['TARGET']]
-    targetsFichero = (targetsFichero[['TARGET']] == 1)  # Convierto de int a boolean
+      # entradaFeaturesYTarget5.to_csv(path_csv_completo + "_TEMP05", index=True, sep='|')  # UTIL para testIntegracion
+      featuresFichero = entradaFeaturesYTarget5.drop('TARGET', axis=1)
+      targetsFichero = entradaFeaturesYTarget5[['TARGET']]
+      targetsFichero = (targetsFichero[['TARGET']] == 1)  # Convierto de int a boolean
 
   ##################################################
 

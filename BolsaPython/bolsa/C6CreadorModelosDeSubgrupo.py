@@ -39,8 +39,8 @@ modoTiempo = sys.argv[2]
 desplazamientoAntiguedad = sys.argv[3]
 modoDebug = False  # En modo debug se pintan los dibujos. En otro caso, se evita calculo innecesario
 umbralCasosSuficientesClasePositiva = 100
-RecallOAreaROC = False  # True si se toma recall para seleccionar el modelo. False si se toma Area Bajo ROC
 granProbTargetUno = 60 # De todos los target=1, nos quedaremos con los granProbTargetUno (en tanto por cien) MAS probables. Un valor de 100 o mayor anula este parámetro
+balancearConSmoteSoloTrain = False
 
 ######### ID de subgrupo #######
 partes = dir_subgrupo.split("/")
@@ -86,12 +86,12 @@ def cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, modo
     ds_test_t_pred = modelo_loaded.predict(
         ds_test_f)  # PREDICCION de los targets de TEST (los compararemos con los que tenemos)
     area_bajo_roc = roc_auc_score(ds_test_t, ds_test_t_pred)
-
     print(nombreModelo + ".roc_auc_score = " + str(round(area_bajo_roc, 4)))
-    average_precision = average_precision_score(ds_test_t, ds_test_t_pred)
-    print('Average precision-recall score: {0:0.2f}'.format(average_precision))
     recall = recall_score(ds_test_t, ds_test_t_pred, average='binary', pos_label=1)
     print('Average recall score: {0:0.2f}'.format(recall))
+
+    average_precision = average_precision_score(ds_test_t, ds_test_t_pred)
+    print('METRICA IMPORTANTE--> Average PRECISION score: {0:0.2f}'.format(average_precision))
 
     if modoDebug:
         print("Curva ROC...")
@@ -122,16 +122,13 @@ def cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, modo
         plt.cla()
         plt.close()
 
-    if RecallOAreaROC:
-        return recall
-    else:
-        return area_bajo_roc
+    return average_precision  # MAXIMIZAMOS la precision
 
 
 ################# MAIN ########################################
 # GANADOR DEL SUBGRUPO (acumuladores)
 ganador_nombreModelo = "NINGUNO"
-ganador_recall_o_ROC = 0
+ganador_metrica = 0
 ganador_grid_mejores_parametros = []
 
 if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfile(pathCsvReducido) and os.stat(
@@ -181,13 +178,23 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         ds_validac_f = ds_validacion.drop('TARGET', axis=1).to_numpy()
         ds_validac_t = ds_validacion[['TARGET']].to_numpy().ravel()
 
-        # SMOTE (Over and undersampling on the train data):
-        print("Resampling con SMOTE del vector de TRAINING (pero no a TEST ni a VALIDATION) según: " + "https://machinelearningmastery.com/combine-oversampling-and-undersampling-for-imbalanced-classification/")
-        print("---------------- RESAMPLING con SMOTE --------")
-        resample = SMOTEENN()
-        print("SMOTE antes: %d" % ds_train_f.shape[0])
-        ds_train_f, ds_train_t = resample.fit_sample(ds_train_f, ds_train_t)
-        print("SMOTE después: %d" % ds_train_f.shape[0])
+        ########################### SMOTE (Over and undersampling on the train data) ##################
+        if(balancearConSmoteSoloTrain == True):
+            print("Resampling con SMOTE del vector de TRAINING (pero no a TEST ni a VALIDATION) según: " + "https://machinelearningmastery.com/combine-oversampling-and-undersampling-for-imbalanced-classification/")
+            print("---------------- RESAMPLING con SMOTE --------")
+            train_mayoritaria = ds_train_f[ds_train_f.TARGET == False]  # En este caso los mayoritarios son los False
+            train_minoritaria = ds_train_f[ds_train_f.TARGET == True]
+            print("(antes de SMOTE) --> Tasa de desbalanceo entre clases = " + str(train_mayoritaria.shape[0]) + "/" + str(train_minoritaria.shape[0]) + " = " + str(train_mayoritaria.shape[0] / train_minoritaria.shape[0]))
+            resample = SMOTEENN()
+            print("SMOTE antes: %d" % ds_train_f.shape[0])
+
+            ds_train_f, ds_train_t = resample.fit_sample(ds_train_f, ds_train_t)
+
+            print("SMOTE después: %d" % ds_train_f.shape[0])
+            train_mayoritaria = ds_train_f[ds_train_f.TARGET == False]  # En este caso los mayoritarios son los False
+            train_minoritaria = ds_train_f[ds_train_f.TARGET == True]
+            print("(despues de SMOTE) --> Tasa de desbalanceo entre clases = " + str(train_mayoritaria.shape[0]) + "/" + str(train_minoritaria.shape[0]) + " = " + str(train_mayoritaria.shape[0] / train_minoritaria.shape[0]))
+        ##################################################################
 
         print("---------------- MODELOS con varias configuraciones (hiperparametros) --------")
 
@@ -203,10 +210,10 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         #              tol=0.001, cache_size=200, class_weight=None, verbose=False, max_iter=-1,
         #              decision_function_shape='ovr', break_ties=False, random_state=None)
         # modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_train_t, False, modoDebug)
-        # recall_o_ROC = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, modoDebug)
-        # print(type(recall_o_ROC))
-        # if recall_o_ROC > ganador_recall_o_ROC:
-        #    ganador_recall_o_ROC = recall_o_ROC
+        # modelo_metrica = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, modoDebug)
+        # print(type(modelo_metrica))
+        # if modelo_metrica > ganador_metrica:
+        #    ganador_metrica = modelo_metrica
         #    ganador_nombreModelo = nombreModelo
         #    ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
         #
@@ -215,10 +222,10 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         # pathModelo = dir_subgrupo + nombreModelo + ".modelo"
         # modelo = LogisticRegression(random_state=0, solver='lbfgs', multi_class='ovr')
         # modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_train_t, False, modoDebug)
-        # recall_o_ROC = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, modoDebug)
-        # print(type(recall_o_ROC))
-        # if recall_o_ROC > ganador_recall_o_ROC:
-        #     ganador_recall_o_ROC = recall_o_ROC
+        # modelo_metrica = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, modoDebug)
+        # print(type(modelo_metrica))
+        # if modelo_metrica > ganador_metrica:
+        #     ganador_metrica = modelo_metrica
         #     ganador_nombreModelo = nombreModelo
         #     ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
 
@@ -226,10 +233,10 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         # pathModelo = dir_subgrupo + nombreModelo + ".modelo"
         # modelo = RandomForestClassifier(n_estimators=50, max_depth=2, random_state=0)
         # modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_train_t, False, modoDebug)
-        # recall_o_ROC = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, modoDebug)
-        # print(type(recall_o_ROC))
-        # if recall_o_ROC > ganador_recall_o_ROC:
-        #     ganador_recall_o_ROC = recall_o_ROC
+        # modelo_metrica = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, modoDebug)
+        # print(type(modelo_metrica))
+        # if modelo_metrica > ganador_metrica:
+        #     ganador_metrica = modelo_metrica
         #     ganador_nombreModelo = nombreModelo
         #     ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
 
@@ -237,10 +244,10 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         # pathModelo = dir_subgrupo + nombreModelo + ".modelo"
         # modelo = MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(5, 2), random_state=1)
         # modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_train_t, False, modoDebug)
-        # recall_o_ROC = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, modoDebug)
-        # print(type(recall_o_ROC))
-        # if recall_o_ROC > ganador_recall_o_ROC:
-        #     ganador_recall_o_ROC = recall_o_ROC
+        # modelo_metrica = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, modoDebug)
+        # print(type(modelo_metrica))
+        # if modelo_metrica > ganador_metrica:
+        #     ganador_metrica = modelo_metrica
         #     ganador_nombreModelo = nombreModelo
         #     ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
 
@@ -253,10 +260,10 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         # hiperparametros = [{'C':[1,3,5,10],'gamma':[1], 'kernel':['rbf']}]
         # modelos_grid = GridSearchCV(modelo_base, hiperparametros, n_jobs=-1, refit=True, cv=5, pre_dispatch='2*n_jobs', return_train_score=False)
         # modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelos_grid, pathModelo, ds_train_f, ds_train_t, True, modoDebug)
-        # recall_o_ROC = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, modoDebug)
-        # print(type(recall_o_ROC))
-        # if recall_o_ROC > ganador_recall_o_ROC:
-        #     ganador_recall_o_ROC = recall_o_ROC
+        # modelo_metrica = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, modoDebug)
+        # print(type(modelo_metrica))
+        # if modelo_metrica > ganador_metrica:
+        #     ganador_metrica = modelo_metrica
         #     ganador_nombreModelo = nombreModelo
         #     ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
 
@@ -267,10 +274,10 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         # hiperparametros = dict(C=np.logspace(0, 4, 10), penalty=['l2'])
         # modelos_grid = GridSearchCV(modelo_base, hiperparametros, n_jobs=-1, refit=True, cv=5, pre_dispatch='2*n_jobs', return_train_score=False)
         # modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelos_grid, pathModelo, ds_train_f, ds_train_t, True, modoDebug)
-        # recall_o_ROC = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, modoDebug)
-        # print(type(recall_o_ROC))
-        # if recall_o_ROC > ganador_recall_o_ROC:
-        #     ganador_recall_o_ROC = recall_o_ROC
+        # modelo_metrica = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, modoDebug)
+        # print(type(modelo_metrica))
+        # if modelo_metrica > ganador_metrica:
+        #     ganador_metrica = modelo_metrica
         #     ganador_nombreModelo = nombreModelo
         #     ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
 
@@ -283,21 +290,21 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
                            'base_estimator__max_depth': [15, 25, 85, 300, 1000],
                            'base_estimator__min_samples_split': [3],
                            'base_estimator__min_samples_leaf': [1]}
-        modelos_grid = GridSearchCV(modelo_base, hiperparametros, scoring='recall', n_jobs=-1, refit=True,
+        modelos_grid = GridSearchCV(modelo_base, hiperparametros, scoring='precision', n_jobs=-1, refit=True,
                                     return_train_score=False)
         modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelos_grid, pathModelo, ds_train_f,
                                                                   ds_train_t, True, modoDebug)
-        recall_o_ROC = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, modoDebug)
-        print(type(recall_o_ROC))
-        if recall_o_ROC > ganador_recall_o_ROC:
-            ganador_recall_o_ROC = recall_o_ROC
+        modelo_metrica = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, modoDebug)
+        print(type(modelo_metrica))
+        if modelo_metrica > ganador_metrica:
+            ganador_metrica = modelo_metrica
             ganador_nombreModelo = nombreModelo
             ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
 
 
         print("********* GANADOR de subgrupo *************")
-        print("Modelo ganador es " + ganador_nombreModelo + " con un recall (o area bajo ROC) de " + str(
-            round(ganador_recall_o_ROC, 4)) + " y con estos hiperparametros: ")
+        print("Modelo ganador es " + ganador_nombreModelo + " con una metrica maximizada de " + str(
+            round(ganador_metrica, 4)) + " y con estos hiperparametros: ")
         print(ganador_grid_mejores_parametros)
         pathModeloGanadorDeSubgrupoOrigen = dir_subgrupo + ganador_nombreModelo + ".modelo"
         pathModeloGanadorDeSubgrupoDestino = pathModeloGanadorDeSubgrupoOrigen + "_ganador"
@@ -309,10 +316,10 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
 
         print("LOS RESULTADOS DE VALIDACION Y TEST DEBERÍAN SER SIMILARES. SI NO, ESTARIÁMOS COMETIENDO ERRORES...")
         print("\nTest Results")
-        print("Accuracy: " + str(modelo_loaded.score(ds_test_f, ds_test_t)))
+        print("Score (precision): " + str(modelo_loaded.score(ds_test_f, ds_test_t)))
         print("Recall: " + str(recall_score(ds_test_t, modelo_loaded.predict(ds_test_f))))
         print("Validation Results")
-        print("Accuracy: " + str(modelo_loaded.score(ds_validac_f, ds_validac_t)))
+        print("Score (precision): " + str(modelo_loaded.score(ds_validac_f, ds_validac_t)))
         print("Recall: " + str(recall_score(ds_validac_t, modelo_loaded.predict(ds_validac_f))))
 
 elif (modoTiempo == "futuro" and pathCsvReducido.endswith('.csv') and os.path.isfile(pathCsvReducido) and os.stat(
@@ -328,6 +335,7 @@ elif (modoTiempo == "futuro" and pathCsvReducido.endswith('.csv') and os.path.is
     inputFeatures_sinnulos = inputFeatures.dropna(axis=0, how='any')  # Borrar FILA si ALGUNO sus valores tienen NaN
 
     dir_modelo_predictor_ganador = dir_subgrupo.replace("futuro", "pasado")  #Siempre cojo el modelo entrenado en el pasado
+    path_modelo_predictor_ganador = ""
     for file in os.listdir(dir_modelo_predictor_ganador):
         if file.endswith("ganador"):
             path_modelo_predictor_ganador = os.path.join(dir_modelo_predictor_ganador, file)
