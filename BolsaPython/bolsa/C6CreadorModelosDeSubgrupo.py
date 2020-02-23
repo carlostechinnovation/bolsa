@@ -316,10 +316,12 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
 
         print("LOS RESULTADOS DE VALIDACION Y TEST DEBERÍAN SER SIMILARES. SI NO, ESTARIÁMOS COMETIENDO ERRORES...")
         print("\nTest Results")
-        print("Score (precision): " + str(modelo_loaded.score(ds_test_f, ds_test_t)))
+        print("Score (precision): " + str(modelo_loaded.precision_score(ds_test_f, ds_test_t)))
+        print("Score (accuracy): " + str(modelo_loaded.score(ds_test_f, ds_test_t)))
         print("Recall: " + str(recall_score(ds_test_t, modelo_loaded.predict(ds_test_f))))
         print("Validation Results")
-        print("Score (precision): " + str(modelo_loaded.score(ds_validac_f, ds_validac_t)))
+        print("Score (precision): " + str(modelo_loaded.precision_score(ds_validac_f, ds_validac_t)))
+        print("Score (accuracy): " + str(modelo_loaded.score(ds_validac_f, ds_validac_t)))
         print("Recall: " + str(recall_score(ds_validac_t, modelo_loaded.predict(ds_validac_f))))
 
 elif (modoTiempo == "futuro" and pathCsvReducido.endswith('.csv') and os.path.isfile(pathCsvReducido) and os.stat(
