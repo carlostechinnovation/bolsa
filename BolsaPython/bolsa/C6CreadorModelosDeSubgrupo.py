@@ -352,7 +352,7 @@ elif (modoTiempo == "futuro" and pathCsvReducido.endswith('.csv') and os.path.is
         probabilidadesEnTargetUnoPeq4 = probabilidadesEnTargetUnoPeq3.sort_values(ascending=False)
         numfilasSeleccionadas = int(granProbTargetUno * probabilidadesEnTargetUnoPeq4.shape[0] / 100)  #Como están ordenadas en descendente, cojo estas NUM primeras filas
         targets_predichosCorregidos_probs = probabilidadesEnTargetUnoPeq4[0:(numfilasSeleccionadas-1)]
-        targets_predichosCorregidos = targets_predichosCorregidos_probs.apply(lambda x: True)
+        targets_predichosCorregidos = targets_predichosCorregidos_probs.apply(lambda x: 1)
 
         print("Guardando targets PREDICHOS en: " + pathCsvPredichos)
         df_predichos = targets_predichosCorregidos.to_frame()
