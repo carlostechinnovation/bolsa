@@ -40,7 +40,7 @@ desplazamientoAntiguedad = sys.argv[3]
 modoDebug = False  # En modo debug se pintan los dibujos. En otro caso, se evita calculo innecesario
 umbralCasosSuficientesClasePositiva = 100
 granProbTargetUno = 60 # De todos los target=1, nos quedaremos con los granProbTargetUno (en tanto por cien) MAS probables. Un valor de 100 o mayor anula este parámetro
-balancearConSmoteSoloTrain = False
+balancearConSmoteSoloTrain = True
 
 ######### ID de subgrupo #######
 partes = dir_subgrupo.split("/")
@@ -180,20 +180,20 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
 
         ########################### SMOTE (Over and undersampling on the train data) ##################
         if(balancearConSmoteSoloTrain == True):
-            print("Resampling con SMOTE del vector de TRAINING (pero no a TEST ni a VALIDATION) según: " + "https://machinelearningmastery.com/combine-oversampling-and-undersampling-for-imbalanced-classification/")
             print("---------------- RESAMPLING con SMOTE --------")
-            train_mayoritaria = ds_train_f[ds_train_f.TARGET == False]  # En este caso los mayoritarios son los False
-            train_minoritaria = ds_train_f[ds_train_f.TARGET == True]
-            print("(antes de SMOTE) --> Tasa de desbalanceo entre clases = " + str(train_mayoritaria.shape[0]) + "/" + str(train_minoritaria.shape[0]) + " = " + str(train_mayoritaria.shape[0] / train_minoritaria.shape[0]))
+            print("Resampling con SMOTE del vector de TRAINING (pero no a TEST ni a VALIDATION) según: " + "https://machinelearningmastery.com/combine-oversampling-and-undersampling-for-imbalanced-classification/")
+            #train_mayoritaria = ds_train_f[ds_train_f.TARGET == False]  # En este caso los mayoritarios son los False
+            #train_minoritaria = ds_train_f[ds_train_f.TARGET == True]
+            #print("(antes de SMOTE) --> Tasa de desbalanceo entre clases = " + str(train_mayoritaria.shape[0]) + "/" + str(train_minoritaria.shape[0]) + " = " + str(train_mayoritaria.shape[0] / train_minoritaria.shape[0]))
             resample = SMOTEENN()
             print("SMOTE antes: %d" % ds_train_f.shape[0])
 
             ds_train_f, ds_train_t = resample.fit_sample(ds_train_f, ds_train_t)
 
             print("SMOTE después: %d" % ds_train_f.shape[0])
-            train_mayoritaria = ds_train_f[ds_train_f.TARGET == False]  # En este caso los mayoritarios son los False
-            train_minoritaria = ds_train_f[ds_train_f.TARGET == True]
-            print("(despues de SMOTE) --> Tasa de desbalanceo entre clases = " + str(train_mayoritaria.shape[0]) + "/" + str(train_minoritaria.shape[0]) + " = " + str(train_mayoritaria.shape[0] / train_minoritaria.shape[0]))
+            #train_mayoritaria = ds_train_f[ds_train_f.TARGET == False]  # En este caso los mayoritarios son los False
+            #train_minoritaria = ds_train_f[ds_train_f.TARGET == True]
+            #print("(despues de SMOTE) --> Tasa de desbalanceo entre clases = " + str(train_mayoritaria.shape[0]) + "/" + str(train_minoritaria.shape[0]) + " = " + str(train_mayoritaria.shape[0] / train_minoritaria.shape[0]))
         ##################################################################
 
         print("---------------- MODELOS con varias configuraciones (hiperparametros) --------")
@@ -204,82 +204,46 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         print(
             "EVALUACION con curva precision-recall: " + "https://scikit-learn.org/stable/auto_examples/model_selection/plot_precision_recall.html")
 
-        # nombreModelo = "svc"
-        # pathModelo = dir_subgrupo + nombreModelo + ".modelo"
-        # modelo = svm.SVC(C=1.0, kernel='rbf', degree=3, gamma='scale', coef0=0.0, shrinking=True, probability=True,
-        #              tol=0.001, cache_size=200, class_weight=None, verbose=False, max_iter=-1,
-        #              decision_function_shape='ovr', break_ties=False, random_state=None)
-        # modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_train_t, False, modoDebug)
-        # modelo_metrica = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, modoDebug)
-        # print(type(modelo_metrica))
-        # if modelo_metrica > ganador_metrica:
-        #    ganador_metrica = modelo_metrica
-        #    ganador_nombreModelo = nombreModelo
-        #    ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
-        #
-        #
-        # nombreModelo = "logreg"
-        # pathModelo = dir_subgrupo + nombreModelo + ".modelo"
-        # modelo = LogisticRegression(random_state=0, solver='lbfgs', multi_class='ovr')
-        # modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_train_t, False, modoDebug)
-        # modelo_metrica = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, modoDebug)
-        # print(type(modelo_metrica))
-        # if modelo_metrica > ganador_metrica:
-        #     ganador_metrica = modelo_metrica
-        #     ganador_nombreModelo = nombreModelo
-        #     ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
-
-        # nombreModelo = "rf"
-        # pathModelo = dir_subgrupo + nombreModelo + ".modelo"
-        # modelo = RandomForestClassifier(n_estimators=50, max_depth=2, random_state=0)
-        # modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_train_t, False, modoDebug)
-        # modelo_metrica = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, modoDebug)
-        # print(type(modelo_metrica))
-        # if modelo_metrica > ganador_metrica:
-        #     ganador_metrica = modelo_metrica
-        #     ganador_nombreModelo = nombreModelo
-        #     ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
-
-        # nombreModelo = "nn"
-        # pathModelo = dir_subgrupo + nombreModelo + ".modelo"
-        # modelo = MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(5, 2), random_state=1)
-        # modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_train_t, False, modoDebug)
-        # modelo_metrica = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, modoDebug)
-        # print(type(modelo_metrica))
-        # if modelo_metrica > ganador_metrica:
-        #     ganador_metrica = modelo_metrica
-        #     ganador_nombreModelo = nombreModelo
-        #     ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
+        nombreModelo = "nn"
+        pathModelo = dir_subgrupo + nombreModelo + ".modelo"
+        modelo = MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(5, 2), random_state=1)
+        modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_train_t, False, modoDebug)
+        modelo_metrica = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, modoDebug)
+        print(type(modelo_metrica))
+        if modelo_metrica > ganador_metrica:
+            ganador_metrica = modelo_metrica
+            ganador_nombreModelo = nombreModelo
+            ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
 
         ####### HYPERPARAMETROS: GRID de parametros #######
         print("HYPERPARAMETROS - URL: https://scikit-learn.org/stable/modules/grid_search.html")
 
-        # nombreModelo = "svc_grid"
-        # pathModelo = dir_subgrupo + nombreModelo + ".modelo"
-        # modelo_base = svm.SVC()
-        # hiperparametros = [{'C':[1,3,5,10],'gamma':[1], 'kernel':['rbf']}]
-        # modelos_grid = GridSearchCV(modelo_base, hiperparametros, n_jobs=-1, refit=True, cv=5, pre_dispatch='2*n_jobs', return_train_score=False)
-        # modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelos_grid, pathModelo, ds_train_f, ds_train_t, True, modoDebug)
-        # modelo_metrica = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, modoDebug)
-        # print(type(modelo_metrica))
-        # if modelo_metrica > ganador_metrica:
-        #     ganador_metrica = modelo_metrica
-        #     ganador_nombreModelo = nombreModelo
-        #     ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
+        nombreModelo = "svc_grid"
+        pathModelo = dir_subgrupo + nombreModelo + ".modelo"
+        modelo_base = svm.SVC()
+        hiperparametros = [{'C':[1,3,5,10],'gamma':[1], 'kernel':['rbf']}]
+        modelos_grid = GridSearchCV(modelo_base, hiperparametros, scoring='precision', n_jobs=-1, refit=True, cv=5, pre_dispatch='2*n_jobs', return_train_score=False)
+        modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelos_grid, pathModelo, ds_train_f, ds_train_t, True, modoDebug)
+        modelo_metrica = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, modoDebug)
+        print(type(modelo_metrica))
+        if modelo_metrica > ganador_metrica:
+            ganador_metrica = modelo_metrica
+            ganador_nombreModelo = nombreModelo
+            ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
 
 
-        # nombreModelo = "logreg_grid"
-        # pathModelo = dir_subgrupo + nombreModelo + ".modelo"
-        # modelo_base = LogisticRegression()
-        # hiperparametros = dict(C=np.logspace(0, 4, 10), penalty=['l2'])
-        # modelos_grid = GridSearchCV(modelo_base, hiperparametros, n_jobs=-1, refit=True, cv=5, pre_dispatch='2*n_jobs', return_train_score=False)
-        # modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelos_grid, pathModelo, ds_train_f, ds_train_t, True, modoDebug)
-        # modelo_metrica = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, modoDebug)
-        # print(type(modelo_metrica))
-        # if modelo_metrica > ganador_metrica:
-        #     ganador_metrica = modelo_metrica
-        #     ganador_nombreModelo = nombreModelo
-        #     ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
+        nombreModelo = "logreg_grid"
+        pathModelo = dir_subgrupo + nombreModelo + ".modelo"
+        modelo_base = LogisticRegression()
+        hiperparametros = dict(C=np.logspace(0, 4, 10), penalty=['l2'])
+        modelos_grid = GridSearchCV(modelo_base, hiperparametros, scoring='precision', n_jobs=-1, refit=True, cv=5, pre_dispatch='2*n_jobs', return_train_score=False)
+        modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelos_grid, pathModelo, ds_train_f, ds_train_t, True, modoDebug)
+        modelo_metrica = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, modoDebug)
+        print(type(modelo_metrica))
+        if modelo_metrica > ganador_metrica:
+            ganador_metrica = modelo_metrica
+            ganador_nombreModelo = nombreModelo
+            ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
 
         nombreModelo = "rf_grid"
         pathModelo = dir_subgrupo + nombreModelo + ".modelo"
@@ -314,15 +278,13 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         modelo_loaded = pickle.load(open(pathModelo, 'rb'))
         ds_test_t_pred = modelo_loaded.predict(ds_test_f)
 
-        print("LOS RESULTADOS DE VALIDACION Y TEST DEBERÍAN SER SIMILARES. SI NO, ESTARIÁMOS COMETIENDO ERRORES...")
-        print("\nTest Results")
-        print("Score (precision): " + str(modelo_loaded.precision_score(ds_test_f, ds_test_t)))
-        print("Score (accuracy): " + str(modelo_loaded.score(ds_test_f, ds_test_t)))
-        print("Recall: " + str(recall_score(ds_test_t, modelo_loaded.predict(ds_test_f))))
-        print("Validation Results")
-        print("Score (precision): " + str(modelo_loaded.precision_score(ds_validac_f, ds_validac_t)))
-        print("Score (accuracy): " + str(modelo_loaded.score(ds_validac_f, ds_validac_t)))
-        print("Recall: " + str(recall_score(ds_validac_t, modelo_loaded.predict(ds_validac_f))))
+        print("\nLOS RESULTADOS DE VALIDACION Y TEST DEBERÍAN SER SIMILARES. SI NO, ESTARIÁMOS COMETIENDO ERRORES...")
+        print("TEST -> Score (precision): " + str(modelo_loaded.precision_score(ds_test_f, ds_test_t)))
+        print("TEST -> Score (accuracy): " + str(modelo_loaded.score(ds_test_f, ds_test_t)))
+        print("TEST -> Recall: " + str(recall_score(ds_test_t, modelo_loaded.predict(ds_test_f))))
+        print("VALIDATION -> Score (precision): " + str(modelo_loaded.precision_score(ds_validac_f, ds_validac_t)))
+        print("VALIDATION -> Score (accuracy): " + str(modelo_loaded.score(ds_validac_f, ds_validac_t)))
+        print("VALIDATION -> Recall: " + str(recall_score(ds_validac_t, modelo_loaded.predict(ds_validac_f))))
 
 elif (modoTiempo == "futuro" and pathCsvReducido.endswith('.csv') and os.path.isfile(pathCsvReducido) and os.stat(
         pathCsvReducido).st_size > 0):
