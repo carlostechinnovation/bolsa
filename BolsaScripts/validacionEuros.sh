@@ -42,12 +42,12 @@ PARAMS_CONFIG="${PATH_SCRIPTS}parametros.config"
 echo -e "Importando parametros generales..."
 source ${PARAMS_CONFIG}
 
-VELAS_RETROCESO="$((${X}+${M}+2))" #INSTANTE ANALIZADO (T1). Su antiguedad debe ser mayor que X+M, para poder ver esas X+M velas del futuro
+VELAS_RETROCESO="$((${X}+${M}+2))" #INSTANTE ANALIZADO (T1). Su antiguedad debe ser mayor o igual que X+M, para poder ver esas X+M velas del futuro
 
 #Instantes de las descargas
 PASADO_t1="0"
-FUTURO1_t1="${VELAS_RETROCESO}"
-FUTURO2_t1="$((${VELAS_RETROCESO}-${X}-${M}))"
+FUTURO1_t1="${VELAS_RETROCESO}" #No tocar. Se usa en el validador
+FUTURO2_t1="$((${VELAS_RETROCESO}-${X}-${M}))" #No tocar. Se usa en el validador
 
 DIR_BASE="/bolsa/"
 DIR_LOGS="${DIR_BASE}logs/"

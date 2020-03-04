@@ -3,7 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="22edbd2f-b3d9-42f0-a7dd-659033ab601a" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bolsa/C6CreadorModelosDeSubgrupo.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/C6CreadorModelosDeSubgrupo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bolsa/C5NormalizarYReducirDatasetSubgrupo.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/C5NormalizarYReducirDatasetSubgrupo.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

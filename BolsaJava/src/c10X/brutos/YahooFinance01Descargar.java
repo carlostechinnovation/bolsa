@@ -234,6 +234,25 @@ public class YahooFinance01Descargar implements Serializable {
 	public static String getUrlYahooFinance(String ticker, String modo) throws Exception {
 		String url = "https://query1.finance.yahoo.com/v8/finance/chart/" + ticker + "?symbol=" + ticker;
 
+		// Vela 5 minutos
+//		if (modo.equals(BrutosUtils.PASADO)) {
+//			url += "&range=1mo&interval=5m";
+//		} else if (modo.equals(BrutosUtils.FUTURO)) {
+//			url += "&range=1mo&interval=5m";
+//		} else {
+//			throw new Exception("Modo pasado/futuro no explicito. Saliendo...");
+//		}
+		
+		// Vela 30 minutos
+//		if (modo.equals(BrutosUtils.PASADO)) {
+//			url += "&range=1mo&interval=30m";
+//		} else if (modo.equals(BrutosUtils.FUTURO)) {
+//			url += "&range=1mo&interval=30m";
+//		} else {
+//			throw new Exception("Modo pasado/futuro no explicito. Saliendo...");
+//		}
+		
+		// Vela 1 día
 		if (modo.equals(BrutosUtils.PASADO)) {
 			url += "&range=6mo&interval=1d";
 		} else if (modo.equals(BrutosUtils.FUTURO)) {
