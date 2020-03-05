@@ -69,7 +69,7 @@ cp -f "${DIR_DATOS_INTEGRACION}parametros.config" "${DIR_CODIGOS}BolsaScripts/pa
 echo -e "Copiando datos de entrada (ya descargados)..." >> ${LOG_INTEGRACION}
 rm -Rf "/bolsa/validacion_datos/"
 crearCarpetaSiNoExisteYVaciarRecursivo "/bolsa/validacion_datos/"
-cp -a "/home/carloslinux/Desktop/GIT_BOLSA/test_integracion_datos/." "/bolsa/validacion_datos/"
+cp -a "${DIR_CODIGOS}test_integracion_datos/." "/bolsa/validacion_datos/"
 
 
 #######################################################################################################

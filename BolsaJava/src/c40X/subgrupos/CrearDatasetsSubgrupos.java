@@ -7,8 +7,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.ConsoleAppender;
@@ -17,6 +19,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.helpers.NullEnumeration;
 
+import c10X.brutos.BrutosUtils;
 import c10X.brutos.EstaticosFinvizDescargarYParsear;
 import c30x.elaborados.construir.ElaboradosUtils;
 import c30x.elaborados.construir.Estadisticas;
@@ -58,13 +61,19 @@ public class CrearDatasetsSubgrupos implements Serializable {
 	private final static Float PER_umbral2 = 25.0F;
 	private final static Float PER_umbral3 = 50.0F;
 
-	private final static Float DE_umbral1 = 1.0F;
-	private final static Float DE_umbral2 = 2.5F;
-	private final static Float DE_umbral3 = 5.0F;
+	private final static Float DE_umbral1 = 0.7F;
+	private final static Float DE_umbral2 = 1.5F;
+	private final static Float DE_umbral3 = 2.8F;
 
 	private final static Integer SMA50RATIOPRECIO_umbral1 = 80;
 	private final static Integer SMA50RATIOPRECIO_umbral2 = 100;
 	private final static Integer SMA50RATIOPRECIO_umbral3 = 120;
+
+	private final static Float IO_umbral1 = 20.0F;
+	private final static Float IO_umbral2 = 60.0F;
+
+	private final static Float factorPicoVolumen = 1.09F;// Pico en volumen
+	private final static Float factorPicoPrecio = 1.09F; // Pico en precio
 
 	private static HashMap<Integer, ArrayList<String>> empresasPorTipo;
 
@@ -85,10 +94,11 @@ public class CrearDatasetsSubgrupos implements Serializable {
 		String directorioOut = SubgruposUtils.DIR_SUBGRUPOS; // DEFAULT
 		String coberturaMinima = SubgruposUtils.MIN_COBERTURA_CLUSTER; // DEFAULT
 		String minEmpresasPorCluster = SubgruposUtils.MIN_EMPRESAS_POR_CLUSTER; // DEFAULT
+		String modoTiempo = BrutosUtils.PASADO; // DEFAULT
 
 		if (args.length == 0) {
 			MY_LOGGER.info("Sin parametros de entrada. Rellenamos los DEFAULT...");
-		} else if (args.length != 4) {
+		} else if (args.length != 5) {
 			MY_LOGGER.error("Parametros de entrada incorrectos!!");
 			System.exit(-1);
 		} else {
@@ -96,9 +106,10 @@ public class CrearDatasetsSubgrupos implements Serializable {
 			directorioOut = args[1];
 			coberturaMinima = args[2];
 			minEmpresasPorCluster = args[3];
+			modoTiempo = args[4];
 		}
 
-		crearSubgruposYNormalizar(directorioIn, directorioOut, coberturaMinima, minEmpresasPorCluster);
+		crearSubgruposYNormalizar(directorioIn, directorioOut, coberturaMinima, minEmpresasPorCluster, modoTiempo);
 
 		MY_LOGGER.info("FIN");
 	}
@@ -110,10 +121,11 @@ public class CrearDatasetsSubgrupos implements Serializable {
 	 * @param directorioOut
 	 * @param coberturaMinima
 	 * @param minEmpresasPorCluster
+	 * @param modoTiempo
 	 * @throws Exception
 	 */
 	public static void crearSubgruposYNormalizar(String directorioIn, String directorioOut, String coberturaMinima,
-			String minEmpresasPorCluster) throws Exception {
+			String minEmpresasPorCluster, String modoTiempo) throws Exception {
 
 		// Debo leer el parámetro que me interese: de momento el market cap. En el
 		// futuro sería conveniente separar por sector y liquidez (volumen medio de 6
@@ -128,21 +140,16 @@ public class CrearDatasetsSubgrupos implements Serializable {
 
 		HashMap<Integer, HashMap<String, String>> datosEmpresaEntrada = new HashMap<Integer, HashMap<String, String>>();
 
+		// TODAS
+		// ArrayList<String> pathEmpresasTipo0 = new ArrayList<String>(); //TODAS
+
 		// Tipos de empresa segun MARKET CAP (0-6)
-		// Tipo 0: TODAS
-		// Tipo 1: MARKETCAP=MEGA
-		// Tipo 2: MARKETCAP=LARGA
-		// Tipo 3: MARKETCAP=MID
-		// Tipo 4: MARKETCAP=SMALL
-		// Tipo 5: MARKETCAP=MICRO
-		// Tipo 6: MARKETCAP=NANO
-		ArrayList<String> pathEmpresasTipo0 = new ArrayList<String>();
-		ArrayList<String> pathEmpresasTipo1 = new ArrayList<String>();
-		ArrayList<String> pathEmpresasTipo2 = new ArrayList<String>();
-		ArrayList<String> pathEmpresasTipo3 = new ArrayList<String>();
-		ArrayList<String> pathEmpresasTipo4 = new ArrayList<String>();
-		ArrayList<String> pathEmpresasTipo5 = new ArrayList<String>();
-		ArrayList<String> pathEmpresasTipo6 = new ArrayList<String>();
+		ArrayList<String> pathEmpresasTipo1 = new ArrayList<String>();// MARKETCAP=MEGA
+		ArrayList<String> pathEmpresasTipo2 = new ArrayList<String>();// MARKETCAP=LARGA
+		ArrayList<String> pathEmpresasTipo3 = new ArrayList<String>();// MARKETCAP=MID
+		ArrayList<String> pathEmpresasTipo4 = new ArrayList<String>();// MARKETCAP=SMALL
+		ArrayList<String> pathEmpresasTipo5 = new ArrayList<String>();// MARKETCAP=MICRO
+		ArrayList<String> pathEmpresasTipo6 = new ArrayList<String>();// MARKETCAP=NANO
 
 		// Tipos de empresa segun SECTOR ECONOMICO (7-15)
 		ArrayList<String> pathEmpresasTipo7 = new ArrayList<String>();
@@ -176,6 +183,28 @@ public class CrearDatasetsSubgrupos implements Serializable {
 		ArrayList<String> pathEmpresasTipo29 = new ArrayList<String>(); // alto
 		ArrayList<String> pathEmpresasTipo30 = new ArrayList<String>(); // muy alto
 		ArrayList<String> pathEmpresasTipo31 = new ArrayList<String>(); // desconocido
+
+		// Tipos de empresa segun geografia
+		ArrayList<String> pathEmpresasTipo32 = new ArrayList<String>(); // china
+		ArrayList<String> pathEmpresasTipo33 = new ArrayList<String>(); // USA
+		ArrayList<String> pathEmpresasTipo34 = new ArrayList<String>(); // India
+		ArrayList<String> pathEmpresasTipo35 = new ArrayList<String>(); // resto explicito
+		ArrayList<String> pathEmpresasTipo36 = new ArrayList<String>(); // desconocido
+
+		// Tipos de empresa según "% Institutional Own"
+		ArrayList<String> pathEmpresasTipo37 = new ArrayList<String>(); // 0-20
+		ArrayList<String> pathEmpresasTipo38 = new ArrayList<String>(); // 20-60
+		ArrayList<String> pathEmpresasTipo39 = new ArrayList<String>(); // 60-100
+		ArrayList<String> pathEmpresasTipo40 = new ArrayList<String>(); // desconocido
+
+		// Tipos de empresa según "% Dividend"
+		ArrayList<String> pathEmpresasTipo41 = new ArrayList<String>(); // CON dividendo
+		ArrayList<String> pathEmpresasTipo42 = new ArrayList<String>(); // SIN dividendo
+
+		// Combinaciones manuales
+		ArrayList<String> pathEmpresasTipo43 = new ArrayList<String>(); // Healthcare sin dividendo (SG 11 + SG42)
+		ArrayList<String> pathEmpresasTipo44 = new ArrayList<String>(); // 3 días: Pico en Volumen y precio
+		ArrayList<String> pathEmpresasTipo45 = new ArrayList<String>(); // 7 días: Pico en Volumen y precio
 
 		// Para cada EMPRESA
 		while (iterator.hasNext()) {
@@ -212,10 +241,11 @@ public class CrearDatasetsSubgrupos implements Serializable {
 
 			// ------ SUBGRUPOS según MARKET CAP ------------
 			String mcStr = parametros.get("Market Cap");
+			Float marketCapValor = null;
 
 			if (mcStr != null && !mcStr.isEmpty() && !"-".equals(mcStr)) {
 
-				Float marketCapValor = Float.valueOf(mcStr);
+				marketCapValor = Float.valueOf(mcStr);
 
 				// default, incluye a todos. LO quitamos, porque es inutil
 				// pathEmpresasTipo0.add(ficheroGestionado.getAbsolutePath());
@@ -243,7 +273,8 @@ public class CrearDatasetsSubgrupos implements Serializable {
 
 			if (sectorStr != null && !sectorStr.isEmpty() && !"-".equals(sectorStr)) {
 
-				if (sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_BM)) {
+				if (sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_BM)
+						|| sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_UTIL)) {
 					pathEmpresasTipo7.add(ficheroGestionado.getAbsolutePath());
 				} else if (sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_CONG)) {
 					pathEmpresasTipo8.add(ficheroGestionado.getAbsolutePath());
@@ -259,9 +290,11 @@ public class CrearDatasetsSubgrupos implements Serializable {
 					pathEmpresasTipo13.add(ficheroGestionado.getAbsolutePath());
 				} else if (sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_TECH)) {
 					pathEmpresasTipo14.add(ficheroGestionado.getAbsolutePath());
-				} else if (sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_UTIL)) {
-					pathEmpresasTipo15.add(ficheroGestionado.getAbsolutePath());
-				} else if (sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_RE)) {
+				}
+//				else if (sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_UTIL)) { --> Utilities (carbón gas, electricas...) las juntamos con basic_materials (procesar materias primas: extruir hierro, crear botes de plástico, etc)
+//					pathEmpresasTipo15.add(ficheroGestionado.getAbsolutePath());
+//				} 
+				else if (sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_RE)) {
 					pathEmpresasTipo16.add(ficheroGestionado.getAbsolutePath());
 				} else {
 					MY_LOGGER.warn(ficheroGestionado.getAbsolutePath() + " -> Sector raro: " + sectorStr);
@@ -274,9 +307,10 @@ public class CrearDatasetsSubgrupos implements Serializable {
 
 			// ------ SUBGRUPOS según PER ------------
 			String perStr = parametros.get("P/E");
+			Float per = null;
 
 			if (perStr != null && !perStr.isEmpty() && !"-".equals(perStr)) {
-				Float per = Float.valueOf(perStr);
+				per = Float.valueOf(perStr);
 
 				if (per > 0 && per < PER_umbral1) {
 					pathEmpresasTipo17.add(ficheroGestionado.getAbsolutePath());
@@ -294,9 +328,10 @@ public class CrearDatasetsSubgrupos implements Serializable {
 
 			// ------ SUBGRUPOS según Debt/Eq ------------
 			String debtEqStr = parametros.get("Debt/Eq");
+			Float debtEq = null;
 
 			if (debtEqStr != null && !debtEqStr.isEmpty() && !"-".equals(debtEqStr)) {
-				Float debtEq = Float.valueOf(debtEqStr);
+				debtEq = Float.valueOf(debtEqStr);
 
 				if (debtEq > 0 && debtEq < DE_umbral1) {
 					pathEmpresasTipo22.add(ficheroGestionado.getAbsolutePath());
@@ -316,11 +351,11 @@ public class CrearDatasetsSubgrupos implements Serializable {
 
 			// ------ SUBGRUPOS según ratio de SMA50 de precio ------------
 			String ratioSMA50PrecioStr = parametros.get("RATIO_SMA_50_PRECIO");
-			// System.out.println("--ratioSMA50PrecioStr---: " + ratioSMA50PrecioStr);
+			Integer ratioSMA50Precio = null;
 
 			if (!ratioSMA50PrecioStr.contains("null") && !ratioSMA50PrecioStr.isEmpty()
 					&& !"-".equals(ratioSMA50PrecioStr)) {
-				Integer ratioSMA50Precio = Integer.valueOf(ratioSMA50PrecioStr);
+				ratioSMA50Precio = Integer.valueOf(ratioSMA50PrecioStr);
 
 				if (ratioSMA50Precio > 0 && ratioSMA50Precio < SMA50RATIOPRECIO_umbral1) {
 					pathEmpresasTipo27.add(ficheroGestionado.getAbsolutePath());
@@ -342,11 +377,130 @@ public class CrearDatasetsSubgrupos implements Serializable {
 				// ratioSMA50PrecioStr);
 			}
 
+			// ------ SUBGRUPOS según GEOGRAFIA ------------
+			String geoStr = parametros.get("geo");
+
+			if (geoStr != null && !geoStr.isEmpty() && !"-".equals(geoStr)) {
+
+				if (geoStr.equalsIgnoreCase("china")) {
+					pathEmpresasTipo32.add(ficheroGestionado.getAbsolutePath());
+				} else if (geoStr.equalsIgnoreCase("USA")) {
+					pathEmpresasTipo33.add(ficheroGestionado.getAbsolutePath());
+				} else if (geoStr.equalsIgnoreCase("India")) {
+					pathEmpresasTipo34.add(ficheroGestionado.getAbsolutePath());
+				} else {
+					pathEmpresasTipo35.add(ficheroGestionado.getAbsolutePath());
+				}
+
+			} else {
+				pathEmpresasTipo36.add(ficheroGestionado.getAbsolutePath());
+			}
+
+			// ------ SUBGRUPOS según INSTITUTIONAL OWN ------------
+			String instOwnStr = parametros.get("Inst Own");
+			Float instOwn = null;
+
+			if (instOwnStr != null && !instOwnStr.isEmpty() && !"-".equals(instOwnStr)) {
+				instOwn = Float.valueOf(instOwnStr);
+
+				if (instOwn > 0 && instOwn < IO_umbral1) {
+					pathEmpresasTipo37.add(ficheroGestionado.getAbsolutePath());
+				} else if (instOwn >= IO_umbral1 && instOwn < IO_umbral2) {
+					pathEmpresasTipo38.add(ficheroGestionado.getAbsolutePath());
+				} else if (instOwn >= IO_umbral2 && instOwn <= 100) {
+					pathEmpresasTipo39.add(ficheroGestionado.getAbsolutePath());
+				} else {
+					pathEmpresasTipo40.add(ficheroGestionado.getAbsolutePath());
+				}
+
+			} else {
+				pathEmpresasTipo40.add(ficheroGestionado.getAbsolutePath());
+			}
+
+			// ------ SUBGRUPOS según %Dividendo ------------
+			String pctDividendoStr = parametros.get("Dividend %");
+			Float pctDividendo = null;
+
+			if (pctDividendoStr != null && !pctDividendoStr.isEmpty()
+					&& !"-".equals(pctDividendoStr.replace("%", "").trim())) {
+				pctDividendo = Float.valueOf(pctDividendoStr.replace("%", "").trim());
+
+				if (pctDividendo > 0) {
+					pathEmpresasTipo41.add(ficheroGestionado.getAbsolutePath());
+				} else {
+					pathEmpresasTipo42.add(ficheroGestionado.getAbsolutePath());
+				}
+
+			} else {
+				pathEmpresasTipo42.add(ficheroGestionado.getAbsolutePath());
+			}
+
+			// HEALTHCARE y SIN DIVIDENDO
+			if (sectorStr != null && !sectorStr.isEmpty() && !"-".equals(sectorStr)
+					&& sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_HC) && pctDividendo == null) {
+				pathEmpresasTipo43.add(ficheroGestionado.getAbsolutePath());
+			}
+
+			// --------------------------------------------
+			// Casos en los que recientemente ha habido un pico en volumen y precio,
+			// respecto de la media de muchos dias antes
+
+			// PICO en VOLUMEN
+			String max3Volumen = parametros.get("MAXIMO_3_VOLUMEN"); // el pico se dio en las ultimas 3 velas
+			String max7Volumen = parametros.get("MAXIMO_7_VOLUMEN"); // el pico se dio en las ultimas 7 velas
+			String mediaSma20Volumen = parametros.get("MEDIA_SMA_20_VOLUMEN");
+
+			// Pico en PRECIO
+			String max3Precio = parametros.get("MAXIMO_3_PRECIO");// el pico se dio en las ultimas 3 velas
+			String max7Precio = parametros.get("MAXIMO_7_PRECIO");// el pico se dio en las ultimas 7 velas
+			String mediaSma20Precio = parametros.get("MEDIA_SMA_20_PRECIO");
+
+			if (max3Volumen != null && !max3Volumen.isEmpty() && !"-".equals(max3Volumen) && !"null".equals(max3Volumen)
+
+					&& max7Volumen != null && !max7Volumen.isEmpty() && !"-".equals(max7Volumen)
+					&& !"null".equals(max7Volumen)
+
+					&& mediaSma20Volumen != null && !mediaSma20Volumen.isEmpty() && !"-".equals(mediaSma20Volumen)
+					&& !"null".equals(mediaSma20Volumen)
+
+					&& max3Precio != null && !max3Precio.isEmpty() && !"-".equals(max3Precio)
+					&& !"null".equals(max3Precio)
+
+					&& max7Precio != null && !max7Precio.isEmpty() && !"-".equals(max7Precio)
+					&& !"null".equals(max7Precio)
+
+					&& mediaSma20Precio != null && !mediaSma20Precio.isEmpty() && !"-".equals(mediaSma20Precio)
+					&& !"null".equals(mediaSma20Precio)) {
+
+				Float max3Volumenf = Float.valueOf(max3Volumen);
+				Float max7Volumenf = Float.valueOf(max7Volumen);
+				Float mediaSma20Volumenf = Float.valueOf(mediaSma20Volumen);
+				Float max3Preciof = Float.valueOf(max3Precio);
+				Float max7Preciof = Float.valueOf(max7Precio);
+				Float mediaSma20Preciof = Float.valueOf(mediaSma20Precio);
+
+				// En las ultimas 3 ó 7 velas ha habido un pico en volumen y precio, respecto de
+				// la media de 20 dias. Ha caido el precio, pero puede que se repita el pico...
+				boolean hayPicoEnVolumen3 = max3Volumenf > factorPicoVolumen * mediaSma20Volumenf;
+				boolean hayPicoEnVolumen7 = max7Volumenf > factorPicoVolumen * mediaSma20Volumenf;
+				boolean hayPicoEnPrecio3 = max3Preciof > factorPicoPrecio * mediaSma20Preciof;
+				boolean hayPicoEnPrecio7 = max7Preciof > factorPicoPrecio * mediaSma20Preciof;
+
+				if (hayPicoEnVolumen3 && hayPicoEnPrecio3) {
+					pathEmpresasTipo44.add(ficheroGestionado.getAbsolutePath());
+				}
+				if (hayPicoEnVolumen7 && hayPicoEnPrecio7) {
+					pathEmpresasTipo45.add(ficheroGestionado.getAbsolutePath());
+				}
+
+			}
+			// ---------------------------------------------------------------------------------------
+
 		}
 
 		// Almacenamiento del tipo de empresa en la lista
 		empresasPorTipo = new HashMap<Integer, ArrayList<String>>();
-		empresasPorTipo.put(0, pathEmpresasTipo0);
+		// empresasPorTipo.put(0, pathEmpresasTipo0);
 		empresasPorTipo.put(1, pathEmpresasTipo1);
 		empresasPorTipo.put(2, pathEmpresasTipo2);
 		empresasPorTipo.put(3, pathEmpresasTipo3);
@@ -383,9 +537,30 @@ public class CrearDatasetsSubgrupos implements Serializable {
 		empresasPorTipo.put(30, pathEmpresasTipo30);
 		empresasPorTipo.put(31, pathEmpresasTipo31);
 
+		empresasPorTipo.put(32, pathEmpresasTipo32);
+		empresasPorTipo.put(33, pathEmpresasTipo33);
+		empresasPorTipo.put(34, pathEmpresasTipo34);
+		empresasPorTipo.put(35, pathEmpresasTipo35);
+		empresasPorTipo.put(36, pathEmpresasTipo36);
+
+		empresasPorTipo.put(37, pathEmpresasTipo37);
+		empresasPorTipo.put(38, pathEmpresasTipo38);
+		empresasPorTipo.put(39, pathEmpresasTipo39);
+		empresasPorTipo.put(40, pathEmpresasTipo40);
+
+		empresasPorTipo.put(41, pathEmpresasTipo41);
+		empresasPorTipo.put(42, pathEmpresasTipo42);
+
+		empresasPorTipo.put(43, pathEmpresasTipo43);
+		empresasPorTipo.put(44, pathEmpresasTipo44);
+		empresasPorTipo.put(45, pathEmpresasTipo45);
+
 		// Se crea un CSV para cada subgrupo
 		Set<Integer> tipos = empresasPorTipo.keySet();
-		Iterator<Integer> itTipos = tipos.iterator();
+		List<Integer> tiposLista = new ArrayList();
+		tiposLista.addAll(tipos);
+		Collections.sort(tiposLista); // ordenado, para leerlo mejor
+		Iterator<Integer> itTipos = tiposLista.iterator();
 		Integer numEmpresasPorTipo;
 		Integer tipo;
 		String pathFichero;
@@ -411,7 +586,7 @@ public class CrearDatasetsSubgrupos implements Serializable {
 		while (itTipos.hasNext()) {
 
 			tipo = itTipos.next();
-			MY_LOGGER.info("Subgrupo con ID=" + tipo);
+			MY_LOGGER.info("***** Subgrupo " + tipo + " *****");
 
 			numEmpresasPorTipo = empresasPorTipo.size();
 
@@ -447,40 +622,47 @@ public class CrearDatasetsSubgrupos implements Serializable {
 
 				// Para generar un fichero de dataset del cluster, la cobertura debe ser mayor
 				// que un x%
-				if (coberturaEmpresasPorCluster * 100 < Double.valueOf(coberturaMinima)) {
-					MY_LOGGER.warn("Cluster " + tipo + " tiene un " + Math.round(coberturaEmpresasPorCluster * 100)
-							+ "% de empresas (" + estadisticas.getSum() + " de " + estadisticas.getValues().length
-							+ ") con al menos una vela positiva (target=1). "
-							+ "Por tanto no se llega al mínimo deseado (" + coberturaMinima
-							+ "%). NO SE GENERA DATASET");
+				if (modoTiempo.equalsIgnoreCase("pasado")
+						&& coberturaEmpresasPorCluster * 100 < Double.valueOf(coberturaMinima)) {
+					MY_LOGGER.warn("Cluster " + tipo + " con " + Math.round(coberturaEmpresasPorCluster * 100)
+							+ "% empresas (" + estadisticas.getSum() + " de " + estadisticas.getValues().length
+							+ " ; mínimo = " + coberturaMinima + " %) con al menos una vela positiva."
+							+ " NO SE GENERA DATASET");
 
-				} else if (empresasConTarget.keySet().size() < Integer.valueOf(minEmpresasPorCluster)) {
+				} else if (modoTiempo.equalsIgnoreCase("pasado")
+						&& empresasConTarget.keySet().size() < Integer.valueOf(minEmpresasPorCluster)) {
 					MY_LOGGER.warn("Cluster " + tipo + ", tiene " + empresasConTarget.keySet().size()
-							+ " empresas. Es demasiado pequeño, porque debería tener al menos " + minEmpresasPorCluster
-							+ " empresas." + " NO SE GENERA DATASET");
+							+ " empresas. Demasiado pequeño (mínimo= " + minEmpresasPorCluster
+							+ " empresas). NO SE GENERA DATASET");
 				} else {
 
-					MY_LOGGER.info("Cluster " + tipo + " tiene un " + Math.round(coberturaEmpresasPorCluster * 100)
-							+ "% de empresas (" + estadisticas.getSum() + " de " + estadisticas.getValues().length
-							+ ") con al menos una vela positiva (target=1)." + " => Supera el mínimo deseado ("
-							+ coberturaMinima + "%). SI SE GENERA DATASET");
-					MY_LOGGER.info("También cluster " + tipo + " tiene " + empresasConTarget.keySet().size()
-							+ " empresas. Es suficientemente grande porque supera el umbral de tener al menos "
-							+ minEmpresasPorCluster + " empresas." + " SI SE GENERA DATASET");
+					if (modoTiempo.equalsIgnoreCase("pasado")) {
+						MY_LOGGER.info("Cluster " + tipo + " con " + Math.round(coberturaEmpresasPorCluster * 100)
+								+ "% empresas (" + estadisticas.getSum() + " de " + estadisticas.getValues().length
+								+ " ; mínimo = " + coberturaMinima + " %) con al menos una vela positiva." + " Y tiene "
+								+ empresasConTarget.keySet().size() + " empresas (mínimo deseado = "
+								+ minEmpresasPorCluster + ")." + " ==> SI SE GENERA DATASET");
+					} else {
+						MY_LOGGER.info("Cluster " + tipo + " tiene un " + Math.round(coberturaEmpresasPorCluster * 100)
+								+ "% de empresas (" + estadisticas.getSum() + " de " + estadisticas.getValues().length
+								+ " ; mínimo = " + coberturaMinima + " %) con al menos una vela positiva." + " Y tiene "
+								+ empresasConTarget.keySet().size() + " empresas."
+								+ " Pero es FUTURO, así que SIEMPRE SE GENERA DATASET.");
+					}
 
 					// Hay alguna empresa de este tipo. Creo un CSV común para todas las del mismo
 					// tipo
 					pathFicheros = empresasPorTipo.get(tipo);
 
 					String dirSubgrupoOut = directorioOut + "SG_" + tipo + "/";
-					MY_LOGGER.info("Creando la carpeta del subgrupo con ID=" + tipo + " en: " + dirSubgrupoOut);
+					MY_LOGGER.debug("Creando la carpeta del subgrupo con ID=" + tipo + " en: " + dirSubgrupoOut);
 					File dirSubgrupoOutFile = new File(dirSubgrupoOut);
 					dirSubgrupoOutFile.mkdir();
 
 					ficheroOut = dirSubgrupoOut + "COMPLETO.csv";
 					ficheroListadoOut = dirSubgrupoOut + "EMPRESAS.txt";
-					MY_LOGGER.info("CSV de subgrupo: " + ficheroOut);
-					MY_LOGGER.info("Lista de empresas de subgrupo: " + ficheroListadoOut);
+					MY_LOGGER.debug("CSV de subgrupo: " + ficheroOut);
+					MY_LOGGER.debug("Lista de empresas de subgrupo: " + ficheroListadoOut);
 					csvWriter = new FileWriter(ficheroOut);
 					writerListadoEmpresas = new FileWriter(ficheroListadoOut);
 

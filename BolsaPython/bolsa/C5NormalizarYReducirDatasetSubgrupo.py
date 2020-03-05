@@ -30,8 +30,8 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.utils import resample
 import pickle
 
-print("-------------------------------------------------------------------------------------------------")
-print("---- CAPA 5 - Selección de variables/ Reducción de dimensiones (para cada subgrupo) -------")
+
+print("**** CAPA 5  --> Selección de variables/ Reducción de dimensiones (para cada subgrupo) ****")
 print("URL PCA: https://scikit-learn.org/stable/modules/unsupervised_reduction.html")
 print("URL Feature Selection: https://scikit-learn.org/stable/modules/feature_selection.html")
 
@@ -55,7 +55,7 @@ pathModeloOutliers = (dir_subgrupo + "DETECTOR_OUTLIERS.tool").replace("futuro",
 path_modelo_normalizador = (dir_subgrupo + "NORMALIZADOR.tool").replace("futuro", "pasado") # Siempre lo cojo del pasado
 path_indices_out_capa5 = (dir_subgrupo + "indices_out_capa5.indices")
 path_modelo_reductor_features = (dir_subgrupo + "REDUCTOR.tool").replace("futuro", "pasado") # Siempre lo cojo del pasado
-balancear = False
+balancear = False  # No usar este balanceo, sino el de Luis (capa 6), que solo actúa en el dataset de train, evitando tocar test y validation
 
 print("pathCsvCompleto = %s" % pathCsvCompleto)
 print("dir_subgrupo_img = %s" % dir_subgrupo_img)
@@ -95,10 +95,10 @@ def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmp
       #print(entradaFeaturesYTarget2.head())
 
 
-  print("Pasado o Futuro: Transformacion en la que borro filas. Por tanto, guardo el indice...")
+  # print("Pasado o Futuro: Transformacion en la que borro filas. Por tanto, guardo el indice...")
   indiceFilasFuturasTransformadas1 = entradaFeaturesYTarget2.index.values
 
-  print("Borrar columnas especiales (informativas): empresa | antiguedad | mercado | anio | mes | dia | hora | minuto...")
+  print("Borrar columnas especiales (idenficadoras de fila): empresa | antiguedad | mercado | anio | mes | dia | hora | minuto...")
   entradaFeaturesYTarget2 = entradaFeaturesYTarget2.drop('empresa', axis=1).drop('antiguedad', axis=1).drop('mercado', axis=1).drop('anio', axis=1).drop('mes', axis=1).drop('dia', axis=1).drop('hora', axis=1).drop('minuto', axis=1)
   # entradaFeaturesYTarget2.to_csv(path_csv_completo + "_TEMP02", index=True, sep='|')  # UTIL para testIntegracion
 
@@ -165,7 +165,6 @@ def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmp
   # SOLO PARA EL PASADO Si hay MUCHAS empresas (UNDER-SAMPLING para reducir los datos -útil para miles de empresas, pero puede quedar sobreentrenado, si borro casi todas las minoritarias-)
   else:
 
-
       if(balancear == True):
           print("BALANCEAR los casos positivos y negativos, haciendo downsampling de la clase mayoritaria...")
           print("URL: https://elitedatascience.com/imbalanced-classes")
@@ -184,7 +183,7 @@ def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmp
           print("ift_balanceadas:" + str(entradaFeaturesYTarget5.shape[0]) + " x " + str(entradaFeaturesYTarget5.shape[1]))
 
       else:
-          print("NO balanceamos clases!!!")
+          print("NO balanceamos clases en capa 5 (pero seguramente sí en capa 6 solo sobre dataset de TRAIN)!!!")
           ift_minoritaria = entradaFeaturesYTarget4[entradaFeaturesYTarget4.TARGET == True]
           ift_mayoritaria = entradaFeaturesYTarget4[entradaFeaturesYTarget4.TARGET == False]
           print("Tasa de desbalanceo entre clases = " + str(ift_mayoritaria.shape[0]) + "/" + str(ift_minoritaria.shape[0]) + " = " + str(ift_mayoritaria.shape[0] / ift_minoritaria.shape[0]))
@@ -263,12 +262,11 @@ def normalizarFeatures(featuresFichero, path_modelo_normalizador, dir_subgrupo_i
 
 def comprobarSuficientesClasesTarget(featuresFicheroNorm, targetsFichero, modoDebug):
   print("----- comprobarSuficientesClasesTarget ------")
-  print("featuresFicheroNorm: " + str(featuresFicheroNorm.shape[0]) + " x " + str(featuresFicheroNorm.shape[1]))
-  print("targetsFichero: " + str(targetsFichero.shape[0]) + " x " + str(targetsFichero.shape[1]))
+  print("featuresFicheroNorm: " + str(featuresFicheroNorm.shape[0]) + " x " + str(featuresFicheroNorm.shape[1]) +"  Y  " + "targetsFichero: " + str(targetsFichero.shape[0]) + " x " + str(targetsFichero.shape[1]))
 
   y_unicos = np.unique(targetsFichero)
-  print("Clases encontradas en el target: ")
-  print(y_unicos)
+  # print("Clases encontradas en el target: ")
+  # print(y_unicos)
   return y_unicos.size
 
 
@@ -296,22 +294,27 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, 
     # OPCIÓN NO USADA: Si quisiera probar varios clasificadores
     probarVariosClasificadores=False
 
-    svc_model = AdaBoostClassifier(n_estimators=20, learning_rate=1.)
+    estimador_interno = AdaBoostClassifier(n_estimators=30, learning_rate=1.)
+    # estimador_interno = RandomForestClassifier(max_depth=4, n_estimators=60, criterion="gini", min_samples_split=2, min_samples_leaf=1,
+    #                                    min_weight_fraction_leaf=0., max_features="auto", max_leaf_nodes=None, min_impurity_decrease=0.,
+    #                                    min_impurity_split=None, bootstrap=True, oob_score=False, n_jobs=-1, random_state=None,
+    #                                    verbose=0, warm_start=False, class_weight=None, ccp_alpha=0.0, max_samples=None)
+
     rfecv_scoring = 'f1'  # accuracy,balanced_accuracy,average_precision,neg_brier_score,f1,f1_micro,f1_macro,f1_weighted,roc_auc,roc_auc_ovr,roc_auc_ovo,roc_auc_ovr_weighted,roc_auc_ovo_weighted
 
     if probarVariosClasificadores:
         classifiers = [
-        SVC(kernel="linear"),
+        SVC(kernel="rbf"),
         AdaBoostClassifier(n_estimators=50, learning_rate=1.),
-        RandomForestClassifier(n_estimators=100, criterion="gini", max_depth=None, min_samples_split=2, min_samples_leaf=1, min_weight_fraction_leaf=0.,
+        RandomForestClassifier(n_estimators=60, criterion="entropy", max_depth=500, min_samples_split=1, min_samples_leaf=2, min_weight_fraction_leaf=0.,
                             max_features="auto", max_leaf_nodes=None, min_impurity_decrease=0., min_impurity_split=None,
                             bootstrap=True, oob_score=False, n_jobs=None, random_state=None, verbose=0, warm_start=False,
-                            class_weight=None, ccp_alpha=0.0, max_samples=None)]
+                            class_weight = None, ccp_alpha=0.0, max_samples=None)]
 
         scoreAnterior = 0
-        numFeaturesAnterior=9999
+        numFeaturesAnterior = 9999
         for clasificadorActual in classifiers:
-            rfecv = RFECV(estimator=clasificadorActual, step=0.05, min_features_to_select=4, cv=StratifiedKFold(n_splits=10, shuffle=True), scoring=rfecv_scoring, verbose=0, n_jobs=-1)
+            rfecv = RFECV(estimator=clasificadorActual, step=1, min_features_to_select=10, cv=StratifiedKFold(n_splits=8, shuffle=True), scoring=rfecv_scoring, verbose=0, n_jobs=-1)
             rfecv.fit(featuresFicheroNorm, targetsFichero)
             print('Accuracy del clasificadorActual: {:.2f}'.format(rfecv.score(featuresFicheroNorm, targetsFichero)))
             print("Optimal number of features : %d" % rfecv.n_features_)
@@ -319,12 +322,12 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, 
             if scoreAnterior < rfecv.score(featuresFicheroNorm, targetsFichero):
                 if numFeaturesAnterior > rfecv.n_features_:
                     print("Se cambia el clasificador elegido")
-                    svc_model=clasificadorActual
-                    scoreAnterior=rfecv.score(featuresFicheroNorm, targetsFichero)
-                    numFeaturesAnterior=rfecv.n_features_
+                    estimador_interno = clasificadorActual
+                    scoreAnterior = rfecv.score(featuresFicheroNorm, targetsFichero)
+                    numFeaturesAnterior = rfecv.n_features_
 
     # The "accuracy" scoring is proportional to the number of correct classifications
-    rfecv_modelo = RFECV(estimator=svc_model, step=0.05, min_features_to_select=4, cv=StratifiedKFold(n_splits=10, shuffle=True), scoring=rfecv_scoring, verbose=0, n_jobs=-1)
+    rfecv_modelo = RFECV(estimator=estimador_interno, step=0.05, min_features_to_select=4, cv=StratifiedKFold(n_splits=12, shuffle=True), scoring=rfecv_scoring, verbose=0, n_jobs=-1)
     print("rfecv_modelo -> fit ...")
     targetsLista = targetsFichero["TARGET"].tolist()
     rfecv_modelo.fit(featuresFicheroNorm, targetsLista)
@@ -363,10 +366,10 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, 
           if(rfecv_modelo.support_[i] == True):
               columnasSeleccionadas.append(columnas[i])
 
-      print("Mascara de features seleccionadas (rfecv_modelo.support_):")
-      print(rfecv_modelo.support_)
-      print("El ranking de importancia de las features (rfecv_modelo.ranking_) no distingue las features mas importantes dentro de las seleccionadas:")
-      print(rfecv_modelo.ranking_)
+      # print("Mascara de features seleccionadas (rfecv_modelo.support_):")
+      # print(rfecv_modelo.support_)
+      # print("El ranking de importancia de las features (rfecv_modelo.ranking_) no distingue las features mas importantes dentro de las seleccionadas:")
+      # print(rfecv_modelo.ranking_)
       print("Las columnas seleccionadas son:")
       print(columnasSeleccionadas)
       featuresFicheroNormElegidas = featuresFicheroNorm[columnasSeleccionadas]
@@ -384,12 +387,12 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, 
           #print("Las features están ya normalizadas y reducidas. DESCRIBIMOS lo que hemos hecho y GUARDAMOS el dataset.")
 
       ### Guardar a fichero
-      print("Muestro las features + targets antes de juntarlas...")
-      print("FEATURES (sample):")
-      print(featuresFicheroNormElegidas.head())
+      # print("Muestro las features + targets antes de juntarlas...")
+      # print("FEATURES (sample):")
+      # print(featuresFicheroNormElegidas.head())
       print("featuresFicheroNormElegidas: " + str(featuresFicheroNormElegidas.shape[0]) + " x " + str(featuresFicheroNormElegidas.shape[1]))
-      print("TARGETS (sample):")
-      print(targetsFichero.head())
+      # print("TARGETS (sample):")
+      # print(targetsFichero.head())
 
       featuresytargets = pd.concat([featuresFicheroNormElegidas.reset_index(drop=True), targetsFichero.reset_index(drop=True)], axis=1)  #Column bind
       featuresytargets.set_index(featuresFicheroNormElegidas.index, inplace = True)

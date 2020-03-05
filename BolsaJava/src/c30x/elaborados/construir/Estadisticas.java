@@ -19,7 +19,7 @@ public class Estadisticas extends DescriptiveStatistics {
 
 	public enum COMIENZO_NOMBRES_PARAMETROS_ELABORADOS {
 		MEDIA_SMA_, STD_SMA_, PENDIENTE_SMA_, PENDIENTE_1M_SMA_, PENDIENTE_2M_SMA_, RATIO_SMA_, RATIO_MAXRELATIVO_,
-		RATIO_MINRELATIVO_, CURTOSIS_, SKEWNESS_;
+		RATIO_MINRELATIVO_, CURTOSIS_, SKEWNESS_, MAXIMO_;
 	}
 
 	public enum FINAL_NOMBRES_PARAMETROS_ELABORADOS {
@@ -31,7 +31,6 @@ public class Estadisticas extends DescriptiveStatistics {
 
 	public static void main(String[] args) {
 
-		
 		Estadisticas e5 = new Estadisticas();
 		e5.addValue(1D);
 		e5.addValue(2D);
@@ -65,7 +64,8 @@ public class Estadisticas extends DescriptiveStatistics {
 		ordenNombresParametrosElaborados.put(8, COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_MINRELATIVO_.toString());
 		ordenNombresParametrosElaborados.put(9, COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.CURTOSIS_.toString());
 		ordenNombresParametrosElaborados.put(10, COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.SKEWNESS_.toString());
-		
+		ordenNombresParametrosElaborados.put(10, COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MAXIMO_.toString());
+
 //		ordenNombresParametrosElaborados = new HashMap<Integer, String>();
 //		ordenNombresParametrosElaborados.put(1, COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_.toString());
 //		ordenNombresParametrosElaborados.put(2, COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.STD_SMA_.toString());
@@ -103,7 +103,7 @@ public class Estadisticas extends DescriptiveStatistics {
 	 * pero s�lo con el primer y �ltimo valores.
 	 */
 	public double getPendiente2M() {
-		return 100 * (this.getElement((int) (this.getN() - 1)) - this.getElement((int) ((int) this.getN() / 2.0 )))
+		return 100 * (this.getElement((int) (this.getN() - 1)) - this.getElement((int) ((int) this.getN() / 2.0)))
 				/ ((int) this.getN() / 2.0);
 	}
 
@@ -184,6 +184,7 @@ public class Estadisticas extends DescriptiveStatistics {
 		String ratio_minrelativo = VALOR_INVALIDO;// default
 		String kurtosis = VALOR_INVALIDO;// default
 		String skewness = VALOR_INVALIDO;// default
+		String maximo = VALOR_INVALIDO;// default
 
 		if (rellenarConInvalidos == false) {
 
@@ -197,6 +198,7 @@ public class Estadisticas extends DescriptiveStatistics {
 			double d_ratio_minrelativo = this.getMin();
 			double d_kurtosis = this.getKurtosis();
 			double d_skewness = this.getSkewness();
+			double d_max = this.getMax();
 
 			media_sma = Double.isNaN(d_media_sma) ? VALOR_INVALIDO : df.format(d_media_sma);
 			std_sma = Double.isNaN(d_std_sma) ? VALOR_INVALIDO : df.format(d_std_sma);
@@ -208,6 +210,7 @@ public class Estadisticas extends DescriptiveStatistics {
 			ratio_minrelativo = Double.isNaN(d_ratio_minrelativo) ? VALOR_INVALIDO : df.format(d_ratio_minrelativo);
 			kurtosis = Double.isNaN(d_kurtosis) ? VALOR_INVALIDO : df.format(d_kurtosis);
 			skewness = Double.isNaN(d_skewness) ? VALOR_INVALIDO : df.format(d_skewness);
+			maximo = Double.isNaN(d_max) ? VALOR_INVALIDO : df.format(d_max);
 		}
 
 		parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_ + periodoString + finalNombreParametro,
@@ -229,6 +232,7 @@ public class Estadisticas extends DescriptiveStatistics {
 				kurtosis);
 		parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.SKEWNESS_ + periodoString + finalNombreParametro,
 				skewness);
+		parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MAXIMO_ + periodoString + finalNombreParametro, maximo);
 
 		return parametros;
 	}

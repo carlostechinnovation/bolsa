@@ -472,11 +472,11 @@ public class ConstructorElaborados implements Serializable {
 		HashMap<String, String> datosAntiguedadXyM = datosEmpresaEntrada.get(antiguedad - X - M); // velas muy futuras
 
 		if (datosAntiguedad == null || !datosAntiguedad.containsKey("close")) {
-			MY_LOGGER.error("Empresa=" + empresa + " -> Falta dato close en datosAntiguedad");
+			MY_LOGGER.debug("Empresa=" + empresa + " -> Falta dato close en datosAntiguedad");
 			return TARGET_INVALIDO;
 		}
 		if (datosAntiguedadX == null || !datosAntiguedadX.containsKey("close")) {
-			MY_LOGGER.error("Empresa=" + empresa + " -> Falta dato close en datosAntiguedadX");
+			MY_LOGGER.debug("Empresa=" + empresa + " -> Falta dato close en datosAntiguedadX");
 			return TARGET_INVALIDO;
 		}
 

@@ -160,7 +160,7 @@ public class Validador implements Serializable {
 				if (finalnombrePredicho.compareTo(finalnombreValidacion) == 0) {
 
 					MY_LOGGER.info("Se compara el fichero de PREDICCIÓN (" + nombrePredicho
-							+ ") con el que tiene la info REAL de contraste/validación (" + nombreValidacion + "): ");
+							+ ") con el que tiene la info REAL de contraste/validación (" + nombreValidacion + "): \n");
 
 					// Aquí tenemos ya el fichero predicho y el de validación, dentro de un mismo
 					// subgrupo.
@@ -179,8 +179,8 @@ public class Validador implements Serializable {
 					filasValidacion = Files.readAllLines(validacion);
 
 					// Elimino las filas de cabecera
-					MY_LOGGER.info("Header predicha -> " + filasPredichas.get(0));
-					MY_LOGGER.info("Header validacion -> " + filasValidacion.get(0));
+					MY_LOGGER.debug("Header predicha -> " + filasPredichas.get(0));
+					MY_LOGGER.debug("Header validacion -> " + filasValidacion.get(0));
 					filasPredichas.remove(0);
 					filasValidacion.remove(0);
 

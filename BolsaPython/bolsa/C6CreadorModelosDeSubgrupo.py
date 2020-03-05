@@ -30,9 +30,8 @@ from sklearn.metrics import make_scorer, accuracy_score
 
 np.random.seed(12345)
 
-print("-------------------------------------------------------------------------------------------------")
-print("---- CAPA 6 - Crear almacenar y evaluar varios modelos (para cada subgrupo) -------")
-print("Tipo de problema: CLASIFICACION BINOMIAL (target es boolean)")
+print("\n **** CAPA 6 - Crear almacenar y evaluar varios modelos (para cada subgrupo) ****")
+print("Tipo de problema: CLASIFICACION DICOTOMICA (target es boolean)")
 
 print("PARAMETROS: ")
 dir_subgrupo = sys.argv[1]
@@ -65,14 +64,15 @@ print("desplazamientoAntiguedad: %s" % desplazamientoAntiguedad)
 print("pathCsvReducido: %s" % pathCsvReducido)
 print("dir_subgrupo_img = %s" % dir_subgrupo_img)
 print("umbralProbTargetTrue = " + str(umbralProbTargetTrue))
+print("balancearConSmoteSoloTrain = " + str(balancearConSmoteSoloTrain))
 
 
 ################# FUNCIONES ########################################
 def ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_train_t, modeloEsGrid, modoDebug):
-    print("** " + nombreModelo + " **")
+    print("Ejecutando " + nombreModelo + " ...")
     out_grid_best_params = []
     modelo.fit(ds_train_f, ds_train_t)  # ENTRENAMIENTO (TRAIN)
-    print("Se guarda el modelo " + nombreModelo + " en: " + pathModelo)
+    # print("Se guarda el modelo " + nombreModelo + " en: " + pathModelo)
     if modeloEsGrid:
         s = pickle.dump(modelo.best_estimator_, open(pathModelo, 'wb'))
         out_grid_best_params = modelo.best_params_
@@ -82,17 +82,17 @@ def ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_tr
     return out_grid_best_params
 
 
-def cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, modoDebug):
+def cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, id_subgrupo, modoDebug):
     modelo_loaded = pickle.load(open(pathModelo, 'rb'))
     ds_test_t_pred = modelo_loaded.predict(
         ds_test_f)  # PREDICCION de los targets de TEST (los compararemos con los que tenemos)
     area_bajo_roc = roc_auc_score(ds_test_t, ds_test_t_pred)
-    print(nombreModelo + ".roc_auc_score = " + str(round(area_bajo_roc, 4)))
+    print(id_subgrupo + ' MODELO = ' + nombreModelo + " ROC_AUC_score = " + str(round(area_bajo_roc, 4)))
     recall = recall_score(ds_test_t, ds_test_t_pred, average='binary', pos_label=1)
-    print('Average recall score: {0:0.2f}'.format(recall))
+    print(id_subgrupo + ' MODELO = ' + nombreModelo + ' Average RECALL score: {0:0.2f}'.format(recall))
 
-    precision_result = precision_score(ds_test_t, ds_test_t_pred)
-    print('METRICA IMPORTANTE--> Average PRECISION score: {0:0.2f}'.format(precision_result))
+    average_precision = average_precision_score(ds_test_t, ds_test_t_pred)
+    print(id_subgrupo + ' MODELO = ' + nombreModelo + ' METRICA IMPORTANTE--> Average PRECISION score: {0:0.2f}'.format(average_precision))
 
     if modoDebug:
         print("Curva ROC...")
@@ -123,7 +123,7 @@ def cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, modo
         plt.cla()
         plt.close()
 
-    return precision_result  # MAXIMIZAMOS la precision
+    return average_precision  # MAXIMIZAMOS la precision
 
 
 ################# MAIN ########################################
@@ -162,9 +162,7 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
 
         print("DIVIDIR EL DATASET DE ENTRADA EN 3 PARTES: TRAIN (50%), TEST (25%), VALIDACION (25%)...")
         ds_train, ds_test, ds_validacion = np.split(ift_juntas.sample(frac=1), [int(0.5 * len(ift_juntas)), int(0.75 * len(ift_juntas))])
-        print("TRAIN --> " + str(ds_train.shape[0]) + " x " + str(ds_train.shape[1]))
-        print("TEST --> " + str(ds_test.shape[0]) + " x " + str(ds_test.shape[1]))
-        print("VALIDACION --> " + str(ds_validacion.shape[0]) + " x " + str(ds_validacion.shape[1]))
+        print("TRAIN = " + str(ds_train.shape[0]) + " x " + str(ds_train.shape[1]) + "  " + "TEST --> " + str(ds_test.shape[0]) + " x " + str(ds_test.shape[1]) + "  " + "VALIDACION --> " + str(ds_validacion.shape[0]) + " x " + str(ds_validacion.shape[1]))
 
         # Con las siguientes 3 líneas dejo sólo 1 true y lo demás false en el dataframe de test. Asi en la matriz de confusion validamos si el sistema no añade falsos positivos
         # aux = ds_test[ds_test.TARGET == True]
@@ -209,43 +207,43 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         # pathModelo = dir_subgrupo + nombreModelo + ".modelo"
         # modelo = MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(5, 2), random_state=1)
         # modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_train_t, False, modoDebug)
-        # modelo_metrica = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, modoDebug)
+        # modelo_metrica = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, id_subgrupo, modoDebug)
         # print(type(modelo_metrica))
         # if modelo_metrica > ganador_metrica:
         #     ganador_metrica = modelo_metrica
         #     ganador_nombreModelo = nombreModelo
         #     ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
-        #
-        # ####### HYPERPARAMETROS: GRID de parametros #######
-        # print("HYPERPARAMETROS - URL: https://scikit-learn.org/stable/modules/grid_search.html")
-        #
+
+        ####### HYPERPARAMETROS: GRID de parametros #######
+        print("HYPERPARAMETROS - URL: https://scikit-learn.org/stable/modules/grid_search.html")
+
         # nombreModelo = "svc_grid"
         # pathModelo = dir_subgrupo + nombreModelo + ".modelo"
         # modelo_base = svm.SVC()
-        # hiperparametros = [{'C':[1,3,5,10],'gamma':[1], 'kernel':['rbf']}]
-        # modelos_grid = GridSearchCV(modelo_base, hiperparametros, scoring='precision', n_jobs=-1, refit=True, cv=5, pre_dispatch='2*n_jobs', return_train_score=False)
+        # hiperparametros = [{'C':[10,50,100],'gamma':[10,20,30], 'kernel':['rbf']}]
+        # modelos_grid = GridSearchCV(modelo_base, hiperparametros, scoring='precision', n_jobs=-1, refit=True, cv=4, pre_dispatch='2*n_jobs', return_train_score=False)
         # modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelos_grid, pathModelo, ds_train_f, ds_train_t, True, modoDebug)
-        # modelo_metrica = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, modoDebug)
+        # modelo_metrica = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, id_subgrupo, modoDebug)
         # print(type(modelo_metrica))
         # if modelo_metrica > ganador_metrica:
         #     ganador_metrica = modelo_metrica
         #     ganador_nombreModelo = nombreModelo
         #     ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
-        #
-        #
+
+
         # nombreModelo = "logreg_grid"
         # pathModelo = dir_subgrupo + nombreModelo + ".modelo"
         # modelo_base = LogisticRegression()
         # hiperparametros = dict(C=np.logspace(0, 4, 10), penalty=['l2'])
-        # modelos_grid = GridSearchCV(modelo_base, hiperparametros, scoring='precision', n_jobs=-1, refit=True, cv=5, pre_dispatch='2*n_jobs', return_train_score=False)
+        # modelos_grid = GridSearchCV(modelo_base, hiperparametros, scoring='precision', n_jobs=-1, refit=True, cv=4, pre_dispatch='2*n_jobs', return_train_score=False)
         # modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelos_grid, pathModelo, ds_train_f, ds_train_t, True, modoDebug)
-        # modelo_metrica = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, modoDebug)
+        # modelo_metrica = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, id_subgrupo, modoDebug)
         # print(type(modelo_metrica))
         # if modelo_metrica > ganador_metrica:
         #     ganador_metrica = modelo_metrica
         #     ganador_nombreModelo = nombreModelo
         #     ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
-        #
+
         nombreModelo = "rf_grid"
         pathModelo = dir_subgrupo + nombreModelo + ".modelo"
         modelo_base = CalibratedClassifierCV(base_estimator=RandomForestClassifier())
@@ -261,12 +259,12 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
                            'base_estimator__max_depth': [5],
                            'base_estimator__min_samples_split': [2],
                            'base_estimator__min_samples_leaf': [15],
-                           'base_estimator__max_features': [7]} # De momento usar 7
+                           'base_estimator__max_features': [7]}  # De momento usar 7
         modelos_grid = GridSearchCV(modelo_base, hiperparametros, scoring='precision', n_jobs=-1, refit=True,
-                                    return_train_score=False)
+                                    return_train_score=False, cv=10)
         modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelos_grid, pathModelo, ds_train_f,
                                                                   ds_train_t, True, modoDebug)
-        modelo_metrica = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, modoDebug)
+        modelo_metrica = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, id_subgrupo, modoDebug)
         print(type(modelo_metrica))
         if modelo_metrica > ganador_metrica:
             ganador_metrica = modelo_metrica
@@ -275,7 +273,7 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
 
 
         print("********* GANADOR de subgrupo *************")
-        print("Modelo ganador es " + ganador_nombreModelo + " con una metrica maximizada de " + str(
+        print(id_subgrupo + " Modelo ganador es " + ganador_nombreModelo + " con una metrica maximizada de " + str(
             round(ganador_metrica, 4)) + " y con estos hiperparametros: ")
         print(ganador_grid_mejores_parametros)
         pathModeloGanadorDeSubgrupoOrigen = dir_subgrupo + ganador_nombreModelo + ".modelo"
@@ -287,14 +285,10 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         ds_test_t_pred = modelo_loaded.predict(ds_test_f)
 
         print("\nLOS RESULTADOS DE VALIDACION Y TEST DEBERÍAN SER SIMILARES. SI NO, ESTARIÁMOS COMETIENDO ERRORES...")
-        print("TEST -> Score (precision): " + str(precision_score(ds_test_t, ds_test_t_pred)))
-        print("TEST -> Score (accuracy): " + str(accuracy_score(ds_test_t, ds_test_t_pred)))
-        print("TEST -> Recall: " + str(recall_score(ds_test_t, ds_test_t_pred)))
-
-        ds_validac_t_pred = modelo_loaded.predict(ds_validac_f)
-        print("VALIDATION -> Score (precision): " + str(precision_score(ds_validac_t, ds_validac_t_pred)))
-        print("VALIDATION -> Score (accuracy): " + str(accuracy_score(ds_validac_t, ds_validac_t_pred)))
-        print("VALIDATION -> Recall: " + str(recall_score(ds_validac_t, ds_validac_t_pred)))
+        print("TEST -> Score (precision): " + '{0:0.2f}'.format(average_precision_score(ds_test_t, modelo_loaded.predict(ds_test_f))))
+        print("TEST -> Recall: " + str(recall_score(ds_test_t, modelo_loaded.predict(ds_test_f))))
+        print("VALIDATION -> Score (precision): " + '{0:0.2f}'.format(average_precision_score(ds_validac_t, modelo_loaded.predict(ds_validac_f))))
+        print("VALIDATION -> Recall: " + str(recall_score(ds_validac_t, modelo_loaded.predict(ds_validac_f)  )))
 
 elif (modoTiempo == "futuro" and pathCsvReducido.endswith('.csv') and os.path.isfile(pathCsvReducido) and os.stat(
         pathCsvReducido).st_size > 0):
@@ -326,14 +320,14 @@ elif (modoTiempo == "futuro" and pathCsvReducido.endswith('.csv') and os.path.is
         # probabilities
         probs = pd.DataFrame(data=modelo_predictor_ganador.predict_proba(inputFeatures_sinnulos), index=inputFeatures_sinnulos.index)
 
-        # UMBRAL MÁS PROBABLES CON TARGET=1. Cuando el target es 1, se guarda su probabilidad
-        #print(probs.columns)
+        # UMBRAL MENOS PROBABLES CON TARGET=1. Cuando el target es 1, se guarda su probabilidad
+        print(probs.columns)
         probabilidadesEnTargetUnoPeq = probs.iloc[:,1]  # Cogemos solo la segunda columna: prob de que sea target=1
         probabilidadesEnTargetUnoPeq2 = probabilidadesEnTargetUnoPeq.apply(lambda x: x if(x >= umbralProbTargetTrue) else np.nan)
         probabilidadesEnTargetUnoPeq3 = probabilidadesEnTargetUnoPeq2[np.isnan(probabilidadesEnTargetUnoPeq2[:]) == False] # Cogemos todos los no nulos
         probabilidadesEnTargetUnoPeq4 = probabilidadesEnTargetUnoPeq3.sort_values(ascending=False)
         numfilasSeleccionadas = int(granProbTargetUno * probabilidadesEnTargetUnoPeq4.shape[0] / 100)  #Como están ordenadas en descendente, cojo estas NUM primeras filas
-        targets_predichosCorregidos_probs = probabilidadesEnTargetUnoPeq4[0:numfilasSeleccionadas]
+        targets_predichosCorregidos_probs = probabilidadesEnTargetUnoPeq4[0:(numfilasSeleccionadas-1)]
         targets_predichosCorregidos = targets_predichosCorregidos_probs.apply(lambda x: 1)
 
         print("Guardando targets PREDICHOS en: " + pathCsvPredichos)

@@ -69,7 +69,7 @@ rm -f "${LOG_VALIDADOR}"
 
 ################################################################################################
 
-echo -e "PARAMETROS --> VELAS_RETROCESO|S|X|R|M|F|B|NUM_EMPRESAS|SUBIDA_MAXIMA_POR_VELA|MIN_COBERTURA_CLUSTER}|MIN_EMPRESAS_POR_CLUSTER|MAX_NUM_FEAT_REDUCIDAS --> ${VELAS_RETROCESO}|${S}|${X}|${R}|${M}|${F}|${B}|${NUM_EMPRESAS}|${UMBRAL_SUBIDA_POR_VELA}|${MIN_COBERTURA_CLUSTER}|${MIN_EMPRESAS_POR_CLUSTER}|${MAX_NUM_FEAT_REDUCIDAS}" >>${LOG_VALIDADOR}
+echo -e "PARAMETROS --> VELAS_RETROCESO|S|X|R|M|F|B|NUM_EMPRESAS|SUBIDA_MAXIMA_POR_VELA|MIN_COBERTURA_CLUSTER}|MIN_EMPRESAS_POR_CLUSTER|MAX_NUM_FEAT_REDUCIDAS|RANGO_YF --> ${VELAS_RETROCESO}|${S}|${X}|${R}|${M}|${F}|${B}|${NUM_EMPRESAS}|${UMBRAL_SUBIDA_POR_VELA}|${MIN_COBERTURA_CLUSTER}|${MIN_EMPRESAS_POR_CLUSTER}|${MAX_NUM_FEAT_REDUCIDAS}|${RANGO_YF}" >>${LOG_VALIDADOR}
 echo -e "PARAMETROS -->  PASADO_t1 | FUTURO1_t1 | FUTURO2_t1--> ${PASADO_t1}|${FUTURO1_t1}|${FUTURO2_t1}" >>${LOG_VALIDADOR}
 
 rm -Rf /bolsa/pasado/ >>${LOG_VALIDADOR}
@@ -88,7 +88,7 @@ ${PATH_SCRIPTS}master.sh "pasado" "${PASADO_t1}" "0" "${ACTIVAR_DESCARGAS}" "S" 
 dir_val_pasado="/bolsa/validacion/E${NUM_EMPRESAS}_VR${VELAS_RETROCESO}_S${S}_X${X}_R${R}_M${M}_F${F}_B${B}_pasado/"
 rm -Rf $dir_val_pasado
 mkdir -p $dir_val_pasado
-cp -R "/bolsa/pasado/" $dir_val_pasado
+#cp -R "/bolsa/pasado/" $dir_val_pasado
 
 ################################################################################################
 
@@ -118,7 +118,7 @@ done 9< <( find $DIR_FUT_SUBGRUPOS -type f -exec printf '%s\0' {} + )
 dir_val_futuro_1="/bolsa/validacion/E${NUM_EMPRESAS}_VR${VELAS_RETROCESO}_S${S}_X${X}_R${R}_M${M}_F${F}_B${B}_futuro1/"
 rm -Rf $dir_val_futuro_1
 mkdir -p $dir_val_futuro_1
-cp -R "/bolsa/futuro/" $dir_val_futuro_1
+#cp -R "/bolsa/futuro/" $dir_val_futuro_1
 
 ################################################################################################
 
@@ -149,7 +149,7 @@ done 9< <( find $DIR_FUT_SUBGRUPOS -type f -exec printf '%s\0' {} + )
 dir_val_futuro_2="/bolsa/validacion/E${NUM_EMPRESAS}_VR${VELAS_RETROCESO}_S${S}_X${X}_R${R}_M${M}_F${F}_B${B}_futuro2/"
 rm -Rf $dir_val_futuro_2
 mkdir -p $dir_val_futuro_2
-cp -R "/bolsa/futuro/" $dir_val_futuro_2
+#cp -R "/bolsa/futuro/" $dir_val_futuro_2
 
 ################################################################################################
 echo -e $( date '+%Y%m%d_%H%M%S' )" -------------------------------------------------" >> ${LOG_VALIDADOR}
@@ -164,7 +164,7 @@ echo -e "- Futuro con t1=${FUTURO2_t1} ==> Nos sirve para descargar qué pasó r
 echo -e "Lo CORRECTO es comparar el target PREDICHO en ejecucion futuro1 y compararlo con un target GENERADO en futuro2" >> ${LOG_VALIDADOR}
 
 echo -e "-------" >> ${LOG_VALIDADOR}
-java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n" -jar ${PATH_JAR} --class "coordinador.Principal" "c70X.validacion.Validador" "${VELAS_RETROCESO}" "${DIR_VALIDACION}" "${S}" "${X}" "${R}" "${M}" 2>>${LOG_VALIDADOR} 1>>${LOG_VALIDADOR}
+java -jar ${PATH_JAR} --class "coordinador.Principal" "c70X.validacion.Validador" "${VELAS_RETROCESO}" "${DIR_VALIDACION}" "${S}" "${X}" "${R}" "${M}" 2>>${LOG_VALIDADOR} 1>>${LOG_VALIDADOR}
 
 echo -e "Un sistema CLASIFICADOR BINOMIAL tonto acierta el 50% de las veces. El nuestro..." >> ${LOG_VALIDADOR}
 
@@ -173,7 +173,16 @@ rm -Rf $dir_val_logs
 mkdir -p $dir_val_logs
 cp -R "/bolsa/logs/" $dir_val_logs
 
-echo -e "******** FIN de validacion **************" >> ${LOG_VALIDADOR}
+
+################################################################################################
+echo -e "---------------- Medidas del OVERFITTING ------------" >> ${LOG_VALIDADOR}
+echo -e "Comparamos la METRICA de pasado-train-test (lista directa) con la obtenida en futuro1-futuro2 (lista inversa). Deben ser muy parecidas. Si no, hay sobreentrenamiento..." >> ${LOG_VALIDADOR}
+
+cat "${DIR_LOGS}"$(ls ${DIR_LOGS} | grep "pasado") | grep "base_estimator"    >> ${LOG_VALIDADOR}
+echo -e "---- PASADO (test, lista directa) ---"    >> ${LOG_VALIDADOR}
+cat "${DIR_LOGS}"$(ls ${DIR_LOGS} | grep "pasado") | grep "Modelo ganador es"    >> ${LOG_VALIDADOR}
+echo -e "---- FUTURO (fut1-fut2, lista inversa) ---"    >> ${LOG_VALIDADOR}
+cat "${LOG_VALIDADOR}" | grep "Porcentaje aciertos"   >> ${LOG_VALIDADOR}
 
 
 ################################################################################################
@@ -183,8 +192,6 @@ echo -e "******** FIN de validacion **************" >> ${LOG_VALIDADOR}
 #/home/carloslinux/Desktop/GIT_BOLSA/BolsaScripts/predecir_futuro_real.sh
 
 ################################################################################################
-
-
 
 echo -e "VALIDACION - FIN: "$( date "+%Y%m%d%H%M%S" )
 
