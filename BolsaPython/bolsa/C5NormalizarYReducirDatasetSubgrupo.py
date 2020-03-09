@@ -25,7 +25,7 @@ from sklearn import linear_model
 import seaborn as sns
 from sklearn.ensemble import IsolationForest, RandomForestClassifier, AdaBoostClassifier
 from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import LinearRegression, LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.utils import resample
 import pickle
@@ -294,7 +294,7 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, 
     # OPCIÓN NO USADA: Si quisiera probar varios clasificadores
     probarVariosClasificadores=False
 
-    estimador_interno = AdaBoostClassifier(n_estimators=30, learning_rate=1.)
+    estimador_interno = AdaBoostClassifier(n_estimators=30, learning_rate=0.3)
     # estimador_interno = RandomForestClassifier(max_depth=4, n_estimators=60, criterion="gini", min_samples_split=2, min_samples_leaf=1,
     #                                    min_weight_fraction_leaf=0., max_features="auto", max_leaf_nodes=None, min_impurity_decrease=0.,
     #                                    min_impurity_split=None, bootstrap=True, oob_score=False, n_jobs=-1, random_state=None,

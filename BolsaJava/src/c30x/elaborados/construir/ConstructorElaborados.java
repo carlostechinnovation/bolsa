@@ -36,7 +36,8 @@ public class ConstructorElaborados implements Serializable {
 		return instancia;
 	}
 
-	// Se usan los periodos típicos que suelen usar los robots: 3, 7, 20, 50 días (consideraremos velas)
+	// Se usan los periodos típicos que suelen usar los robots: 3, 7, 20, 50 días
+	// (consideraremos velas)
 	public final static Integer[] periodosDParaParametros = new Integer[] { 3, 7, 20, 50 };
 
 	// IMPORTANTE: se asume que los datos estan ordenados de menor a mayor
@@ -349,6 +350,10 @@ public class ConstructorElaborados implements Serializable {
 
 		MY_LOGGER.debug("SCREENER1: " + SCREENER1 + " para la empresa " + empresa);
 
+		//Se añade el parámetro SCREENER1
+		ordenNombresParametrosSalida.put(ordenNombresParametrosSalida.size(), "SCREENER1");
+		parametrosAcumulados ++;
+
 		// Aniado el TARGET
 		// Target=0 es que no se cumple. 1 es que sí. TARGET_INVALIDO es que no se puede
 		// calcular
@@ -570,11 +575,11 @@ public class ConstructorElaborados implements Serializable {
 					+ datosAntiguedad.get("mes") + " Dia: " + datosAntiguedad.get("dia") + " Hora: "
 					+ datosAntiguedad.get("hora") + ". Variabilidad: " + e.getVariacionRelativaMaxima()
 					+ " y umbral máximo: " + umbralMaximo);
-			//Ninguna vela puede superar a la media en una cantidad igual a un umbral
+			// Ninguna vela puede superar a la media en una cantidad igual a un umbral
 			if (e.getVariacionRelativaMaxima() > umbralMaximo) {
 				mCumplida = Boolean.FALSE;
 			}
-			//La vela de mayor variación debe oscilar más que un umbral
+			// La vela de mayor variación debe oscilar más que un umbral
 //			Double umbralMinimo=3D;
 //			if (e.getVariacionRelativaMaxima() < umbralMinimo) {
 //				mCumplida = Boolean.FALSE;
