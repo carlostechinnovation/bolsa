@@ -294,7 +294,7 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, 
     # OPCIÓN NO USADA: Si quisiera probar varios clasificadores
     probarVariosClasificadores=False
 
-    estimador_interno = AdaBoostClassifier(n_estimators=70, learning_rate=0.3)
+    estimador_interno = AdaBoostClassifier(n_estimators=50, learning_rate=0.3)
     # estimador_interno = RandomForestClassifier(max_depth=4, n_estimators=60, criterion="gini", min_samples_split=2, min_samples_leaf=1,
     #                                    min_weight_fraction_leaf=0., max_features="auto", max_leaf_nodes=None, min_impurity_decrease=0.,
     #                                    min_impurity_split=None, bootstrap=True, oob_score=False, n_jobs=-1, random_state=None,
@@ -302,7 +302,7 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, 
 
     # accuracy,balanced_accuracy,average_precision,neg_brier_score,f1,f1_micro,f1_macro,f1_weighted,roc_auc,roc_auc_ovr,roc_auc_ovo,roc_auc_ovr_weighted,roc_auc_ovo_weighted
     #Es mejor roc_auc que f1 y que average_precision. El roc_auc_ovo_weighted no mejora, y roc_auc_ovr_weighted es peor.
-    rfecv_scoring = 'roc_auc'
+    rfecv_scoring = 'average_precision'
 
     if probarVariosClasificadores:
         classifiers = [
