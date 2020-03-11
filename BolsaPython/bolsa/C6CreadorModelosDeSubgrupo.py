@@ -205,7 +205,7 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         # Select upper triangle of correlation matrix
         upper = corr_matrix.where(np.triu(np.ones(corr_matrix.shape), k=1).astype(np.bool))
         # Find index of feature columns with correlation greater than a threshold
-        to_drop = [column for column in upper.columns if any(upper[column] > 0.95)]
+        to_drop = [column for column in upper.columns if any(upper[column] > 0.9)]
         # Drop features
         ift_juntas.drop(ift_juntas[to_drop], axis=1)
 
