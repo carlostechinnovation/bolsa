@@ -69,7 +69,7 @@ rm -f "${LOG_VALIDADOR}"
 
 ################################################################################################
 
-echo -e "PARAMETROS --> VELAS_RETROCESO|S|X|R|M|F|B|NUM_EMPRESAS|SUBIDA_MAXIMA_POR_VELA|MIN_COBERTURA_CLUSTER}|MIN_EMPRESAS_POR_CLUSTER|MAX_NUM_FEAT_REDUCIDAS|RANGO_YF --> ${VELAS_RETROCESO}|${S}|${X}|${R}|${M}|${F}|${B}|${NUM_EMPRESAS}|${UMBRAL_SUBIDA_POR_VELA}|${MIN_COBERTURA_CLUSTER}|${MIN_EMPRESAS_POR_CLUSTER}|${MAX_NUM_FEAT_REDUCIDAS}|${RANGO_YF}" >>${LOG_VALIDADOR}
+echo -e "PARAMETROS --> VELAS_RETROCESO|S|X|R|M|F|B|NUM_EMPRESAS|SUBIDA_MAXIMA_POR_VELA|MIN_COBERTURA_CLUSTER}|MIN_EMPRESAS_POR_CLUSTER|MAX_NUM_FEAT_REDUCIDAS|RANGO_YF|VELA_YF --> ${VELAS_RETROCESO}|${S}|${X}|${R}|${M}|${F}|${B}|${NUM_EMPRESAS}|${UMBRAL_SUBIDA_POR_VELA}|${MIN_COBERTURA_CLUSTER}|${MIN_EMPRESAS_POR_CLUSTER}|${MAX_NUM_FEAT_REDUCIDAS}|${RANGO_YF}|${VELA_YF}" >>${LOG_VALIDADOR}
 echo -e "PARAMETROS -->  PASADO_t1 | FUTURO1_t1 | FUTURO2_t1--> ${PASADO_t1}|${FUTURO1_t1}|${FUTURO2_t1}" >>${LOG_VALIDADOR}
 
 rm -Rf /bolsa/pasado/ >>${LOG_VALIDADOR}
@@ -88,7 +88,7 @@ ${PATH_SCRIPTS}master.sh "pasado" "${PASADO_t1}" "0" "${ACTIVAR_DESCARGAS}" "S" 
 dir_val_pasado="/bolsa/validacion/E${NUM_EMPRESAS}_VR${VELAS_RETROCESO}_S${S}_X${X}_R${R}_M${M}_F${F}_B${B}_pasado/"
 rm -Rf $dir_val_pasado
 mkdir -p $dir_val_pasado
-#cp -R "/bolsa/pasado/" $dir_val_pasado
+cp -R "/bolsa/pasado/" $dir_val_pasado
 
 ################################################################################################
 
@@ -118,7 +118,7 @@ done 9< <( find $DIR_FUT_SUBGRUPOS -type f -exec printf '%s\0' {} + )
 dir_val_futuro_1="/bolsa/validacion/E${NUM_EMPRESAS}_VR${VELAS_RETROCESO}_S${S}_X${X}_R${R}_M${M}_F${F}_B${B}_futuro1/"
 rm -Rf $dir_val_futuro_1
 mkdir -p $dir_val_futuro_1
-#cp -R "/bolsa/futuro/" $dir_val_futuro_1
+cp -R "/bolsa/futuro/" $dir_val_futuro_1
 
 ################################################################################################
 
@@ -149,7 +149,7 @@ done 9< <( find $DIR_FUT_SUBGRUPOS -type f -exec printf '%s\0' {} + )
 dir_val_futuro_2="/bolsa/validacion/E${NUM_EMPRESAS}_VR${VELAS_RETROCESO}_S${S}_X${X}_R${R}_M${M}_F${F}_B${B}_futuro2/"
 rm -Rf $dir_val_futuro_2
 mkdir -p $dir_val_futuro_2
-#cp -R "/bolsa/futuro/" $dir_val_futuro_2
+cp -R "/bolsa/futuro/" $dir_val_futuro_2
 
 ################################################################################################
 echo -e $( date '+%Y%m%d_%H%M%S' )" -------------------------------------------------" >> ${LOG_VALIDADOR}

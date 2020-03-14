@@ -42,8 +42,14 @@ public class BrutosUtils implements Serializable {
 	public static final String PASADO = "pasado";
 	public static final String FUTURO = "futuro";
 
+	public static final String RANGO_YF_1M = "1mo";
 	public static final String RANGO_YF_6M = "6mo";
 	public static final String RANGO_YF_1Y = "1y";
+
+	public static final String VELA_YF_1D = "1d";
+	public static final String VELA_YF_1H = "1h";
+	public static final String VELA_YF_30M = "30m";
+	public static final String VELA_YF_5M = "5m";
 
 	public static final int ES_ENTORNO_VALIDACION = 0;
 

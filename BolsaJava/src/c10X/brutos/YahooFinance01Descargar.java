@@ -54,11 +54,12 @@ public class YahooFinance01Descargar implements Serializable {
 		String directorioOut = BrutosUtils.DIR_BRUTOS; // DEFAULT
 		String modo = BrutosUtils.PASADO; // DEFAULT
 		String rango = BrutosUtils.RANGO_YF_1Y; // DEFAULT
+		String velaYF = BrutosUtils.VELA_YF_1D; // DEFAULT
 		Integer entornoDeValidacion = BrutosUtils.ES_ENTORNO_VALIDACION;// DEFAULT
 
 		if (args.length == 0) {
 			MY_LOGGER.info("Sin parametros de entrada. Rellenamos los DEFAULT...");
-		} else if (args.length != 5) {
+		} else if (args.length != 6) {
 			MY_LOGGER.error("Parametros de entrada incorrectos!!");
 			int numParams = args.length;
 			MY_LOGGER.info("Numero de parametros: " + numParams);
@@ -72,15 +73,16 @@ public class YahooFinance01Descargar implements Serializable {
 			directorioOut = args[1];
 			modo = args[2];
 			rango = args[3];
-			entornoDeValidacion = Integer.valueOf(args[4]);
+			velaYF = args[4];
+			entornoDeValidacion = Integer.valueOf(args[5]);
 			MY_LOGGER.info("Parametros de entrada -> " + numMaxEmpresas + " | " + directorioOut + " | " + modo + "|"
-					+ rango + "|" + entornoDeValidacion);
+					+ rango + "|" + velaYF + "|" + entornoDeValidacion);
 		}
 
 		EstaticosNasdaqDescargarYParsear.getInstance();
 		List<EstaticoNasdaqModelo> nasdaqEstaticos1 = EstaticosNasdaqDescargarYParsear
 				.descargarNasdaqEstaticosSoloLocal1(entornoDeValidacion);
-		descargarNasdaqDinamicos01(nasdaqEstaticos1, numMaxEmpresas, directorioOut, modo, rango);
+		descargarNasdaqDinamicos01(nasdaqEstaticos1, numMaxEmpresas, directorioOut, modo, rango, velaYF);
 
 		MY_LOGGER.info("FIN");
 	}
@@ -93,20 +95,12 @@ public class YahooFinance01Descargar implements Serializable {
 	 * @param directorioOut
 	 * @param modo             pasado o futuro
 	 * @param rango            6mo (6 meses), 1y (1 año)...
-	 * @return
-	 * @throws Exception
-	 */
-	/**
-	 * @param nasdaqEstaticos1
-	 * @param numMaxEmpresas
-	 * @param directorioOut
-	 * @param modo
-	 * 
+	 * @param velaYF
 	 * @return
 	 * @throws Exception
 	 */
 	public static Boolean descargarNasdaqDinamicos01(List<EstaticoNasdaqModelo> nasdaqEstaticos1,
-			Integer numMaxEmpresas, String directorioOut, String modo, String rango) throws Exception {
+			Integer numMaxEmpresas, String directorioOut, String modo, String rango, String velaYF) throws Exception {
 
 		MY_LOGGER.info("descargarNasdaqDinamicos01 --> " + numMaxEmpresas + "|" + directorioOut);
 
@@ -124,7 +118,7 @@ public class YahooFinance01Descargar implements Serializable {
 				ticker = nasdaqEstaticos1.get(i).symbol;
 
 				String pathOut = directorioOut + BrutosUtils.YAHOOFINANCE + "_" + mercado + "_" + ticker + ".txt";
-				String URL_yahoo_ticker = getUrlYahooFinance(ticker, modo, rango);
+				String URL_yahoo_ticker = getUrlYahooFinance(ticker, modo, rango, velaYF);
 
 				if (i % 10 == 1) {
 					MY_LOGGER.info("Empresa numero = " + (i + 1) + " (" + ticker + ")");
@@ -241,10 +235,11 @@ public class YahooFinance01Descargar implements Serializable {
 	 * @param ticker
 	 * @param modo
 	 * @param rango  6mo (6 meses), 1y (1 año)...
+	 * @param velaYF
 	 * @return
 	 * @throws Exception
 	 */
-	public static String getUrlYahooFinance(String ticker, String modo, String rango) throws Exception {
+	public static String getUrlYahooFinance(String ticker, String modo, String rango, String velaYF) throws Exception {
 		String url = "https://query1.finance.yahoo.com/v8/finance/chart/" + ticker + "?symbol=" + ticker;
 
 		// Vela 5 minutos
@@ -255,7 +250,7 @@ public class YahooFinance01Descargar implements Serializable {
 //		} else {
 //			throw new Exception("Modo pasado/futuro no explicito. Saliendo...");
 //		}
-		
+
 		// Vela 30 minutos
 //		if (modo.equals(BrutosUtils.PASADO)) {
 //			url += "&range=1mo&interval=30m";
@@ -264,12 +259,12 @@ public class YahooFinance01Descargar implements Serializable {
 //		} else {
 //			throw new Exception("Modo pasado/futuro no explicito. Saliendo...");
 //		}
-		
+
 		// Vela 1 día
 		if (modo.equals(BrutosUtils.PASADO)) {
-			url += "&range=" + rango + "&interval=1d";
+			url += "&range=" + rango + "&interval=" + velaYF;
 		} else if (modo.equals(BrutosUtils.FUTURO)) {
-			url += "&range=" + rango + "&interval=1d";
+			url += "&range=" + rango + "&interval=" + velaYF;
 		} else {
 			throw new Exception("Modo pasado/futuro no explicito. Saliendo...");
 		}

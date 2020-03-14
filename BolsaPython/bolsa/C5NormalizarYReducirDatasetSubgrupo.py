@@ -94,6 +94,12 @@ def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmp
       print("entradaFeaturesYTarget2:" + str(entradaFeaturesYTarget2.shape[0]) + " x " + str(entradaFeaturesYTarget2.shape[1]))
       #print(entradaFeaturesYTarget2.head())
 
+  print("Porcentaje de MISSING VALUES en cada columna del dataframe de entrada:")
+  missing = pd.DataFrame(entradaFeaturesYTarget2.isnull().sum()).rename(columns={0: 'total'})
+  missing['percent'] = missing['total'] / len(entradaFeaturesYTarget2)  # Create a percentage missing
+  missing_df = missing.sort_values('percent', ascending=False)
+  missing_df = missing_df[missing_df['percent'] > 0]
+  print(missing_df.to_string())  # .drop('TARGET')
 
   # print("Pasado o Futuro: Transformacion en la que borro filas. Por tanto, guardo el indice...")
   indiceFilasFuturasTransformadas1 = entradaFeaturesYTarget2.index.values
@@ -210,10 +216,7 @@ def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmp
       sns.distplot(datos_columna, kde=False, color='red', bins=10)
       plt.title(column, fontsize=10)
       plt.savefig(path_dibujo, bbox_inches='tight')
-      #Limpiando dibujo:
-      plt.clf()
-      plt.cla()
-      plt.close()
+      plt.clf(); plt.cla(); plt.close()  # Limpiando dibujo
 
   return featuresFichero, targetsFichero
 
@@ -252,10 +255,7 @@ def normalizarFeatures(featuresFichero, path_modelo_normalizador, dir_subgrupo_i
         sns.distplot(datos_columna, kde=False, color='red', bins=10)
         plt.title(column+" (NORM)", fontsize=10)
         plt.savefig(path_dibujo, bbox_inches='tight')
-        # Limpiando dibujo:
-        plt.clf()
-        plt.cla()
-        plt.close()
+        plt.clf(); plt.cla(); plt.close()  # Limpiando dibujo
 
   return featuresFicheroNorm
 
@@ -329,7 +329,7 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, 
                     numFeaturesAnterior = rfecv.n_features_
 
     # The "accuracy" scoring is proportional to the number of correct classifications
-    rfecv_modelo = RFECV(estimator=estimador_interno, step=0.05, min_features_to_select=4, cv=StratifiedKFold(n_splits=5, shuffle=True), scoring=rfecv_scoring, verbose=0, n_jobs=-1)
+    rfecv_modelo = RFECV(estimator=estimador_interno, step=3, min_features_to_select=4, cv=StratifiedKFold(n_splits=8, shuffle=True), scoring=rfecv_scoring, verbose=0, n_jobs=-1)
     print("rfecv_modelo -> fit ...")
     targetsLista = targetsFichero["TARGET"].tolist()
     rfecv_modelo.fit(featuresFicheroNorm, targetsLista)
@@ -356,10 +356,7 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, 
           plt.plot(range(1, len(rfecv_modelo.grid_scores_) + 1), rfecv_modelo.grid_scores_)
           plt.title("RFECV", fontsize=10)
           plt.savefig(path_dibujo_rfecv, bbox_inches='tight')
-          # Limpiando dibujo:
-          plt.clf()
-          plt.cla()
-          plt.close()
+          plt.clf(); plt.cla(); plt.close()  # Limpiando dibujo
 
       columnas = featuresFicheroNorm.columns
       numColumnas = columnas.shape[0]
@@ -378,15 +375,21 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, 
       # featuresFicheroNormElegidas.to_csv(pathCsvReducido + "_TEMP06", index=False, sep='|')  # UTIL ara testIntegracion
 
       ####################### NO LO USAMOS pero lo dejo aqui ########
-      #if modoDebug and False:
-          #print("** PCA (Principal Components Algorithm) **")
-          #print("Usando PCA, cogemos las features que tengan un impacto agregado sobre el X% de la varianza del target. Descartamos el resto.")
-          #modelo_pca_subgrupo = PCA(n_components=varianzaAcumuladaDeseada, svd_solver='full')
-          #print(modelo_pca_subgrupo)
-          #featuresFicheroNorm_pca = modelo_pca_subgrupo.fit_transform(featuresFicheroNorm)
-          #print(featuresFicheroNorm_pca)
-          #print('Dimensiones del dataframe reducido: ' + str(featuresFicheroNorm_pca.shape[0]) + ' x ' + str(featuresFicheroNorm_pca.shape[1]))
-          #print("Las features están ya normalizadas y reducidas. DESCRIBIMOS lo que hemos hecho y GUARDAMOS el dataset.")
+      # if False:
+      #     print("** PCA (Principal Components Algorithm) **")
+      #     print("Usando PCA, cogemos las features que tengan un impacto agregado sobre el X% de la varianza del target. Descartamos el resto.")
+      #     modelo_pca_subgrupo = PCA(n_components=varianzaAcumuladaDeseada, svd_solver='full')
+      #     print(modelo_pca_subgrupo)
+      #     featuresFicheroNorm_pca = modelo_pca_subgrupo.fit_transform(featuresFicheroNorm)
+      #     print(featuresFicheroNorm_pca)
+      #     print('Dimensiones del dataframe reducido: ' + str(featuresFicheroNorm_pca.shape[0]) + ' x ' + str(featuresFicheroNorm_pca.shape[1]))
+      #     print("Las features están ya normalizadas y reducidas. DESCRIBIMOS lo que hemos hecho y GUARDAMOS el dataset.")
+      #     num_columnas_pca = featuresFicheroNorm_pca.shape[1]
+      #     columnas_pca = ['pca_%i' % i for i in range(num_columnas_pca)]
+      #     featuresFicheroNorm_pca_df = DataFrame(featuresFicheroNorm_pca, columns=columnas_pca, index=featuresFicheroNorm.index)
+      #     print(featuresFicheroNorm_pca_df.head())
+      #     featuresFicheroNormElegidas = featuresFicheroNorm_pca_df
+
 
       ### Guardar a fichero
       # print("Muestro las features + targets antes de juntarlas...")

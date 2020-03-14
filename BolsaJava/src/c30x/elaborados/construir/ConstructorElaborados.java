@@ -39,6 +39,7 @@ public class ConstructorElaborados implements Serializable {
 	// Se usan los periodos típicos que suelen usar los robots: 3, 7, 20, 50 días
 	// (consideraremos velas)
 	public final static Integer[] periodosDParaParametros = new Integer[] { 3, 7, 20, 50 };
+//	public final static Integer[] periodosDParaParametros = new Integer[] { 1 * 7, 3 * 7, 5 * 7 };
 
 	// IMPORTANTE: se asume que los datos estan ordenados de menor a mayor
 	// antiguedad, y agrupados por empresa
@@ -350,9 +351,9 @@ public class ConstructorElaborados implements Serializable {
 
 		MY_LOGGER.debug("SCREENER1: " + SCREENER1 + " para la empresa " + empresa);
 
-		//Se añade el parámetro SCREENER1
+		// Se añade el parámetro SCREENER1
 		ordenNombresParametrosSalida.put(ordenNombresParametrosSalida.size(), "SCREENER1");
-		parametrosAcumulados ++;
+		parametrosAcumulados++;
 
 		// Aniado el TARGET
 		// Target=0 es que no se cumple. 1 es que sí. TARGET_INVALIDO es que no se puede
