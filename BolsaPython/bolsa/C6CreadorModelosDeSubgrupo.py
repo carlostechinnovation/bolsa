@@ -277,7 +277,7 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
 
             nombreModelo = "extra_trees"
             pathModelo = dir_subgrupo + nombreModelo + ".modelo"
-            modelo = ExtraTreesClassifier(n_estimators=100, max_depth=9, min_samples_leaf=20, max_features=None, min_impurity_decrease=0.001, random_state=1)
+            modelo = ExtraTreesClassifier(n_estimators=100, max_depth=11, min_samples_leaf=20, max_features=None, min_impurity_decrease=0.001, min_samples_split=3, random_state=1)
             modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_train_t, feature_names, False, modoDebug)
             modelo_metrica = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, id_subgrupo, modoDebug)
             print(type(modelo_metrica))
@@ -331,7 +331,7 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
 
             nombreModelo = "rf_grid"
             pathModelo = dir_subgrupo + nombreModelo + ".modelo"
-            modelo_base = RandomForestClassifier(n_estimators=100, max_depth=9, min_samples_leaf=20, max_features=None, random_state=1)
+            modelo_base = RandomForestClassifier(n_estimators=100, max_depth=11, min_samples_leaf=20, max_features=None, min_samples_split=3, random_state=1)
             hiperparametros = {'min_impurity_decrease': [0.001]}
             modelos_grid = GridSearchCV(modelo_base, hiperparametros, scoring='precision', n_jobs=-1, refit=True, return_train_score=False, cv=5)
             modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelos_grid, pathModelo, ds_train_f, ds_train_t, feature_names, True, modoDebug)
