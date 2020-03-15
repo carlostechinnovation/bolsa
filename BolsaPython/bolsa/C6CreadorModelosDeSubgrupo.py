@@ -159,7 +159,7 @@ def cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, id_s
     print(id_subgrupo + ' MODELO = ' + nombreModelo + ' Average RECALL score: {0:0.2f}'.format(recall))
 
     precision_result = precision_score(ds_test_t, ds_test_t_pred)
-    print(id_subgrupo + ' MODELO = ' + nombreModelo + ' METRICA IMPORTANTE--> Average PRECISION score: {0:0.2f}'.format(precision_result))
+    print(id_subgrupo + ' MODELO = ' + nombreModelo + ' METRICA IMPORTANTE--> Average PRECISION score: {0:0.2f}'.format(precision_result) + " (num features = " + str(ds_test_f.shape[1]) + ")")
 
     if modoDebug:
         print("Curva ROC...")
@@ -262,19 +262,10 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         if(balancearConSmoteSoloTrain == True):
             print("---------------- RESAMPLING con SMOTE --------")
             print("Resampling con SMOTE del vector de TRAINING (pero no a TEST ni a VALIDATION) según: " + "https://machinelearningmastery.com/combine-oversampling-and-undersampling-for-imbalanced-classification/")
-            #train_mayoritaria = ds_train_f[ds_train_f.TARGET == False]  # En este caso los mayoritarios son los False
-            #train_minoritaria = ds_train_f[ds_train_f.TARGET == True]
-            #print("(antes de SMOTE) --> Tasa de desbalanceo entre clases = " + str(train_mayoritaria.shape[0]) + "/" + str(train_minoritaria.shape[0]) + " = " + str(train_mayoritaria.shape[0] / train_minoritaria.shape[0]))
             resample = SMOTEENN()
-            print("SMOTE antes: %d" % ds_train_f.shape[0])
-
+            print("SMOTE antes (mayoritaria + minoritaria): %d" % ds_train_f.shape[0])
             ds_train_f, ds_train_t = resample.fit_sample(ds_train_f, ds_train_t)
-
-            print("SMOTE después: %d" % ds_train_f.shape[0])
-
-            #train_mayoritaria = ds_train_f[ds_train_f.TARGET == False]  # En este caso los mayoritarios son los False
-            #train_minoritaria = ds_train_f[ds_train_f.TARGET == True]
-            #print("(despues de SMOTE) --> Tasa de desbalanceo entre clases = " + str(train_mayoritaria.shape[0]) + "/" + str(train_minoritaria.shape[0]) + " = " + str(train_mayoritaria.shape[0] / train_minoritaria.shape[0]))
+            print("SMOTE después (mayoritaria + minoritaria): %d" % ds_train_f.shape[0])
             ##################################################################
 
             print("---------------- MODELOS con varias configuraciones (hiperparametros) --------")
@@ -283,9 +274,10 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
             print("EVALUACION de los modelos con: " + "https://scikit-learn.org/stable/modules/model_evaluation.html#classification-metrics")
             print("EVALUACION con curva precision-recall: " + "https://scikit-learn.org/stable/auto_examples/model_selection/plot_precision_recall.html")
 
+
             nombreModelo = "extra_trees"
             pathModelo = dir_subgrupo + nombreModelo + ".modelo"
-            modelo = ExtraTreesClassifier(n_estimators=50, max_depth=7, min_samples_leaf=5, max_features=None, min_impurity_decrease=0.03, random_state=1)
+            modelo = ExtraTreesClassifier(n_estimators=100, max_depth=9, min_samples_leaf=20, max_features=None, min_impurity_decrease=0.001, random_state=1)
             modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_train_t, feature_names, False, modoDebug)
             modelo_metrica = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, id_subgrupo, modoDebug)
             print(type(modelo_metrica))
@@ -339,8 +331,8 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
 
             nombreModelo = "rf_grid"
             pathModelo = dir_subgrupo + nombreModelo + ".modelo"
-            modelo_base = RandomForestClassifier(n_estimators=50, max_depth=7, min_impurity_decrease=0.03, min_samples_leaf=5, max_features=None, random_state=1)
-            hiperparametros = {'min_impurity_decrease': [0.01]}
+            modelo_base = RandomForestClassifier(n_estimators=100, max_depth=9, min_samples_leaf=20, max_features=None, random_state=1)
+            hiperparametros = {'min_impurity_decrease': [0.001]}
             modelos_grid = GridSearchCV(modelo_base, hiperparametros, scoring='precision', n_jobs=-1, refit=True, return_train_score=False, cv=5)
             modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelos_grid, pathModelo, ds_train_f, ds_train_t, feature_names, True, modoDebug)
             modelo_metrica = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, id_subgrupo, modoDebug)
@@ -351,8 +343,8 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
                 ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
 
             print("********* GANADOR de subgrupo *************")
-            print(id_subgrupo + " Modelo ganador es " + ganador_nombreModelo + " con una metrica maximizada de " + str(
-                round(ganador_metrica, 4)) + " y con estos hiperparametros: ")
+            print(id_subgrupo + " (num features = " + str(ds_train_f.shape[1]) + ")" + " -> Modelo ganador = " + ganador_nombreModelo + " --> METRICA = " + str(
+                round(ganador_metrica, 4)) + " --> Hiperparametros: ")
             print(ganador_grid_mejores_parametros)
             pathModeloGanadorDeSubgrupoOrigen = dir_subgrupo + ganador_nombreModelo + ".modelo"
             pathModeloGanadorDeSubgrupoDestino = pathModeloGanadorDeSubgrupoOrigen + "_ganador"

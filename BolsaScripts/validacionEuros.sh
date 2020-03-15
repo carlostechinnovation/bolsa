@@ -174,13 +174,17 @@ mkdir -p $dir_val_logs
 cp -R "/bolsa/logs/" $dir_val_logs
 
 
+echo -e "Generamos el CSV que compara pasado-train-test (lista directa) con la obtenida en futuro1-futuro2 (lista inversa). Guardado en:" >> ${LOG_VALIDADOR}
+$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/ValidadorPython.py" "$DIR_VALIDACION"  >> ${LOG_VALIDADOR}
+
+
 ################################################################################################
 echo -e "---------------- Medidas del OVERFITTING ------------" >> ${LOG_VALIDADOR}
 echo -e "Comparamos la METRICA de pasado-train-test (lista directa) con la obtenida en futuro1-futuro2 (lista inversa). Deben ser muy parecidas. Si no, hay sobreentrenamiento..." >> ${LOG_VALIDADOR}
 
 cat "${DIR_LOGS}"$(ls ${DIR_LOGS} | grep "pasado") | grep "base_estimator"    >> ${LOG_VALIDADOR}
 echo -e "---- PASADO (test, lista directa) ---"    >> ${LOG_VALIDADOR}
-cat "${DIR_LOGS}"$(ls ${DIR_LOGS} | grep "pasado") | grep "Modelo ganador es"    >> ${LOG_VALIDADOR}
+cat "${DIR_LOGS}"$(ls ${DIR_LOGS} | grep "pasado") | grep "Modelo ganador"  | grep 'METRICA'   >> ${LOG_VALIDADOR}
 echo -e "---- FUTURO (fut1-fut2, lista inversa) ---"    >> ${LOG_VALIDADOR}
 cat "${LOG_VALIDADOR}" | grep "Porcentaje aciertos"   >> ${LOG_VALIDADOR}
 
