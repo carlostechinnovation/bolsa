@@ -38,7 +38,7 @@ public class ConstructorElaborados implements Serializable {
 
 	// Se usan los periodos típicos que suelen usar los robots: 3, 7, 20, 50 días
 	// (consideraremos velas)
-	public final static Integer[] periodosDParaParametros = new Integer[] { 3, 7, 20, 50 };
+	public final static Integer[] periodosDParaParametros = new Integer[] { 3, 7, 20};
 //	public final static Integer[] periodosDParaParametros = new Integer[] { 1 * 7, 3 * 7, 5 * 7 };
 
 	// IMPORTANTE: se asume que los datos estan ordenados de menor a mayor
@@ -351,9 +351,18 @@ public class ConstructorElaborados implements Serializable {
 
 		MY_LOGGER.debug("SCREENER1: " + SCREENER1 + " para la empresa " + empresa);
 
-		// Se añade el parámetro SCREENER1
-		ordenNombresParametrosSalida.put(ordenNombresParametrosSalida.size(), "SCREENER1");
-		parametrosAcumulados++;
+
+//		// Se añade el parámetro HYPE1
+//		ordenNombresParametrosSalida.put(ordenNombresParametrosSalida.size(), "HYPE1");
+//		parametrosAcumulados++;
+//
+//		// Se añade el parámetro HYPE2
+//		ordenNombresParametrosSalida.put(ordenNombresParametrosSalida.size(), "HYPE2");
+//		parametrosAcumulados++;
+//
+//		// Se añade el parámetro SCREENER1
+//		ordenNombresParametrosSalida.put(ordenNombresParametrosSalida.size(), "SCREENER1");
+//		parametrosAcumulados++;
 
 		// Aniado el TARGET
 		// Target=0 es que no se cumple. 1 es que sí. TARGET_INVALIDO es que no se puede
@@ -390,6 +399,11 @@ public class ConstructorElaborados implements Serializable {
 				antiguedadYTarget.put(antiguedad, target);
 			}
 
+			// Auxiliares
+			String Sprecio, Svolumen, Ssma20Precio, Ssma50Precio, Ssma7Precio, Ssma7Volumen, Smaximo7Precio;
+			Float precio, volumen, sma20Precio, sma50Precio, sma7Precio, sma7Volumen, maximo7Precio;
+			String HYPE1 = "0", HYPE2 = "0";
+
 			// Se rellena el target en los datos de entrada tras el analisis, al final de
 			// todos los parametros
 			Iterator<Integer> itAntiguedadDatos = datosEmpresaFinales.keySet().iterator();
@@ -398,8 +412,83 @@ public class ConstructorElaborados implements Serializable {
 				antiguedad = itAntiguedadDatos.next();
 				parametros = datosEmpresaFinales.get(antiguedad);
 
-				// Se AÑADEN parámetros elaborados ESTÁTICOS
-				parametros.put("SCREENER1", SCREENER1);
+//				// Se AÑADEN parámetros elaborados ESTÁTICOS
+//				parametros.put("SCREENER1", SCREENER1);
+//
+//				// Se AÑADEN parámetros elaborados DINÁMICOS. Para ello deben estar ya guardados
+//				// el resto de parámetros que se referencien.
+//
+//				// PARÁMETRO HYPE1:
+//				// #Ejemplo empresa: PAVMED 10/2/2020:
+//				// Screener de hype primer día:
+//				// PRECIO -> Mayor que sma50 (pero NO que 20)
+//				// PRECIO -> menor que sma7
+//				// VOLUMEN -> Menor que 0.3*sma7
+//				// Valores: Si no se tienen los datos o no se cumplen las condiciones, será 0.
+//				// Si sí se cumple todo, será 1
+//				Sprecio = parametros.get("close");
+//				Svolumen = parametros.get("volumen");
+//				Ssma50Precio = parametros.get("MEDIA_SMA_50_PRECIO");
+//				Ssma7Precio = parametros.get("MEDIA_SMA_7_PRECIO");
+//				Ssma7Volumen = parametros.get("MEDIA_SMA_7_VOLUMEN");
+//				if (Sprecio != null && Svolumen != null && Ssma50Precio != null && Ssma7Precio != null
+//						&& Ssma7Volumen != null) {
+//					precio = Float.valueOf(Sprecio);
+//					volumen = Float.valueOf(Svolumen);
+//					sma50Precio = Float.valueOf(Ssma50Precio);
+//					sma7Precio = Float.valueOf(Ssma7Precio);
+//					sma7Volumen = Float.valueOf(Ssma7Volumen);
+//					if (precio > sma50Precio && precio < sma7Precio && volumen < 0.3 * sma7Volumen) {
+//						HYPE1 = "1";
+//					} else {
+//						HYPE1 = "0";
+//					}
+//				}
+//
+//				// PARÁMETRO HYPE2:
+//				// #Ejemplo empresa: PAVMED 11/2/2020:
+//				// Screener de hype segundo día:
+//				// PRECIO -> Mayor que sma50 y SMA20
+//				// PRECIO -> mayor (o igual, ya que será el máximo xD) que el máximo de 7 velas,
+//				// en positivo
+//				// VOLUMEN -> 3 veces mayor que SMA7
+//				// Valores: Si no se tienen los datos o no se cumplen las condiciones, será 0.
+//				// Si sí se cumple todo, será 1
+//				Sprecio = parametros.get("close");
+//				Svolumen = parametros.get("volumen");
+//				Ssma20Precio = parametros.get("MEDIA_SMA_20_PRECIO");
+//				Ssma50Precio = parametros.get("MEDIA_SMA_50_PRECIO");
+//				Ssma7Precio = parametros.get("MEDIA_SMA_7_PRECIO");
+//				Ssma7Volumen = parametros.get("MEDIA_SMA_7_VOLUMEN");
+//				Smaximo7Precio = parametros.get("MAXIMO_7_PRECIO");
+//				if (Sprecio != null && Svolumen != null && Ssma20Precio != null && Ssma50Precio != null
+//						&& Ssma7Precio != null && Ssma7Volumen != null && Smaximo7Precio != null) {
+//					precio = Float.valueOf(Sprecio);
+//					volumen = Float.valueOf(Svolumen);
+//					sma20Precio = Float.valueOf(Ssma20Precio);
+//					sma50Precio = Float.valueOf(Ssma50Precio);
+//					sma7Precio = Float.valueOf(Ssma7Precio);
+//					sma7Volumen = Float.valueOf(Ssma7Volumen);
+//					maximo7Precio = Float.valueOf(Smaximo7Precio);
+//					if (precio > sma50Precio && precio > sma20Precio && precio >= maximo7Precio
+//							&& volumen > 3 * sma7Volumen) {
+////						System.out.println("----<<<<<>>>>>--: precio: " + precio + " ; volumen: " + volumen
+////								+ " ; sma20Precio: " + sma20Precio + " ; sma50Precio: " + sma50Precio
+////								+ " ; sma7Precio: " + sma7Precio + " ; sma7Volumen: " + sma7Volumen
+////								+ " ; maximo7Precio: " + maximo7Precio);
+//						HYPE2 = "1";
+//					} else {
+//						HYPE2 = "0";
+//					}
+//				}
+//
+//				// AÑADO PARÁMETROS. TAMBIÉN HAY QUE AÑADIRLO EN LA LÍNEA 358 (VER OTROS
+//				// EJEMPLOS)
+//				// Se añade HYPE1
+//				parametros.put("HYPE1", HYPE1);
+//
+//				// Se añade HYPE2
+//				parametros.put("HYPE2", HYPE2);
 
 				// SE AÑADE EL TARGET
 				parametros.put("TARGET", String.valueOf(antiguedadYTarget.get(antiguedad)));

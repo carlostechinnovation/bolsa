@@ -43,7 +43,7 @@ modoTiempo = sys.argv[2]
 desplazamientoAntiguedad = sys.argv[3]
 modoDebug = False  # En modo debug se pintan los dibujos. En otro caso, se evita calculo innecesario
 umbralCasosSuficientesClasePositiva = 50
-granProbTargetUno = 50 # De todos los target=1, nos quedaremos con los granProbTargetUno (en tanto por cien) MAS probables. Un valor de 100 o mayor anula este parámetro
+granProbTargetUno = 40 # De todos los target=1, nos quedaremos con los granProbTargetUno (en tanto por cien) MAS probables. Un valor de 100 o mayor anula este parámetro
 balancearConSmoteSoloTrain = True
 umbralFeaturesCorrelacionadas = 0.90
 
@@ -277,7 +277,8 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
 
             nombreModelo = "extra_trees"
             pathModelo = dir_subgrupo + nombreModelo + ".modelo"
-            modelo = ExtraTreesClassifier(n_estimators=100, max_depth=11, min_samples_leaf=20, max_features=None, min_impurity_decrease=0.001, min_samples_split=3, random_state=1)
+            # n_estimators=100, max_depth=11, min_samples_leaf=20, max_features=None, min_impurity_decrease=0.001, min_samples_split=3, random_state=1
+            modelo = ExtraTreesClassifier()
             modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_train_t, feature_names, False, modoDebug)
             modelo_metrica = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, id_subgrupo, modoDebug)
             print(type(modelo_metrica))
@@ -329,18 +330,18 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
             #     ganador_nombreModelo = nombreModelo
             #     ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
 
-            nombreModelo = "rf_grid"
-            pathModelo = dir_subgrupo + nombreModelo + ".modelo"
-            modelo_base = RandomForestClassifier(n_estimators=100, max_depth=11, min_samples_leaf=20, max_features=None, min_samples_split=3, random_state=1)
-            hiperparametros = {'min_impurity_decrease': [0.001]}
-            modelos_grid = GridSearchCV(modelo_base, hiperparametros, scoring='precision', n_jobs=-1, refit=True, return_train_score=False, cv=5)
-            modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelos_grid, pathModelo, ds_train_f, ds_train_t, feature_names, True, modoDebug)
-            modelo_metrica = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, id_subgrupo, modoDebug)
-            print(type(modelo_metrica))
-            if modelo_metrica > ganador_metrica:
-                ganador_metrica = modelo_metrica
-                ganador_nombreModelo = nombreModelo
-                ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
+            # nombreModelo = "rf_grid"
+            # pathModelo = dir_subgrupo + nombreModelo + ".modelo"
+            # modelo_base = RandomForestClassifier(n_estimators=100, max_depth=11, min_samples_leaf=20, max_features=None, min_samples_split=3, random_state=1)
+            # hiperparametros = {'min_impurity_decrease': [0.001]}
+            # modelos_grid = GridSearchCV(modelo_base, hiperparametros, scoring='precision', n_jobs=-1, refit=True, return_train_score=False, cv=5)
+            # modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelos_grid, pathModelo, ds_train_f, ds_train_t, feature_names, True, modoDebug)
+            # modelo_metrica = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, id_subgrupo, modoDebug)
+            # print(type(modelo_metrica))
+            # if modelo_metrica > ganador_metrica:
+            #     ganador_metrica = modelo_metrica
+            #     ganador_nombreModelo = nombreModelo
+            #     ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
 
             print("********* GANADOR de subgrupo *************")
             print(id_subgrupo + " (num features = " + str(ds_train_f.shape[1]) + ")" + " -> Modelo ganador = " + ganador_nombreModelo + " --> METRICA = " + str(
