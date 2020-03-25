@@ -43,7 +43,7 @@ modoTiempo = sys.argv[2]
 desplazamientoAntiguedad = sys.argv[3]
 modoDebug = False  # En modo debug se pintan los dibujos. En otro caso, se evita calculo innecesario
 umbralCasosSuficientesClasePositiva = 50
-granProbTargetUno = 40 # De todos los target=1, nos quedaremos con los granProbTargetUno (en tanto por cien) MAS probables. Un valor de 100 o mayor anula este parámetro
+granProbTargetUno = 50 # De todos los target=1, nos quedaremos con los granProbTargetUno (en tanto por cien) MAS probables. Un valor de 100 o mayor anula este parámetro
 balancearConSmoteSoloTrain = True
 umbralFeaturesCorrelacionadas = 0.90
 
@@ -337,6 +337,29 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
             # modelos_grid = GridSearchCV(modelo_base, hiperparametros, scoring='precision', n_jobs=-1, refit=True, return_train_score=False, cv=5)
             # modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelos_grid, pathModelo, ds_train_f, ds_train_t, feature_names, True, modoDebug)
             # modelo_metrica = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, id_subgrupo, modoDebug)
+            # print(type(modelo_metrica))
+            # if modelo_metrica > ganador_metrica:
+            #     ganador_metrica = modelo_metrica
+            #     ganador_nombreModelo = nombreModelo
+            #     ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
+
+            # nombreModelo = "extra_trees"
+            # pathModelo = dir_subgrupo + nombreModelo + ".modelo"
+            # # n_estimators=100, max_depth=11, min_samples_leaf=20, max_features=None, min_impurity_decrease=0.001, min_samples_split=3, random_state=1
+            # modelo_base = ExtraTreesClassifier()
+            # # Tomados de https://predictivelearning.github.io/projects/Project_241_ML_AllEnsembleClassifiers_GaussianNB__Predict_Income_from_US_census.html
+            # hiperparametros = {
+            #        "n_estimators": [5, 20, 100],
+            #        "criterion": ["entropy", "gini"],
+            #        "max_depth": [2, 5, 10],
+            #        "max_features": ["log2", "sqrt"],
+            #        "min_samples_leaf": [1, 5, 8],
+            #        "min_samples_split": [2, 3, 5],
+            #        "class_weight": [None, "balanced", {0: 1, 1: 3}, {0: 1, 1: 5}]}
+            # modelos_grid = GridSearchCV(modelo_base, hiperparametros, scoring='precision', n_jobs=-1, refit=True, return_train_score=False, cv=5)
+            # modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelos_grid, pathModelo, ds_train_f, ds_train_t, feature_names, True, modoDebug)
+            # modelo_metrica = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, id_subgrupo,
+            #                                       modoDebug)
             # print(type(modelo_metrica))
             # if modelo_metrica > ganador_metrica:
             #     ganador_metrica = modelo_metrica

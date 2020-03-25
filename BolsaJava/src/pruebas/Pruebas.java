@@ -44,6 +44,9 @@ public class Pruebas {
 		}
 
 		// ----------------------------------------------------
+
+		String a = String.valueOf(Long.valueOf("1234567890") / 1000000);
+		System.out.println(a);
 	}
 
 }

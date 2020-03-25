@@ -126,7 +126,7 @@ def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmp
   #print(indiceFilasFuturasTransformadas2)
 
   print("entradaFeaturesYTarget3 (filas con algun nulo borradas):" + str(entradaFeaturesYTarget3.shape[0]) + " x " + str(entradaFeaturesYTarget3.shape[1]))
-  # entradaFeaturesYTarget3.to_csv(path_csv_completo + "_TEMP03", index=True, sep='|')  # UTIL ara testIntegracion
+  # entradaFeaturesYTarget3.to_csv(path_csv_completo + "_TEMP03", index=True, sep='|')  # UTIL para testIntegracion
 
 
   # Limpiar OUTLIERS

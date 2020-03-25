@@ -238,7 +238,7 @@ public class GestorFicheros {
 					empresa = data[0];
 					datosParametrosEmpresa = new HashMap<String, String>();
 
-					// Se excluyen los dos primeros elementos
+					// Se excluyen los dos primeros elementos (empresa y antiguedad)
 					for (int i = 2; i < parametrosNombresConOrden.size(); i++) {
 						datosParametrosEmpresa.put(parametrosNombresConOrden.get(i), parametrosValoresConOrden.get(i));
 					}
