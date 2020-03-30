@@ -130,10 +130,10 @@ def ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_tr
             print("Importancia de las features en el modelo " + nombreModelo + " ha sido:")
             print(feature_imp.to_string())
 
-            print("Generando dibujo de árbol de decision...")
+            print("Generando dibujo de un árbol de decision (elegido al azar de los que haya)...")
             print(feature_names)
             print("Guardando dibujo DOT en: " + pathModelo + '.dot' + " Convertirlo ONLINE en: http://viz-js.com/")
-            export_graphviz(modelo.best_estimator_.estimators_[19], out_file=pathModelo + '.dot',
+            export_graphviz(modelo.best_estimator_.estimators_[1], out_file=pathModelo + '.dot',
                             feature_names=feature_names, class_names=list('TARGET'), rounded=True, proportion=False,
                             precision=2, filled=True)
 
@@ -274,11 +274,22 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
             print("EVALUACION de los modelos con: " + "https://scikit-learn.org/stable/modules/model_evaluation.html#classification-metrics")
             print("EVALUACION con curva precision-recall: " + "https://scikit-learn.org/stable/auto_examples/model_selection/plot_precision_recall.html")
 
+            ### parametros de los modelos que usan árboles de decisión (RF y extra trees) ###
+            ARBOLES_n_estimators = 100  # Siempre más que 80
+            ARBOLES_max_depth = 11  # MUY IMPORTANTE --> Queremos profundidad pero no demasiada. Aparte, podaremos con el GINI (min impurity decrease)
+            ARBOLES_min_samples_leaf = 50  # Para evitar overfitting, queremos hojas gordas
+            ARBOLES_max_features = 'auto'  # Coger TODAS las features posibles (no 'auto' porque coge sqrt(features) al azar para cada árbol; eso ya lo hemos hecho en RFECV)
+            ARBOLES_min_impurity_decrease = 0.00001  # MUY IMPORTANTE --> Solo se generan hojas si merece la pena (GINI baja), pero no demasiado para evitar overfitting.
+            ARBOLES_min_samples_split = 3  # Para tomar la decisión de crear una rama, debe haber suficientes muestras de ambas clases --> DUDOSO??
+            ARBOLES_max_leaf_nodes = None
+            #######
 
             nombreModelo = "extra_trees"
             pathModelo = dir_subgrupo + nombreModelo + ".modelo"
             # n_estimators=100, max_depth=11, min_samples_leaf=20, max_features=None, min_impurity_decrease=0.001, min_samples_split=3, random_state=1
-            modelo = ExtraTreesClassifier()
+            modelo = ExtraTreesClassifier(n_estimators=ARBOLES_n_estimators, max_depth=ARBOLES_max_depth, min_samples_leaf=ARBOLES_min_samples_leaf,
+                                          max_features=ARBOLES_max_features, min_impurity_decrease=ARBOLES_min_impurity_decrease,
+                                          min_samples_split=ARBOLES_min_samples_split, max_leaf_nodes=ARBOLES_max_leaf_nodes, random_state=1)
             modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_train_t, feature_names, False, modoDebug)
             modelo_metrica = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, id_subgrupo, modoDebug)
             print(type(modelo_metrica))
@@ -330,18 +341,20 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
             #     ganador_nombreModelo = nombreModelo
             #     ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
 
-            # nombreModelo = "rf_grid"
-            # pathModelo = dir_subgrupo + nombreModelo + ".modelo"
-            # modelo_base = RandomForestClassifier(n_estimators=100, max_depth=11, min_samples_leaf=20, max_features=None, min_samples_split=3, random_state=1)
-            # hiperparametros = {'min_impurity_decrease': [0.001]}
-            # modelos_grid = GridSearchCV(modelo_base, hiperparametros, scoring='precision', n_jobs=-1, refit=True, return_train_score=False, cv=5)
-            # modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelos_grid, pathModelo, ds_train_f, ds_train_t, feature_names, True, modoDebug)
-            # modelo_metrica = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, id_subgrupo, modoDebug)
-            # print(type(modelo_metrica))
-            # if modelo_metrica > ganador_metrica:
-            #     ganador_metrica = modelo_metrica
-            #     ganador_nombreModelo = nombreModelo
-            #     ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
+            nombreModelo = "rf_grid"
+            pathModelo = dir_subgrupo + nombreModelo + ".modelo"
+            modelo_base = RandomForestClassifier(n_estimators=ARBOLES_n_estimators, max_depth=ARBOLES_max_depth, min_samples_leaf=ARBOLES_min_samples_leaf,
+                                                 max_features=ARBOLES_max_features, min_samples_split=ARBOLES_min_samples_split,
+                                                 max_leaf_nodes=ARBOLES_max_leaf_nodes, random_state=1)
+            hiperparametros = {'min_impurity_decrease': [ARBOLES_min_impurity_decrease]}
+            modelos_grid = GridSearchCV(modelo_base, hiperparametros, scoring='precision', n_jobs=-1, refit=True, return_train_score=False, cv=5)
+            modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelos_grid, pathModelo, ds_train_f, ds_train_t, feature_names, True, modoDebug)
+            modelo_metrica = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, id_subgrupo, modoDebug)
+            print(type(modelo_metrica))
+            if modelo_metrica > ganador_metrica:
+                ganador_metrica = modelo_metrica
+                ganador_nombreModelo = nombreModelo
+                ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
 
             # nombreModelo = "extra_trees"
             # pathModelo = dir_subgrupo + nombreModelo + ".modelo"

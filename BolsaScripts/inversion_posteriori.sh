@@ -38,6 +38,7 @@ crearCarpetaSiNoExisteYVaciarRecursivo() {
 
 ################################################################################################
 PATH_SCRIPTS="${DIR_CODIGOS}BolsaScripts/"
+PYTHON_SCRIPTS="${DIR_CODIGOS}BolsaPython/"
 PARAMS_CONFIG="${PATH_SCRIPTS}parametros.config"
 echo -e "Importando parametros generales..."
 source ${PARAMS_CONFIG}
@@ -71,17 +72,23 @@ rm -Rf /bolsa/futuro/ >>${LOG_INVERSIONPOST}
 crearCarpetaSiNoExiste "${DIR_FUT_SUBGRUPOS}"
 
 echo -e $( date '+%Y%m%d_%H%M%S' )" Ejecución del futuro (para velas de antiguedad=${FUTURO2_t1}) con OTRAS empresas (lista REVERTIDA)..." >>${LOG_INVERSIONPOST}
-${PATH_SCRIPTS}master.sh "futuro" "${FUTURO_INVERSION}" "0" "S" "S" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" "${NUM_EMPRESAS}" "${UMBRAL_SUBIDA_POR_VELA}" "${MIN_COBERTURA_CLUSTER}" "${MIN_EMPRESAS_POR_CLUSTER}" "20001111" "20991111" "${MAX_NUM_FEAT_REDUCIDAS}" 2>>${LOG_INVERSIONPOST} 1>>${LOG_INVERSIONPOST}
+${PATH_SCRIPTS}master.sh "futuro" "${FUTURO_INVERSION}" "0" "S" "S" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" "${NUM_EMPRESAS_INVERSION}" "${UMBRAL_SUBIDA_POR_VELA}" "${MIN_COBERTURA_CLUSTER}" "${MIN_EMPRESAS_POR_CLUSTER}" "20001111" "20991111" "${MAX_NUM_FEAT_REDUCIDAS}" 2>>${LOG_INVERSIONPOST} 1>>${LOG_INVERSIONPOST}
 
 echo -e "Guardamos el resultado REAL que ha sucedido..." >>${LOG_INVERSIONPOST}
+
+HOY_YYYYMMDD=$( date "+%Y%m%d" )
+
 while IFS= read -r -d '' -u 9
 do
 	if [[ $REPLY == *"COMPLETO_PREDICCION"* ]]; then
-		echo "Copiando este fichero   $REPLY   ..." >>${LOG_INVERSIONPOST}
-		mv "$REPLY" "${HOY_YYYYMMDD}${REPLY}"
-		cp "${HOY_YYYYMMDD}${REPLY}" $DIR_INVERSIONPOST
+		echo "Copiando este fichero   $REPLY  en  ${DIR_INVERSION} ..."  >>${LOG_INVERSION}
+		ficheronombre=$(basename $REPLY)
+		directorio=$(dirname $REPLY)
+		mv "${directorio}/${ficheronombre}" "${directorio}/${HOY_YYYYMMDD}${ficheronombre}"
+		cp "${directorio}/${HOY_YYYYMMDD}${ficheronombre}" "${DIR_INVERSION}"
 	fi
-done 9< <( find $DIR_FUT_SUBGRUPOS -type f -exec printf '%s\0' {} + )
+done 9< <( find ${DIR_FUT_SUBGRUPOS} -type f -exec printf '%s\0' {} + )
+
 
 ################# PENDIENTE #####################
 
@@ -93,7 +100,7 @@ done 9< <( find $DIR_FUT_SUBGRUPOS -type f -exec printf '%s\0' {} + )
 #
 
 ################# VOLCADO EN EL HISTORICO GITHUB (que no borraremos nunca) #########################################################
-cp -R "${DIR_INVERSIONPOST}" $DIR_GITHUB_INVERSIONPOST
+cp -Rf "${DIR_INVERSIONPOST}" $DIR_GITHUB_INVERSIONPOST
 
 
 

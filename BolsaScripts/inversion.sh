@@ -38,13 +38,13 @@ crearCarpetaSiNoExisteYVaciarRecursivo() {
 
 ################################################################################################
 PATH_SCRIPTS="${DIR_CODIGOS}BolsaScripts/"
+PYTHON_SCRIPTS="${DIR_CODIGOS}BolsaPython/"
 PARAMS_CONFIG="${PATH_SCRIPTS}parametros.config"
 echo -e "Importando parametros generales..."
 source ${PARAMS_CONFIG}
 
 #Instantes de las descargas
 FUTURO_INVERSION="0" #Ahora mismo
-HOY_YYYYMMDD=$( date "+%Y%m%d" )
 
 DIR_BASE="/bolsa/"
 DIR_LOGS="${DIR_BASE}logs/"
@@ -70,26 +70,27 @@ rm -Rf /bolsa/futuro/ >>${LOG_INVERSION}
 crearCarpetaSiNoExiste "${DIR_FUT_SUBGRUPOS}"
 
 echo -e $( date '+%Y%m%d_%H%M%S' )" Ejecución del futuro (para velas de antiguedad=0) con TODAS LAS EMPRESAS (lista DIRECTA ó INVERSA, ya da igual, no estamos mirando overfitting)..." >>${LOG_INVERSION}
-${PATH_SCRIPTS}master.sh "futuro" "$FUTURO_INVERSION" "0" "S" "S" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" "${NUM_EMPRESAS}" "${UMBRAL_SUBIDA_POR_VELA}" "${MIN_COBERTURA_CLUSTER}" "${MIN_EMPRESAS_POR_CLUSTER}" "20001111" "20991111" "${MAX_NUM_FEAT_REDUCIDAS}" 2>>${LOG_INVERSION} 1>>${LOG_INVERSION}
+MIN_COBERTURA_CLUSTER=0    # Para predecir, cojo lo que haya, sin minimos. EL modelo ya lo hemso entrenado
+MIN_EMPRESAS_POR_CLUSTER=1   # Para predecir, cojo lo que haya, sin minimos. EL modelo ya lo hemso entrenado
+${PATH_SCRIPTS}master.sh "futuro" "$FUTURO_INVERSION" "0" "S" "S" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" "${NUM_EMPRESAS_INVERSION}" "${UMBRAL_SUBIDA_POR_VELA}" "${MIN_COBERTURA_CLUSTER}" "${MIN_EMPRESAS_POR_CLUSTER}" "20001111" "20991111" "${MAX_NUM_FEAT_REDUCIDAS}" 2>>${LOG_INVERSION} 1>>${LOG_INVERSION}
+
 
 echo -e "Guardamos la prediccion del FUTURO de todos los SUBGRUPOS en la carpeta de INVERSION, para apostar dinero REAL..." >>${LOG_INVERSION}
+
 while IFS= read -r -d '' -u 9
 do
 	if [[ $REPLY == *"COMPLETO_PREDICCION"* ]]; then
-		echo "Copiando este fichero   $REPLY   ..." >>${LOG_INVERSION}
-		mv "$REPLY" "${HOY_YYYYMMDD}${REPLY}"
-		cp "${HOY_YYYYMMDD}${REPLY}" $DIR_INVERSION
+		echo "Procesamos  ${REPLY}  y lo copiamos en ${DIR_INVERSION} ..."  >>${LOG_INVERSION}
+		ficheronombre=$(basename $REPLY)
+		directorio=$(dirname $REPLY)
+		$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/InversionUtils.py" "${directorio}/${ficheronombre}"  "0" "${DIR_INVERSION}/" "${ficheronombre}" >> ${LOG_INVERSION}
+		cp "${directorio}/${HOY_YYYYMMDD}${ficheronombre}" "${DIR_INVERSION}"
 	fi
-done 9< <( find $DIR_FUT_SUBGRUPOS -type f -exec printf '%s\0' {} + )
+done 9< <( find ${DIR_FUT_SUBGRUPOS} -type f -exec printf '%s\0' {} + )
 
 
 ################# VOLCADO EN EL HISTORICO GITHUB (que no borraremos nunca) #########################################################
-cp -R "${DIR_INVERSION}" $DIR_GITHUB_INVERSION
-
-
-
-
-
+cp -Rf "${DIR_INVERSION}" $DIR_GITHUB_INVERSION
 
 echo -e "INVERSION - FIN: "$( date "+%Y%m%d%H%M%S" )
 

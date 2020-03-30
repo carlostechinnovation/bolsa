@@ -1,119 +1,120 @@
 empresa|antiguedad|mercado|anio|mes|dia|hora|minuto|volumen|high|low|close|open|industria|Insider Own|Quick Ratio|Current Ratio|P/E|Dividend %|Employees|geo|Debt/Eq|LT Debt/Eq|EPS next Y|Earnings|sector|Inst Own|Market Cap
-TELL|0|NASDAQ|2020|01|22|15|30|929400|7.77|7.6|7.61|7.62|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|1|NASDAQ|2020|01|21|15|30|2795500|8.69|7.5|7.57|8.64|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|2|NASDAQ|2020|01|17|15|30|4408600|8.69|7.75|8.69|7.89|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|3|NASDAQ|2020|01|16|15|30|2673600|8|7.44|7.95|7.95|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|4|NASDAQ|2020|01|15|15|30|3550300|7.75|6.8|7.66|7.11|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|5|NASDAQ|2020|01|14|15|30|1125100|7.15|6.75|7.13|6.84|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|6|NASDAQ|2020|01|13|15|30|577100|6.97|6.7|6.87|6.8|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|7|NASDAQ|2020|01|10|15|30|626500|6.94|6.7|6.79|6.92|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|8|NASDAQ|2020|01|09|15|30|1436300|6.96|6.53|6.92|6.96|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|9|NASDAQ|2020|01|08|15|30|991300|7.36|6.96|6.96|7.26|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|10|NASDAQ|2020|01|07|15|30|658700|7.39|7.19|7.31|7.3|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|11|NASDAQ|2020|01|06|15|30|643200|7.39|7.15|7.36|7.38|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|12|NASDAQ|2020|01|03|15|30|643400|7.45|7.25|7.42|7.33|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|13|NASDAQ|2020|01|02|15|30|489300|7.37|7.15|7.24|7.3|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|14|NASDAQ|2019|12|31|15|30|825200|7.34|7.09|7.28|7.17|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|15|NASDAQ|2019|12|30|15|30|864200|7.38|7.09|7.24|7.27|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|16|NASDAQ|2019|12|27|15|30|952300|7.37|7.22|7.32|7.35|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|17|NASDAQ|2019|12|26|15|30|1003500|7.37|7.1|7.29|7.37|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|18|NASDAQ|2019|12|24|15|30|697500|7.38|7.02|7.37|7.06|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|19|NASDAQ|2019|12|23|15|30|1505600|7.14|6.6|7.04|6.65|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|20|NASDAQ|2019|12|20|15|30|1945600|6.8|6.61|6.66|6.78|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|21|NASDAQ|2019|12|19|15|30|840700|6.91|6.64|6.75|6.74|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|22|NASDAQ|2019|12|18|15|30|866000|7.08|6.71|6.77|6.9|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|23|NASDAQ|2019|12|17|15|30|1005500|6.98|6.69|6.91|6.78|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|24|NASDAQ|2019|12|16|15|30|1076800|6.91|6.62|6.74|6.76|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|25|NASDAQ|2019|12|13|15|30|1008700|7.01|6.55|6.57|6.86|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|26|NASDAQ|2019|12|12|15|30|914600|6.95|6.73|6.83|6.84|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|27|NASDAQ|2019|12|11|15|30|626900|7.02|6.83|6.86|6.89|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|28|NASDAQ|2019|12|10|15|30|618300|6.89|6.73|6.88|6.8|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|29|NASDAQ|2019|12|09|15|30|878000|7.08|6.8|6.8|7.07|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|30|NASDAQ|2019|12|06|15|30|1157000|7.07|6.85|7.07|6.85|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|31|NASDAQ|2019|12|05|15|30|1048900|7.22|6.82|6.85|7.18|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|32|NASDAQ|2019|12|04|15|30|827100|7.57|7.22|7.25|7.49|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|33|NASDAQ|2019|12|03|15|30|587700|7.5|7.19|7.39|7.27|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|34|NASDAQ|2019|12|02|15|30|539300|7.45|7.28|7.32|7.3|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|35|NASDAQ|2019|11|29|15|30|479200|7.5|7.23|7.29|7.45|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|36|NASDAQ|2019|11|27|15|30|537800|7.7|7.45|7.47|7.67|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|37|NASDAQ|2019|11|26|15|30|626400|7.89|7.61|7.67|7.77|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|38|NASDAQ|2019|11|25|15|30|656500|7.89|7.44|7.78|7.44|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|39|NASDAQ|2019|11|22|15|30|614100|7.74|7.45|7.51|7.66|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|40|NASDAQ|2019|11|21|15|30|699800|8.01|7.64|7.68|7.96|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|41|NASDAQ|2019|11|20|15|30|897600|8.07|7.66|7.95|7.72|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|42|NASDAQ|2019|11|19|15|30|574200|7.82|7.61|7.71|7.65|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|43|NASDAQ|2019|11|18|15|30|724500|7.85|7.47|7.67|7.71|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|44|NASDAQ|2019|11|15|15|30|875700|8.26|7.7|7.75|8.01|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|45|NASDAQ|2019|11|14|15|30|881500|7.98|7.67|7.97|7.69|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|46|NASDAQ|2019|11|13|15|30|817100|7.74|7.36|7.64|7.36|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|47|NASDAQ|2019|11|12|15|30|411900|7.44|7.23|7.39|7.32|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|48|NASDAQ|2019|11|11|15|30|960100|7.58|7.15|7.28|7.34|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|49|NASDAQ|2019|11|08|15|30|705100|7.51|7.32|7.41|7.47|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|50|NASDAQ|2019|11|07|15|30|803800|7.93|7.42|7.48|7.82|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|51|NASDAQ|2019|11|06|15|30|944100|7.79|7.53|7.74|7.79|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|52|NASDAQ|2019|11|05|15|30|1017200|7.89|7.46|7.75|7.6|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|53|NASDAQ|2019|11|04|15|30|1125400|8.2|7.6|7.6|8.18|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|54|NASDAQ|2019|11|01|14|30|794800|8.15|7.94|8.05|8.05|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|55|NASDAQ|2019|10|31|14|30|662900|8|7.82|7.97|7.95|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|56|NASDAQ|2019|10|30|14|30|625600|8.15|7.94|8|8.08|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|57|NASDAQ|2019|10|29|14|30|743300|8.25|7.96|8.06|7.97|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|58|NASDAQ|2019|10|28|14|30|593100|8.22|8.06|8.08|8.1|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|59|NASDAQ|2019|10|25|15|30|762000|8.24|8.01|8.17|8.1|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|60|NASDAQ|2019|10|24|15|30|619800|8.24|8.01|8.1|8.01|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|61|NASDAQ|2019|10|23|15|30|435600|8.15|7.84|8.08|7.92|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|62|NASDAQ|2019|10|22|15|30|570500|8.18|7.91|7.97|8.04|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|63|NASDAQ|2019|10|21|15|30|743800|8.07|7.62|7.99|7.62|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|64|NASDAQ|2019|10|18|15|30|1856400|8.05|7.55|7.62|8.02|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|65|NASDAQ|2019|10|17|15|30|889300|8.23|7.98|8.05|8.1|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|66|NASDAQ|2019|10|16|15|30|1003300|8.49|8.09|8.09|8.33|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|67|NASDAQ|2019|10|15|15|30|765900|8.72|8.32|8.42|8.54|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|68|NASDAQ|2019|10|14|15|30|679900|8.64|8.06|8.55|8.18|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|69|NASDAQ|2019|10|11|15|30|913200|8.59|8.1|8.3|8.49|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|70|NASDAQ|2019|10|10|15|30|593900|8.51|8.24|8.48|8.39|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|71|NASDAQ|2019|10|09|15|30|568300|8.4|8.2|8.34|8.31|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|72|NASDAQ|2019|10|08|15|30|698700|8.42|8.15|8.22|8.29|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|73|NASDAQ|2019|10|07|15|30|706900|8.57|8.27|8.4|8.48|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|74|NASDAQ|2019|10|04|15|30|886200|8.52|8.14|8.48|8.16|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|75|NASDAQ|2019|10|03|15|30|1112500|8.19|7.5|8.17|7.54|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|76|NASDAQ|2019|10|02|15|30|1571800|7.96|7.48|7.66|7.92|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|77|NASDAQ|2019|10|01|15|30|1054800|8.46|7.97|7.99|8.33|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|78|NASDAQ|2019|09|30|15|30|1277400|8.36|7.76|8.32|7.88|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|79|NASDAQ|2019|09|27|15|30|722800|8.1|7.78|7.86|8.03|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|80|NASDAQ|2019|09|26|15|30|689200|8.23|7.93|8.1|8.07|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|81|NASDAQ|2019|09|25|15|30|538200|8.2|7.87|8.19|8.01|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|82|NASDAQ|2019|09|24|15|30|1426200|8.67|7.78|7.98|8.58|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|83|NASDAQ|2019|09|23|15|30|2025400|9.06|8.52|8.65|9|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|84|NASDAQ|2019|09|20|15|30|3059200|8.89|8.17|8.68|8.56|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|85|NASDAQ|2019|09|19|15|30|1053700|8.6|8.3|8.58|8.38|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|86|NASDAQ|2019|09|18|15|30|1568300|8.78|8.18|8.3|8.45|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|87|NASDAQ|2019|09|17|15|30|1462300|8.45|7.73|8.33|8.45|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|88|NASDAQ|2019|09|16|15|30|2518800|8.68|8.12|8.42|8.12|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|89|NASDAQ|2019|09|13|15|30|1723800|8.39|7.73|7.94|8.08|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|90|NASDAQ|2019|09|12|15|30|2449500|8.2|7.74|8.08|8.2|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|91|NASDAQ|2019|09|11|15|30|1393800|8.28|7.96|8.26|8.03|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|92|NASDAQ|2019|09|10|15|30|2184600|8.28|7.87|7.98|8.02|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|93|NASDAQ|2019|09|09|15|30|1991700|7.85|6.97|7.85|7.04|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|94|NASDAQ|2019|09|06|15|30|1563300|6.99|6.77|6.95|6.83|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|95|NASDAQ|2019|09|05|15|30|1817700|6.95|6.68|6.86|6.82|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|96|NASDAQ|2019|09|04|15|30|1887200|6.78|6.49|6.77|6.49|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|97|NASDAQ|2019|09|03|15|30|1030400|6.48|6.26|6.42|6.38|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|98|NASDAQ|2019|08|30|15|30|1339800|6.82|6.38|6.53|6.66|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|99|NASDAQ|2019|08|29|15|30|2061400|6.85|6.63|6.66|6.71|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|100|NASDAQ|2019|08|28|15|30|1374100|6.89|6.55|6.68|6.7|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|101|NASDAQ|2019|08|27|15|30|2793300|7.13|6.24|6.7|6.96|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|102|NASDAQ|2019|08|26|15|30|3523300|7.76|6.78|6.91|7.57|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|103|NASDAQ|2019|08|23|15|30|4660600|8.88|7.46|7.5|8.75|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|104|NASDAQ|2019|08|22|15|30|6221700|9.28|8.12|9.19|8.29|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|105|NASDAQ|2019|08|21|15|30|5777100|8.44|7.61|8.28|7.61|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|106|NASDAQ|2019|08|20|15|30|2675900|7.58|6.77|7.55|6.89|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|107|NASDAQ|2019|08|19|15|30|3180600|7.05|6.39|7.03|6.39|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|108|NASDAQ|2019|08|16|15|30|2448700|6.35|5.84|6.35|5.85|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|109|NASDAQ|2019|08|15|15|30|1933400|5.85|5.49|5.82|5.52|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|110|NASDAQ|2019|08|14|15|30|2498200|5.7|5.46|5.54|5.58|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|111|NASDAQ|2019|08|13|15|30|2006400|5.8|5.28|5.76|5.48|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|112|NASDAQ|2019|08|12|15|30|3037800|5.58|5.12|5.55|5.19|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|113|NASDAQ|2019|08|09|15|30|2125200|5.56|5.19|5.23|5.56|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|114|NASDAQ|2019|08|08|15|30|2300700|5.69|5.31|5.48|5.4|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|115|NASDAQ|2019|08|07|15|30|1450200|5.43|5.21|5.31|5.3|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|116|NASDAQ|2019|08|06|15|30|2286700|5.73|5.36|5.44|5.67|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
-TELL|117|NASDAQ|2019|08|05|15|30|2600400|6.07|5.55|5.62|6|oilgasdrillingexploration|61.279999|1|1|-|-|172|usa|0.66|0.29|37.700001|Nov 06|basicmaterials|17.5|1720
+TELL|0|NASDAQ|2020|03|19|14|30|3265400|0.8|0.68|0.79|0.75|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|1|NASDAQ|2020|03|18|14|30|2774800|0.85|0.67|0.69|0.84|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|2|NASDAQ|2020|03|17|14|30|2998400|0.88|0.8|0.88|0.85|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|3|NASDAQ|2020|03|16|14|30|3522100|0.95|0.82|0.84|0.9|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|4|NASDAQ|2020|03|13|14|30|5055800|1.03|0.85|0.97|1.03|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|5|NASDAQ|2020|03|12|14|30|3144600|1|0.8|0.91|0.85|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|6|NASDAQ|2020|03|11|14|30|3724500|1.02|0.9|0.92|0.98|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|7|NASDAQ|2020|03|10|14|30|5024100|1.11|0.92|1.02|1.06|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|8|NASDAQ|2020|03|09|14|30|8310400|0.95|0.85|0.87|0.95|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|9|NASDAQ|2020|03|06|15|30|7615600|1.44|1.12|1.21|1.4|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|10|NASDAQ|2020|03|05|15|30|4937000|1.65|1.42|1.44|1.63|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|11|NASDAQ|2020|03|04|15|30|6100700|1.66|1.47|1.59|1.61|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|12|NASDAQ|2020|03|03|15|30|11527300|1.83|1.56|1.57|1.8|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|13|NASDAQ|2020|03|02|15|30|20232100|2.35|1.49|1.64|2.22|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|14|NASDAQ|2020|02|28|15|30|24389700|3.33|1.58|1.8|3.27|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|15|NASDAQ|2020|02|27|15|30|5914900|4.24|3.67|3.68|4.17|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|16|NASDAQ|2020|02|26|15|30|9514600|5.85|4.16|4.4|5.8|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|17|NASDAQ|2020|02|25|15|30|2449400|6.39|5.72|5.75|5.91|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|18|NASDAQ|2020|02|24|15|30|3616100|6.44|5.84|5.9|6.4|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|19|NASDAQ|2020|02|21|15|30|1924500|6.77|6.46|6.51|6.66|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|20|NASDAQ|2020|02|20|15|30|1798300|6.9|6.57|6.7|6.75|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|21|NASDAQ|2020|02|19|15|30|1930200|6.91|6.62|6.72|6.86|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|22|NASDAQ|2020|02|18|15|30|1611700|6.91|6.68|6.83|6.79|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|23|NASDAQ|2020|02|14|15|30|1440500|6.93|6.67|6.91|6.88|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|24|NASDAQ|2020|02|13|15|30|993900|6.93|6.66|6.86|6.72|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|25|NASDAQ|2020|02|12|15|30|778300|6.89|6.71|6.77|6.84|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|26|NASDAQ|2020|02|11|15|30|1187700|7|6.59|6.77|6.85|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|27|NASDAQ|2020|02|10|15|30|1586600|6.96|6.64|6.79|6.85|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|28|NASDAQ|2020|02|07|15|30|2004800|6.97|6.55|6.87|6.89|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|29|NASDAQ|2020|02|06|15|30|1443200|7.57|7.04|7.07|7.57|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|30|NASDAQ|2020|02|05|15|30|1235700|7.97|7.55|7.63|7.95|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|31|NASDAQ|2020|02|04|15|30|1359800|7.94|7.59|7.78|7.62|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|32|NASDAQ|2020|02|03|15|30|1998100|7.58|6.8|7.49|7.13|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|33|NASDAQ|2020|01|31|15|30|1186100|7.32|6.99|7.02|7.12|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|34|NASDAQ|2020|01|30|15|30|944100|7.21|6.82|7.09|7.07|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|35|NASDAQ|2020|01|29|15|30|768100|7.3|7.06|7.09|7.24|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|36|NASDAQ|2020|01|28|15|30|1488700|7.21|6.73|7.2|6.78|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|37|NASDAQ|2020|01|27|15|30|2043100|6.84|6.5|6.78|6.8|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|38|NASDAQ|2020|01|24|15|30|2281100|7.64|6.89|6.99|7.64|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|39|NASDAQ|2020|01|23|15|30|2089300|7.93|7.6|7.6|7.6|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|40|NASDAQ|2020|01|22|15|30|929400|7.77|7.6|7.61|7.62|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|41|NASDAQ|2020|01|21|15|30|2795500|8.69|7.5|7.57|8.64|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|42|NASDAQ|2020|01|17|15|30|4408600|8.69|7.75|8.69|7.89|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|43|NASDAQ|2020|01|16|15|30|2673600|8|7.44|7.95|7.95|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|44|NASDAQ|2020|01|15|15|30|3550300|7.75|6.8|7.66|7.11|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|45|NASDAQ|2020|01|14|15|30|1125100|7.15|6.75|7.13|6.84|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|46|NASDAQ|2020|01|13|15|30|577100|6.97|6.7|6.87|6.8|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|47|NASDAQ|2020|01|10|15|30|626500|6.94|6.7|6.79|6.92|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|48|NASDAQ|2020|01|09|15|30|1436300|6.96|6.53|6.92|6.96|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|49|NASDAQ|2020|01|08|15|30|991300|7.36|6.96|6.96|7.26|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|50|NASDAQ|2020|01|07|15|30|658700|7.39|7.19|7.31|7.3|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|51|NASDAQ|2020|01|06|15|30|643200|7.39|7.15|7.36|7.38|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|52|NASDAQ|2020|01|03|15|30|643400|7.45|7.25|7.42|7.33|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|53|NASDAQ|2020|01|02|15|30|489300|7.37|7.15|7.24|7.3|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|54|NASDAQ|2019|12|31|15|30|825200|7.34|7.09|7.28|7.17|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|55|NASDAQ|2019|12|30|15|30|864200|7.38|7.09|7.24|7.27|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|56|NASDAQ|2019|12|27|15|30|952300|7.37|7.22|7.32|7.35|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|57|NASDAQ|2019|12|26|15|30|1003500|7.37|7.1|7.29|7.37|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|58|NASDAQ|2019|12|24|15|30|697500|7.38|7.02|7.37|7.06|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|59|NASDAQ|2019|12|23|15|30|1505600|7.14|6.6|7.04|6.65|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|60|NASDAQ|2019|12|20|15|30|1945600|6.8|6.61|6.66|6.78|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|61|NASDAQ|2019|12|19|15|30|840700|6.91|6.64|6.75|6.74|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|62|NASDAQ|2019|12|18|15|30|866000|7.08|6.71|6.77|6.9|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|63|NASDAQ|2019|12|17|15|30|1005500|6.98|6.69|6.91|6.78|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|64|NASDAQ|2019|12|16|15|30|1076800|6.91|6.62|6.74|6.76|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|65|NASDAQ|2019|12|13|15|30|1008700|7.01|6.55|6.57|6.86|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|66|NASDAQ|2019|12|12|15|30|914600|6.95|6.73|6.83|6.84|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|67|NASDAQ|2019|12|11|15|30|626900|7.02|6.83|6.86|6.89|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|68|NASDAQ|2019|12|10|15|30|618300|6.89|6.73|6.88|6.8|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|69|NASDAQ|2019|12|09|15|30|878000|7.08|6.8|6.8|7.07|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|70|NASDAQ|2019|12|06|15|30|1157000|7.07|6.85|7.07|6.85|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|71|NASDAQ|2019|12|05|15|30|1048900|7.22|6.82|6.85|7.18|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|72|NASDAQ|2019|12|04|15|30|827100|7.57|7.22|7.25|7.49|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|73|NASDAQ|2019|12|03|15|30|587700|7.5|7.19|7.39|7.27|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|74|NASDAQ|2019|12|02|15|30|539300|7.45|7.28|7.32|7.3|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|75|NASDAQ|2019|11|29|15|30|479200|7.5|7.23|7.29|7.45|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|76|NASDAQ|2019|11|27|15|30|537800|7.7|7.45|7.47|7.67|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|77|NASDAQ|2019|11|26|15|30|626400|7.89|7.61|7.67|7.77|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|78|NASDAQ|2019|11|25|15|30|656500|7.89|7.44|7.78|7.44|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|79|NASDAQ|2019|11|22|15|30|614100|7.74|7.45|7.51|7.66|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|80|NASDAQ|2019|11|21|15|30|699800|8.01|7.64|7.68|7.96|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|81|NASDAQ|2019|11|20|15|30|897600|8.07|7.66|7.95|7.72|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|82|NASDAQ|2019|11|19|15|30|574200|7.82|7.61|7.71|7.65|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|83|NASDAQ|2019|11|18|15|30|724500|7.85|7.47|7.67|7.71|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|84|NASDAQ|2019|11|15|15|30|875700|8.26|7.7|7.75|8.01|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|85|NASDAQ|2019|11|14|15|30|881500|7.98|7.67|7.97|7.69|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|86|NASDAQ|2019|11|13|15|30|817100|7.74|7.36|7.64|7.36|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|87|NASDAQ|2019|11|12|15|30|411900|7.44|7.23|7.39|7.32|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|88|NASDAQ|2019|11|11|15|30|960100|7.58|7.15|7.28|7.34|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|89|NASDAQ|2019|11|08|15|30|705100|7.51|7.32|7.41|7.47|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|90|NASDAQ|2019|11|07|15|30|803800|7.93|7.42|7.48|7.82|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|91|NASDAQ|2019|11|06|15|30|944100|7.79|7.53|7.74|7.79|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|92|NASDAQ|2019|11|05|15|30|1017200|7.89|7.46|7.75|7.6|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|93|NASDAQ|2019|11|04|15|30|1125400|8.2|7.6|7.6|8.18|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|94|NASDAQ|2019|11|01|14|30|794800|8.15|7.94|8.05|8.05|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|95|NASDAQ|2019|10|31|14|30|662900|8|7.82|7.97|7.95|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|96|NASDAQ|2019|10|30|14|30|625600|8.15|7.94|8|8.08|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|97|NASDAQ|2019|10|29|14|30|743300|8.25|7.96|8.06|7.97|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|98|NASDAQ|2019|10|28|14|30|593100|8.22|8.06|8.08|8.1|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|99|NASDAQ|2019|10|25|15|30|762000|8.24|8.01|8.17|8.1|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|100|NASDAQ|2019|10|24|15|30|619800|8.24|8.01|8.1|8.01|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|101|NASDAQ|2019|10|23|15|30|435600|8.15|7.84|8.08|7.92|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|102|NASDAQ|2019|10|22|15|30|570500|8.18|7.91|7.97|8.04|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|103|NASDAQ|2019|10|21|15|30|743800|8.07|7.62|7.99|7.62|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|104|NASDAQ|2019|10|18|15|30|1856400|8.05|7.55|7.62|8.02|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|105|NASDAQ|2019|10|17|15|30|889300|8.23|7.98|8.05|8.1|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|106|NASDAQ|2019|10|16|15|30|1003300|8.49|8.09|8.09|8.33|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|107|NASDAQ|2019|10|15|15|30|765900|8.72|8.32|8.42|8.54|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|108|NASDAQ|2019|10|14|15|30|679900|8.64|8.06|8.55|8.18|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|109|NASDAQ|2019|10|11|15|30|913200|8.59|8.1|8.3|8.49|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|110|NASDAQ|2019|10|10|15|30|593900|8.51|8.24|8.48|8.39|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|111|NASDAQ|2019|10|09|15|30|568300|8.4|8.2|8.34|8.31|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|112|NASDAQ|2019|10|08|15|30|698700|8.42|8.15|8.22|8.29|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|113|NASDAQ|2019|10|07|15|30|706900|8.57|8.27|8.4|8.48|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|114|NASDAQ|2019|10|04|15|30|886200|8.52|8.14|8.48|8.16|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|115|NASDAQ|2019|10|03|15|30|1112500|8.19|7.5|8.17|7.54|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|116|NASDAQ|2019|10|02|15|30|1571800|7.96|7.48|7.66|7.92|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|117|NASDAQ|2019|10|01|15|30|1054800|8.46|7.97|7.99|8.33|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004
+TELL|118|NASDAQ|2019|09|30|15|30|1277400|8.36|7.76|8.32|7.88|oilgasdrillingexploration|19.4|0.6|0.6|-|-|176|usa|0.88|0.4|47.400002|-|basicmaterials|16.799999|183.520004

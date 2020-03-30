@@ -1,56 +1,95 @@
 empresa|antiguedad|mercado|anio|mes|dia|hora|minuto|volumen|high|low|close|open|industria|Insider Own|Quick Ratio|Current Ratio|P/E|Dividend %|Employees|geo|Debt/Eq|LT Debt/Eq|EPS next Y|Earnings|sector|Inst Own|Market Cap
-TELA|0|NASDAQ|2020|01|29|15|30|20900|15.6|15.02|15.15|15.57|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|-|healthcare|41.5|168.669998
-TELA|1|NASDAQ|2020|01|28|15|30|11900|15.75|15.02|15.19|15.74|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|-|healthcare|41.5|168.669998
-TELA|2|NASDAQ|2020|01|27|15|30|17200|15.83|15.08|15.5|15.47|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|-|healthcare|41.5|168.669998
-TELA|3|NASDAQ|2020|01|24|15|30|32700|15.94|15.5|15.5|15.74|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|-|healthcare|41.5|168.669998
-TELA|4|NASDAQ|2020|01|23|15|30|14200|15.969|14.59|15.72|15.55|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|-|healthcare|41.5|168.669998
-TELA|5|NASDAQ|2020|01|22|15|30|39600|15.7|13.959|15.48|14.6|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|-|healthcare|41.5|168.669998
-TELA|6|NASDAQ|2020|01|21|15|30|64700|14.9|13.55|14.53|14.9|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|-|healthcare|41.5|168.669998
-TELA|7|NASDAQ|2020|01|17|15|30|61900|15.915|14.65|14.93|15.34|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|-|healthcare|41.5|168.669998
-TELA|8|NASDAQ|2020|01|16|15|30|101400|15.5|14.9|15.14|14.98|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|-|healthcare|41.5|168.669998
-TELA|9|NASDAQ|2020|01|15|15|30|99500|15|13.91|14.67|13.91|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|-|healthcare|41.5|168.669998
-TELA|10|NASDAQ|2020|01|14|15|30|65100|14.5|13.71|14.38|14.01|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|-|healthcare|41.5|168.669998
-TELA|11|NASDAQ|2020|01|13|15|30|48400|14.25|13.45|14.06|13.56|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|-|healthcare|41.5|168.669998
-TELA|12|NASDAQ|2020|01|10|15|30|95100|14.14|13|13.67|14.14|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|-|healthcare|41.5|168.669998
-TELA|13|NASDAQ|2020|01|09|15|30|73000|13.84|12.527|13.02|13.27|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|-|healthcare|41.5|168.669998
-TELA|14|NASDAQ|2020|01|08|15|30|154000|14.19|12.71|13.92|13.03|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|-|healthcare|41.5|168.669998
-TELA|15|NASDAQ|2020|01|07|15|30|68400|13.38|12.25|13.19|12.5|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|-|healthcare|41.5|168.669998
-TELA|16|NASDAQ|2020|01|06|15|30|39000|12.67|12.2|12.45|12.36|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|-|healthcare|41.5|168.669998
-TELA|17|NASDAQ|2020|01|03|15|30|37500|12.95|12.14|12.35|12.77|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|-|healthcare|41.5|168.669998
-TELA|18|NASDAQ|2020|01|02|15|30|75700|13.06|12.17|12.95|12.86|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|-|healthcare|41.5|168.669998
-TELA|19|NASDAQ|2019|12|31|15|30|91900|12.95|12.4|12.95|12.46|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|-|healthcare|41.5|168.669998
-TELA|20|NASDAQ|2019|12|30|15|30|61900|12.73|12.1|12.52|12.55|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|-|healthcare|41.5|168.669998
-TELA|21|NASDAQ|2019|12|27|15|30|33400|12.65|12.11|12.65|12.53|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|-|healthcare|41.5|168.669998
-TELA|22|NASDAQ|2019|12|26|15|30|34800|12.5|11.96|12.42|12.25|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|-|healthcare|41.5|168.669998
-TELA|23|NASDAQ|2019|12|24|15|30|18600|12.365|11.83|12.34|12.05|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|-|healthcare|41.5|168.669998
-TELA|24|NASDAQ|2019|12|23|15|30|38500|12.525|11.67|12.25|12.16|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|-|healthcare|41.5|168.669998
-TELA|25|NASDAQ|2019|12|20|15|30|109900|13.14|11.63|12.06|13.05|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|-|healthcare|41.5|168.669998
-TELA|26|NASDAQ|2019|12|19|15|30|35500|13.05|12.18|12.83|12.62|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|-|healthcare|41.5|168.669998
-TELA|27|NASDAQ|2019|12|18|15|30|104600|12.63|11.57|12.55|11.6|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|-|healthcare|41.5|168.669998
-TELA|28|NASDAQ|2019|12|17|15|30|76700|11.505|10.94|11.26|11.4|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|-|healthcare|41.5|168.669998
-TELA|29|NASDAQ|2019|12|16|15|30|34600|11.7|11.38|11.49|11.54|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|-|healthcare|41.5|168.669998
-TELA|30|NASDAQ|2019|12|13|15|30|39500|11.67|11.45|11.62|11.67|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|-|healthcare|41.5|168.669998
-TELA|31|NASDAQ|2019|12|12|15|30|17000|11.8|11.422|11.67|11.6|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|-|healthcare|41.5|168.669998
-TELA|32|NASDAQ|2019|12|11|15|30|45600|12.68|11.7|11.81|11.9|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|-|healthcare|41.5|168.669998
-TELA|33|NASDAQ|2019|12|10|15|30|81900|12.14|11.484|11.92|12.11|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|-|healthcare|41.5|168.669998
-TELA|34|NASDAQ|2019|12|09|15|30|91400|12.52|11.95|12.15|12.43|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|-|healthcare|41.5|168.669998
-TELA|35|NASDAQ|2019|12|06|15|30|131400|12.6|11.7|12.37|12.51|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|-|healthcare|41.5|168.669998
-TELA|36|NASDAQ|2019|12|05|15|30|72200|13.33|11.77|12.07|13.33|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|-|healthcare|41.5|168.669998
-TELA|37|NASDAQ|2019|12|04|15|30|68800|13.28|12.51|13.14|13.2|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|-|healthcare|41.5|168.669998
-TELA|38|NASDAQ|2019|12|03|15|30|111800|13.134|12.28|12.96|12.65|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|-|healthcare|41.5|168.669998
-TELA|39|NASDAQ|2019|12|02|15|30|110400|13.65|12.25|12.31|13.65|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|-|healthcare|41.5|168.669998
-TELA|40|NASDAQ|2019|11|29|15|30|61300|13.86|11.98|13.8|11.98|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|-|healthcare|41.5|168.669998
-TELA|41|NASDAQ|2019|11|27|15|30|87000|12.229|11.14|11.98|11.29|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|-|healthcare|41.5|168.669998
-TELA|42|NASDAQ|2019|11|26|15|30|113200|12|10.78|11.39|11.7|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|-|healthcare|41.5|168.669998
-TELA|43|NASDAQ|2019|11|25|15|30|120200|11.75|11.07|11.75|11.5|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|-|healthcare|41.5|168.669998
-TELA|44|NASDAQ|2019|11|22|15|30|18300|11.61|11.25|11.37|11.61|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|-|healthcare|41.5|168.669998
-TELA|45|NASDAQ|2019|11|21|15|30|37200|12.089|11.25|11.42|11.96|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|-|healthcare|41.5|168.669998
-TELA|46|NASDAQ|2019|11|20|15|30|98100|12.39|11.4|11.95|11.4|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|-|healthcare|41.5|168.669998
-TELA|47|NASDAQ|2019|11|19|15|30|85300|11.75|11.29|11.5|11.64|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|-|healthcare|41.5|168.669998
-TELA|48|NASDAQ|2019|11|18|15|30|79700|12.1|11|11.45|12.1|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|-|healthcare|41.5|168.669998
-TELA|49|NASDAQ|2019|11|15|15|30|46000|12.75|12.09|12.09|12.67|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|-|healthcare|41.5|168.669998
-TELA|50|NASDAQ|2019|11|14|15|30|43100|12.91|12.276|12.682|12.5|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|-|healthcare|41.5|168.669998
-TELA|51|NASDAQ|2019|11|13|15|30|85900|12.99|12.281|12.5|12.84|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|-|healthcare|41.5|168.669998
-TELA|52|NASDAQ|2019|11|12|15|30|122000|13.48|12.51|12.85|12.51|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|-|healthcare|41.5|168.669998
-TELA|53|NASDAQ|2019|11|11|15|30|172200|13.2|12.28|12.85|13.07|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|-|healthcare|41.5|168.669998
-TELA|54|NASDAQ|2019|11|08|15|30|1269800|15.05|13.03|13.35|13.75|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|-|healthcare|41.5|168.669998
+TELA|0|NASDAQ|2020|03|25|14|30|106200|9.54|7.57|8.1|7.6|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|1|NASDAQ|2020|03|24|14|30|75100|7.93|6.9|7.37|7.93|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|2|NASDAQ|2020|03|23|14|30|83300|7.21|6.02|6.12|6.5|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|3|NASDAQ|2020|03|20|14|30|64300|6.97|6.46|6.57|6.66|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|4|NASDAQ|2020|03|19|14|30|121600|7.83|5.25|6.48|5.25|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|5|NASDAQ|2020|03|18|14|30|68500|8.69|5.27|5.39|8.2|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|6|NASDAQ|2020|03|17|14|30|46700|9.5|8.17|8.75|9.48|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|7|NASDAQ|2020|03|16|14|30|37900|10.22|8.82|9.14|10.22|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|8|NASDAQ|2020|03|13|14|30|56500|11.5|10.31|11.11|10.98|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|9|NASDAQ|2020|03|12|14|30|64000|11.55|9.78|10.89|11|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|10|NASDAQ|2020|03|11|14|30|123800|12.66|11.225|11.9|12.66|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|11|NASDAQ|2020|03|10|14|30|57400|13.74|11.15|13.74|12.72|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|12|NASDAQ|2020|03|09|14|30|30100|14.4|11.81|12.01|14.01|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|13|NASDAQ|2020|03|06|15|30|9800|15.48|14.2|14.9|14.41|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|14|NASDAQ|2020|03|05|15|30|11300|15.36|14|14.8|14.15|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|15|NASDAQ|2020|03|04|15|30|29700|15.72|14.55|14.55|15.57|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|16|NASDAQ|2020|03|03|15|30|54200|16.99|15.52|15.55|16.99|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|17|NASDAQ|2020|03|02|15|30|51000|17.99|14.345|15.99|17.799999|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|18|NASDAQ|2020|02|28|15|30|30600|15.507|13.81|15.49|15.44|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|19|NASDAQ|2020|02|27|15|30|30300|17.379999|15.46|15.82|17.110001|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|20|NASDAQ|2020|02|26|15|30|28300|17.940001|16.82|17.440001|17.58|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|21|NASDAQ|2020|02|25|15|30|11900|18.879999|16.959999|17.75|18.879999|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|22|NASDAQ|2020|02|24|15|30|22400|18.74|17.299999|18.334999|17.59|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|23|NASDAQ|2020|02|21|15|30|31100|18.49|17.247|17.620001|17.799999|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|24|NASDAQ|2020|02|20|15|30|13400|17.76|16.799999|17.540001|17.65|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|25|NASDAQ|2020|02|19|15|30|49000|18.08|17.188999|17.950001|17.83|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|26|NASDAQ|2020|02|18|15|30|151000|18|15.713|18|15.8|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|27|NASDAQ|2020|02|14|15|30|15600|15.85|15.5|15.8|15.63|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|28|NASDAQ|2020|02|13|15|30|18900|15.75|15.29|15.45|15.674|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|29|NASDAQ|2020|02|12|15|30|37800|15.95|15.5|15.7|15.72|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|30|NASDAQ|2020|02|11|15|30|25200|15.696|15|15.55|15|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|31|NASDAQ|2020|02|10|15|30|22200|15.49|14.65|15.39|15.254|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|32|NASDAQ|2020|02|07|15|30|12100|15.43|15.02|15.25|15.4|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|33|NASDAQ|2020|02|06|15|30|36500|15.7|14.34|15.7|15.35|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|34|NASDAQ|2020|02|05|15|30|66400|15.84|14.97|15.37|15.84|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|35|NASDAQ|2020|02|04|15|30|23300|15.67|15.08|15.44|15.2|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|36|NASDAQ|2020|02|03|15|30|35000|15.39|14.48|15.15|14.95|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|37|NASDAQ|2020|01|31|15|30|19100|15.3|14.5|14.9|14.9|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|38|NASDAQ|2020|01|30|15|30|19300|15.42|14.46|14.78|14.99|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|39|NASDAQ|2020|01|29|15|30|20900|15.6|15.02|15.15|15.57|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|40|NASDAQ|2020|01|28|15|30|11900|15.75|15.02|15.19|15.74|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|41|NASDAQ|2020|01|27|15|30|17200|15.83|15.08|15.5|15.47|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|42|NASDAQ|2020|01|24|15|30|32700|15.94|15.5|15.5|15.74|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|43|NASDAQ|2020|01|23|15|30|14200|15.969|14.59|15.72|15.55|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|44|NASDAQ|2020|01|22|15|30|39600|15.7|13.959|15.48|14.6|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|45|NASDAQ|2020|01|21|15|30|64700|14.9|13.55|14.53|14.9|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|46|NASDAQ|2020|01|17|15|30|61900|15.915|14.65|14.93|15.34|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|47|NASDAQ|2020|01|16|15|30|101400|15.5|14.9|15.14|14.98|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|48|NASDAQ|2020|01|15|15|30|99500|15|13.91|14.67|13.91|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|49|NASDAQ|2020|01|14|15|30|65100|14.5|13.71|14.38|14.01|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|50|NASDAQ|2020|01|13|15|30|48400|14.25|13.45|14.06|13.56|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|51|NASDAQ|2020|01|10|15|30|95100|14.14|13|13.67|14.14|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|52|NASDAQ|2020|01|09|15|30|73000|13.84|12.527|13.02|13.27|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|53|NASDAQ|2020|01|08|15|30|154000|14.19|12.71|13.92|13.03|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|54|NASDAQ|2020|01|07|15|30|68400|13.38|12.25|13.19|12.5|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|55|NASDAQ|2020|01|06|15|30|39000|12.67|12.2|12.45|12.36|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|56|NASDAQ|2020|01|03|15|30|37500|12.95|12.14|12.35|12.77|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|57|NASDAQ|2020|01|02|15|30|75700|13.06|12.17|12.95|12.86|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|58|NASDAQ|2019|12|31|15|30|91900|12.95|12.4|12.95|12.46|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|59|NASDAQ|2019|12|30|15|30|61900|12.73|12.1|12.52|12.55|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|60|NASDAQ|2019|12|27|15|30|33400|12.65|12.11|12.65|12.53|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|61|NASDAQ|2019|12|26|15|30|34800|12.5|11.96|12.42|12.25|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|62|NASDAQ|2019|12|24|15|30|18600|12.365|11.83|12.34|12.05|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|63|NASDAQ|2019|12|23|15|30|38500|12.525|11.67|12.25|12.16|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|64|NASDAQ|2019|12|20|15|30|109900|13.14|11.63|12.06|13.05|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|65|NASDAQ|2019|12|19|15|30|35500|13.05|12.18|12.83|12.62|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|66|NASDAQ|2019|12|18|15|30|104600|12.63|11.57|12.55|11.6|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|67|NASDAQ|2019|12|17|15|30|76700|11.505|10.94|11.26|11.4|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|68|NASDAQ|2019|12|16|15|30|34600|11.7|11.38|11.49|11.54|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|69|NASDAQ|2019|12|13|15|30|39500|11.67|11.45|11.62|11.67|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|70|NASDAQ|2019|12|12|15|30|17000|11.8|11.422|11.67|11.6|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|71|NASDAQ|2019|12|11|15|30|45600|12.68|11.7|11.81|11.9|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|72|NASDAQ|2019|12|10|15|30|81900|12.14|11.484|11.92|12.11|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|73|NASDAQ|2019|12|09|15|30|91400|12.52|11.95|12.15|12.43|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|74|NASDAQ|2019|12|06|15|30|131400|12.6|11.7|12.37|12.51|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|75|NASDAQ|2019|12|05|15|30|72200|13.33|11.77|12.07|13.33|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|76|NASDAQ|2019|12|04|15|30|68800|13.28|12.51|13.14|13.2|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|77|NASDAQ|2019|12|03|15|30|111800|13.134|12.28|12.96|12.65|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|78|NASDAQ|2019|12|02|15|30|110400|13.65|12.25|12.31|13.65|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|79|NASDAQ|2019|11|29|15|30|61300|13.86|11.98|13.8|11.98|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|80|NASDAQ|2019|11|27|15|30|87000|12.229|11.14|11.98|11.29|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|81|NASDAQ|2019|11|26|15|30|113200|12|10.78|11.39|11.7|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|82|NASDAQ|2019|11|25|15|30|120200|11.75|11.07|11.75|11.5|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|83|NASDAQ|2019|11|22|15|30|18300|11.61|11.25|11.37|11.61|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|84|NASDAQ|2019|11|21|15|30|37200|12.089|11.25|11.42|11.96|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|85|NASDAQ|2019|11|20|15|30|98100|12.39|11.4|11.95|11.4|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|86|NASDAQ|2019|11|19|15|30|85300|11.75|11.29|11.5|11.64|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|87|NASDAQ|2019|11|18|15|30|79700|12.1|11|11.45|12.1|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|88|NASDAQ|2019|11|15|15|30|46000|12.75|12.09|12.09|12.67|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|89|NASDAQ|2019|11|14|15|30|43100|12.91|12.276|12.682|12.5|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|90|NASDAQ|2019|11|13|15|30|85900|12.99|12.281|12.5|12.84|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|91|NASDAQ|2019|11|12|15|30|122000|13.48|12.51|12.85|12.51|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|92|NASDAQ|2019|11|11|15|30|172200|13.2|12.28|12.85|13.07|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002
+TELA|93|NASDAQ|2019|11|08|15|30|1269800|15.05|13.03|13.35|13.75|medicalappliancesequipment|17.5|2.1|2.8|-|-|86|usa|-|-|4.7|Mar 27 BMO|healthcare|75.300003|76.010002

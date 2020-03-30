@@ -29,6 +29,7 @@ from sklearn.linear_model import LinearRegression, LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.utils import resample
 import pickle
+from sklearn.impute import SimpleImputer
 
 
 print("**** CAPA 5  --> Selección de variables/ Reducción de dimensiones (para cada subgrupo) ****")
@@ -84,10 +85,25 @@ def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmp
   print("MISSING VALUES (COLUMNAS) - Borramos las columnas (features) que sean siempre NaN...")
   entradaFeaturesYTarget2 = entradaFeaturesYTarget.dropna(axis=1, how='all') #Borrar COLUMNA si TODOS sus valores tienen NaN
   print("entradaFeaturesYTarget2 (columnas nulas borradas): " + str(entradaFeaturesYTarget2.shape[0]) + " x " + str(entradaFeaturesYTarget2.shape[1]))
-  # entradaFeaturesYTarget2.to_csv(path_csv_completo + "_TEMP01", index=True, sep='|')  # UTIL ara testIntegracion
+  # entradaFeaturesYTarget2.to_csv(path_csv_completo + "_TEMP01", index=True, sep='|')  # UTIL para testIntegracion
 
 
   ################# Borrado de filas que tengan algun hueco (tratamiento espacial para el futuro con sus columnas: TARGET y otras) #####
+  print("MISSING VALUES (FILAS)...")
+  ########## IMPUTACION ##########
+  # print("IMPUTACION de valores donde había NAN ")
+  # nombres_columnas_numericas = entradaFeaturesYTarget2.select_dtypes(include=np.number).columns.tolist()
+  # nombres_columnas_no_numericas = entradaFeaturesYTarget2.select_dtypes(exclude=np.number).columns.tolist()
+  # entradaFeaturesYTarget2_num = entradaFeaturesYTarget2.drop(nombres_columnas_no_numericas, axis=1)
+  # entradaFeaturesYTarget2_nonum = entradaFeaturesYTarget2.drop(nombres_columnas_numericas, axis=1)
+  #
+  # my_imputer = SimpleImputer(strategy='median')
+  # entradaFeaturesYTarget2_imputado = pd.DataFrame(my_imputer.fit_transform(entradaFeaturesYTarget2_num))
+  # entradaFeaturesYTarget2_imputado.columns = entradaFeaturesYTarget2_num.columns  # La imputacion borró los nombres de columnas. Los reponemos.
+  # entradaFeaturesYTarget2 = pd.concat([entradaFeaturesYTarget2_nonum, entradaFeaturesYTarget2_imputado], axis=1)
+  # print("entradaFeaturesYTarget2 (filas con algun nulo IMPUTADAS): " + str(entradaFeaturesYTarget2.shape[0]) + " x " + str(entradaFeaturesYTarget2.shape[1]))
+  ################################
+
   if modoTiempo == "futuro":
       print("Nos quedamos solo con las velas con antiguedad=0 (futuras)...")
       entradaFeaturesYTarget2 = entradaFeaturesYTarget2[entradaFeaturesYTarget2.antiguedad == 0]
