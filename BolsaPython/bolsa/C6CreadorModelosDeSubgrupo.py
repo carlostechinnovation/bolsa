@@ -287,9 +287,11 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
             nombreModelo = "extra_trees"
             pathModelo = dir_subgrupo + nombreModelo + ".modelo"
             # n_estimators=100, max_depth=11, min_samples_leaf=20, max_features=None, min_impurity_decrease=0.001, min_samples_split=3, random_state=1
-            modelo = ExtraTreesClassifier(n_estimators=ARBOLES_n_estimators, max_depth=ARBOLES_max_depth, min_samples_leaf=ARBOLES_min_samples_leaf,
-                                          max_features=ARBOLES_max_features, min_impurity_decrease=ARBOLES_min_impurity_decrease,
-                                          min_samples_split=ARBOLES_min_samples_split, max_leaf_nodes=ARBOLES_max_leaf_nodes, random_state=1)
+
+            # modelo = ExtraTreesClassifier(n_estimators=ARBOLES_n_estimators, max_depth=ARBOLES_max_depth, min_samples_leaf=ARBOLES_min_samples_leaf,
+            #                               max_features=ARBOLES_max_features, min_impurity_decrease=ARBOLES_min_impurity_decrease,
+            #                               min_samples_split=ARBOLES_min_samples_split, max_leaf_nodes=ARBOLES_max_leaf_nodes, random_state=1)
+            modelo = ExtraTreesClassifier()
             modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_train_t, feature_names, False, modoDebug)
             modelo_metrica = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, id_subgrupo, modoDebug)
             print(type(modelo_metrica))
@@ -341,20 +343,20 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
             #     ganador_nombreModelo = nombreModelo
             #     ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
 
-            nombreModelo = "rf_grid"
-            pathModelo = dir_subgrupo + nombreModelo + ".modelo"
-            modelo_base = RandomForestClassifier(n_estimators=ARBOLES_n_estimators, max_depth=ARBOLES_max_depth, min_samples_leaf=ARBOLES_min_samples_leaf,
-                                                 max_features=ARBOLES_max_features, min_samples_split=ARBOLES_min_samples_split,
-                                                 max_leaf_nodes=ARBOLES_max_leaf_nodes, random_state=1)
-            hiperparametros = {'min_impurity_decrease': [ARBOLES_min_impurity_decrease]}
-            modelos_grid = GridSearchCV(modelo_base, hiperparametros, scoring='precision', n_jobs=-1, refit=True, return_train_score=False, cv=5)
-            modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelos_grid, pathModelo, ds_train_f, ds_train_t, feature_names, True, modoDebug)
-            modelo_metrica = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, id_subgrupo, modoDebug)
-            print(type(modelo_metrica))
-            if modelo_metrica > ganador_metrica:
-                ganador_metrica = modelo_metrica
-                ganador_nombreModelo = nombreModelo
-                ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
+            # nombreModelo = "rf_grid"
+            # pathModelo = dir_subgrupo + nombreModelo + ".modelo"
+            # modelo_base = RandomForestClassifier(n_estimators=ARBOLES_n_estimators, max_depth=ARBOLES_max_depth, min_samples_leaf=ARBOLES_min_samples_leaf,
+            #                                      max_features=ARBOLES_max_features, min_samples_split=ARBOLES_min_samples_split,
+            #                                      max_leaf_nodes=ARBOLES_max_leaf_nodes, random_state=1)
+            # hiperparametros = {'min_impurity_decrease': [ARBOLES_min_impurity_decrease]}
+            # modelos_grid = GridSearchCV(modelo_base, hiperparametros, scoring='precision', n_jobs=-1, refit=True, return_train_score=False, cv=5)
+            # modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelos_grid, pathModelo, ds_train_f, ds_train_t, feature_names, True, modoDebug)
+            # modelo_metrica = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, id_subgrupo, modoDebug)
+            # print(type(modelo_metrica))
+            # if modelo_metrica > ganador_metrica:
+            #     ganador_metrica = modelo_metrica
+            #     ganador_nombreModelo = nombreModelo
+            #     ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
 
             # nombreModelo = "extra_trees"
             # pathModelo = dir_subgrupo + nombreModelo + ".modelo"
