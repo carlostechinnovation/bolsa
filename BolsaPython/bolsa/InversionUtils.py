@@ -15,9 +15,17 @@ print("sufijoFicheroSalida = " + sufijoFicheroSalida)
 
 datosEntrada = pd.read_csv(filepath_or_buffer=pathFicheroEntrada, sep='|')
 
-#Cogemos solo las filas con la antiguedad indicada
+print("Quitamos COLUMNAS que ya nos estorban...")
+datosEntrada = datosEntrada.drop(datosEntrada.filter(regex='PENDIENTE').columns, axis=1)
+datosEntrada = datosEntrada.drop(datosEntrada.filter(regex='RATIO').columns, axis=1)
+datosEntrada = datosEntrada.drop(datosEntrada.filter(regex='CURTOSIS').columns, axis=1)
+datosEntrada = datosEntrada.drop(datosEntrada.filter(regex='SKEWNESS').columns, axis=1)
+print(datosEntrada)
+
+print("Cogemos solo las FILAS con la antiguedad indicada...")
 antiguedad_int = int(antiguedad)
 filasFiltradas = datosEntrada[datosEntrada['antiguedad'] == antiguedad_int]
+
 
 ###################################
 print("Construimos PREFIJO con año-mes-dia del primer dato que vea...")
