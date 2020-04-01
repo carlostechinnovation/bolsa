@@ -20,27 +20,31 @@ datosEntrada = datosEntrada.drop(datosEntrada.filter(regex='PENDIENTE').columns,
 datosEntrada = datosEntrada.drop(datosEntrada.filter(regex='RATIO').columns, axis=1)
 datosEntrada = datosEntrada.drop(datosEntrada.filter(regex='CURTOSIS').columns, axis=1)
 datosEntrada = datosEntrada.drop(datosEntrada.filter(regex='SKEWNESS').columns, axis=1)
-print(datosEntrada)
 
-print("Cogemos solo las FILAS con la antiguedad indicada...")
+print("Cogemos solo las FILAS con la antiguedad indicada y con TARGET PREDICHO=1...")
 antiguedad_int = int(antiguedad)
 filasFiltradas = datosEntrada[datosEntrada['antiguedad'] == antiguedad_int]
+filasFiltradas = filasFiltradas[filasFiltradas['TARGET_PREDICHO'] == 1]
 
+num_filas = filasFiltradas.shape[0]
+if(num_filas == 0):
+    print("Hay 0 filas interesantes para invertir. Salimos...")
 
-###################################
-print("Construimos PREFIJO con año-mes-dia del primer dato que vea...")
-anio = int(filasFiltradas['anio'][0])
-mes = int(filasFiltradas['mes'][0])
-dia = int(filasFiltradas['dia'][0])
-amd = 10000*anio + 100*mes + dia
-prefijo=str(amd)
-print(prefijo)
+else:
+    print("Hay " + str(num_filas) + " filas interesantes para invertir. Seguimos...")
+    print("Construimos PREFIJO con año-mes-dia del primer dato que vea...")
+    anio = filasFiltradas['anio'].head(1).values[0]
+    mes = filasFiltradas['mes'].head(1).values[0]
+    dia = filasFiltradas['dia'].head(1).values[0]
+    amd = 10000*anio + 100*mes + dia
+    prefijo=str(amd)
+    print(prefijo)
 
-pathEntrada = dirSalida + prefijo + "_GRANDE_"+sufijoFicheroSalida
-pathSalida = dirSalida + prefijo + "_MANEJABLE_"+sufijoFicheroSalida
-print("pathEntrada = " + pathEntrada)
-print("pathSalida = " + pathSalida)
-datosEntrada.to_csv(pathEntrada, index=False, sep='|')
-filasFiltradas.to_csv(pathSalida, index=False, sep='|')
+    pathEntrada = dirSalida + prefijo + "_GRANDE_"+sufijoFicheroSalida
+    pathSalida = dirSalida + prefijo + "_MANEJABLE_"+sufijoFicheroSalida
+    print("pathEntrada = " + pathEntrada)
+    print("pathSalida = " + pathSalida)
+    datosEntrada.to_csv(pathEntrada, index=False, sep='|')
+    filasFiltradas.to_csv(pathSalida, index=False, sep='|')
 
 print("--- InversionUtils: FIN ---")
