@@ -90,5 +90,13 @@ do
 done 9< <( find ${DIR_FUT_SUBGRUPOS} -type f -exec printf '%s\0' {} + )
 
 
+################################## GITHUB: commit and push##############################################################
+cd "${DIR_GITHUB_INVERSION}"
+git add .
+git commit -m "Ficheros diarios de inversion" *
+git push -u origin master
+
+################################################################################################
+
 echo -e "INVERSION - FIN: "$( date "+%Y%m%d%H%M%S" )
 
