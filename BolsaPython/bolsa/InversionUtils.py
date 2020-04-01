@@ -19,9 +19,20 @@ datosEntrada = pd.read_csv(filepath_or_buffer=pathFicheroEntrada, sep='|')
 antiguedad_int = int(antiguedad)
 filasFiltradas = datosEntrada[datosEntrada['antiguedad'] == antiguedad_int]
 
+###################################
+print("Construimos PREFIJO con año-mes-dia del primer dato que vea...")
+anio = int(filasFiltradas['anio'][0])
+mes = int(filasFiltradas['mes'][0])
+dia = int(filasFiltradas['dia'][0])
+amd = 10000*anio + 100*mes + dia
+prefijo=str(amd)
+print(prefijo)
 
-pathSalida = dirSalida+"PENDIENTE"+sufijoFicheroSalida
+pathEntrada = dirSalida + prefijo + "_GRANDE_"+sufijoFicheroSalida
+pathSalida = dirSalida + prefijo + "_MANEJABLE_"+sufijoFicheroSalida
+print("pathEntrada = " + pathEntrada)
 print("pathSalida = " + pathSalida)
+datosEntrada.to_csv(pathEntrada, index=False, sep='|')
 filasFiltradas.to_csv(pathSalida, index=False, sep='|')
 
 print("--- InversionUtils: FIN ---")

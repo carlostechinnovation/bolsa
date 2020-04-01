@@ -54,6 +54,7 @@ DIR_FUT_SUBGRUPOS="${DIR_BASE}futuro/subgrupos/"
 DIR_JAVA="${DIR_CODIGOS}BolsaJava/"
 PATH_JAR="${DIR_JAVA}target/bolsajava-1.0-jar-with-dependencies.jar"
 DIR_GITHUB_INVERSION="${DIR_CODIGOS}inversion/"
+#DIR_DROPBOX_INVERSION="${DIR_CODIGOS}inversion/"
 
 rm -Rf ${DIR_INVERSION}
 crearCarpetaSiNoExiste "${DIR_INVERSION}"
@@ -71,7 +72,7 @@ crearCarpetaSiNoExiste "${DIR_FUT_SUBGRUPOS}"
 
 echo -e $( date '+%Y%m%d_%H%M%S' )" Ejecución del futuro (para velas de antiguedad=0) con TODAS LAS EMPRESAS (lista DIRECTA ó INVERSA, ya da igual, no estamos mirando overfitting)..." >>${LOG_INVERSION}
 MIN_COBERTURA_CLUSTER=0    # Para predecir, cojo lo que haya, sin minimos. EL modelo ya lo hemso entrenado
-MIN_EMPRESAS_POR_CLUSTER=1   # Para predecir, cojo lo que haya, sin minimos. EL modelo ya lo hemso entrenado
+MIN_EMPRESAS_POR_CLUSTER=1   # Para predecir, cojo lo que haya, sin minimos. EL modelo ya lo hemos entrenado
 ${PATH_SCRIPTS}master.sh "futuro" "$FUTURO_INVERSION" "0" "S" "S" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" "${NUM_EMPRESAS_INVERSION}" "${UMBRAL_SUBIDA_POR_VELA}" "${MIN_COBERTURA_CLUSTER}" "${MIN_EMPRESAS_POR_CLUSTER}" "20001111" "20991111" "${MAX_NUM_FEAT_REDUCIDAS}" 2>>${LOG_INVERSION} 1>>${LOG_INVERSION}
 
 
@@ -83,14 +84,11 @@ do
 		echo "Procesamos  ${REPLY}  y lo copiamos en ${DIR_INVERSION} ..."  >>${LOG_INVERSION}
 		ficheronombre=$(basename $REPLY)
 		directorio=$(dirname $REPLY)
-		$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/InversionUtils.py" "${directorio}/${ficheronombre}"  "0" "${DIR_INVERSION}/" "${ficheronombre}" >> ${LOG_INVERSION}
-		cp "${directorio}/${HOY_YYYYMMDD}${ficheronombre}" "${DIR_INVERSION}"
+		$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/InversionUtils.py" "${directorio}/${ficheronombre}"  "${FUTURO_INVERSION}" "${DIR_GITHUB_INVERSION}" "${ficheronombre}" >> ${LOG_INVERSION}
+		
 	fi
 done 9< <( find ${DIR_FUT_SUBGRUPOS} -type f -exec printf '%s\0' {} + )
 
-
-################# VOLCADO EN EL HISTORICO GITHUB (que no borraremos nunca) #########################################################
-cp -Rf "${DIR_INVERSION}" $DIR_GITHUB_INVERSION
 
 echo -e "INVERSION - FIN: "$( date "+%Y%m%d%H%M%S" )
 
