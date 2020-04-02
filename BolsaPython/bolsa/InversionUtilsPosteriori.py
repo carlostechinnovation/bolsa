@@ -45,11 +45,17 @@ columnasGrandes=['empresa', 'antiguedad', 'anio', 'mes', 'dia', 'hora', 'close',
 datosGrandes=pd.DataFrame()
 contenidosGrandes=[]
 
+#PENDIENTE: revisar si viene más de un GRANDE_0, ya que dirariamente se generarán así. En este caso, es conveniente leer el más reciente
+fechaTemporal=0
 for filename in ficherosGrandesCero:
-    datosFichero = pd.read_csv(filepath_or_buffer=filename, sep='|')
-    datosFicheroReducidos=datosFichero[columnasGrandes]
-    datosFicheroInteresantes=pd.DataFrame(datosFicheroReducidos, columns=columnasGrandes)
-    contenidosGrandes.append(datosFicheroInteresantes)
+    fechaFichero=int(filename[(filename.rfind('/')+1):(filename.rfind('/')+9)])
+    #Se tomará sólo el fichero grande más reciente
+    if(fechaTemporal<fechaFichero):
+        datosFichero = pd.read_csv(filepath_or_buffer=filename, sep='|')
+        datosFicheroReducidos=datosFichero[columnasGrandes]
+        datosFicheroInteresantes=pd.DataFrame(datosFicheroReducidos, columns=columnasGrandes)
+        contenidosGrandes=datosFicheroInteresantes
+        fechaTemporal=fechaFichero
 
 datosGrandes=datosGrandes.append(contenidosGrandes)
 
@@ -77,15 +83,21 @@ for group_name, df_group in grupos:
     #En cada antigüedad se reinician los contadores
     rentaMedia=0
     rentasAcumuladas=[]
+    anio=0
+    mes=0
+    dia=0
 
     for row_index, row in df_group.iterrows():
         rentasAcumuladas.append(row['rendimiento'])
+        anio=row['anio_y']
+        mes = row['mes_y']
+        dia = row['dia_y']
 
     # Se calculan las rentas
     rentaMedia = np.mean(rentasAcumuladas)
 
     #Se imprimen los resultados
-    print('\nANTIGUEDAD {}: '.format(group_name))
+    print('\nANIO/MES/DIA: {:.0f}'.format(anio)+"/"+'{:.0f}'.format(mes)+"/"+'{:.0f}'.format(dia))
     print(' RENTABILIDAD MEDIA {}'.format(rentaMedia))
 
 print("\n--- InversionUtilsPosteriori: FIN ---")

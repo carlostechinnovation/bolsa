@@ -4,9 +4,6 @@
     <list default="true" id="22edbd2f-b3d9-42f0-a7dd-659033ab601a" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bolsa/InversionUtilsPosteriori.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/InversionUtilsPosteriori.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaScripts/inversion_posteriori.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/inversion_posteriori.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../inversion/20200401_GRANDE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../inversion/20200401_GRANDE_0_SG_21_COMPLETO_PREDICCION.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../inversion/20200401_MANEJABLE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../inversion/20200401_MANEJABLE_0_SG_21_COMPLETO_PREDICCION.csv" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -239,67 +236,67 @@
     <state x="429" y="286" key="FileChooserDialogImpl/65.24.1301.744@65.24.1301.744" timestamp="1585774375866" />
     <state x="2457" y="567" key="FileChooserDialogImpl/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1579797267255" />
     <state x="584" y="578" key="FileChooserDialogImpl/65.24.1855.1056@65.24.1855.1056" timestamp="1577185272080" />
-    <state width="1278" height="198" key="GridCell.Tab.0.bottom" timestamp="1585839863080">
+    <state width="1278" height="129" key="GridCell.Tab.0.bottom" timestamp="1585845915735">
       <screen x="65" y="24" width="1301" height="744" />
     </state>
-    <state width="1278" height="198" key="GridCell.Tab.0.bottom/65.24.1301.744@65.24.1301.744" timestamp="1585839863080" />
+    <state width="1278" height="129" key="GridCell.Tab.0.bottom/65.24.1301.744@65.24.1301.744" timestamp="1585845915735" />
     <state width="1834" height="380" key="GridCell.Tab.0.bottom/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1583360848404" />
     <state width="1834" height="280" key="GridCell.Tab.0.bottom/65.24.1855.1056/1920.0.1920.1080@65.24.1855.1056" timestamp="1578498937972" />
     <state width="1834" height="294" key="GridCell.Tab.0.bottom/65.24.1855.1056/65.24.1855.1056@65.24.1855.1056" timestamp="1581521560170" />
     <state width="1834" height="253" key="GridCell.Tab.0.bottom/65.24.1855.1056@65.24.1855.1056" timestamp="1578129154047" />
     <state width="1834" height="389" key="GridCell.Tab.0.bottom/65.24.3775.1056@65.24.3775.1056" timestamp="1577914620078" />
-    <state width="1278" height="198" key="GridCell.Tab.0.center" timestamp="1585839863078">
+    <state width="1278" height="129" key="GridCell.Tab.0.center" timestamp="1585845915734">
       <screen x="65" y="24" width="1301" height="744" />
     </state>
-    <state width="1278" height="198" key="GridCell.Tab.0.center/65.24.1301.744@65.24.1301.744" timestamp="1585839863078" />
+    <state width="1278" height="129" key="GridCell.Tab.0.center/65.24.1301.744@65.24.1301.744" timestamp="1585845915734" />
     <state width="1834" height="380" key="GridCell.Tab.0.center/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1583360848404" />
     <state width="1834" height="280" key="GridCell.Tab.0.center/65.24.1855.1056/1920.0.1920.1080@65.24.1855.1056" timestamp="1578498937972" />
     <state width="1834" height="294" key="GridCell.Tab.0.center/65.24.1855.1056/65.24.1855.1056@65.24.1855.1056" timestamp="1581521560169" />
     <state width="1834" height="253" key="GridCell.Tab.0.center/65.24.1855.1056@65.24.1855.1056" timestamp="1578129154047" />
     <state width="1834" height="389" key="GridCell.Tab.0.center/65.24.3775.1056@65.24.3775.1056" timestamp="1577914620077" />
-    <state width="1278" height="198" key="GridCell.Tab.0.left" timestamp="1585839863076">
+    <state width="1278" height="129" key="GridCell.Tab.0.left" timestamp="1585845915734">
       <screen x="65" y="24" width="1301" height="744" />
     </state>
-    <state width="1278" height="198" key="GridCell.Tab.0.left/65.24.1301.744@65.24.1301.744" timestamp="1585839863076" />
+    <state width="1278" height="129" key="GridCell.Tab.0.left/65.24.1301.744@65.24.1301.744" timestamp="1585845915734" />
     <state width="1834" height="380" key="GridCell.Tab.0.left/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1583360848404" />
     <state width="1834" height="280" key="GridCell.Tab.0.left/65.24.1855.1056/1920.0.1920.1080@65.24.1855.1056" timestamp="1578498937972" />
     <state width="1834" height="294" key="GridCell.Tab.0.left/65.24.1855.1056/65.24.1855.1056@65.24.1855.1056" timestamp="1581521560169" />
     <state width="1834" height="253" key="GridCell.Tab.0.left/65.24.1855.1056@65.24.1855.1056" timestamp="1578129154047" />
     <state width="1834" height="389" key="GridCell.Tab.0.left/65.24.3775.1056@65.24.3775.1056" timestamp="1577914620077" />
-    <state width="1278" height="198" key="GridCell.Tab.0.right" timestamp="1585839863080">
+    <state width="1278" height="129" key="GridCell.Tab.0.right" timestamp="1585845915735">
       <screen x="65" y="24" width="1301" height="744" />
     </state>
-    <state width="1278" height="198" key="GridCell.Tab.0.right/65.24.1301.744@65.24.1301.744" timestamp="1585839863080" />
+    <state width="1278" height="129" key="GridCell.Tab.0.right/65.24.1301.744@65.24.1301.744" timestamp="1585845915735" />
     <state width="1834" height="380" key="GridCell.Tab.0.right/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1583360848404" />
     <state width="1834" height="280" key="GridCell.Tab.0.right/65.24.1855.1056/1920.0.1920.1080@65.24.1855.1056" timestamp="1578498937972" />
     <state width="1834" height="294" key="GridCell.Tab.0.right/65.24.1855.1056/65.24.1855.1056@65.24.1855.1056" timestamp="1581521560170" />
     <state width="1834" height="253" key="GridCell.Tab.0.right/65.24.1855.1056@65.24.1855.1056" timestamp="1578129154047" />
     <state width="1834" height="389" key="GridCell.Tab.0.right/65.24.3775.1056@65.24.3775.1056" timestamp="1577914620078" />
-    <state width="1278" height="198" key="GridCell.Tab.1.bottom" timestamp="1585839863081">
+    <state width="1278" height="198" key="GridCell.Tab.1.bottom" timestamp="1585845766985">
       <screen x="65" y="24" width="1301" height="744" />
     </state>
-    <state width="1278" height="198" key="GridCell.Tab.1.bottom/65.24.1301.744@65.24.1301.744" timestamp="1585839863081" />
+    <state width="1278" height="198" key="GridCell.Tab.1.bottom/65.24.1301.744@65.24.1301.744" timestamp="1585845766985" />
     <state width="1834" height="301" key="GridCell.Tab.1.bottom/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1580334995789" />
     <state width="1834" height="253" key="GridCell.Tab.1.bottom/65.24.1855.1056@65.24.1855.1056" timestamp="1578129154048" />
     <state width="1834" height="439" key="GridCell.Tab.1.bottom/65.24.3775.1056@65.24.3775.1056" timestamp="1577914620071" />
-    <state width="1278" height="198" key="GridCell.Tab.1.center" timestamp="1585839863081">
+    <state width="1278" height="198" key="GridCell.Tab.1.center" timestamp="1585845766984">
       <screen x="65" y="24" width="1301" height="744" />
     </state>
-    <state width="1278" height="198" key="GridCell.Tab.1.center/65.24.1301.744@65.24.1301.744" timestamp="1585839863081" />
+    <state width="1278" height="198" key="GridCell.Tab.1.center/65.24.1301.744@65.24.1301.744" timestamp="1585845766984" />
     <state width="1834" height="301" key="GridCell.Tab.1.center/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1580334995789" />
     <state width="1834" height="253" key="GridCell.Tab.1.center/65.24.1855.1056@65.24.1855.1056" timestamp="1578129154048" />
     <state width="1834" height="439" key="GridCell.Tab.1.center/65.24.3775.1056@65.24.3775.1056" timestamp="1577914620070" />
-    <state width="1278" height="198" key="GridCell.Tab.1.left" timestamp="1585839863080">
+    <state width="1278" height="198" key="GridCell.Tab.1.left" timestamp="1585845766984">
       <screen x="65" y="24" width="1301" height="744" />
     </state>
-    <state width="1278" height="198" key="GridCell.Tab.1.left/65.24.1301.744@65.24.1301.744" timestamp="1585839863080" />
+    <state width="1278" height="198" key="GridCell.Tab.1.left/65.24.1301.744@65.24.1301.744" timestamp="1585845766984" />
     <state width="1834" height="301" key="GridCell.Tab.1.left/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1580334995789" />
     <state width="1834" height="253" key="GridCell.Tab.1.left/65.24.1855.1056@65.24.1855.1056" timestamp="1578129154048" />
     <state width="1834" height="439" key="GridCell.Tab.1.left/65.24.3775.1056@65.24.3775.1056" timestamp="1577914620070" />
-    <state width="1278" height="198" key="GridCell.Tab.1.right" timestamp="1585839863081">
+    <state width="1278" height="198" key="GridCell.Tab.1.right" timestamp="1585845766985">
       <screen x="65" y="24" width="1301" height="744" />
     </state>
-    <state width="1278" height="198" key="GridCell.Tab.1.right/65.24.1301.744@65.24.1301.744" timestamp="1585839863081" />
+    <state width="1278" height="198" key="GridCell.Tab.1.right/65.24.1301.744@65.24.1301.744" timestamp="1585845766985" />
     <state width="1834" height="301" key="GridCell.Tab.1.right/65.24.1855.1056/1920.0.1920.1080@1920.0.1920.1080" timestamp="1580334995789" />
     <state width="1834" height="253" key="GridCell.Tab.1.right/65.24.1855.1056@65.24.1855.1056" timestamp="1578129154048" />
     <state width="1834" height="439" key="GridCell.Tab.1.right/65.24.3775.1056@65.24.3775.1056" timestamp="1577914620070" />
@@ -376,13 +373,8 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/bolsa/InversionUtilsPosteriori.py</url>
-          <line>90</line>
-          <option name="timeStamp" value="142" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/bolsa/InversionUtilsPosteriori.py</url>
-          <line>81</line>
-          <option name="timeStamp" value="151" />
+          <line>100</line>
+          <option name="timeStamp" value="165" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
