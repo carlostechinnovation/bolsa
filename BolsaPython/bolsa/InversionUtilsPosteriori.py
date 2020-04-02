@@ -27,7 +27,7 @@ ficherosManejables = glob.glob(dirDropbox+"*MANEJABLE*")
 ficherosGrandesCero = glob.glob(dirDropbox+"*GRANDE_0*")
 
 #Se iteran los ficheros manejables, para leer su contenido
-columnasManejables=['empresa', 'antiguedad', 'anio', 'mes', 'dia', 'hora', 'close', 'TARGET_PREDICHO', 'TARGET_PREDICHO_PROB']
+columnasManejables=['empresa', 'antiguedad', 'anio', 'mes', 'dia', 'close', 'TARGET_PREDICHO', 'TARGET_PREDICHO_PROB']
 datosManejables=pd.DataFrame()
 contenidosManejables=[]
 
@@ -36,42 +36,54 @@ for filename in ficherosManejables:
     datosFicheroReducidos=datosFichero[columnasManejables]
     datosFicheroInteresantes=pd.DataFrame(datosFicheroReducidos.loc[datosFicheroReducidos['TARGET_PREDICHO'] == 1],
                                           columns=columnasManejables)
-    contenidosManejables.append(datosFicheroInteresantes)
+    #Debo añadir una columna con el número de subgrupo
+    datosFicheroInteresantes['subgrupo']=filename[(filename.rfind('SG')+3):(filename.rfind('SG')+5)].replace('_', '')
+    datosManejables=datosManejables.append(datosFicheroInteresantes)
 
-datosManejables=datosManejables.append(contenidosManejables)
+
 
 #Se iteran los ficheros grandes, para extraer su contenido
-columnasGrandes=['empresa', 'antiguedad', 'anio', 'mes', 'dia', 'hora', 'close', 'TARGET']
+columnasGrandes=['empresa', 'antiguedad', 'anio', 'mes', 'dia', 'close', 'TARGET']
 datosGrandes=pd.DataFrame()
 contenidosGrandes=[]
-
-#PENDIENTE: revisar si viene más de un GRANDE_0, ya que dirariamente se generarán así. En este caso, es conveniente leer el más reciente
+ficherosGrandesCeroAAnalizar=[]
 fechaTemporal=0
+#Se leerán sólo los de la fecha más reciente de entre todos los ficheros grandes
 for filename in ficherosGrandesCero:
     fechaFichero=int(filename[(filename.rfind('/')+1):(filename.rfind('/')+9)])
     #Se tomará sólo el fichero grande más reciente
     if(fechaTemporal<fechaFichero):
-        datosFichero = pd.read_csv(filepath_or_buffer=filename, sep='|')
-        datosFicheroReducidos=datosFichero[columnasGrandes]
-        datosFicheroInteresantes=pd.DataFrame(datosFicheroReducidos, columns=columnasGrandes)
-        contenidosGrandes=datosFicheroInteresantes
-        fechaTemporal=fechaFichero
+        ficherosGrandesCeroAAnalizar.append(filename)
 
-datosGrandes=datosGrandes.append(contenidosGrandes)
+for filename in ficherosGrandesCeroAAnalizar:
+    datosFichero = pd.read_csv(filepath_or_buffer=filename, sep='|')
+    datosFicheroReducidos=datosFichero[columnasGrandes]
+    datosFicheroInteresantes=pd.DataFrame(datosFicheroReducidos, columns=columnasGrandes)
+    datosFicheroInteresantes['subgrupo'] = filename[(filename.rfind('SG') + 3):(filename.rfind('SG') + 5)].replace('_',
+                                                                                                                   '')
+    datosGrandes=datosGrandes.append(datosFicheroInteresantes)
 
-#Se mergean los datos, separados por dia y subgrupo
-#Se ubican los manejables dentro de los grandes. Así puedo conocer su antigüedad
-datosMergeados = pd.merge(datosGrandes, datosManejables, how='right', on=['empresa', 'anio', 'mes', 'dia', 'hora', 'close'])
+datosMergeados = pd.merge(datosGrandes, datosManejables, how='right', on=['empresa', 'anio', 'mes', 'dia', 'close', 'subgrupo'])
 
-#De entre los grandes, se escogen aquéllos cuya antigüedad sea la de los "manejables - X" (vamos hacia el futuro)
-datosPredichos=pd.merge(datosGrandes, datosManejables, how='left', on=['empresa'])
-#Desplazo la antiguedad de los mergeados: resto X velas
-datosMergeados['antiguedad_x'] -= int(X)
-# Relleno, de entre los grandes predichos, los de empresa y antiguedad desplazada X
-datosSeleccionados=pd.merge(datosPredichos, datosMergeados, how='left', on=['empresa', 'antiguedad_x'])
+#Debug
+#a=datosGrandes.loc[datosGrandes['empresa']=='ABIO']
+#b=datosManejables.loc[datosManejables['empresa']=='ABIO']
+#c=datosMergeados.loc[datosMergeados['empresa']=='ABIO']
 
-#Se filtran los que tengan target real (calculado con la realidad futura) rellena
-datosAAnalizar=datosSeleccionados.loc[datosSeleccionados['TARGET_y'] == 1]
+datosDesplazados=datosMergeados
+datosDesplazados['antiguedad_x'] -= int(X)
+datosDesplazados['antiguedad'] = datosDesplazados['antiguedad_x']
+
+#Debug
+#d=datosDesplazados.loc[datosDesplazados['empresa']=='ABIO']
+
+datosFuturo=pd.merge(datosGrandes, datosDesplazados, how='right', on=['empresa', 'antiguedad', 'subgrupo'])
+
+#Debug
+#e=datosFuturo.loc[datosFuturo['empresa']=='ABIO']
+
+datosAAnalizar=datosFuturo.loc[datosFuturo['TARGET_y'] == 1]
+datosAAnalizar['antiguedad_x'] += int(X)
 
 #Se clasifican/agrupan los datos por mes+día (PENDIENTE HACERLO TAMBIÉN POR SUBGRUPO)
 #En fecha_x está el futuro. En fecha_y está el dato predicho. Se genera una columna nueva que obtiene el rendimiento real (close_x vs close_y)
