@@ -7,16 +7,20 @@ DIR_CODIGOS_CARLOS="/home/carloslinux/Desktop/GIT_BOLSA/"
 DIR_CODIGOS_LUIS="/home/t151521/bolsa/"
 PYTHON_MOTOR_CARLOS="/home/carloslinux/Desktop/PROGRAMAS/anaconda3/envs/BolsaPython/bin/python"
 PYTHON_MOTOR_LUIS="/home/t151521/anaconda3/envs/BolsaPython/bin/python"
+DIR_DROPBOX_CARLOS="/home/carloslinux/Dropbox/BOLSA_PREDICTOR/"
+DIR_DROPBOX_LUIS="/home/t151521/Dropbox/BOLSA_PREDICTOR/"
 
 usuario=$(whoami)
 if [ $usuario == "carloslinux" ]
 then
   DIR_CODIGOS="${DIR_CODIGOS_CARLOS}"
   PYTHON_MOTOR="${PYTHON_MOTOR_CARLOS}"
+  DIR_DROPBOX="${DIR_DROPBOX_CARLOS}"
 elif [ $usuario == "t151521" ]
 then
   DIR_CODIGOS="${DIR_CODIGOS_LUIS}"
   PYTHON_MOTOR="${PYTHON_MOTOR_LUIS}"
+  DIR_DROPBOX="${DIR_DROPBOX_LUIS}"
 else
   echo "ERROR: USUARIO NO CONTROLADO"
   s1 -e
@@ -54,7 +58,6 @@ DIR_FUT_SUBGRUPOS="${DIR_BASE}futuro/subgrupos/"
 DIR_JAVA="${DIR_CODIGOS}BolsaJava/"
 PATH_JAR="${DIR_JAVA}target/bolsajava-1.0-jar-with-dependencies.jar"
 DIR_GITHUB_INVERSION="${DIR_CODIGOS}inversion/"
-#DIR_DROPBOX_INVERSION="${DIR_CODIGOS}inversion/"
 
 rm -Rf ${DIR_INVERSION}
 crearCarpetaSiNoExiste "${DIR_INVERSION}"
@@ -71,7 +74,7 @@ rm -Rf /bolsa/futuro/ >>${LOG_INVERSION}
 crearCarpetaSiNoExiste "${DIR_FUT_SUBGRUPOS}"
 
 echo -e $( date '+%Y%m%d_%H%M%S' )" Ejecución del futuro (para velas de antiguedad=0) con TODAS LAS EMPRESAS (lista DIRECTA ó INVERSA, ya da igual, no estamos mirando overfitting)..." >>${LOG_INVERSION}
-MIN_COBERTURA_CLUSTER=0    # Para predecir, cojo lo que haya, sin minimos. EL modelo ya lo hemso entrenado
+MIN_COBERTURA_CLUSTER=0    # Para predecir, cojo lo que haya, sin minimos. EL modelo ya lo hemos entrenado
 MIN_EMPRESAS_POR_CLUSTER=1   # Para predecir, cojo lo que haya, sin minimos. EL modelo ya lo hemos entrenado
 ${PATH_SCRIPTS}master.sh "futuro" "$FUTURO_INVERSION" "0" "S" "S" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" "${NUM_EMPRESAS_INVERSION}" "${UMBRAL_SUBIDA_POR_VELA}" "${MIN_COBERTURA_CLUSTER}" "${MIN_EMPRESAS_POR_CLUSTER}" "20001111" "20991111" "${MAX_NUM_FEAT_REDUCIDAS}" 2>>${LOG_INVERSION} 1>>${LOG_INVERSION}
 
@@ -85,7 +88,7 @@ do
 		ficheronombre=$(basename $REPLY)
 		directorio=$(dirname $REPLY)
 		$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/InversionUtils.py" "${directorio}/${ficheronombre}"  "${FUTURO_INVERSION}" "${DIR_GITHUB_INVERSION}" "${ficheronombre}" >> ${LOG_INVERSION}
-		
+		$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/InversionUtils.py" "${directorio}/${ficheronombre}"  "${FUTURO_INVERSION}" "${DIR_DROPBOX}" "${ficheronombre}" >> ${LOG_INVERSION}
 	fi
 done 9< <( find ${DIR_FUT_SUBGRUPOS} -type f -exec printf '%s\0' {} + )
 
