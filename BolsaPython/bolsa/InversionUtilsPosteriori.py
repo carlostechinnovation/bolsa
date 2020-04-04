@@ -5,11 +5,7 @@ import glob
 import numpy as np
 
 #EXPLICACIÓN:
-#1º. inversion.sh ha generado unos 100 ficheros al dia: 50 son de 300KB (tienen un pequeño histórico) y otros son de 5KB (antiguedad=0)
-#2º. Entonces, en PYTHON, vamos a recorrer todos los CSV de 5KB y vamos a construir una tabla (DATAFRAME) que tenga -->  DIA_INVERSION, DIA_POSTERIORI, subgrupo, empresa, target_predicho, target_predicho_PROB
-#3º. En PYTHON, vamos a recorrer todos los CSVs de 300 KB y vamos a construir una tabla (DATAFRAME) que tenga --> DIA, EMPRESA, precio_close, target (es el target REAL)
-#4º. Comparamos las dos tablas --> En la tabla 1 metemos la columna de qué ha pasado realmente en el futuro (precio, target REAL)
-#5º. Graficas del rendimiento...
+#Se recorren los ficheros grandes y manejables, y se saca el rendimiento medio, por día y subgrupo
 
 print("--- InversionUtilsPosteriori: INICIO ---")
 
@@ -77,6 +73,9 @@ datosAAnalizar.loc[:, 'antiguedad_x'] += int(X)
 datosAAnalizar.loc[:, 'rendimiento'] = 100 * (datosAAnalizar['close_x']-datosAAnalizar['close_y'])/datosAAnalizar['close_y']
 
 grupos=datosAAnalizar.groupby(['mes_y', 'dia_y', 'subgrupo'])
+
+resultadoAnalisis=pd.DataFrame(columns=["anio", "mes", "dia", "subgrupo", "precisionMedia", "rentaMedia"])
+
 #Se calculan probabilidades, y se loggean/grafican por antiguedad
 for group_name, df_group in grupos:
     #En cada antigüedad se reinician los contadores
@@ -85,6 +84,9 @@ for group_name, df_group in grupos:
     anio=0
     mes=0
     dia=0
+    numPrecisionAcertada=0
+    numPrecisionFallada=0
+    precisionMedia=-1
 
     for row_index, row in df_group.iterrows():
         rentasAcumuladas.append(row['rendimiento'])
@@ -92,14 +94,33 @@ for group_name, df_group in grupos:
         mes = row['mes_y']
         dia = row['dia_y']
         subgrupo = row['subgrupo']
+        target = row['TARGET_y']
+        if target == 1:
+            numPrecisionAcertada += 1
+        elif target == 0:
+            numPrecisionFallada += 1
 
-    # Se calculan las rentas
+    # Se calcula la precisión
+    if (numPrecisionAcertada + numPrecisionFallada) > 0:
+        precisionMedia = numPrecisionAcertada / (numPrecisionAcertada + numPrecisionFallada)
+
+    # Se calcula la renta media
     rentaMedia = np.mean(rentasAcumuladas)
 
-    #Se imprimen los resultados
+    # Se imprimen los resultados
     print('\nANIO/MES/DIA: {:.0f}'.format(anio)+"/"+'{:.0f}'.format(mes)+"/"+'{:.0f}'.format(dia))
-    print(' SUBGRUPO {}'.format(subgrupo))
-    print(' RENTABILIDAD MEDIA {}'.format(rentaMedia))
+    print(' SUBGRUPO: {}'.format(subgrupo))
+    print(' PRECISION MEDIA: {:.0f}'.format(numPrecisionAcertada)+'/'+'{:.0f}'.format(numPrecisionAcertada+numPrecisionFallada)+' = {:.2f}'.format(precisionMedia))
+    print(' RENTABILIDAD MEDIA: {:.2f}'.format(rentaMedia))
+
+    # Se guardan los resultados en un DataFrame
+    nuevaFila = [{'anio': anio, 'mes': mes, 'dia': dia, 'subgrupo': subgrupo, 'precisionMedia': precisionMedia, 'rentaMedia': rentaMedia}]
+    resultadoAnalisis=resultadoAnalisis.append(nuevaFila,ignore_index=True,sort=False)
+
+# Se escriben los resultados a un Excel
+pathCsvResultados=dirAnalisis+"RESULTADOS_ANALISIS.csv"
+print("Guardando: " + pathCsvResultados)
+resultadoAnalisis.to_csv(pathCsvResultados, index=False, sep='|')
 
 print("\n--- InversionUtilsPosteriori: FIN ---")
 
