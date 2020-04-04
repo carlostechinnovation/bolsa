@@ -66,17 +66,17 @@ for filename in ficherosGrandesCeroAAnalizar:
 #OBTENCIÓN DEL CLOSE PARA LAS FILAS PREDICHAS TRAS X DÍAS POSTERIORES
 datosMergeados = pd.merge(datosGrandes, datosManejables, how='right', on=['empresa', 'anio', 'mes', 'dia', 'close', 'subgrupo'])
 datosDesplazados=datosMergeados
-datosDesplazados['antiguedad_x'] -= int(X)
+datosDesplazados.loc[:, 'antiguedad_x'] -= int(X)
 datosDesplazados['antiguedad'] = datosDesplazados['antiguedad_x']
 datosFuturo=pd.merge(datosGrandes, datosDesplazados, how='right', on=['empresa', 'antiguedad', 'subgrupo'])
 datosAAnalizar=datosFuturo.loc[datosFuturo['TARGET_y'].isin(['1', '0'])] # Son datos tan antiguos que sí tienen su resultado futuro (que es el REAL)
-datosAAnalizar['antiguedad_x'] += int(X)
+datosAAnalizar.loc[:, 'antiguedad_x'] += int(X)
 
 #CÁLCULO DE RENDIMIENTO MEDIO POR FECHA Y SUBGRUPO
 #En fecha_x está el futuro. En fecha_y está el dato predicho. Se genera una columna nueva que obtiene el rendimiento real (close_x vs close_y)
-datosAAnalizar['rendimiento'] = 100 * (datosAAnalizar['close_x']-datosAAnalizar['close_y'])/datosAAnalizar['close_y']
+datosAAnalizar.loc[:, 'rendimiento'] = 100 * (datosAAnalizar['close_x']-datosAAnalizar['close_y'])/datosAAnalizar['close_y']
 
-grupos=datosAAnalizar.groupby('antiguedad_x')
+grupos=datosAAnalizar.groupby(['mes_y', 'dia_y', 'subgrupo'])
 #Se calculan probabilidades, y se loggean/grafican por antiguedad
 for group_name, df_group in grupos:
     #En cada antigüedad se reinician los contadores
@@ -91,12 +91,14 @@ for group_name, df_group in grupos:
         anio=row['anio_y']
         mes = row['mes_y']
         dia = row['dia_y']
+        subgrupo = row['subgrupo']
 
     # Se calculan las rentas
     rentaMedia = np.mean(rentasAcumuladas)
 
     #Se imprimen los resultados
     print('\nANIO/MES/DIA: {:.0f}'.format(anio)+"/"+'{:.0f}'.format(mes)+"/"+'{:.0f}'.format(dia))
+    print(' SUBGRUPO {}'.format(subgrupo))
     print(' RENTABILIDAD MEDIA {}'.format(rentaMedia))
 
 print("\n--- InversionUtilsPosteriori: FIN ---")
