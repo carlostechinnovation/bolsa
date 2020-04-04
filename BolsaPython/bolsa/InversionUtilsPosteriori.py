@@ -3,9 +3,13 @@ import os
 import pandas as pd
 import glob
 import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import matplotlib.ticker as mtick
 
 #EXPLICACIÓN:
-#Se recorren los ficheros grandes y manejables, y se saca el rendimiento medio, por día y subgrupo
+#Se recorren los ficheros grandes y manejables, y se saca el rendimiento medio, por día y subgrupo.
+# Se vuelcan en log, excel y dibujo
 
 print("--- InversionUtilsPosteriori: INICIO ---")
 
@@ -121,6 +125,34 @@ for group_name, df_group in grupos:
 pathCsvResultados=dirAnalisis+"RESULTADOS_ANALISIS.csv"
 print("Guardando: " + pathCsvResultados)
 resultadoAnalisis.to_csv(pathCsvResultados, index=False, sep='|')
+
+# Se pintan en dos gráficas: precisión media y rentabilidad media
+resultadoAnalisis['aniomesdia']=10000*resultadoAnalisis['anio']+100*resultadoAnalisis['mes']+resultadoAnalisis['dia']
+subgrupos=resultadoAnalisis['subgrupo'].unique().tolist()
+
+# PRECISIÓN MEDIA
+ax = plt.gca()  # gca significa 'get current axis'
+for subgrupo in subgrupos:
+    resultadoPorSubgrupo=resultadoAnalisis.loc[resultadoAnalisis['subgrupo'] == subgrupo]
+    resultadoPorSubgrupo.plot(kind='line', x='aniomesdia', y='precisionMedia', ax=ax, legend=True, marker="+")
+ax.tick_params(axis='x', labelrotation=20)  # Rota las etiquetas del eje X
+ax.ticklabel_format(useOffset=False, style='plain')  # Evita notacion cientifica
+plt.title('Evolución de la PRECISION cada modelo entrenado de subgrupo')
+#plt.show()
+plt.savefig(dirAnalisis+"precision.png")
+plt.close()
+
+# RENTABILIDAD MEDIA
+ax2 = plt.gca()  # gca significa 'get current axis'
+for subgrupo in subgrupos:
+    resultadoPorSubgrupo=resultadoAnalisis.loc[resultadoAnalisis['subgrupo'] == subgrupo]
+    resultadoPorSubgrupo.plot(kind='line', x='aniomesdia', y='rentaMedia', ax=ax2, legend=True, marker="+")
+ax2.tick_params(axis='x', labelrotation=20)  # Rota las etiquetas del eje X
+ax2.ticklabel_format(useOffset=False, style='plain')  # Evita notacion cientifica
+plt.title('Evolución de la RENTABILIDAD cada modelo entrenado de subgrupo')
+#plt.show()
+plt.savefig(dirAnalisis+"rentabilidad.png")
+plt.close()
 
 print("\n--- InversionUtilsPosteriori: FIN ---")
 
