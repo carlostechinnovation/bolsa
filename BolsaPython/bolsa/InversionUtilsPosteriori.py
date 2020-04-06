@@ -5,7 +5,8 @@ import glob
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import matplotlib.ticker as mtick
+from datetime import datetime
+import matplotlib.dates as mdates
 
 #EXPLICACIÓN:
 #Se recorren los ficheros grandes y manejables, y se saca el rendimiento medio, por día y subgrupo.
@@ -78,7 +79,7 @@ datosAAnalizar.loc[:, 'rendimiento'] = 100 * (datosAAnalizar['close_x']-datosAAn
 
 grupos=datosAAnalizar.groupby(['mes_y', 'dia_y', 'subgrupo'])
 
-resultadoAnalisis=pd.DataFrame(columns=["anio", "mes", "dia", "subgrupo", "precisionMedia", "rentaMedia"])
+resultadoAnalisis=pd.DataFrame(columns=["fecha", "anio", "mes", "dia", "subgrupo", "precisionMedia", "rentaMedia"])
 
 #Se calculan probabilidades, y se loggean/grafican por antiguedad
 for group_name, df_group in grupos:
@@ -118,7 +119,10 @@ for group_name, df_group in grupos:
     print(' RENTABILIDAD MEDIA: {:.2f}'.format(rentaMedia))
 
     # Se guardan los resultados en un DataFrame
-    nuevaFila = [{'anio': anio, 'mes': mes, 'dia': dia, 'subgrupo': subgrupo, 'precisionMedia': precisionMedia, 'rentaMedia': rentaMedia}]
+    datetime_str = str(dia)+'/'+str(mes)+'/'+str(anio)
+    fecha = datetime.strptime(datetime_str, '%d/%m/%Y')
+
+    nuevaFila = [{'fecha': fecha, 'anio': anio, 'mes': mes, 'dia': dia, 'subgrupo': subgrupo, 'precisionMedia': precisionMedia, 'rentaMedia': rentaMedia}]
     resultadoAnalisis=resultadoAnalisis.append(nuevaFila,ignore_index=True,sort=False)
 
 # Se escriben los resultados a un Excel
@@ -134,10 +138,14 @@ subgrupos=resultadoAnalisis['subgrupo'].unique().tolist()
 ax = plt.gca()  # gca significa 'get current axis'
 for subgrupo in subgrupos:
     resultadoPorSubgrupo=resultadoAnalisis.loc[resultadoAnalisis['subgrupo'] == subgrupo]
-    resultadoPorSubgrupo.plot(kind='line', x='aniomesdia', y='precisionMedia', ax=ax, legend=True, marker="+")
+    resultadoPorSubgrupo.plot(kind='line', x='fecha', y='precisionMedia', ax=ax, label=subgrupo, marker="+")
 ax.tick_params(axis='x', labelrotation=20)  # Rota las etiquetas del eje X
-ax.ticklabel_format(useOffset=False, style='plain')  # Evita notacion cientifica
+formatter = mdates.DateFormatter("%Y-%m-%d")
+ax.xaxis.set_major_formatter(formatter)
+locator = mdates.DayLocator()
+ax.xaxis.set_major_locator(locator)
 plt.title('Evolución de la PRECISION cada modelo entrenado de subgrupo')
+plt.xticks(rotation=90, ha='right')
 #plt.show()
 plt.savefig(dirAnalisis+"precision.png")
 plt.close()
@@ -146,10 +154,14 @@ plt.close()
 ax2 = plt.gca()  # gca significa 'get current axis'
 for subgrupo in subgrupos:
     resultadoPorSubgrupo=resultadoAnalisis.loc[resultadoAnalisis['subgrupo'] == subgrupo]
-    resultadoPorSubgrupo.plot(kind='line', x='aniomesdia', y='rentaMedia', ax=ax2, legend=True, marker="+")
+    resultadoPorSubgrupo.plot(kind='line', x='fecha', y='rentaMedia', ax=ax2, label=subgrupo, marker="+")
 ax2.tick_params(axis='x', labelrotation=20)  # Rota las etiquetas del eje X
-ax2.ticklabel_format(useOffset=False, style='plain')  # Evita notacion cientifica
+formatter = mdates.DateFormatter("%Y-%m-%d")
+ax2.xaxis.set_major_formatter(formatter)
+locator = mdates.DayLocator()
+ax2.xaxis.set_major_locator(locator)
 plt.title('Evolución de la RENTABILIDAD cada modelo entrenado de subgrupo')
+plt.xticks(rotation=90, ha='right')
 #plt.show()
 plt.savefig(dirAnalisis+"rentabilidad.png")
 plt.close()
