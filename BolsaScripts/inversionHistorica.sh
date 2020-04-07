@@ -81,7 +81,11 @@ rm -f "${LOG_INVERSION}"
 
 #################################### CÓDIGO ###########################################################
 
- # Se obtiene el modelo de predicción para la antigüedad máxima. Luego se irá hacia adelante en el tiempo, prediciendo tiempos futuros para el modelo entrenado
+PATH_COPIA_SEGURIDAD_PASADO="/bolsa/pasado_subgrupos_"$( date "+%Y%m%d%H%M%S" )
+echo -e "PASADO - Antes de crear y entrenar nuevos modelos del pasado, guardamos COPIA DE SEGURIDAD en: ${PATH_COPIA_SEGURIDAD_PASADO}" >>${LOG_INVERSION}
+cp -Rf "/bolsa/pasado/subgrupos/" "${PATH_COPIA_SEGURIDAD_PASADO}" >>${LOG_INVERSION}
+
+# Se obtiene el modelo de predicción para la antigüedad máxima. Luego se irá hacia adelante en el tiempo, prediciendo tiempos futuros para el modelo entrenado
 echo -e $( date '+%Y%m%d_%H%M%S' )" Ejecución del PASADO (para velas de ANTIGUEDAD_MAXIMA=${ANTIGUEDAD_MAXIMA}): entrenamiento del modelo..." >>${LOG_INVERSION}
 
 ${PATH_SCRIPTS}master.sh "pasado" "${ANTIGUEDAD_MAXIMA}" "0" "${ACTIVAR_DESCARGAS}" "S" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" "${NUM_EMPRESAS}" "${UMBRAL_SUBIDA_POR_VELA}" "${MIN_COBERTURA_CLUSTER}" "${MIN_EMPRESAS_POR_CLUSTER}" "${P_INICIO}" "${P_FIN}" "${MAX_NUM_FEAT_REDUCIDAS}" 2>>${LOG_INVERSION} 1>>${LOG_INVERSION}

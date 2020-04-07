@@ -37,7 +37,7 @@ else:
     mes = filasFiltradas['mes'].head(1).values[0]
     dia = filasFiltradas['dia'].head(1).values[0]
     amd = 10000*anio + 100*mes + dia
-    prefijo=str(amd)
+    prefijo = str(amd)
     print(prefijo)
 
     pathEntrada = dirSalida + prefijo + "_GRANDE_"+sufijoFicheroSalida
