@@ -159,7 +159,7 @@ def cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, id_s
     print(id_subgrupo + ' MODELO = ' + nombreModelo + ' Average RECALL score: {0:0.2f}'.format(recall))
 
     precision_result = precision_score(ds_test_t, ds_test_t_pred)
-    print(id_subgrupo + ' MODELO = ' + nombreModelo + ' METRICA IMPORTANTE--> Average PRECISION score: {0:0.2f}'.format(precision_result) + " (num features = " + str(ds_test_f.shape[1]) + ")")
+    print(id_subgrupo + ' MODELO = ' + nombreModelo + ' METRICA IMPORTANTE--> Average precision score: {0:0.2f}'.format(precision_result) + " (num features = " + str(ds_test_f.shape[1]) + ")")
 
     if modoDebug:
         print("Curva ROC...")

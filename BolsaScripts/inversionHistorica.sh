@@ -13,7 +13,7 @@
 #Instantes de las descargas
 #Se analizará el tramo de antiguedad desde máxima hasta minima
 ANTIGUEDAD_MAXIMA="25"
-ANTIGUEDAD_MINIMA="15"
+ANTIGUEDAD_MINIMA="7"
 
 
 echo -e "INVERSION - INICIO: "$( date "+%Y%m%d%H%M%S" )
@@ -82,6 +82,7 @@ rm -f "${LOG_INVERSION}"
 #################################### CÓDIGO ###########################################################
 
  # Se obtiene el modelo de predicción para la antigüedad máxima. Luego se irá hacia adelante en el tiempo, prediciendo tiempos futuros para el modelo entrenado
+echo -e $( date '+%Y%m%d_%H%M%S' )" Ejecución del PASADO (para velas de ANTIGUEDAD_MAXIMA=${ANTIGUEDAD_MAXIMA}): entrenamiento del modelo..." >>${LOG_INVERSION}
 
 ${PATH_SCRIPTS}master.sh "pasado" "${ANTIGUEDAD_MAXIMA}" "0" "${ACTIVAR_DESCARGAS}" "S" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" "${NUM_EMPRESAS}" "${UMBRAL_SUBIDA_POR_VELA}" "${MIN_COBERTURA_CLUSTER}" "${MIN_EMPRESAS_POR_CLUSTER}" "${P_INICIO}" "${P_FIN}" "${MAX_NUM_FEAT_REDUCIDAS}" 2>>${LOG_INVERSION} 1>>${LOG_INVERSION}
 
@@ -89,26 +90,25 @@ ${PATH_SCRIPTS}master.sh "pasado" "${ANTIGUEDAD_MAXIMA}" "0" "${ACTIVAR_DESCARGA
 for (( ANTIGUEDAD=${ANTIGUEDAD_MINIMA}; ANTIGUEDAD<=${ANTIGUEDAD_MAXIMA}; ANTIGUEDAD++ ))
 do  
 
-rm -Rf /bolsa/futuro/ >>${LOG_INVERSION}
-crearCarpetaSiNoExiste "${DIR_FUT_SUBGRUPOS}"
+	rm -Rf /bolsa/futuro/ >>${LOG_INVERSION}
+	crearCarpetaSiNoExiste "${DIR_FUT_SUBGRUPOS}"
+	
+	echo -e $( date '+%Y%m%d_%H%M%S' )" Ejecución del futuro (para velas de antiguedad=${ANTIGUEDAD}) con TODAS LAS EMPRESAS (lista DIRECTA ó INVERSA, ya da igual, no estamos mirando overfitting)..." >>${LOG_INVERSION}
+	MIN_COBERTURA_CLUSTER=0    # Para predecir, cojo lo que haya, sin minimos. EL modelo ya lo hemos entrenado
+	MIN_EMPRESAS_POR_CLUSTER=1   # Para predecir, cojo lo que haya, sin minimos. EL modelo ya lo hemos entrenado
+	${PATH_SCRIPTS}master.sh "futuro" "${ANTIGUEDAD}" "0" "${ACTIVAR_DESCARGAS}" "S" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" "${NUM_EMPRESAS_INVERSION}" "${UMBRAL_SUBIDA_POR_VELA}" "${MIN_COBERTURA_CLUSTER}" "${MIN_EMPRESAS_POR_CLUSTER}" "20001111" "20991111" "${MAX_NUM_FEAT_REDUCIDAS}" 2>>${LOG_INVERSION} 1>>${LOG_INVERSION}
+	
+	echo -e "Guardamos la prediccion del FUTURO de todos los SUBGRUPOS en la carpeta de INVERSION, para apostar dinero REAL..." >>${LOG_INVERSION}
 
-
-echo -e $( date '+%Y%m%d_%H%M%S' )" Ejecución del futuro (para velas de antiguedad=ANTIGUEDAD) con TODAS LAS EMPRESAS (lista DIRECTA ó INVERSA, ya da igual, no estamos mirando overfitting)..." >>${LOG_INVERSION}
-MIN_COBERTURA_CLUSTER=0    # Para predecir, cojo lo que haya, sin minimos. EL modelo ya lo hemos entrenado
-MIN_EMPRESAS_POR_CLUSTER=1   # Para predecir, cojo lo que haya, sin minimos. EL modelo ya lo hemos entrenado
-${PATH_SCRIPTS}master.sh "futuro" "$ANTIGUEDAD" "0" "${ACTIVAR_DESCARGAS}" "S" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" "${NUM_EMPRESAS_INVERSION}" "${UMBRAL_SUBIDA_POR_VELA}" "${MIN_COBERTURA_CLUSTER}" "${MIN_EMPRESAS_POR_CLUSTER}" "20001111" "20991111" "${MAX_NUM_FEAT_REDUCIDAS}" 2>>${LOG_INVERSION} 1>>${LOG_INVERSION}
-
-echo -e "Guardamos la prediccion del FUTURO de todos los SUBGRUPOS en la carpeta de INVERSION, para apostar dinero REAL..." >>${LOG_INVERSION}
-
-while IFS= read -r -d '' -u 9
-do
-	if [[ $REPLY == *"COMPLETO_PREDICCION"* ]]; then
-		echo "Procesamos  ${REPLY}  y lo copiamos en ${DIR_INVERSION} ..."  >>${LOG_INVERSION}
-		ficheronombre=$(basename $REPLY)
-		directorio=$(dirname $REPLY)
-		$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/InversionUtils.py" "${directorio}/${ficheronombre}"  "0" "${DIR_DROPBOX}" "${ficheronombre}" >> ${LOG_INVERSION}
-	fi
-done 9< <( find ${DIR_FUT_SUBGRUPOS} -type f -exec printf '%s\0' {} + )
+	while IFS= read -r -d '' -u 9
+	do
+		if [[ $REPLY == *"COMPLETO_PREDICCION"* ]]; then
+			echo "Procesamos  ${REPLY}  y lo copiamos en ${DIR_INVERSION} ..."  >>${LOG_INVERSION}
+			ficheronombre=$(basename $REPLY)
+			directorio=$(dirname $REPLY)
+			$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/InversionUtils.py" "${directorio}/${ficheronombre}"  "0" "${DIR_DROPBOX}" "${ficheronombre}" >> ${LOG_INVERSION}
+		fi
+	done 9< <( find ${DIR_FUT_SUBGRUPOS} -type f -exec printf '%s\0' {} + )
 
 done
 
