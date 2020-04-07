@@ -1,0 +1,3 @@
+empresa|antiguedad|mercado|anio|mes|dia|hora|minuto|volumen|high|low|close|open|TARGET|TARGET_PREDICHO|TARGET_PREDICHO_PROB
+ALOT|0|NASDAQ|2020|4|7|22|0|76287|6.97|5.73|5.89|6.81||1.0|0.87
+BBCP|0|NASDAQ|2020|4|7|21|59|94618|2.96|2.32|2.56|2.66||1.0|0.84
