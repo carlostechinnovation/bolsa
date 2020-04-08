@@ -138,12 +138,13 @@ subgrupos=resultadoAnalisis['subgrupo'].unique().tolist()
 ax = plt.gca()  # gca significa 'get current axis'
 for subgrupo in subgrupos:
     resultadoPorSubgrupo=resultadoAnalisis.loc[resultadoAnalisis['subgrupo'] == subgrupo]
-    resultadoPorSubgrupo.plot(kind='line', x='fecha', y='precisionMedia', ax=ax, label=subgrupo, marker="+")
+    media = np.mean(resultadoPorSubgrupo['precisionMedia'])
+    resultadoPorSubgrupo.plot(kind='line', x='fecha', y='precisionMedia', ax=ax, label=subgrupo+" --> "+'{:.2f}%'.format(media), marker="+")
 ax.tick_params(axis='x', labelrotation=20)  # Rota las etiquetas del eje X
 formatter = mdates.DateFormatter("%Y-%m-%d")
-ax.xaxis.set_major_formatter(formatter)
+#ax.xaxis.set_major_formatter(formatter)
 locator = mdates.DayLocator()
-ax.xaxis.set_major_locator(locator)
+#ax.xaxis.set_major_locator(locator)
 plt.title('Evolución de la PRECISION cada modelo entrenado de subgrupo')
 plt.xticks(rotation=90, ha='right')
 #plt.show()
@@ -154,12 +155,13 @@ plt.close()
 ax2 = plt.gca()  # gca significa 'get current axis'
 for subgrupo in subgrupos:
     resultadoPorSubgrupo=resultadoAnalisis.loc[resultadoAnalisis['subgrupo'] == subgrupo]
-    resultadoPorSubgrupo.plot(kind='line', x='fecha', y='rentaMedia', ax=ax2, label=subgrupo, marker="+")
+    media = np.mean(resultadoPorSubgrupo['rentaMedia'])
+    resultadoPorSubgrupo.plot(kind='line', x='fecha', y='rentaMedia', ax=ax2, label=subgrupo+" --> "+'{:.2f}%'.format(media), marker="+")
 ax2.tick_params(axis='x', labelrotation=20)  # Rota las etiquetas del eje X
 formatter = mdates.DateFormatter("%Y-%m-%d")
-ax2.xaxis.set_major_formatter(formatter)
+#ax2.xaxis.set_major_formatter(formatter)
 locator = mdates.DayLocator()
-ax2.xaxis.set_major_locator(locator)
+#ax2.xaxis.set_major_locator(locator)
 plt.title('Evolución de la RENTABILIDAD cada modelo entrenado de subgrupo')
 plt.xticks(rotation=90, ha='right')
 #plt.show()
