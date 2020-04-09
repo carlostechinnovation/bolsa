@@ -85,7 +85,7 @@ resultadoAnalisis=pd.DataFrame(columns=["fecha", "anio", "mes", "dia", "subgrupo
 for group_name, df_group in grupos:
     #En cada antigüedad se reinician los contadores
     rentaMedia=0
-    rentasAcumuladas=[]
+    rentasSubgrupo=[]
     anio=0
     mes=0
     dia=0
@@ -94,7 +94,7 @@ for group_name, df_group in grupos:
     precisionMedia=-1
 
     for row_index, row in df_group.iterrows():
-        rentasAcumuladas.append(row['rendimiento'])
+        rentasSubgrupo.append(row['rendimiento'])
         anio=row['anio_y']
         mes = row['mes_y']
         dia = row['dia_y']
@@ -110,10 +110,10 @@ for group_name, df_group in grupos:
         precisionMedia = numPrecisionAcertada / (numPrecisionAcertada + numPrecisionFallada)
 
     # Se calcula la renta media
-    rentaMedia = np.mean(rentasAcumuladas)
+    rentaMedia = np.mean(rentasSubgrupo)
 
     # Se cuenta el número de elementos analizados por subgrupo
-    numElementos=len(rentasAcumuladas)
+    numElementos=len(rentasSubgrupo)
 
     # Se imprimen los resultados
     print('\nANIO/MES/DIA: {:.0f}'.format(anio)+"/"+'{:.0f}'.format(mes)+"/"+'{:.0f}'.format(dia))
@@ -126,8 +126,32 @@ for group_name, df_group in grupos:
     datetime_str = str(dia)+'/'+str(mes)+'/'+str(anio)
     fecha = datetime.strptime(datetime_str, '%d/%m/%Y')
 
-    nuevaFila = [{'fecha': fecha, 'anio': anio, 'mes': mes, 'dia': dia, 'subgrupo': subgrupo, 'precisionMedia': precisionMedia, 'rentaMedia': rentaMedia, 'numElmentos': '{:.0f}'.format(numElementos)}]
+    nuevaFila = [{'fecha': fecha, 'anio': anio, 'mes': mes, 'dia': dia, 'subgrupo': subgrupo, 'precisionMedia': precisionMedia, 'rentaMedia': rentaMedia, 'numElementos': '{:.0f}'.format(numElementos)}]
     resultadoAnalisis=resultadoAnalisis.append(nuevaFila,ignore_index=True,sort=False)
+
+# Separación por subgrupos
+resultadoAnalisis['aniomesdia']=10000*resultadoAnalisis['anio']+100*resultadoAnalisis['mes']+resultadoAnalisis['dia']
+subgrupos=resultadoAnalisis['subgrupo'].unique().tolist()
+
+# Se calcula la renta acumulada
+resultadoAnalisisAux=pd.DataFrame(columns=["fecha", "anio", "mes", "dia", "subgrupo", "precisionMedia", "rentaMedia", "rentaAcumulada"])
+for subgrupo in subgrupos:
+    resultadoPorSubgrupo = resultadoAnalisis.loc[resultadoAnalisis['subgrupo'] == subgrupo]
+    resultadoPorSubgrupoAFecha = resultadoAnalisis.loc[resultadoAnalisis['subgrupo'] == subgrupo]['fecha']
+    resultadoPorSubgrupoBFecha = resultadoAnalisis.loc[resultadoAnalisis['subgrupo'] == subgrupo]['fecha']
+    for fechaA in resultadoPorSubgrupoAFecha:
+        rentaAcumulada=0
+        resultadoACompleto = resultadoPorSubgrupo.loc[resultadoPorSubgrupo['fecha'] == fechaA]
+        for fechaB in resultadoPorSubgrupoBFecha:
+            resultadoBCompleto = resultadoPorSubgrupo.loc[resultadoPorSubgrupo['fecha'] == fechaB]
+            if int(resultadoACompleto['aniomesdia'])>=int(resultadoBCompleto['aniomesdia']):
+                # Para los resultados anteriores o iguales en fecha, se calcula la rentaAcumulada
+                rentaAcumulada += float(resultadoBCompleto['rentaMedia'])
+
+        nuevaFilaAux=resultadoACompleto
+        nuevaFilaAux.loc[:, 'rentaAcumulada'] = rentaAcumulada
+        resultadoAnalisisAux=resultadoAnalisisAux.append(nuevaFilaAux,ignore_index=True,sort=False)
+resultadoAnalisis=resultadoAnalisisAux
 
 # Se escriben los resultados a un Excel
 pathCsvResultados=dirAnalisis+"RESULTADOS_ANALISIS.csv"
@@ -135,8 +159,6 @@ print("Guardando: " + pathCsvResultados)
 resultadoAnalisis.to_csv(pathCsvResultados, index=False, sep='|')
 
 # Se pintan en dos gráficas: precisión media y rentabilidad media
-resultadoAnalisis['aniomesdia']=10000*resultadoAnalisis['anio']+100*resultadoAnalisis['mes']+resultadoAnalisis['dia']
-subgrupos=resultadoAnalisis['subgrupo'].unique().tolist()
 
 # PRECISIÓN MEDIA
 ax = plt.gca()  # gca significa 'get current axis'
@@ -149,7 +171,7 @@ formatter = mdates.DateFormatter("%Y-%m-%d")
 #ax.xaxis.set_major_formatter(formatter)
 locator = mdates.DayLocator()
 #ax.xaxis.set_major_locator(locator)
-plt.title('Evolución de la PRECISION cada modelo entrenado de subgrupo')
+plt.title('PRECISION por subgrupo y fecha')
 plt.xticks(rotation=90, ha='right')
 #plt.show()
 plt.savefig(dirAnalisis+"precision.png")
@@ -166,11 +188,32 @@ formatter = mdates.DateFormatter("%Y-%m-%d")
 #ax2.xaxis.set_major_formatter(formatter)
 locator = mdates.DayLocator()
 #ax2.xaxis.set_major_locator(locator)
-plt.title('Evolución de la RENTABILIDAD cada modelo entrenado de subgrupo')
+plt.title('RENTABILIDAD por subgrupo y fecha')
 plt.xticks(rotation=90, ha='right')
 #plt.show()
 plt.savefig(dirAnalisis+"rentabilidad.png")
 plt.close()
+
+# RENTABILIDAD ACUMULADA
+ax3 = plt.gca()  # gca significa 'get current axis'
+for subgrupo in subgrupos:
+    resultadoPorSubgrupo=resultadoAnalisis.loc[resultadoAnalisis['subgrupo'] == subgrupo]
+    rentasAcumuladas=resultadoPorSubgrupo['rentaAcumulada']
+    #Se toma la última fila del subgrupo para sacar la renta acumulada, y también el número de elementos
+    ultimaRentaAcumulada=rentasAcumuladas.iloc[-1]
+    numeroDiasAnalizados=len(rentasAcumuladas)
+    resultadoPorSubgrupo.plot(kind='line', x='fecha', y='rentaAcumulada', ax=ax3, label=subgrupo+" --> "+'{:.1f}%'.format(ultimaRentaAcumulada)+', {:.0f}'.format(numeroDiasAnalizados)+' días', marker="+")
+ax3.tick_params(axis='x', labelrotation=20)  # Rota las etiquetas del eje X
+formatter = mdates.DateFormatter("%Y-%m-%d")
+#ax2.xaxis.set_major_formatter(formatter)
+locator = mdates.DayLocator()
+#ax2.xaxis.set_major_locator(locator)
+plt.title('RENTABILIDAD ACUMULADA por subgrupo y fecha')
+plt.xticks(rotation=90, ha='right')
+#plt.show()
+plt.savefig(dirAnalisis+"rentabilidadAcumulada.png")
+plt.close()
+
 
 print("\n--- InversionUtilsPosteriori: FIN ---")
 
