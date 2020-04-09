@@ -408,10 +408,12 @@ elif (modoTiempo == "futuro" and pathCsvReducido.endswith('.csv') and os.path.is
     inputFeaturesyTarget = pd.read_csv(pathCsvReducido, index_col=0, sep='|')
     print("inputFeaturesyTarget: " + str(inputFeaturesyTarget.shape[0]) + " x " + str(inputFeaturesyTarget.shape[1]))
 
-    print("Eliminamos las features muy correladas (umbral =" + str(umbralFeaturesCorrelacionadas) + ") aprendido en el PASADO:")
-    columnasCorreladas = pickle.load(open(pathListaColumnasCorreladasDrop, 'rb'))
-    inputFeaturesyTarget.drop(columnasCorreladas, axis=1, inplace=True)
-    print(columnasCorreladas)
+    print("Si las hay, eliminamos las features muy correladas (umbral =" + str(umbralFeaturesCorrelacionadas) + ") aprendido en el PASADO..")
+    if os.path.exists(pathListaColumnasCorreladasDrop):
+        columnasCorreladas = pickle.load(open(pathListaColumnasCorreladasDrop, 'rb'))
+        inputFeaturesyTarget.drop(columnasCorreladas, axis=1, inplace=True)
+        print(columnasCorreladas)
+
     print("Matriz de correlaciones corregida (FUTURO):")
     matrizCorr = inputFeaturesyTarget.corr()
     print(matrizCorr)
