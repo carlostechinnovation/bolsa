@@ -112,17 +112,21 @@ for group_name, df_group in grupos:
     # Se calcula la renta media
     rentaMedia = np.mean(rentasAcumuladas)
 
+    # Se cuenta el número de elementos analizados por subgrupo
+    numElementos=len(rentasAcumuladas)
+
     # Se imprimen los resultados
     print('\nANIO/MES/DIA: {:.0f}'.format(anio)+"/"+'{:.0f}'.format(mes)+"/"+'{:.0f}'.format(dia))
     print(' SUBGRUPO: {}'.format(subgrupo))
     print(' PRECISION MEDIA: {:.0f}'.format(numPrecisionAcertada)+'/'+'{:.0f}'.format(numPrecisionAcertada+numPrecisionFallada)+' = {:.2f}'.format(precisionMedia))
     print(' RENTABILIDAD MEDIA: {:.2f}'.format(rentaMedia))
+    print(' NUMERO ELEMENTOS: {:.0f}'.format(numElementos))
 
     # Se guardan los resultados en un DataFrame
     datetime_str = str(dia)+'/'+str(mes)+'/'+str(anio)
     fecha = datetime.strptime(datetime_str, '%d/%m/%Y')
 
-    nuevaFila = [{'fecha': fecha, 'anio': anio, 'mes': mes, 'dia': dia, 'subgrupo': subgrupo, 'precisionMedia': precisionMedia, 'rentaMedia': rentaMedia}]
+    nuevaFila = [{'fecha': fecha, 'anio': anio, 'mes': mes, 'dia': dia, 'subgrupo': subgrupo, 'precisionMedia': precisionMedia, 'rentaMedia': rentaMedia, 'numElmentos': '{:.0f}'.format(numElementos)}]
     resultadoAnalisis=resultadoAnalisis.append(nuevaFila,ignore_index=True,sort=False)
 
 # Se escriben los resultados a un Excel
