@@ -46,21 +46,24 @@ datosSP500 = pd.read_csv(filepath_or_buffer=destino, sep=',')
 
 #Sólo me quedo con las filas cuyo precio sea numérico
 datosSP500 = datosSP500.loc[~(datosSP500['SP500'] == '.')]
+# resetting index
+datosSP500.reset_index(inplace = True)
 
 #La fecha se convierte a dato de fecha
 dfSP500=pd.DataFrame(columns=["fecha", "close", "rentaSP500"])
-closeAnterior=0
+closeXDiasFuturos=0
+tamaniodfSP500=len(datosSP500)
 for index, fila in datosSP500.iterrows():
     fecha = datetime.strptime(fila['DATE'], '%Y-%m-%d')
-
-    if 0 < index <= (datosSP500.size - 1):
-        rentaSP500 = 100*(float(fila['SP500'])-float(closeAnterior))/float(closeAnterior)
-    elif index == 0:
+    if index < (tamaniodfSP500 - int(X)):
+        filaXDiasFuturos=datosSP500.iloc[index+int(X)]
+        closeXDiasFuturos=filaXDiasFuturos ['SP500']
+        rentaSP500 = 100*(float(closeXDiasFuturos)-float(fila['SP500']))/float(closeXDiasFuturos)
+    else:
         rentaSP500 = 0
 
     nuevaFila = [{'fecha': fecha, 'close': float(fila['SP500']), 'rentaSP500':float(rentaSP500)}]
     dfSP500 = dfSP500.append(nuevaFila, ignore_index=True, sort=False)
-    closeAnterior = fila['SP500']
 
 # CLOSE SP500
 ax4 = plt.gca()  # gca significa 'get current axis'
@@ -73,13 +76,13 @@ plt.xticks(rotation=90, ha='right')
 plt.savefig(dirAnalisis+"SP500-close.png")
 plt.close()
 
-# RENTABILIDAD SP500
+# RENTABILIDAD SP500 tras X días
 ax4 = plt.gca()  # gca significa 'get current axis'
 dfSP500.plot(kind='line', x='fecha', y='rentaSP500', ax=ax4, label='SP500', marker="+")
 ax4.tick_params(axis='x', labelrotation=20)  # Rota las etiquetas del eje X
 formatter = mdates.DateFormatter("%Y-%m-%d")
 locator = mdates.DayLocator()
-plt.title('RENTABILIDAD DIARIA SP500 en %')
+plt.title('RENTABILIDAD DIARIA SP500 en % - tras '+ X + ' días-')
 plt.xticks(rotation=90, ha='right')
 plt.savefig(dirAnalisis+"SP500-rentabilidad.png")
 plt.close()
@@ -267,7 +270,7 @@ formatter = mdates.DateFormatter("%Y-%m-%d")
 #ax2.xaxis.set_major_formatter(formatter)
 locator = mdates.DayLocator()
 #ax2.xaxis.set_major_locator(locator)
-plt.title('RENTABILIDAD DIARIA por subgrupo y fecha')
+plt.title('RENTABILIDAD DIARIA -tras '+ X + ' días- por subgrupo y fecha')
 plt.xticks(rotation=90, ha='right')
 #plt.show()
 plt.savefig(dirAnalisis+"rentabilidad.png")
@@ -285,7 +288,7 @@ for subgrupo in subgrupos:
 ax3.tick_params(axis='x', labelrotation=20)  # Rota las etiquetas del eje X
 formatter = mdates.DateFormatter("%Y-%m-%d")
 locator = mdates.DayLocator()
-plt.title('RENTABILIDAD ACUMULADA por subgrupo y fecha')
+plt.title('RENTABILIDAD ACUMULADA -tras '+ X + ' días SOLAPADOS- por subgrupo y fecha')
 plt.xticks(rotation=90, ha='right')
 #plt.show()
 plt.savefig(dirAnalisis+"rentabilidadAcumulada.png")
@@ -301,7 +304,7 @@ for subgrupo in subgrupos:
 ax4.tick_params(axis='x', labelrotation=20)  # Rota las etiquetas del eje X
 formatter = mdates.DateFormatter("%Y-%m-%d")
 locator = mdates.DayLocator()
-plt.title('RENTABILIDAD DIARIA vs SP500 por subgrupo y fecha')
+plt.title('RENTABILIDAD DIARIA vs SP500 -tras '+ X + ' días- por subgrupo y fecha')
 plt.xticks(rotation=90, ha='right')
 #plt.show()
 plt.savefig(dirAnalisis+"rentabilidadvsSP500.png")
@@ -319,7 +322,7 @@ for subgrupo in subgrupos:
 ax5.tick_params(axis='x', labelrotation=20)  # Rota las etiquetas del eje X
 formatter = mdates.DateFormatter("%Y-%m-%d")
 locator = mdates.DayLocator()
-plt.title('RENTABILIDAD ACUMULADA vs SP500 por subgrupo y fecha')
+plt.title('RENTABILIDAD ACUMULADA vs SP500 -tras '+ X + ' días SOLAPADOS- por subgrupo y fecha')
 plt.xticks(rotation=90, ha='right')
 #plt.show()
 plt.savefig(dirAnalisis+"rentabilidadAcumuladavsSP500.png")
