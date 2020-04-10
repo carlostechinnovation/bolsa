@@ -319,7 +319,7 @@ for subgrupo in subgrupos:
 ax5.tick_params(axis='x', labelrotation=20)  # Rota las etiquetas del eje X
 formatter = mdates.DateFormatter("%Y-%m-%d")
 locator = mdates.DayLocator()
-plt.title('RENTABILIDAD ACUMULADA por subgrupo y fecha')
+plt.title('RENTABILIDAD ACUMULADA vs SP500 por subgrupo y fecha')
 plt.xticks(rotation=90, ha='right')
 #plt.show()
 plt.savefig(dirAnalisis+"rentabilidadAcumuladavsSP500.png")
