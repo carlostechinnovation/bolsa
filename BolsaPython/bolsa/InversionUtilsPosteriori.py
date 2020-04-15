@@ -28,12 +28,12 @@ B = sys.argv[8]
 
 #Descarga del histórico del SP500
 today = date.today()
-fechaInicio="2019-04-09"
+fechaInicio="2019-01-01"
 fechaFin=today.strftime("%Y-%m-%d")
 url="https://fred.stlouisfed.org/graph/fredgraph.csv?bgcolor=%23e1e9f0&chart_type=line&drp=0&fo=open%20sans&" \
     "graph_bgcolor=%23ffffff&height=450&mode=fred&recession_bars=on&txtcolor=%23444444&ts=12&tts=12&width=1168&" \
     "nt=0&thu=0&trc=0&show_legend=yes&show_axis_titles=yes&show_tooltip=yes&id=SP500&scale=left&cosd="+fechaInicio\
-    +"&coed=2020-04-09&line_color=%234572a7&link_values=false&line_style=solid&mark_type=none&mw=3&lw=2&ost=-99999&" \
+    +"&coed=fechaFin&line_color=%234572a7&link_values=false&line_style=solid&mark_type=none&mw=3&lw=2&ost=-99999&" \
      "oet=99999&mma=0&fml=a&fq=Daily%2C%20Close&fam=avg&fgst=lin&fgsnd=2010-04-12&line_index=1&transformation=lin&" \
      "vintage_date="+fechaFin+"&revision_date=2020-04-10&nd=2010-04-12"
 destino=dirAnalisis+"SP500.csv"
@@ -121,6 +121,12 @@ for filename in ficherosGrandesCero:
     fechaFichero=int(filename[(filename.rfind('/')+1):(filename.rfind('/')+9)])
     #Se tomará sólo el fichero grande más reciente
     if(fechaTemporal<fechaFichero):
+        fechaTemporal=fechaFichero
+
+for filename in ficherosGrandesCero:
+    fechaFichero=int(filename[(filename.rfind('/')+1):(filename.rfind('/')+9)])
+    #Se tomará sólo el fichero grande más reciente
+    if fechaFichero==fechaTemporal:
         ficherosGrandesCeroAAnalizar.append(filename)
 
 for filename in ficherosGrandesCeroAAnalizar:
