@@ -148,7 +148,7 @@ def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmp
   # Limpiar OUTLIERS
   # URL: https://scikit-learn.org/stable/modules/outlier_detection.html
   if modoTiempo == "pasado":
-      detector_outliers = IsolationForest(contamination='auto', random_state=42)
+      detector_outliers = IsolationForest()
       df3aux = entradaFeaturesYTarget3.drop('TARGET', axis=1)
       detector_outliers.fit(df3aux)  # fit 10 trees
       pickle.dump(detector_outliers, open(pathModeloOutliers, 'wb'))

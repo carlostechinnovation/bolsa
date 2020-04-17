@@ -2,6 +2,9 @@ import sys
 import os
 import pandas as pd
 
+#EXPLICACION
+# Generador de ficheros GRANDE y MANEJABLE a partir del fichero gigante generado para una antiguedad
+
 print("--- InversionUtils: INICIO ---")
 pathFicheroEntrada = sys.argv[1]
 antiguedad = sys.argv[2]

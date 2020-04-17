@@ -188,13 +188,6 @@ cat "${DIR_LOGS}"$(ls ${DIR_LOGS} | grep "pasado") | grep "Modelo ganador"  | gr
 echo -e "---- FUTURO (fut1-fut2, lista inversa) ---"    >> ${LOG_VALIDADOR}
 cat "${LOG_VALIDADOR}" | grep "Porcentaje aciertos"   >> ${LOG_VALIDADOR}
 
-
-################################################################################################
-# Prediccion del FUTURO para poner dinero. Esto va a crontab
-################################################################################################
-
-#/home/carloslinux/Desktop/GIT_BOLSA/BolsaScripts/predecir_futuro_real.sh
-
 ################################################################################################
 
 echo -e "VALIDACION - FIN: "$( date "+%Y%m%d%H%M%S" )
