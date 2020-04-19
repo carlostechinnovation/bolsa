@@ -172,6 +172,84 @@ def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmp
   print("entradaFeaturesYTarget4 (sin outliers):" + str(entradaFeaturesYTarget4.shape[0]) + " x " + str(entradaFeaturesYTarget4.shape[1]))
   # entradaFeaturesYTarget4.to_csv(path_csv_completo + "_TEMP04", index=True, sep='|')  # UTIL para testIntegracion
 
+  # ---------------------------------------------
+  # # Nota: he visto que no sale ninún caso en lo nuestro, así que lo comento, para no complicar el código
+  # # Se eliminan todas las features que sean poco significativas (es decir, si contienen un único valor
+  # # en más del xx% de los casos).
+  # # No se tiene en cuenta la columna TARGET (que casi seguro que está presente)
+  # # Se sigue el criterio de: https://www.kaggle.com/jesucristo/1-house-prices-solution-top-1
+  # overfit = []
+  # for i in entradaFeaturesYTarget4.columns:
+  #     counts = entradaFeaturesYTarget4[i].value_counts()
+  #     zeros = counts.iloc[0]
+  #     if zeros / len(entradaFeaturesYTarget4) > 0.8:
+  #         overfit.append(i)
+  # overfit = list(overfit)
+  # overfit.remove("TARGET")
+  # print("entradaFeaturesYTarget4 antes de quitar filas no significativas: " + str(entradaFeaturesYTarget4.shape[0]))
+  # entradaFeaturesYTarget4 = entradaFeaturesYTarget4.drop(overfit, axis=1)
+  # print("entradaFeaturesYTarget4 después de quitar filas no significativas: " + str(entradaFeaturesYTarget4.shape[0]))
+
+  # ---------------------------------------------
+  # #KMEANS
+  # # Clusterizamos los datos del PASADO con target=1, y nos quedamos sólo con el cluster con más elementos. Al resto
+  # # de clusters, los ponemos target=0
+  # if modoTiempo == "pasado":
+  #     # Busco el mejor valor de K para k-means
+  #     filasConTargetUno = entradaFeaturesYTarget4.loc[entradaFeaturesYTarget4['TARGET'] == 1]
+  #     filasConTargetCeros = entradaFeaturesYTarget4.loc[entradaFeaturesYTarget4['TARGET'] == 0]
+  #     print("filasConTargetUno: " + str(filasConTargetUno.shape[0]))
+  #     print("filasConTargetCero: " + str(filasConTargetCeros.shape[0]))
+  #     distortions = []
+  #     K = range(1, 10)
+  #     for k in K:
+  #         kmeanModel = KMeans(n_clusters=k).fit(filasConTargetUno)
+  #         kmeanModel.fit(filasConTargetUno)
+  #         distortions.append(sum(np.min(cdist(filasConTargetUno, kmeanModel.cluster_centers_, 'euclidean'), axis=1)) /
+  #                            filasConTargetUno.shape[0])
+  #
+  #     # El k óptimo será el de menor distorsión respecto a su valor anterior
+  #     distorsionAnterior = 1000000
+  #     variacionAnterior = 0
+  #     kOptimo = 2
+  #     difAnterior = 0
+  #     for dist in distortions:
+  #         variacion = distorsionAnterior / (distorsionAnterior - dist)
+  #         dif = variacionAnterior - variacion
+  #         if kOptimo > 2:
+  #             if (difAnterior - dif) < dif:
+  #                 kOptimo += 1
+  #             else:
+  #                 break
+  #         else:
+  #             kOptimo += 1
+  #         variacionAnterior = variacion
+  #         difAnterior = dif
+  #     # # Plot the elbow
+  #     # plt.plot(K, distortions, 'bx-')
+  #     # plt.xlabel('k')
+  #     # plt.ylabel('Distortion')
+  #     # plt.title('The Elbow Method showing the optimal k')
+  #     # plt.show()
+  #     # Ejecutamos K-MEANS con el k óptimo y lo aplicamos a los datos, para clasificar los tipos de targetUno
+  #     # Nos quedamos con los targetUno del cluster más numeroso
+  #     kmeans = KMeans(n_clusters=kOptimo).fit(filasConTargetUno)
+  #     # # Centroides
+  #     # centroids = kmeans.cluster_centers_
+  #     # print(centroids)
+  #     clusterIDs = kmeans.predict(filasConTargetUno)
+  #     filasConTargetUno['clusterId'] = pd.Series(clusterIDs, index=filasConTargetUno.index)
+  #     clusterMasNumeroso = most_frequent(list(clusterIDs))
+  #     filasConTargetUnoClusterSelec = filasConTargetUno.loc[filasConTargetUno['clusterId'] == clusterMasNumeroso].drop('clusterId', axis=1)
+  #     filasConTargetUnoClusterNoSelec = filasConTargetUno.loc[filasConTargetUno['clusterId'] != clusterMasNumeroso].drop(
+  #         'clusterId', axis=1)
+  #     print("El kOptimo de kmeans es: " + str(kOptimo))
+  #     print("El cluster más numeroso tiene estos elementos: " + str(filasConTargetUnoClusterSelec.shape[0]))
+  #     print("El resto de clusters juntos tiene estos elementos: " + str(filasConTargetUnoClusterNoSelec.shape[0]))
+  #     # Los target Uno de los clusters NO seleccionados se quitan
+  #     entradaFeaturesYTarget4=entradaFeaturesYTarget4.drop(filasConTargetUnoClusterNoSelec.index)
+  # ---------------------------------------------
+
   # ENTRADA: features (+ target)
 
   # Si hay POCAS empresas
@@ -245,6 +323,26 @@ def normalizarFeatures(featuresFichero, path_modelo_normalizador, dir_subgrupo_i
   print("path_modelo_normalizador: " + path_modelo_normalizador)
   print("pathCsvIntermedio: " + pathCsvIntermedio)
 
+  ################################### NORMALIZACIÓN BoX-COX ####################################################
+  # # Los features deben ser estrictamente positivos
+  # featuresModificable=featuresFichero
+  # for nombreColumna in featuresModificable.columns:
+  #     minim = min(featuresModificable[nombreColumna])
+  #     featuresModificable[nombreColumna] = featuresModificable[nombreColumna] - minim + 1
+  #
+  # if modoTiempo == "pasado":
+  #     modelo_normalizador = PowerTransformer(method='box-cox', standardize=True, copy=True).fit(featuresModificable)
+  #     pickle.dump(modelo_normalizador, open(path_modelo_normalizador, 'wb'))
+  #
+  # # Pasado o futuro: Cargar normalizador
+  # modelo_normalizador = pickle.load(open(path_modelo_normalizador, 'rb'))
+  #
+  # print("Aplicando normalizacion, manteniendo indices y nombres de columnas...")
+  # featuresFicheroNorm = pd.DataFrame(data=modelo_normalizador.transform(featuresModificable), index=featuresModificable.index,
+  #                                    columns=featuresModificable.columns)
+  #######################################################################################
+
+  ################################### NORMALIZACIÓN YEO-JOHNSON ####################################################
   # Vamos a normalizar z-score (media 0, std_dvt=1), pero yeo-johnson tiene un bug (https://github.com/scipy/scipy/issues/10821) que se soluciona sumando una constante a toda la matriz, lo cual no afecta a la matriz normalizada
   featuresFichero = featuresFichero + 1.015815
 

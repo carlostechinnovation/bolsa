@@ -223,6 +223,7 @@ public class GestorFicheros {
 					// En la primera línea está la cabecera de parametros
 					data = row.split("\\|");
 
+//					System.out.println(">>>>row: "+row);
 					// Se guardan los parámetros con su orden
 					for (int i = 0; i < data.length; i++) {
 						parametrosNombresConOrden.put(i, data[i]);

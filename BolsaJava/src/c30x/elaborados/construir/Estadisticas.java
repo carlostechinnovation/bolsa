@@ -139,7 +139,7 @@ public class Estadisticas extends DescriptiveStatistics {
 	 * Puede tener valores negativos.
 	 */
 	public int getRatioSMA() {
-		return (int) Math.round(100 * (this.getElement(0) / this.getMean()));
+		return (int) Math.round(100 * (this.getElement(0) / getMean()));
 	}
 
 	/**
@@ -163,7 +163,7 @@ public class Estadisticas extends DescriptiveStatistics {
 	 * Puede tener valores negativos.
 	 */
 	public int getRatioUltimoSMA() {
-		return (int) Math.round(100 * (this.getElement((int) getN() - 1) / this.getMean()));
+		return (int) Math.round(100 * (this.getElement((int) getN() - 1) / getMean()));
 	}
 
 	/**

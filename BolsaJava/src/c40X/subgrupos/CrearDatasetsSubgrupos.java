@@ -131,6 +131,7 @@ public class CrearDatasetsSubgrupos implements Serializable {
 		// futuro sería conveniente separar por sector y liquidez (volumen medio de 6
 		// meses en dólares).
 		GestorFicheros gestorFicheros = new GestorFicheros();
+//		System.out.println(">>>>directorioIn: "+directorioIn);
 		File directorioEntrada = new File(directorioIn);
 		HashMap<String, HashMap<Integer, HashMap<String, String>>> datosEntrada;
 		ArrayList<File> ficherosEntradaEmpresas = gestorFicheros.listaFicherosDeDirectorio(directorioEntrada);
@@ -213,6 +214,7 @@ public class CrearDatasetsSubgrupos implements Serializable {
 			datosEntrada = new HashMap<String, HashMap<Integer, HashMap<String, String>>>();
 			ficheroGestionado = iterator.next();
 			MY_LOGGER.debug("Fichero entrada: " + ficheroGestionado.getAbsolutePath());
+//			System.out.println(">>>>>>>>Fichero entrada: "+ ficheroGestionado.getAbsolutePath());
 			// Sólo leo la cabecera y la primera línea de datos, con antigüedad=0. Así
 			// optimizo la lectura
 			datosEntrada = gestorFicheros.leeTodosLosParametrosFicheroDeSoloUnaEmpresaYNFilasDeDatosRecientes(
@@ -230,6 +232,7 @@ public class CrearDatasetsSubgrupos implements Serializable {
 
 			// EXTRACCIÓN DE DATOS DE LA EMPRESA: sólo se usan los datos ESTATICOS, así que
 			// basta coger la PRIMERA fila de datos
+//			System.out.println(">>>>>empresa: "+empresa);
 			datosEmpresaEntrada = datosEntrada.get(empresa);
 
 			Set<Integer> a = datosEmpresaEntrada.keySet();
@@ -237,6 +240,7 @@ public class CrearDatasetsSubgrupos implements Serializable {
 			if (a.iterator().hasNext()) {
 				indicePrimeraFilaDeDatos = a.iterator().next();
 			}
+//			System.out.println(">>>>>indicePrimeraFilaDeDatos: "+indicePrimeraFilaDeDatos);
 			parametros = datosEmpresaEntrada.get(indicePrimeraFilaDeDatos); // PRIMERA FILA
 
 			// ------ SUBGRUPOS según MARKET CAP ------------

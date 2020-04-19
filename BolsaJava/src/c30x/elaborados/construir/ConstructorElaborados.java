@@ -349,11 +349,11 @@ public class ConstructorElaborados implements Serializable {
 //					+ "el parámetro elaborado SCREENER1, o directamente no tiene ningún parámetro para la primera vela. Se pone SCREENER1=0");
 //		}
 //
-//		MY_LOGGER.debug("
+//		MY_LOGGER.debug("SCREENER1: " + SCREENER1 + " para la empresa " + empresa);
 //
 //		// Se añade el parámetro SCREENER1
 //		ordenNombresParametrosSalida.put(ordenNombresParametrosSalida.size(), "SCREENER1");
-//		parametrosAcumulados++;SCREENER1: " + SCREENER1 + " para la empresa " + empresa);
+//		parametrosAcumulados++;
 //
 //		// Se añade el parámetro HYPE1
 //		ordenNombresParametrosSalida.put(ordenNombresParametrosSalida.size(), "HYPE1");
