@@ -38,6 +38,7 @@ crearCarpetaSiNoExisteYVaciarRecursivo() {
 
 ################################################################################################
 PATH_SCRIPTS="${DIR_CODIGOS}BolsaScripts/"
+PYTHON_SCRIPTS="${DIR_CODIGOS}BolsaPython/"
 PARAMS_CONFIG="${PATH_SCRIPTS}parametros.config"
 echo -e "Importando parametros generales..."
 source ${PARAMS_CONFIG}
@@ -104,7 +105,7 @@ if [ "${ACTIVAR_DESCARGAS}" = "N" ];  then
 fi;
 
 echo -e $( date '+%Y%m%d_%H%M%S' )" Ejecución del futuro (para velas de antiguedad=${FUTURO1_t1}) con OTRAS empresas (lista REVERTIDA)..." >>${LOG_VALIDADOR}
-${PATH_SCRIPTS}master.sh "futuro" "$FUTURO1_t1" "1" "${ACTIVAR_DESCARGAS}" "S" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" "${NUM_EMPRESAS}" "${UMBRAL_SUBIDA_POR_VELA}" "${MIN_COBERTURA_CLUSTER}" "${MIN_EMPRESAS_POR_CLUSTER}" "20001111" "20991111" "${MAX_NUM_FEAT_REDUCIDAS}" 2>>${LOG_VALIDADOR} 1>>${LOG_VALIDADOR}
+${PATH_SCRIPTS}master.sh "futuro" "${FUTURO1_t1}" "1" "${ACTIVAR_DESCARGAS}" "S" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" "${NUM_EMPRESAS}" "${UMBRAL_SUBIDA_POR_VELA}" "${MIN_COBERTURA_CLUSTER}" "${MIN_EMPRESAS_POR_CLUSTER}" "20001111" "20991111" "${MAX_NUM_FEAT_REDUCIDAS}" 2>>${LOG_VALIDADOR} 1>>${LOG_VALIDADOR}
 
 echo -e "Atrás $VELAS_RETROCESO velas --> Guardamos la prediccion de todos los SUBGRUPOS en la carpeta de validacion, para analizarla luego..." >>${LOG_VALIDADOR}
 while IFS= read -r -d '' -u 9

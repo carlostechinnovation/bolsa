@@ -12,8 +12,8 @@
 
 #Instantes de las descargas
 #Se analizará el tramo de antiguedad desde máxima hasta minima
-ANTIGUEDAD_MAXIMA="15"
-ANTIGUEDAD_MINIMA="14"
+ANTIGUEDAD_MAXIMA="20"
+ANTIGUEDAD_MINIMA="5"
 
 
 echo -e "INVERSION - INICIO: "$( date "+%Y%m%d%H%M%S" )
