@@ -13,7 +13,7 @@
 #Instantes de las descargas
 #Se analizará el tramo de antiguedad desde máxima hasta minima
 ANTIGUEDAD_MAXIMA="20"
-ANTIGUEDAD_MINIMA="5"
+ANTIGUEDAD_MINIMA="0"
 
 
 echo -e "INVERSION - INICIO: "$( date "+%Y%m%d%H%M%S" )
@@ -78,9 +78,9 @@ rm -f "${LOG_INVERSION}"
 #################################### CÓDIGO ###########################################################
 
 PATH_BACKUP_BUENO_PASADO="/bolsa/pasado_subgrupos_BUENO"
-#echo -e "PASADO - Antes de crear y entrenar nuevos modelos del PASADO, guardamos COPIA DE SEGURIDAD en: ${PATH_BACKUP_BUENO_PASADO}" >>${LOG_INVERSION}
-#rm -Rf "${PATH_BACKUP_BUENO_PASADO}" >>${LOG_INVERSION}
-#cp -Rf "/bolsa/pasado/subgrupos/" "${PATH_BACKUP_BUENO_PASADO}" >>${LOG_INVERSION}
+echo -e "PASADO - Antes de crear y entrenar nuevos modelos del PASADO, guardamos COPIA DE SEGURIDAD en: ${PATH_BACKUP_BUENO_PASADO}" >>${LOG_INVERSION}
+rm -Rf "${PATH_BACKUP_BUENO_PASADO}" >>${LOG_INVERSION}
+cp -Rf "/bolsa/pasado/subgrupos/" "${PATH_BACKUP_BUENO_PASADO}" >>${LOG_INVERSION}
 
 # Se obtiene el modelo de predicción para la antigüedad máxima. Luego se irá hacia adelante en el tiempo, prediciendo tiempos futuros para el modelo entrenado
 echo -e $( date '+%Y%m%d_%H%M%S' )" Ejecución del PASADO (para velas de ANTIGUEDAD_MAXIMA=${ANTIGUEDAD_MAXIMA}): entrenamiento del modelo..." >>${LOG_INVERSION}
@@ -114,11 +114,11 @@ do
 done
 
 
-#echo -e "se RESTABLECEN los modelos del PASADO para cada subgrupos, que eran los BUENOS, como estaban..." >>${LOG_INVERSION}
-#rm -Rf "/bolsa/pasado/"
-#mkdir "/bolsa/pasado/"
-#cp -Rf "${PATH_BACKUP_BUENO_PASADO}" "/bolsa/pasado/" >>${LOG_INVERSION}
-#mv -f "${PATH_BACKUP_BUENO_PASADO}" "/bolsa/pasado/subgrupos/" >>${LOG_INVERSION}
+echo -e "se RESTABLECEN los modelos del PASADO para cada subgrupos, que eran los BUENOS, como estaban..." >>${LOG_INVERSION}
+rm -Rf "/bolsa/pasado/"
+mkdir "/bolsa/pasado/"
+cp -Rf "${PATH_BACKUP_BUENO_PASADO}" "/bolsa/pasado/" >>${LOG_INVERSION}
+mv -f "${PATH_BACKUP_BUENO_PASADO}" "/bolsa/pasado/subgrupos/" >>${LOG_INVERSION}
 
 
 echo -e "INVERSION - FIN: "$( date "+%Y%m%d%H%M%S" )
