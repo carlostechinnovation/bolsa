@@ -24,6 +24,9 @@ M = sys.argv[6]
 F = sys.argv[7]
 B = sys.argv[8]
 
+#------------------------Parámetros análisis---------------
+probUnoMinima=0.8
+
 #------------------------SP500-----------------------------
 
 #Descarga del histórico del SP500
@@ -159,6 +162,7 @@ for group_name, df_group in grupos:
     #En cada antigüedad se reinician los contadores
     rentaMedia=0
     rentasSubgrupo=[]
+    rentasSubgrupoConProbUnoMinima = []
     anio=0
     mes=0
     dia=0
@@ -178,12 +182,19 @@ for group_name, df_group in grupos:
         elif target == 0:
             numPrecisionFallada += 1
 
+        #Selecciono sólo los que superen un umbral de probabilidad
+        if (row['TARGET_PREDICHO_PROB']>probUnoMinima):
+            rentasSubgrupoConProbUnoMinima.append(row['rendimiento'])
+
     # Se calcula la precisión
     if (numPrecisionAcertada + numPrecisionFallada) > 0:
         precisionMedia = numPrecisionAcertada / (numPrecisionAcertada + numPrecisionFallada)
 
     # Se calcula la renta media
     rentaMedia = np.mean(rentasSubgrupo)
+
+    # Se calcula la renta media con probab uno mínima
+    rentaMediaConProbUnoMinima = np.mean(rentasSubgrupoConProbUnoMinima)
 
     # Se cuenta el número de elementos analizados por subgrupo
     numElementos=len(rentasSubgrupo)
@@ -195,6 +206,7 @@ for group_name, df_group in grupos:
     # Se calcula la renta media respecto al SP500
     filaSP500=dfSP500.loc[dfSP500['fecha'] == fecha]
     rentaRelativaSP500 = float(rentaMedia-filaSP500['rentaSP500'])
+    rentaRelativaSP500ConProbUnoMinima = float(rentaMediaConProbUnoMinima - filaSP500['rentaSP500'])
 
     # Se imprimen los resultados
     print('\n ANIO/MES/DIA: {:.0f}'.format(anio) + "/" + '{:.0f}'.format(mes) + "/" + '{:.0f}'.format(dia))
@@ -205,9 +217,11 @@ for group_name, df_group in grupos:
     print(' RENTABILIDAD MEDIA: {:.2f}%'.format(rentaMedia))
     print(' RENTABILIDAD SP500: {:.2f}%'.format(float(filaSP500['rentaSP500'])))
     print(' RENTABILIDAD vs SP500: {:.2f}%'.format(rentaRelativaSP500))
+    print(' RENTABILIDAD MEDIA CON PROB UNO MÍNIMA: {:.2f}%'.format(rentaMediaConProbUnoMinima))
+    print(' RENTABILIDAD vs SP500 CON PROB UNO MÍNIMA: {:.2f}%'.format(rentaRelativaSP500ConProbUnoMinima))
 
     # Se guardan los resultados en un DataFrame
-    nuevaFila = [{'fecha': fecha, 'anio': anio, 'mes': mes, 'dia': dia, 'subgrupo': subgrupo, 'precisionMedia': precisionMedia, 'rentaMedia': rentaMedia, 'numElementos': '{:.0f}'.format(numElementos), 'rentaRelativaSP500': rentaRelativaSP500}]
+    nuevaFila = [{'fecha': fecha, 'anio': anio, 'mes': mes, 'dia': dia, 'subgrupo': subgrupo, 'precisionMedia': precisionMedia, 'rentaMedia': rentaMedia, 'numElementos': '{:.0f}'.format(numElementos), 'rentaRelativaSP500': rentaRelativaSP500, 'rentaMediaConProbUnoMinima': rentaMediaConProbUnoMinima, 'rentaRelativaSP500ConProbUnoMinima': rentaRelativaSP500ConProbUnoMinima}]
     resultadoAnalisis=resultadoAnalisis.append(nuevaFila,ignore_index=True,sort=False)
 
 # Separación por subgrupos
@@ -215,14 +229,16 @@ resultadoAnalisis['aniomesdia']=10000*resultadoAnalisis['anio']+100*resultadoAna
 subgrupos=resultadoAnalisis['subgrupo'].unique().tolist()
 
 # Se calcula la renta acumulada
-resultadoAnalisisAux=pd.DataFrame(columns=["fecha", "anio", "mes", "dia", "subgrupo", "precisionMedia", "rentaMedia", "numElementos", "rentaRelativaSP500", "rentaAcumulada", "rentaAcumuladavsSP500"])
+resultadoAnalisisAux=pd.DataFrame(columns=["fecha", "anio", "mes", "dia", "subgrupo", "precisionMedia", "rentaMedia", "numElementos", "rentaRelativaSP500", "rentaAcumulada", "rentaAcumuladavsSP500", "rentaMediaConProbUnoMinima"])
 for subgrupo in subgrupos:
     resultadoPorSubgrupo = resultadoAnalisis.loc[resultadoAnalisis['subgrupo'] == subgrupo]
     resultadoPorSubgrupoAFecha = resultadoAnalisis.loc[resultadoAnalisis['subgrupo'] == subgrupo]['fecha']
     resultadoPorSubgrupoBFecha = resultadoAnalisis.loc[resultadoAnalisis['subgrupo'] == subgrupo]['fecha']
     for fechaA in resultadoPorSubgrupoAFecha:
         rentaAcumulada=0
+        rentaAcumuladaConProbUnoMinima=0
         rentaAcumuladavsSP500=0
+        rentaAcumuladavsSP500ConProbUnoMinima=0
         resultadoACompleto = resultadoPorSubgrupo.loc[resultadoPorSubgrupo['fecha'] == fechaA]
         for fechaB in resultadoPorSubgrupoBFecha:
             resultadoBCompleto = resultadoPorSubgrupo.loc[resultadoPorSubgrupo['fecha'] == fechaB]
@@ -230,10 +246,14 @@ for subgrupo in subgrupos:
                 # Para los resultados anteriores o iguales en fecha, se calcula la rentaAcumulada y rentaAcumuladavsSP500
                 rentaAcumulada += float(resultadoBCompleto['rentaMedia'])
                 rentaAcumuladavsSP500 += float(resultadoBCompleto['rentaRelativaSP500'])
+                rentaAcumuladaConProbUnoMinima += float(resultadoBCompleto['rentaMediaConProbUnoMinima'])
+                rentaAcumuladavsSP500ConProbUnoMinima += float(resultadoBCompleto['rentaRelativaSP500ConProbUnoMinima'])
 
         nuevaFilaAux=resultadoACompleto
         nuevaFilaAux.loc[:, 'rentaAcumulada'] = rentaAcumulada
         nuevaFilaAux.loc[:, 'rentaAcumuladavsSP500'] = rentaAcumuladavsSP500
+        nuevaFilaAux.loc[:, 'rentaAcumuladaConProbUnoMinima'] = rentaAcumuladaConProbUnoMinima
+        nuevaFilaAux.loc[:, 'rentaAcumuladavsSP500ConProbUnoMinima'] = rentaAcumuladavsSP500ConProbUnoMinima
         resultadoAnalisisAux=resultadoAnalisisAux.append(nuevaFilaAux,ignore_index=True,sort=False)
 resultadoAnalisis=resultadoAnalisisAux
 
@@ -334,7 +354,23 @@ plt.xticks(rotation=90, ha='right')
 plt.savefig(dirAnalisis+"rentabilidadAcumuladavsSP500.png")
 plt.close()
 
-
+# RENTABILIDAD ACUMULADA CON PROB UNO MÍNIMA
+ax6 = plt.gca()  # gca significa 'get current axis'
+for subgrupo in subgrupos:
+    resultadoPorSubgrupo=resultadoAnalisis.loc[resultadoAnalisis['subgrupo'] == subgrupo]
+    rentasAcumuladasvsSP500ConProbUnoMinima=resultadoPorSubgrupo['rentaAcumuladavsSP500ConProbUnoMinima']
+    #Se toma la última fila del subgrupo para sacar la rentasAcumuladasvsSP500ConProbUnoMinima, y también el número de elementos
+    ultimaRentaAcumuladavsSP500ConProbUnoMinima=rentasAcumuladasvsSP500ConProbUnoMinima.iloc[-1]
+    numeroDiasAnalizados=len(rentasAcumuladasvsSP500ConProbUnoMinima)
+    resultadoPorSubgrupo.plot(kind='line', x='fecha', y='rentaAcumuladavsSP500ConProbUnoMinima', ax=ax6, label=subgrupo+" --> "+'{:.1f}%'.format(ultimaRentaAcumuladavsSP500ConProbUnoMinima)+', {:.0f}'.format(numeroDiasAnalizados)+' días', marker="+")
+ax6.tick_params(axis='x', labelrotation=20)  # Rota las etiquetas del eje X
+formatter = mdates.DateFormatter("%Y-%m-%d")
+locator = mdates.DayLocator()
+plt.title('CON UMBRAL PROB MIN = '+'{:.2f}%'.format(probUnoMinima)+' -> RENTABILIDAD ACUMULADA vs SP500 -tras '+ X + ' días SOLAPADOS- por subgrupo y fecha')
+plt.xticks(rotation=90, ha='right')
+#plt.show()
+plt.savefig(dirAnalisis+"rentaAcumuladavsSP500ConProbUnoMinima.png")
+plt.close()
 
 print("\n--- InversionUtilsPosteriori: FIN ---")
 
