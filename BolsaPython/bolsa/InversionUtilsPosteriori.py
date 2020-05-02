@@ -46,7 +46,7 @@ def pintar(resultadoAnalisis, subgrupos, X):
     plt.title('PRECISION por subgrupo y fecha')
     plt.xticks(rotation=90, ha='right')
     #plt.show()
-    plt.savefig(dirAnalisis+"precision"+str(X)+".png")
+    plt.savefig(dirAnalisis+"precision-esperando "+str(X)+" días.png")
     plt.close()
 
     # RENTABILIDAD MEDIA
@@ -65,7 +65,7 @@ def pintar(resultadoAnalisis, subgrupos, X):
     plt.title('RENTABILIDAD DIARIA por subgrupo y fecha')
     plt.xticks(rotation=90, ha='right')
     #plt.show()
-    plt.savefig(dirAnalisis+"rentabilidad"+str(X)+".png")
+    plt.savefig(dirAnalisis+"rentabilidad-esperando "+str(X)+" días.png")
     plt.close()
 
     # RENTABILIDAD ACUMULADA
@@ -83,7 +83,7 @@ def pintar(resultadoAnalisis, subgrupos, X):
     plt.title('RENTABILIDAD ACUMULADA -tras '+ str(X) + ' días SOLAPADOS- por subgrupo y fecha')
     plt.xticks(rotation=90, ha='right')
     #plt.show()
-    plt.savefig(dirAnalisis+"rentabilidadAcumulada"+str(X)+".png")
+    plt.savefig(dirAnalisis+"rentabilidadAcumulada-esperando "+str(X)+" días.png")
     plt.close()
 
     # RENTABILIDAD MEDIA VS SP500
@@ -100,7 +100,7 @@ def pintar(resultadoAnalisis, subgrupos, X):
     plt.title('RENTABILIDAD DIARIA vs SP500 por subgrupo y fecha')
     plt.xticks(rotation=90, ha='right')
     #plt.show()
-    plt.savefig(dirAnalisis+"rentabilidadvsSP500-"+str(X)+".png")
+    plt.savefig(dirAnalisis+"rentabilidadvsSP500-esperando "+str(X)+" días.png")
     plt.close()
 
     # RENTABILIDAD ACUMULADA
@@ -118,7 +118,7 @@ def pintar(resultadoAnalisis, subgrupos, X):
     plt.title('RENTABILIDAD ACUMULADA vs SP500 -tras '+ str(X) + ' días SOLAPADOS- por subgrupo y fecha')
     plt.xticks(rotation=90, ha='right')
     #plt.show()
-    plt.savefig(dirAnalisis+"rentabilidadAcumuladavsSP500-"+str(X)+".png")
+    plt.savefig(dirAnalisis+"rentabilidadAcumuladavsSP500-esperando "+str(X)+" días.png")
     plt.close()
 
     # RENTABILIDAD ACUMULADA CON PROB UNO MÍNIMA
@@ -136,7 +136,7 @@ def pintar(resultadoAnalisis, subgrupos, X):
     plt.title('CON UMBRAL PROB MIN = '+'{:.2f}%'.format(probUnoMinima)+' -> RENTABILIDAD ACUMULADA vs SP500 -tras '+ str(X) + ' días SOLAPADOS- por subgrupo y fecha')
     plt.xticks(rotation=90, ha='right')
     #plt.show()
-    plt.savefig(dirAnalisis+"rentaAcumuladavsSP500ConProbUnoMinima"+str(X)+".png")
+    plt.savefig(dirAnalisis+"rentaAcumuladavsSP500ConProbUnoMinima-esperando "+str(X)+" días.png")
     plt.close()
 
 #-----------------------------------------------------------
