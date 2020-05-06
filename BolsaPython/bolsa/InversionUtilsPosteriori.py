@@ -8,6 +8,7 @@ from datetime import datetime
 import matplotlib.dates as mdates
 import requests
 from datetime import date
+import math
 
 #EXPLICACIÓN:
 #Se recorren los ficheros grandes y manejables, y se saca el rendimiento medio, por día y subgrupo.
@@ -35,8 +36,12 @@ def pintar(resultadoAnalisis, subgrupos, X):
     ax = plt.gca()  # gca significa 'get current axis'
     for subgrupo in subgrupos:
         resultadoPorSubgrupo=resultadoAnalisis.loc[resultadoAnalisis['subgrupo'] == subgrupo]
-        media = np.mean(resultadoPorSubgrupo['precisionMedia'])
-        numeroDiasAnalizados=len(resultadoPorSubgrupo['precisionMedia'])
+        # Se eliminan las precisiones < 0, que son no válidas
+        precisiones=resultadoPorSubgrupo['precisionMedia']
+        precisiones = precisiones[precisiones > 0]
+        media = np.mean(precisiones)
+        numeroDiasAnalizados=len(precisiones)
+        # El plot no me deja no pintar los inválidos: valor -1
         resultadoPorSubgrupo.plot(kind='line', x='fecha', y='precisionMedia', ax=ax, label=subgrupo+" --> "+'{:.0f}%'.format(100*media)+', {:.0f}'.format(numeroDiasAnalizados)+' días', marker="+")
     ax.tick_params(axis='x', labelrotation=20)  # Rota las etiquetas del eje X
     formatter = mdates.DateFormatter("%Y-%m-%d")
@@ -141,21 +146,61 @@ def pintar(resultadoAnalisis, subgrupos, X):
 
 #-----------------------------------------------------------
 def analizar(datosGrandes, datosManejables, X, dfSP500):
+
+    # Se obtiene una relación unívoca entre antigüedad y fecha. El valor 0 será el más reciente. Entonces, si quiero ir hacia el futuro, debo restar posiciones del índice
+    # Se aplicará el mismo formato donde se necesite.
+    fechasAcumuladas = 10000 * datosGrandes['anio'] + 100 * datosGrandes['mes'] + \
+                                   datosGrandes['dia']
+    fechasPorAntiguedad=fechasAcumuladas.unique()
+    listaFechasPorAntiguedad=np.flip(np.sort(fechasPorAntiguedad)).tolist()
+
     # OBTENCIÓN DEL CLOSE PARA LAS FILAS PREDICHAS TRAS X DÍAS POSTERIORES
     datosMergeados = pd.merge(datosGrandes, datosManejables, how='right',
                               on=['empresa', 'anio', 'mes', 'dia', 'close', 'subgrupo'])
-    datosDesplazados = datosMergeados
-    datosDesplazados.loc[:, 'antiguedad_x'] -= int(X)
-    datosDesplazados['antiguedad'] = datosDesplazados['antiguedad_x']
-    datosFuturo = pd.merge(datosGrandes, datosDesplazados, how='right', on=['empresa', 'antiguedad', 'subgrupo'])
-    datosAAnalizar = datosFuturo.loc[datosFuturo['TARGET_y'].isin(
+    #Se busca qué valor en fecha es la antigüedad desplazada
+    datosMergeados['aniomesdia']= 10000 * datosMergeados['anio'] + 100 * datosMergeados['mes'] + \
+      datosMergeados['dia']
+    datosGrandes['aniomesdia'] = 10000 * datosGrandes['anio'] + 100 * datosGrandes['mes'] + \
+                                 datosGrandes['dia']
+
+    ABUSMergeados = datosMergeados.loc[datosMergeados['empresa'] == "ABUS"]
+    ABUSgrandes = datosGrandes.loc[datosGrandes['empresa'] == "ABUS"]
+    ABUSManejables = datosManejables.loc[datosManejables['empresa'] == "ABUS"]
+
+    datosDesplazados=pd.DataFrame()
+    for row_index, row in datosMergeados.iterrows():
+        indice=listaFechasPorAntiguedad.index(row['aniomesdia'])
+        # Desplazo el índice hacia el futuro. Es decir, resto
+        indice-=int(X)
+        #Sólo guardaré la fila si el índice es mayor o igual que 0
+        if indice >= 0:
+            fechaDesplazada=listaFechasPorAntiguedad[indice]
+            fila=datosGrandes.loc[(datosGrandes['aniomesdia']==fechaDesplazada) & (datosGrandes['empresa']==row['empresa'])]
+            # Se encuentra la misma empresa en varios subgrupos. Cogemos el primero, ya que buscamos el close, que es común
+            # si no hay datos, saltamos
+            if len(fila.index)>0:
+                fila=fila.iloc[0]
+                row['closeFuturo']=fila['close']
+                datosDesplazados=datosDesplazados.append(row, ignore_index=True)
+
+    ABUSdesplazados = datosDesplazados.loc[datosDesplazados['empresa'] == "ABUS"]
+
+    datosFuturo = pd.merge(datosGrandes, datosDesplazados, how='right', on=['empresa', 'aniomesdia', 'subgrupo'])
+
+    ABUSgrandes=datosGrandes.loc[datosGrandes['empresa']=="ABUS"]
+    ABUSdesplazados = datosDesplazados.loc[datosDesplazados['empresa'] == "ABUS"]
+    ABUSfuturo = datosFuturo.loc[datosFuturo['empresa'] == "ABUS"]
+
+    datosAAnalizar = datosFuturo.loc[datosFuturo['TARGET_x'].isin(
         ['1', '0'])]  # Son datos tan antiguos que sí tienen su resultado futuro (que es el REAL)
-    datosAAnalizar.loc[:, 'antiguedad_x'] += int(X)
+
 
     # CÁLCULO DE RENDIMIENTO MEDIO POR FECHA Y SUBGRUPO
-    # En fecha_x está el futuro. En fecha_y está el dato predicho. Se genera una columna nueva que obtiene el rendimiento real (close_x vs close_y)
-    datosAAnalizar.loc[:, 'rendimiento'] = 100 * (datosAAnalizar['close_x'] - datosAAnalizar['close_y']) / \
-                                           datosAAnalizar['close_y']
+    # En fecha_x está el futuro. En fecha_y está el dato predicho. Se genera una columna nueva que obtiene el rendimiento real
+    datosAAnalizar.loc[:, 'rendimiento'] = 100 * (datosAAnalizar['closeFuturo'] - datosAAnalizar['close_x']) / \
+                                           datosAAnalizar['close_x']
+
+    prueba = datosAAnalizar.loc[datosAAnalizar['subgrupo'] == "21"]
 
     grupos = datosAAnalizar.groupby(['mes_y', 'dia_y', 'subgrupo'])
 
@@ -206,7 +251,7 @@ def analizar(datosGrandes, datosManejables, X, dfSP500):
         numElementos = len(rentasSubgrupo)
 
         # Se guarda la fecha
-        datetime_str = str(dia) + '/' + str(mes) + '/' + str(anio)
+        datetime_str = str(int(dia)) + '/' + str(int(mes)) + '/' + str(int(anio))
         fecha = datetime.strptime(datetime_str, '%d/%m/%Y')
 
         # Se calcula la renta media respecto al SP500
@@ -360,10 +405,8 @@ for filename in ficherosManejables:
                                           columns=columnasManejables)
     #Debo añadir una columna con el número de subgrupo
     datosFicheroInteresantes['subgrupo']=filename[(filename.rfind('SG')+3):(filename.rfind('SG')+5)].replace('_', '')
-    datosManejables=datosManejables.append(datosFicheroInteresantes)
+    datosManejables=datosManejables.append(datosFicheroInteresantes, ignore_index=True)
 
-
-#---------------------------------LECTURA DE GRANDES_0 Y MANEJABLES-------------------------------
 
 #Se iteran los ficheros grandes, para extraer su contenido
 columnasGrandes=['empresa', 'antiguedad', 'anio', 'mes', 'dia', 'close', 'TARGET']
