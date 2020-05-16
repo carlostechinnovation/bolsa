@@ -13,6 +13,7 @@ import math
 #EXPLICACIÓN:
 #Se recorren los ficheros grandes y manejables, y se saca el rendimiento medio, por día y subgrupo.
 # Se vuelcan en log, excel y dibujo
+from docutils.nodes import subscript
 
 print("--- InversionUtilsPosteriori: INICIO ---")
 
@@ -179,12 +180,10 @@ def analizar(datosGrandes, datosManejables, X, dfSP500):
                 row['closeFuturo']=fila['close']
                 datosDesplazados=datosDesplazados.append(row, ignore_index=True)
 
-
     datosFuturo = pd.merge(datosGrandes, datosDesplazados, how='right', on=['empresa', 'aniomesdia', 'subgrupo'])
 
     datosAAnalizar = datosFuturo.loc[datosFuturo['TARGET_x'].isin(
         ['1', '0'])]  # Son datos tan antiguos que sí tienen su resultado futuro (que es el REAL)
-
 
     # CÁLCULO DE RENDIMIENTO MEDIO POR FECHA Y SUBGRUPO
     # En fecha_x está el futuro. En fecha_y está el dato predicho. Se genera una columna nueva que obtiene el rendimiento real
@@ -403,18 +402,23 @@ datosGrandes=pd.DataFrame()
 contenidosGrandes=[]
 ficherosGrandesCeroAAnalizar=[]
 fechaTemporal=0
-#Se leerán sólo los de la fecha más reciente de entre todos los ficheros grandes
-for filename in ficherosGrandesCero:
-    fechaFichero=int(filename[(filename.rfind('/')+1):(filename.rfind('/')+9)])
-    #Se tomará sólo el fichero grande más reciente
-    if(fechaTemporal<fechaFichero):
-        fechaTemporal=fechaFichero
+subgrupos=[]
 
+# Se leerán sólo los de la fecha más reciente de entre todos los ficheros grandes, para cada subgrupo
+# Cada día sólo salen unos subgrupos, no todos. Así que se buscará el fichero más reciente de cada subgrupo
+# Primero se saca la fecha más reciente de cada subgrupo
 for filename in ficherosGrandesCero:
-    fechaFichero=int(filename[(filename.rfind('/')+1):(filename.rfind('/')+9)])
-    #Se tomará sólo el fichero grande más reciente
-    if fechaFichero==fechaTemporal:
-        ficherosGrandesCeroAAnalizar.append(filename)
+    subgrupo=filename[(filename.rfind('SG') + 3):(filename.rfind('SG') + 5)].replace('_',
+                                                                            '')
+    subgrupos.append(subgrupo)
+#Se hace "unique" de los subgrupos
+subgrupos=set(subgrupos)
+
+for subgrupo in subgrupos:
+    ficherosGrandesCeroPorSubgrupo=[k for k in ficherosGrandesCero if str("_0_SG_"+subgrupo+"_") in k]
+    #El nombre del fichero más reciente del subgrupo comienza por la fecha más grande. Es decir, debo ordenar los ficheros por nombre y coger el primero
+    ficherosGrandesCeroPorSubgrupo.sort(reverse=True)
+    ficherosGrandesCeroAAnalizar.append(ficherosGrandesCeroPorSubgrupo[0])
 
 for filename in ficherosGrandesCeroAAnalizar:
     datosFichero = pd.read_csv(filepath_or_buffer=filename, sep='|')
@@ -423,6 +427,8 @@ for filename in ficherosGrandesCeroAAnalizar:
     datosFicheroInteresantes['subgrupo'] = filename[(filename.rfind('SG') + 3):(filename.rfind('SG') + 5)].replace('_',
                                                                                                                    '')
     datosGrandes=datosGrandes.append(datosFicheroInteresantes)
+    d=datosFicheroInteresantes.loc[datosFicheroInteresantes['subgrupo']=="4"]
+    e=1
 
 #---------------------------------ANÁLISIS-------------------------------
 resultadoAnalisis, subgrupos=analizar(datosGrandes, datosManejables, X, dfSP500)
