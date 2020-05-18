@@ -42,8 +42,9 @@ def pintar(resultadoAnalisis, subgrupos, Y):
         precisiones = precisiones[precisiones > 0]
         media = np.mean(precisiones)
         numeroDiasAnalizados=len(precisiones)
-        # El plot no me deja no pintar los inválidos: valor -1
-        resultadoPorSubgrupo.plot(kind='line', x='fecha', y='precisionMedia', ax=ax, label=subgrupo+" --> "+'{:.0f}%'.format(100*media)+', {:.0f}'.format(numeroDiasAnalizados)+' compras', marker="+")
+        if numeroDiasAnalizados > 0:
+            # El plot no me deja no pintar los inválidos: valor -1
+            resultadoPorSubgrupo.plot(kind='line', x='fecha', y='precisionMedia', ax=ax, label=subgrupo+" --> "+'{:.0f}%'.format(100*media)+', {:.0f}'.format(numeroDiasAnalizados)+' compras', marker="+")
     ax.tick_params(axis='x', labelrotation=20)  # Rota las etiquetas del eje X
     formatter = mdates.DateFormatter("%Y-%m-%d")
     #ax.xaxis.set_major_formatter(formatter)
@@ -79,10 +80,13 @@ def pintar(resultadoAnalisis, subgrupos, Y):
     for subgrupo in subgrupos:
         resultadoPorSubgrupo=resultadoAnalisis.loc[resultadoAnalisis['subgrupo'] == subgrupo]
         rentasAcumuladas=resultadoPorSubgrupo['rentaAcumulada']
+        # Se eliminan los nulos
+        rentasAcumuladas = rentasAcumuladas.dropna()
         #Se toma la última fila del subgrupo para sacar la renta acumulada, y también el número de elementos
-        ultimaRentaAcumulada=rentasAcumuladas.iloc[-1]
         numeroDiasAnalizados=len(rentasAcumuladas)
-        resultadoPorSubgrupo.plot(kind='line', x='fecha', y='rentaAcumulada', ax=ax3, label=subgrupo+" --> "+'{:.1f}%'.format(ultimaRentaAcumulada)+', {:.0f}'.format(numeroDiasAnalizados)+' compras', marker="+")
+        if numeroDiasAnalizados>0:
+            ultimaRentaAcumulada=rentasAcumuladas.iloc[numeroDiasAnalizados-1]
+            resultadoPorSubgrupo.plot(kind='line', x='fecha', y='rentaAcumulada', ax=ax3, label=subgrupo+" --> "+'{:.1f}%'.format(ultimaRentaAcumulada)+', {:.0f}'.format(numeroDiasAnalizados)+' compras', marker="+")
     ax3.tick_params(axis='x', labelrotation=20)  # Rota las etiquetas del eje X
     formatter = mdates.DateFormatter("%Y-%m-%d")
     locator = mdates.DayLocator()
@@ -114,10 +118,13 @@ def pintar(resultadoAnalisis, subgrupos, Y):
     for subgrupo in subgrupos:
         resultadoPorSubgrupo=resultadoAnalisis.loc[resultadoAnalisis['subgrupo'] == subgrupo]
         rentasAcumuladasvsSP500=resultadoPorSubgrupo['rentaAcumuladavsSP500']
+        # Se eliminan los nulos
+        rentasAcumuladasvsSP500 = rentasAcumuladasvsSP500.dropna()
         #Se toma la última fila del subgrupo para sacar la rentaAcumuladavsSP500, y también el número de elementos
-        ultimaRentaAcumuladavsSP500=rentasAcumuladasvsSP500.iloc[-1]
         numeroDiasAnalizados=len(rentasAcumuladasvsSP500)
-        resultadoPorSubgrupo.plot(kind='line', x='fecha', y='rentaAcumuladavsSP500', ax=ax5, label=subgrupo+" --> "+'{:.1f}%'.format(ultimaRentaAcumuladavsSP500)+', {:.0f}'.format(numeroDiasAnalizados)+' compras', marker="+")
+        if numeroDiasAnalizados>0:
+            ultimaRentaAcumuladavsSP500=rentasAcumuladasvsSP500.iloc[numeroDiasAnalizados-1]
+            resultadoPorSubgrupo.plot(kind='line', x='fecha', y='rentaAcumuladavsSP500', ax=ax5, label=subgrupo+" --> "+'{:.1f}%'.format(ultimaRentaAcumuladavsSP500)+', {:.0f}'.format(numeroDiasAnalizados)+' compras', marker="+")
     ax5.tick_params(axis='x', labelrotation=20)  # Rota las etiquetas del eje X
     formatter = mdates.DateFormatter("%Y-%m-%d")
     locator = mdates.DayLocator()
@@ -132,10 +139,13 @@ def pintar(resultadoAnalisis, subgrupos, Y):
     for subgrupo in subgrupos:
         resultadoPorSubgrupo=resultadoAnalisis.loc[resultadoAnalisis['subgrupo'] == subgrupo]
         rentasAcumuladasvsSP500ConProbUnoMinima=resultadoPorSubgrupo['rentaAcumuladavsSP500ConProbUnoMinima']
+        #Se eliminan los nulos
+        rentasAcumuladasvsSP500ConProbUnoMinima=rentasAcumuladasvsSP500ConProbUnoMinima.dropna()
         #Se toma la última fila del subgrupo para sacar la rentasAcumuladasvsSP500ConProbUnoMinima, y también el número de elementos
-        ultimaRentaAcumuladavsSP500ConProbUnoMinima=rentasAcumuladasvsSP500ConProbUnoMinima.iloc[-1]
         numeroDiasAnalizados=len(rentasAcumuladasvsSP500ConProbUnoMinima)
-        resultadoPorSubgrupo.plot(kind='line', x='fecha', y='rentaAcumuladavsSP500ConProbUnoMinima', ax=ax6, label=subgrupo+" --> "+'{:.1f}%'.format(ultimaRentaAcumuladavsSP500ConProbUnoMinima)+', {:.0f}'.format(numeroDiasAnalizados)+' compras', marker="+")
+        if numeroDiasAnalizados>0:
+            ultimaRentaAcumuladavsSP500ConProbUnoMinima=rentasAcumuladasvsSP500ConProbUnoMinima.iloc[numeroDiasAnalizados-1]
+            resultadoPorSubgrupo.plot(kind='line', x='fecha', y='rentaAcumuladavsSP500ConProbUnoMinima', ax=ax6, label=subgrupo+" --> "+'{:.1f}%'.format(ultimaRentaAcumuladavsSP500ConProbUnoMinima)+', {:.0f}'.format(numeroDiasAnalizados)+' compras', marker="+")
     ax6.tick_params(axis='x', labelrotation=20)  # Rota las etiquetas del eje X
     formatter = mdates.DateFormatter("%Y-%m-%d")
     locator = mdates.DayLocator()
@@ -427,8 +437,6 @@ for filename in ficherosGrandesCeroAAnalizar:
     datosFicheroInteresantes['subgrupo'] = filename[(filename.rfind('SG') + 3):(filename.rfind('SG') + 5)].replace('_',
                                                                                                                    '')
     datosGrandes=datosGrandes.append(datosFicheroInteresantes)
-    d=datosFicheroInteresantes.loc[datosFicheroInteresantes['subgrupo']=="4"]
-    e=1
 
 #---------------------------------ANÁLISIS-------------------------------
 resultadoAnalisis, subgrupos=analizar(datosGrandes, datosManejables, X, dfSP500)
