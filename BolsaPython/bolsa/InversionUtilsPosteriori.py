@@ -86,7 +86,8 @@ def pintar(resultadoAnalisis, subgrupos, Y):
         numeroDiasAnalizados=len(rentasAcumuladas)
         if numeroDiasAnalizados>0:
             ultimaRentaAcumulada=rentasAcumuladas.iloc[numeroDiasAnalizados-1]
-            resultadoPorSubgrupo.plot(kind='line', x='fecha', y='rentaAcumulada', ax=ax3, label=subgrupo+" --> "+'{:.1f}%'.format(ultimaRentaAcumulada)+', {:.0f}'.format(numeroDiasAnalizados)+' compras', marker="+")
+            ultimaRentaAcumuladaPorCompra=ultimaRentaAcumulada/numeroDiasAnalizados
+            resultadoPorSubgrupo.plot(kind='line', x='fecha', y='rentaAcumulada', ax=ax3, label=subgrupo+" --> "+'{:.1f}%'.format(ultimaRentaAcumuladaPorCompra)+' por compra', marker="+")
     ax3.tick_params(axis='x', labelrotation=20)  # Rota las etiquetas del eje X
     formatter = mdates.DateFormatter("%Y-%m-%d")
     locator = mdates.DayLocator()
@@ -103,7 +104,8 @@ def pintar(resultadoAnalisis, subgrupos, Y):
         resultadoPorSubgrupo['rentaRelativaSP500']=resultadoPorSubgrupo['rentaRelativaSP500']/int(Y)
         media = np.mean(resultadoPorSubgrupo['rentaRelativaSP500'])
         numeroDiasAnalizados=len(resultadoPorSubgrupo['rentaRelativaSP500'])
-        resultadoPorSubgrupo.plot(kind='line', x='fecha', y='rentaRelativaSP500', ax=ax4, label=subgrupo+" --> "+'{:.1f}%'.format(media)+', {:.0f}'.format(numeroDiasAnalizados)+' compras', marker="+")
+        mediaPorCompra=media/numeroDiasAnalizados
+        resultadoPorSubgrupo.plot(kind='line', x='fecha', y='rentaRelativaSP500', ax=ax4, label=subgrupo+" --> "+'{:.1f}%'.format(mediaPorCompra)+' por compra', marker="+")
     ax4.tick_params(axis='x', labelrotation=20)  # Rota las etiquetas del eje X
     formatter = mdates.DateFormatter("%Y-%m-%d")
     locator = mdates.DayLocator()
@@ -124,7 +126,8 @@ def pintar(resultadoAnalisis, subgrupos, Y):
         numeroDiasAnalizados=len(rentasAcumuladasvsSP500)
         if numeroDiasAnalizados>0:
             ultimaRentaAcumuladavsSP500=rentasAcumuladasvsSP500.iloc[numeroDiasAnalizados-1]
-            resultadoPorSubgrupo.plot(kind='line', x='fecha', y='rentaAcumuladavsSP500', ax=ax5, label=subgrupo+" --> "+'{:.1f}%'.format(ultimaRentaAcumuladavsSP500)+', {:.0f}'.format(numeroDiasAnalizados)+' compras', marker="+")
+            ultimaRentaAcumuladavsSP500PorCompra=ultimaRentaAcumuladavsSP500/numeroDiasAnalizados
+            resultadoPorSubgrupo.plot(kind='line', x='fecha', y='rentaAcumuladavsSP500', ax=ax5, label=subgrupo+" --> "+'{:.1f}%'.format(ultimaRentaAcumuladavsSP500PorCompra)+', por compra', marker="+")
     ax5.tick_params(axis='x', labelrotation=20)  # Rota las etiquetas del eje X
     formatter = mdates.DateFormatter("%Y-%m-%d")
     locator = mdates.DayLocator()
@@ -145,7 +148,8 @@ def pintar(resultadoAnalisis, subgrupos, Y):
         numeroDiasAnalizados=len(rentasAcumuladasvsSP500ConProbUnoMinima)
         if numeroDiasAnalizados>0:
             ultimaRentaAcumuladavsSP500ConProbUnoMinima=rentasAcumuladasvsSP500ConProbUnoMinima.iloc[numeroDiasAnalizados-1]
-            resultadoPorSubgrupo.plot(kind='line', x='fecha', y='rentaAcumuladavsSP500ConProbUnoMinima', ax=ax6, label=subgrupo+" --> "+'{:.1f}%'.format(ultimaRentaAcumuladavsSP500ConProbUnoMinima)+', {:.0f}'.format(numeroDiasAnalizados)+' compras', marker="+")
+            ultimaRentaAcumuladavsSP500ConProbUnoMinimaPorCompra=ultimaRentaAcumuladavsSP500ConProbUnoMinima/numeroDiasAnalizados
+            resultadoPorSubgrupo.plot(kind='line', x='fecha', y='rentaAcumuladavsSP500ConProbUnoMinima', ax=ax6, label=subgrupo+" --> "+'{:.1f}%'.format(ultimaRentaAcumuladavsSP500ConProbUnoMinimaPorCompra)+' por compra', marker="+")
     ax6.tick_params(axis='x', labelrotation=20)  # Rota las etiquetas del eje X
     formatter = mdates.DateFormatter("%Y-%m-%d")
     locator = mdates.DayLocator()
@@ -438,15 +442,25 @@ for filename in ficherosGrandesCeroAAnalizar:
                                                                                                                    '')
     datosGrandes=datosGrandes.append(datosFicheroInteresantes)
 
-#---------------------------------ANÁLISIS-------------------------------
+#---------------------------------ANÁLISIS y DIBUJOS-------------------------------
 resultadoAnalisis, subgrupos=analizar(datosGrandes, datosManejables, X, dfSP500)
-resultadoAnalisisMenosDos, subgruposMenosDos=analizar(datosGrandes, datosManejables, int(X)-2, dfSP500)
-resultadoAnalisisMasDos, subgruposMasDos=analizar(datosGrandes, datosManejables, int(X)+2, dfSP500)
-
-#---------------------------------DIBUJOS-------------------------------
 pintar(resultadoAnalisis, subgrupos, X)
+
+resultadoAnalisisMenosDos, subgruposMenosDos=analizar(datosGrandes, datosManejables, int(X)-2, dfSP500)
 pintar(resultadoAnalisisMenosDos, subgruposMenosDos, int(X)-2)
+
+resultadoAnalisisMasDos, subgruposMasDos=analizar(datosGrandes, datosManejables, int(X)+2, dfSP500)
 pintar(resultadoAnalisisMasDos, subgruposMasDos, int(X)+2)
+resultadoAnalisisMasCuatro, subgruposMasCuatro=analizar(datosGrandes, datosManejables, int(X)+4, dfSP500)
+pintar(resultadoAnalisisMasCuatro, subgruposMasCuatro, int(X)+4)
+resultadoAnalisisMasSeis, subgruposMasSeis=analizar(datosGrandes, datosManejables, int(X)+6, dfSP500)
+pintar(resultadoAnalisisMasSeis, subgruposMasSeis, int(X)+6)
+resultadoAnalisisMasOcho, subgruposMasOcho=analizar(datosGrandes, datosManejables, int(X)+8, dfSP500)
+pintar(resultadoAnalisisMasOcho, subgruposMasOcho, int(X)+8)
+resultadoAnalisisMasDiez, subgruposMasDiez=analizar(datosGrandes, datosManejables, int(X)+10, dfSP500)
+pintar(resultadoAnalisisMasDiez, subgruposMasDiez, int(X)+10)
+resultadoAnalisisMasDoce, subgruposMasDoce=analizar(datosGrandes, datosManejables, int(X)+12, dfSP500)
+pintar(resultadoAnalisisMasDoce, subgruposMasDoce, int(X)+12)
 
 print("\n--- InversionUtilsPosteriori: FIN ---")
 
