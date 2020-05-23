@@ -141,8 +141,10 @@ public class CrearDatasetsSubgrupos implements Serializable {
 
 		HashMap<Integer, HashMap<String, String>> datosEmpresaEntrada = new HashMap<Integer, HashMap<String, String>>();
 
-		// TODAS
-		// ArrayList<String> pathEmpresasTipo0 = new ArrayList<String>(); //TODAS
+		// Para el subgrupo 0 siempre se añade
+		// NO QUITAR, PARA QUE LAS GRÁFICAS FINALES SE PINTEN BASADAS EN ESTE GRUPO,
+		// QUE CONTIENE TODO
+		 ArrayList<String> pathEmpresasTipo0 = new ArrayList<String>(); //TODAS
 
 		// Tipos de empresa segun MARKET CAP (0-6)
 		ArrayList<String> pathEmpresasTipo1 = new ArrayList<String>();// MARKETCAP=MEGA
@@ -244,6 +246,11 @@ public class CrearDatasetsSubgrupos implements Serializable {
 			parametros = datosEmpresaEntrada.get(indicePrimeraFilaDeDatos); // PRIMERA FILA
 
 			if (parametros != null) {
+				
+				// Para el subgrupo 0 siempre se añade
+				// NO QUITAR, PARA QUE LAS GRÁFICAS FINALES SE PINTEN BASADAS EN ESTE GRUPO,
+				// QUE CONTIENE TODO
+				pathEmpresasTipo0.add(ficheroGestionado.getAbsolutePath());
 
 				// ------ SUBGRUPOS según MARKET CAP ------------
 				String mcStr = parametros.get("Market Cap");
@@ -252,9 +259,6 @@ public class CrearDatasetsSubgrupos implements Serializable {
 				if (mcStr != null && !mcStr.isEmpty() && !"-".equals(mcStr)) {
 
 					marketCapValor = Float.valueOf(mcStr);
-
-					// default, incluye a todos. LO quitamos, porque es inutil
-					// pathEmpresasTipo0.add(ficheroGestionado.getAbsolutePath());
 
 					// CLASIFICACIÓN DEL TIPO DE EMPRESA
 					if (marketCapValor < marketCap_nano_max)
@@ -507,60 +511,64 @@ public class CrearDatasetsSubgrupos implements Serializable {
 
 		// Almacenamiento del tipo de empresa en la lista
 		empresasPorTipo = new HashMap<Integer, ArrayList<String>>();
-		// empresasPorTipo.put(0, pathEmpresasTipo0);
-//		empresasPorTipo.put(1, pathEmpresasTipo1);
-//		empresasPorTipo.put(2, pathEmpresasTipo2);
-//		empresasPorTipo.put(3, pathEmpresasTipo3);
-//		empresasPorTipo.put(4, pathEmpresasTipo4);
-//		empresasPorTipo.put(5, pathEmpresasTipo5);
-//		empresasPorTipo.put(6, pathEmpresasTipo6);
-//
-//		empresasPorTipo.put(7, pathEmpresasTipo7);
-//		empresasPorTipo.put(8, pathEmpresasTipo8);
-//		empresasPorTipo.put(9, pathEmpresasTipo9);
-//		empresasPorTipo.put(10, pathEmpresasTipo10);
-//		empresasPorTipo.put(11, pathEmpresasTipo11);
-//		empresasPorTipo.put(12, pathEmpresasTipo12);
-//		empresasPorTipo.put(13, pathEmpresasTipo13);
-//		empresasPorTipo.put(14, pathEmpresasTipo14);
-//		empresasPorTipo.put(15, pathEmpresasTipo15);
-//		empresasPorTipo.put(16, pathEmpresasTipo16);
-//
-//		empresasPorTipo.put(17, pathEmpresasTipo17);
-//		empresasPorTipo.put(18, pathEmpresasTipo18);
-//		empresasPorTipo.put(19, pathEmpresasTipo19);
-//		empresasPorTipo.put(20, pathEmpresasTipo20);
+		// Para el subgrupo 0 siempre se añade
+		// NO QUITAR, PARA QUE LAS GRÁFICAS FINALES SE PINTEN BASADAS EN ESTE GRUPO,
+		// QUE CONTIENE TODO
+		empresasPorTipo.put(0, pathEmpresasTipo0);
+		
+		empresasPorTipo.put(1, pathEmpresasTipo1);
+		empresasPorTipo.put(2, pathEmpresasTipo2);
+		empresasPorTipo.put(3, pathEmpresasTipo3);
+		empresasPorTipo.put(4, pathEmpresasTipo4);
+		empresasPorTipo.put(5, pathEmpresasTipo5);
+		empresasPorTipo.put(6, pathEmpresasTipo6);
+
+		empresasPorTipo.put(7, pathEmpresasTipo7);
+		empresasPorTipo.put(8, pathEmpresasTipo8);
+		empresasPorTipo.put(9, pathEmpresasTipo9);
+		empresasPorTipo.put(10, pathEmpresasTipo10);
+		empresasPorTipo.put(11, pathEmpresasTipo11);
+		empresasPorTipo.put(12, pathEmpresasTipo12);
+		empresasPorTipo.put(13, pathEmpresasTipo13);
+		empresasPorTipo.put(14, pathEmpresasTipo14);
+		empresasPorTipo.put(15, pathEmpresasTipo15);
+		empresasPorTipo.put(16, pathEmpresasTipo16);
+
+		empresasPorTipo.put(17, pathEmpresasTipo17);
+		empresasPorTipo.put(18, pathEmpresasTipo18);
+		empresasPorTipo.put(19, pathEmpresasTipo19);
+		empresasPorTipo.put(20, pathEmpresasTipo20);
 		empresasPorTipo.put(21, pathEmpresasTipo21);
 
-//		empresasPorTipo.put(22, pathEmpresasTipo22);
-//		empresasPorTipo.put(23, pathEmpresasTipo23);
-//		empresasPorTipo.put(24, pathEmpresasTipo24);
-//		empresasPorTipo.put(25, pathEmpresasTipo25);
-//		empresasPorTipo.put(26, pathEmpresasTipo26);
-//
-//		empresasPorTipo.put(27, pathEmpresasTipo27);
-//		empresasPorTipo.put(28, pathEmpresasTipo28);
-//		empresasPorTipo.put(29, pathEmpresasTipo29);
-//		empresasPorTipo.put(30, pathEmpresasTipo30);
-//		empresasPorTipo.put(31, pathEmpresasTipo31);
-//
-//		empresasPorTipo.put(32, pathEmpresasTipo32);
-//		empresasPorTipo.put(33, pathEmpresasTipo33);
-//		empresasPorTipo.put(34, pathEmpresasTipo34);
-//		empresasPorTipo.put(35, pathEmpresasTipo35);
-//		empresasPorTipo.put(36, pathEmpresasTipo36);
-//
-//		empresasPorTipo.put(37, pathEmpresasTipo37);
-//		empresasPorTipo.put(38, pathEmpresasTipo38);
-//		empresasPorTipo.put(39, pathEmpresasTipo39);
-//		empresasPorTipo.put(40, pathEmpresasTipo40);
-//
-//		empresasPorTipo.put(41, pathEmpresasTipo41);
-//		empresasPorTipo.put(42, pathEmpresasTipo42);
-//
-//		empresasPorTipo.put(43, pathEmpresasTipo43);
-//		empresasPorTipo.put(44, pathEmpresasTipo44);
-//		empresasPorTipo.put(45, pathEmpresasTipo45);
+		empresasPorTipo.put(22, pathEmpresasTipo22);
+		empresasPorTipo.put(23, pathEmpresasTipo23);
+		empresasPorTipo.put(24, pathEmpresasTipo24);
+		empresasPorTipo.put(25, pathEmpresasTipo25);
+		empresasPorTipo.put(26, pathEmpresasTipo26);
+
+		empresasPorTipo.put(27, pathEmpresasTipo27);
+		empresasPorTipo.put(28, pathEmpresasTipo28);
+		empresasPorTipo.put(29, pathEmpresasTipo29);
+		empresasPorTipo.put(30, pathEmpresasTipo30);
+		empresasPorTipo.put(31, pathEmpresasTipo31);
+
+		empresasPorTipo.put(32, pathEmpresasTipo32);
+		empresasPorTipo.put(33, pathEmpresasTipo33);
+		empresasPorTipo.put(34, pathEmpresasTipo34);
+		empresasPorTipo.put(35, pathEmpresasTipo35);
+		empresasPorTipo.put(36, pathEmpresasTipo36);
+
+		empresasPorTipo.put(37, pathEmpresasTipo37);
+		empresasPorTipo.put(38, pathEmpresasTipo38);
+		empresasPorTipo.put(39, pathEmpresasTipo39);
+		empresasPorTipo.put(40, pathEmpresasTipo40);
+
+		empresasPorTipo.put(41, pathEmpresasTipo41);
+		empresasPorTipo.put(42, pathEmpresasTipo42);
+
+		empresasPorTipo.put(43, pathEmpresasTipo43);
+		empresasPorTipo.put(44, pathEmpresasTipo44);
+		empresasPorTipo.put(45, pathEmpresasTipo45);
 
 		// Se crea un CSV para cada subgrupo
 		Set<Integer> tipos = empresasPorTipo.keySet();
