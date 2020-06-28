@@ -62,8 +62,9 @@ def pintar(resultadoAnalisis, subgrupos, Y):
         resultadoPorSubgrupo=resultadoAnalisis.loc[resultadoAnalisis['subgrupo'] == subgrupo]
         resultadoPorSubgrupo['rentaMedia'] = resultadoPorSubgrupo['rentaMedia'] / int(Y)
         media = np.mean(resultadoPorSubgrupo['rentaMedia'])
+        std = np.mean(resultadoPorSubgrupo['stdMedia'])
         numeroDiasAnalizados=len(resultadoPorSubgrupo['rentaMedia'])
-        resultadoPorSubgrupo.plot(kind='line', x='fecha', y='rentaMedia', ax=ax2, label=subgrupo+" --> "+'{:.1f}%'.format(media)+', {:.0f}'.format(numeroDiasAnalizados)+' compras', marker="+")
+        resultadoPorSubgrupo.plot(kind='line', x='fecha', y='rentaMedia', ax=ax2, label=subgrupo+" --> "+'{:.1f}%'.format(media)+', {:.0f}'.format(numeroDiasAnalizados)+' compras, '+'std: {:.1f}%'.format(std), marker="+")
     ax2.tick_params(axis='x', labelrotation=20)  # Rota las etiquetas del eje X
     formatter = mdates.DateFormatter("%Y-%m-%d")
     #ax2.xaxis.set_major_formatter(formatter)
@@ -79,6 +80,7 @@ def pintar(resultadoAnalisis, subgrupos, Y):
     ax3 = plt.gca()  # gca significa 'get current axis'
     for subgrupo in subgrupos:
         resultadoPorSubgrupo=resultadoAnalisis.loc[resultadoAnalisis['subgrupo'] == subgrupo]
+        std = np.mean(resultadoPorSubgrupo['stdMedia'])
         rentasAcumuladas=resultadoPorSubgrupo['rentaAcumulada']
         # Se eliminan los nulos
         rentasAcumuladas = rentasAcumuladas.dropna()
@@ -87,7 +89,7 @@ def pintar(resultadoAnalisis, subgrupos, Y):
         if numeroDiasAnalizados>0:
             ultimaRentaAcumulada=rentasAcumuladas.iloc[numeroDiasAnalizados-1]
             ultimaRentaAcumuladaPorCompra=ultimaRentaAcumulada/numeroDiasAnalizados
-            resultadoPorSubgrupo.plot(kind='line', x='fecha', y='rentaAcumulada', ax=ax3, label=subgrupo+" --> "+'{:.1f}%'.format(ultimaRentaAcumuladaPorCompra)+' por compra, '+'{:.0f}'.format(numeroDiasAnalizados)+" c", marker="+")
+            resultadoPorSubgrupo.plot(kind='line', x='fecha', y='rentaAcumulada', ax=ax3, label=subgrupo+" --> "+'{:.1f}%'.format(ultimaRentaAcumuladaPorCompra)+' por compra, '+'{:.0f}'.format(numeroDiasAnalizados)+' c, '+' std: '+'{:.1f}%'.format(std), marker="+")
     ax3.tick_params(axis='x', labelrotation=20)  # Rota las etiquetas del eje X
     formatter = mdates.DateFormatter("%Y-%m-%d")
     locator = mdates.DayLocator()
@@ -207,7 +209,7 @@ def analizar(datosGrandes, datosManejables, X, dfSP500):
     grupos = datosAAnalizar.groupby(['mes_y', 'dia_y', 'subgrupo'])
 
     resultadoAnalisis = pd.DataFrame(
-        columns=["fecha", "anio", "mes", "dia", "subgrupo", "precisionMedia", "rentaMedia", "numElementos",
+        columns=["fecha", "anio", "mes", "dia", "subgrupo", "precisionMedia", "rentaMedia", "stdMedia", "numElementos",
                  "rentaRelativaSP500"])
 
     # Se calculan probabilidades, y se loggean/grafican por antiguedad
@@ -243,11 +245,11 @@ def analizar(datosGrandes, datosManejables, X, dfSP500):
         if (numPrecisionAcertada + numPrecisionFallada) > 0:
             precisionMedia = numPrecisionAcertada / (numPrecisionAcertada + numPrecisionFallada)
 
-        if str(X)=="4" and str(subgrupo)=="30" and mes==5 and dia==5:
-            a=1
-
         # Se calcula la renta media
         rentaMedia = np.mean(rentasSubgrupo)
+
+        #Varianza
+        stdMedia=np.std(rentasSubgrupo)
 
         # Se calcula la renta media con probab uno mínima
         rentaMediaConProbUnoMinima = np.mean(rentasSubgrupoConProbUnoMinima)
@@ -271,6 +273,7 @@ def analizar(datosGrandes, datosManejables, X, dfSP500):
             numPrecisionAcertada + numPrecisionFallada) + ' = {:.2f}'.format(precisionMedia))
         print(' NUMERO ELEMENTOS: {:.0f}'.format(numElementos))
         print(' RENTABILIDAD MEDIA: {:.2f}%'.format(rentaMedia))
+        print(' VARIANZA: {:.2f}%'.format(stdMedia))
         print(' RENTABILIDAD SP500: {:.2f}%'.format(float(filaSP500['rentaSP500'])))
         print(' RENTABILIDAD vs SP500: {:.2f}%'.format(rentaRelativaSP500))
         print(' RENTABILIDAD MEDIA CON PROB UNO MÍNIMA: {:.2f}%'.format(rentaMediaConProbUnoMinima))
@@ -278,7 +281,7 @@ def analizar(datosGrandes, datosManejables, X, dfSP500):
 
         # Se guardan los resultados en un DataFrame
         nuevaFila = [{'fecha': fecha, 'anio': anio, 'mes': mes, 'dia': dia, 'subgrupo': subgrupo,
-                      'precisionMedia': precisionMedia, 'rentaMedia': rentaMedia,
+                      'precisionMedia': precisionMedia, 'rentaMedia': rentaMedia, 'stdMedia': stdMedia,
                       'numElementos': '{:.0f}'.format(numElementos), 'rentaRelativaSP500': rentaRelativaSP500,
                       'rentaMediaConProbUnoMinima': rentaMediaConProbUnoMinima,
                       'rentaRelativaSP500ConProbUnoMinima': rentaRelativaSP500ConProbUnoMinima}]
@@ -291,7 +294,7 @@ def analizar(datosGrandes, datosManejables, X, dfSP500):
 
     # Se calcula la renta acumulada
     resultadoAnalisisAux = pd.DataFrame(
-        columns=["fecha", "anio", "mes", "dia", "subgrupo", "precisionMedia", "rentaMedia", "numElementos",
+        columns=["fecha", "anio", "mes", "dia", "subgrupo", "precisionMedia", "rentaMedia", "stdMedia", "numElementos",
                  "rentaRelativaSP500", "rentaAcumulada", "rentaAcumuladavsSP500", "rentaMediaConProbUnoMinima"])
     for subgrupo in subgrupos:
         resultadoPorSubgrupo = resultadoAnalisis.loc[resultadoAnalisis['subgrupo'] == subgrupo]
