@@ -331,6 +331,39 @@ def analizar(datosGrandes, datosManejables, X, dfSP500):
 
     return resultadoAnalisis, subgrupos
 
+#----------------------------------------------------------
+def calidadSubgrupos(resultadoAnalisis, subgrupos):
+    subgruposPorCalidad = pd.DataFrame(
+        columns=["subgrupo", "calidad"])
+    # Se combinará la media y la varianza de renta diaria, y el número de elementos para obtener un único valor con el que ordenar los
+    # subgrupos. Se le dará un valor de CALIDAD a cada subgrupo
+    for subgrupo in subgrupos:
+        resultadoPorSubgrupo=resultadoAnalisis.loc[resultadoAnalisis['subgrupo'] == subgrupo]
+        rentaRelativaSP500=resultadoPorSubgrupo['rentaRelativaSP500']
+        mediaRenta=np.mean(rentaRelativaSP500)
+        stdRenta=np.std(rentaRelativaSP500)
+        numElementos=len(rentaRelativaSP500)
+        #print("subgrupo: "+subgrupo+" ; media: "+str(mediaRenta) +" ; std: " + str(stdRenta)+" ; numElementos: " + str(numElementos))
+
+        # Fórmula:
+        # CALIDAD = (media renta diaria - sqrt(varianza renta diaria)) * log (1 + número de elementos)
+        calidad=(mediaRenta-np.sqrt(stdRenta))*np.log10(1+numElementos)
+        #print("CALIDAD: " + str(calidad))
+
+        nuevoGrupo = [{'subgrupo': subgrupo, 'calidad': '{:.2f}'.format(calidad)}]
+        subgruposPorCalidad = subgruposPorCalidad.append(nuevoGrupo, ignore_index=True, sort=False)
+        subgruposPorCalidad=subgruposPorCalidad.sort_values("calidad", ascending=False)
+
+    # Se sacan por log
+    for row_index, row in subgruposPorCalidad.iterrows():
+        print("subgrupo: " + row['subgrupo'] + "  -> CALIDAD: " + str(row['calidad']))
+
+    # Se escriben los resultados a un csv
+    pathCsvResultados = dirAnalisis + "CALIDAD" + ".csv"
+    print("Guardando: " + pathCsvResultados)
+    subgruposPorCalidad.to_csv(pathCsvResultados, index=False, sep='|')
+
+    return subgruposPorCalidad
 
 #------------------------SP500-----------------------------
 
@@ -458,10 +491,14 @@ datosFicheroReducidos=datosFichero[columnasGrandes]
 datosFicheroInteresantes=pd.DataFrame(datosFicheroReducidos, columns=columnasGrandes)
 datosGrandes=datosGrandes.append(datosFicheroInteresantes)
 
-#---------------------------------ANÁLISIS y DIBUJOS-------------------------------
+#---------------------------------ANÁLISIS BASICO-------------------------------
 resultadoAnalisis, subgrupos=analizar(datosGrandes, datosManejables, X, dfSP500)
 pintar(resultadoAnalisis, subgrupos, X)
 
+#------------------------------DÓNDE SE DEBE INVERTIR---------------------------
+subgruposPorCalidad=calidadSubgrupos(resultadoAnalisis, subgrupos)
+
+#------------------------------ANÁLISIS AVANZADO -----------------------------
 resultadoAnalisisMenosDos, subgruposMenosDos=analizar(datosGrandes, datosManejables, int(X)-2, dfSP500)
 pintar(resultadoAnalisisMenosDos, subgruposMenosDos, int(X)-2)
 
@@ -477,6 +514,7 @@ resultadoAnalisisMasDiez, subgruposMasDiez=analizar(datosGrandes, datosManejable
 pintar(resultadoAnalisisMasDiez, subgruposMasDiez, int(X)+10)
 resultadoAnalisisMasDoce, subgruposMasDoce=analizar(datosGrandes, datosManejables, int(X)+12, dfSP500)
 pintar(resultadoAnalisisMasDoce, subgruposMasDoce, int(X)+12)
+
 
 print("\n--- InversionUtilsPosteriori: FIN ---")
 
