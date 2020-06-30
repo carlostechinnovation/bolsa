@@ -144,7 +144,7 @@ public class CrearDatasetsSubgrupos implements Serializable {
 		// Para el subgrupo 0 siempre se añade
 		// NO QUITAR, PARA QUE LAS GRÁFICAS FINALES SE PINTEN BASADAS EN ESTE GRUPO,
 		// QUE CONTIENE TODO
-		 ArrayList<String> pathEmpresasTipo0 = new ArrayList<String>(); //TODAS
+		ArrayList<String> pathEmpresasTipo0 = new ArrayList<String>(); // TODAS
 
 		// Tipos de empresa segun MARKET CAP (0-6)
 		ArrayList<String> pathEmpresasTipo1 = new ArrayList<String>();// MARKETCAP=MEGA
@@ -246,7 +246,7 @@ public class CrearDatasetsSubgrupos implements Serializable {
 			parametros = datosEmpresaEntrada.get(indicePrimeraFilaDeDatos); // PRIMERA FILA
 
 			if (parametros != null) {
-				
+
 				// Para el subgrupo 0 siempre se añade
 				// NO QUITAR, PARA QUE LAS GRÁFICAS FINALES SE PINTEN BASADAS EN ESTE GRUPO,
 				// QUE CONTIENE TODO
@@ -284,11 +284,14 @@ public class CrearDatasetsSubgrupos implements Serializable {
 				if (sectorStr != null && !sectorStr.isEmpty() && !"-".equals(sectorStr)) {
 
 					if (sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_BM)
-							|| sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_UTIL)) {
+							|| sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_UTIL)
+							|| sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_ENERGY)) {
 						pathEmpresasTipo7.add(ficheroGestionado.getAbsolutePath());
 					} else if (sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_CONG)) {
 						pathEmpresasTipo8.add(ficheroGestionado.getAbsolutePath());
-					} else if (sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_CONSGO)) {
+					} else if (sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_CONSGO)
+							|| sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_CONSCY)
+							|| sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_CONSDEF)) {
 						pathEmpresasTipo9.add(ficheroGestionado.getAbsolutePath());
 					} else if (sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_FIN)) {
 						pathEmpresasTipo10.add(ficheroGestionado.getAbsolutePath());
@@ -298,13 +301,10 @@ public class CrearDatasetsSubgrupos implements Serializable {
 						pathEmpresasTipo12.add(ficheroGestionado.getAbsolutePath());
 					} else if (sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_SERV)) {
 						pathEmpresasTipo13.add(ficheroGestionado.getAbsolutePath());
-					} else if (sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_TECH)) {
+					} else if (sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_TECH)
+							|| sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_COMM)) {
 						pathEmpresasTipo14.add(ficheroGestionado.getAbsolutePath());
-					}
-//				else if (sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_UTIL)) { --> Utilities (carbón gas, electricas...) las juntamos con basic_materials (procesar materias primas: extruir hierro, crear botes de plástico, etc)
-//					pathEmpresasTipo15.add(ficheroGestionado.getAbsolutePath());
-//				} 
-					else if (sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_RE)) {
+					} else if (sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_RE)) {
 						pathEmpresasTipo16.add(ficheroGestionado.getAbsolutePath());
 					} else {
 						MY_LOGGER.warn(ficheroGestionado.getAbsolutePath() + " -> Sector raro: " + sectorStr);
@@ -513,9 +513,9 @@ public class CrearDatasetsSubgrupos implements Serializable {
 		empresasPorTipo = new HashMap<Integer, ArrayList<String>>();
 		// Para el subgrupo 0 siempre se añade
 		// NO QUITAR, PARA QUE LAS GRÁFICAS FINALES SE PINTEN BASADAS EN ESTE GRUPO,
-		// QUE CONTIENE TODO
+		// QUE CONTIENE TODOS
 		empresasPorTipo.put(0, pathEmpresasTipo0);
-		
+
 		empresasPorTipo.put(1, pathEmpresasTipo1);
 		empresasPorTipo.put(2, pathEmpresasTipo2);
 		empresasPorTipo.put(3, pathEmpresasTipo3);
@@ -572,11 +572,11 @@ public class CrearDatasetsSubgrupos implements Serializable {
 
 		// Se crea un CSV para cada subgrupo
 		Set<Integer> tipos = empresasPorTipo.keySet();
-		List<Integer> tiposLista = new ArrayList();
+		List<Integer> tiposLista = new ArrayList<Integer>();
 		tiposLista.addAll(tipos);
 		Collections.sort(tiposLista); // ordenado, para leerlo mejor
 		Iterator<Integer> itTipos = tiposLista.iterator();
-		Integer numEmpresasPorTipo;
+		Integer numSubgruposCreados = empresasPorTipo.size();
 		Integer tipo;
 		String pathFichero;
 		String row, rowTratada;
@@ -598,145 +598,139 @@ public class CrearDatasetsSubgrupos implements Serializable {
 		HashMap<String, Boolean> empresasConTarget;
 		Iterator<String> itEmpresas;
 
-		while (itTipos.hasNext()) {
+		while (numSubgruposCreados > 0 && itTipos.hasNext()) {
 
 			tipo = itTipos.next();
 			MY_LOGGER.info("***** Subgrupo " + tipo + " *****");
 
-			numEmpresasPorTipo = empresasPorTipo.size();
+			// Antes se comprobará, en cada cluster, qué porcentaje hay de empresas con al
+			// menos una vela con target=1,
+			// respecto del total de empresas del cluster (esto se llama Cobertura).
+			// Sólo se guardarán los clusters con cobertura mayor que una cantidad mínima.
 
-			if (numEmpresasPorTipo > 0) {
+			ArrayList<String> pathFicherosEmpresas = empresasPorTipo.get(tipo);
 
-				// Antes se comprobará, en cada cluster, qué porcentaje hay de empresas con al
-				// menos una vela con target=1,
-				// respecto del total de empresas del cluster (esto se llama Cobertura).
-				// Sólo se guardarán los clusters con cobertura mayor que una cantidad mínima.
+			empresasConTarget = gestorFicheros.compruebaEmpresasConTarget(pathFicherosEmpresas);
+			itEmpresas = empresasConTarget.keySet().iterator();
+			estadisticas = new Estadisticas();
 
-				ArrayList<String> pathFicherosEmpresas = empresasPorTipo.get(tipo);
+			while (itEmpresas.hasNext()) {
+				pathEmpresa = itEmpresas.next();
+				if (empresasConTarget.get(pathEmpresa)) {
+					// Si la empresa tiene al menos una vela con target=1
+					estadisticas.addValue(1);
+				} else {
+					estadisticas.addValue(0);
+				}
+				MY_LOGGER.debug(
+						"Empresa: " + pathEmpresa + " ¿tiene algún target=1? " + empresasConTarget.get(pathEmpresa));
+			}
 
-				empresasConTarget = gestorFicheros.compruebaEmpresasConTarget(pathFicherosEmpresas);
-				itEmpresas = empresasConTarget.keySet().iterator();
-				estadisticas = new Estadisticas();
+			// Se calcula la cobertura del target
+			coberturaEmpresasPorCluster = estadisticas.getMean();
+			MY_LOGGER.debug(
+					"COBERTURA DEL cluster " + tipo + ": " + Math.round(coberturaEmpresasPorCluster * 100) + "%");
 
-				while (itEmpresas.hasNext()) {
-					pathEmpresa = itEmpresas.next();
-					if (empresasConTarget.get(pathEmpresa)) {
-						// Si la empresa tiene al menos una vela con target=1
-						estadisticas.addValue(1);
-					} else {
-						estadisticas.addValue(0);
-					}
-					MY_LOGGER.debug("Empresa: " + pathEmpresa + " ¿tiene algún target=1? "
-							+ empresasConTarget.get(pathEmpresa));
+			// Para generar un fichero de dataset del cluster, la cobertura debe ser mayor
+			// que un x%
+			if (modoTiempo.equalsIgnoreCase("pasado")
+					&& coberturaEmpresasPorCluster * 100 < Double.valueOf(coberturaMinima)) {
+				MY_LOGGER.warn(
+						"Cluster " + tipo + " con " + Math.round(coberturaEmpresasPorCluster * 100) + "% empresas ("
+								+ estadisticas.getSum() + " de " + estadisticas.getValues().length + " ; mínimo = "
+								+ coberturaMinima + " %) con al menos una vela positiva." + " NO SE GENERA DATASET");
+
+			} else if (modoTiempo.equalsIgnoreCase("pasado")
+					&& empresasConTarget.keySet().size() < Integer.valueOf(minEmpresasPorCluster)) {
+				MY_LOGGER.warn("Cluster " + tipo + ", tiene " + empresasConTarget.keySet().size()
+						+ " empresas. Demasiado pequeño (mínimo= " + minEmpresasPorCluster
+						+ " empresas). NO SE GENERA DATASET");
+			} else {
+
+				if (modoTiempo.equalsIgnoreCase("pasado")) {
+					MY_LOGGER.info("Cluster " + tipo + " con " + Math.round(coberturaEmpresasPorCluster * 100)
+							+ "% empresas (" + estadisticas.getSum() + " de " + estadisticas.getValues().length
+							+ " ; mínimo = " + coberturaMinima + " %) con al menos una vela positiva." + " Y tiene "
+							+ empresasConTarget.keySet().size() + " empresas (mínimo deseado = " + minEmpresasPorCluster
+							+ ")." + " ==> SI SE GENERA DATASET");
+				} else {
+					MY_LOGGER.info("Cluster " + tipo + " tiene un " + Math.round(coberturaEmpresasPorCluster * 100)
+							+ "% de empresas (" + estadisticas.getSum() + " de " + estadisticas.getValues().length
+							+ " ; mínimo = " + coberturaMinima + " %) con al menos una vela positiva." + " Y tiene "
+							+ empresasConTarget.keySet().size() + " empresas."
+							+ " Pero es FUTURO, así que SIEMPRE SE GENERA DATASET.");
 				}
 
-				// Se calcula la cobertura del target
-				coberturaEmpresasPorCluster = estadisticas.getMean();
-				MY_LOGGER.debug(
-						"COBERTURA DEL cluster " + tipo + ": " + Math.round(coberturaEmpresasPorCluster * 100) + "%");
+				// Hay alguna empresa de este tipo. Creo un CSV común para todas las del mismo
+				// tipo
+				pathFicheros = empresasPorTipo.get(tipo);
 
-				// Para generar un fichero de dataset del cluster, la cobertura debe ser mayor
-				// que un x%
-				if (modoTiempo.equalsIgnoreCase("pasado")
-						&& coberturaEmpresasPorCluster * 100 < Double.valueOf(coberturaMinima)) {
-					MY_LOGGER.warn("Cluster " + tipo + " con " + Math.round(coberturaEmpresasPorCluster * 100)
-							+ "% empresas (" + estadisticas.getSum() + " de " + estadisticas.getValues().length
-							+ " ; mínimo = " + coberturaMinima + " %) con al menos una vela positiva."
-							+ " NO SE GENERA DATASET");
+				String dirSubgrupoOut = directorioOut + "SG_" + tipo + "/";
+				MY_LOGGER.debug("Creando la carpeta del subgrupo con ID=" + tipo + " en: " + dirSubgrupoOut);
+				File dirSubgrupoOutFile = new File(dirSubgrupoOut);
+				dirSubgrupoOutFile.mkdir();
 
-				} else if (modoTiempo.equalsIgnoreCase("pasado")
-						&& empresasConTarget.keySet().size() < Integer.valueOf(minEmpresasPorCluster)) {
-					MY_LOGGER.warn("Cluster " + tipo + ", tiene " + empresasConTarget.keySet().size()
-							+ " empresas. Demasiado pequeño (mínimo= " + minEmpresasPorCluster
-							+ " empresas). NO SE GENERA DATASET");
-				} else {
+				ficheroOut = dirSubgrupoOut + "COMPLETO.csv";
+				ficheroListadoOut = dirSubgrupoOut + "EMPRESAS.txt";
+				MY_LOGGER.debug("CSV de subgrupo: " + ficheroOut);
+				MY_LOGGER.debug("Lista de empresas de subgrupo: " + ficheroListadoOut);
+				csvWriter = new FileWriter(ficheroOut);
+				writerListadoEmpresas = new FileWriter(ficheroListadoOut);
 
-					if (modoTiempo.equalsIgnoreCase("pasado")) {
-						MY_LOGGER.info("Cluster " + tipo + " con " + Math.round(coberturaEmpresasPorCluster * 100)
-								+ "% empresas (" + estadisticas.getSum() + " de " + estadisticas.getValues().length
-								+ " ; mínimo = " + coberturaMinima + " %) con al menos una vela positiva." + " Y tiene "
-								+ empresasConTarget.keySet().size() + " empresas (mínimo deseado = "
-								+ minEmpresasPorCluster + ")." + " ==> SI SE GENERA DATASET");
-					} else {
-						MY_LOGGER.info("Cluster " + tipo + " tiene un " + Math.round(coberturaEmpresasPorCluster * 100)
-								+ "% de empresas (" + estadisticas.getSum() + " de " + estadisticas.getValues().length
-								+ " ; mínimo = " + coberturaMinima + " %) con al menos una vela positiva." + " Y tiene "
-								+ empresasConTarget.keySet().size() + " empresas."
-								+ " Pero es FUTURO, así que SIEMPRE SE GENERA DATASET.");
-					}
+				for (int i = 0; i < pathFicheros.size(); i++) {
 
-					// Hay alguna empresa de este tipo. Creo un CSV común para todas las del mismo
-					// tipo
-					pathFicheros = empresasPorTipo.get(tipo);
+					esPrimeraLinea = Boolean.TRUE;
+					// Se lee el fichero de la empresa a meter en el CSV común
+					pathFichero = pathFicheros.get(i);
+					MY_LOGGER.debug("Fichero a leer para clasificar en subgrupo: " + pathFichero);
+					BufferedReader csvReader = new BufferedReader(new FileReader(pathFichero));
 
-					String dirSubgrupoOut = directorioOut + "SG_" + tipo + "/";
-					MY_LOGGER.debug("Creando la carpeta del subgrupo con ID=" + tipo + " en: " + dirSubgrupoOut);
-					File dirSubgrupoOutFile = new File(dirSubgrupoOut);
-					dirSubgrupoOutFile.mkdir();
+					// Añado la empresa al fichero de listado de empresas
+					writerListadoEmpresas.append(pathFichero + "\n");
 
-					ficheroOut = dirSubgrupoOut + "COMPLETO.csv";
-					ficheroListadoOut = dirSubgrupoOut + "EMPRESAS.txt";
-					MY_LOGGER.debug("CSV de subgrupo: " + ficheroOut);
-					MY_LOGGER.debug("Lista de empresas de subgrupo: " + ficheroListadoOut);
-					csvWriter = new FileWriter(ficheroOut);
-					writerListadoEmpresas = new FileWriter(ficheroListadoOut);
+					try {
 
-					for (int i = 0; i < pathFicheros.size(); i++) {
+						while ((row = csvReader.readLine()) != null) {
+							MY_LOGGER.debug("Fila leída: " + row);
+							// Se eliminan los parámetros estáticos de la fila, EXCEPTO los datos para la
+							// validación futura
+							// Para cada fila de datos o de cabecera, de longitud variable, se eliminan los
+							// datos estáticos
+							// También se añaden precios y volumen, para la validación económica en c7
+							Integer indice = SubgruposUtils.indiceDeAparicion(characterPipe, 13, row);
+							infoParaValidacionFutura = row.substring(0, indice);
+							rowTratada = infoParaValidacionFutura + characterPipe + SubgruposUtils
+									.recortaPrimeraParteDeString(characterPipe, numeroParametrosEstaticos, row);
+							MY_LOGGER.debug("Fila escrita: " + rowTratada);
 
-						esPrimeraLinea = Boolean.TRUE;
-						// Se lee el fichero de la empresa a meter en el CSV común
-						pathFichero = pathFicheros.get(i);
-						MY_LOGGER.debug("Fichero a leer para clasificar en subgrupo: " + pathFichero);
-						BufferedReader csvReader = new BufferedReader(new FileReader(pathFichero));
+							// La cabecera se toma de la primera línea del primer fichero
+							if (i == 0 && esPrimeraLinea) {
+								// En la primera línea está la cabecera de parámetros
+								// Se valida que el nombre recibido es igual que el usado en la constructora, y
+								// en dicho orden
+								csvWriter.append(rowTratada);
 
-						// Añado la empresa al fichero de listado de empresas
-						writerListadoEmpresas.append(pathFichero + "\n");
-
-						try {
-
-							while ((row = csvReader.readLine()) != null) {
-								MY_LOGGER.debug("Fila leída: " + row);
-								// Se eliminan los parámetros estáticos de la fila, EXCEPTO los datos para la
-								// validación futura
-								// Para cada fila de datos o de cabecera, de longitud variable, se eliminan los
-								// datos estáticos
-								// También se añaden precios y volumen, para la validación económica en c7
-								Integer indice = SubgruposUtils.indiceDeAparicion(characterPipe, 13, row);
-								infoParaValidacionFutura = row.substring(0, indice);
-								rowTratada = infoParaValidacionFutura + characterPipe + SubgruposUtils
-										.recortaPrimeraParteDeString(characterPipe, numeroParametrosEstaticos, row);
-								MY_LOGGER.debug("Fila escrita: " + rowTratada);
-
-								// La cabecera se toma de la primera línea del primer fichero
-								if (i == 0 && esPrimeraLinea) {
-									// En la primera línea está la cabecera de parámetros
-									// Se valida que el nombre recibido es igual que el usado en la constructora, y
-									// en dicho orden
-									csvWriter.append(rowTratada);
-
-								}
-								if (!esPrimeraLinea) {
-									// Para todos los ficheros, se escriben las filas 2 y siguientes
-									csvWriter.append("\n" + rowTratada);
-								}
-								// Para las siguientes filas del fichero
-								esPrimeraLinea = Boolean.FALSE;
 							}
-
-						} finally {
-							csvReader.close();
+							if (!esPrimeraLinea) {
+								// Para todos los ficheros, se escriben las filas 2 y siguientes
+								csvWriter.append("\n" + rowTratada);
+							}
+							// Para las siguientes filas del fichero
+							esPrimeraLinea = Boolean.FALSE;
 						}
 
+					} finally {
+						csvReader.close();
 					}
-					csvWriter.flush();
-					csvWriter.close();
-					writerListadoEmpresas.flush();
-					writerListadoEmpresas.close();
-				}
-			}
-		}
 
-		// Se normaliza los datasets de cada subgrupo
+				}
+				csvWriter.flush();
+				csvWriter.close();
+				writerListadoEmpresas.flush();
+				writerListadoEmpresas.close();
+			}
+
+		}
 
 	}
 

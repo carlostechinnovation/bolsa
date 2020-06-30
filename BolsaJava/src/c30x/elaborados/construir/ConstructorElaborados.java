@@ -38,8 +38,7 @@ public class ConstructorElaborados implements Serializable {
 
 	// Se usan los periodos típicos que suelen usar los robots: 3, 7, 20, 50 días
 	// (consideraremos velas)
-	public final static Integer[] periodosDParaParametros = new Integer[] { 4, 7, 20, 50 };
-//	public final static Integer[] periodosDParaParametros = new Integer[] { 1 * 7, 3 * 7, 5 * 7 };
+	public final static Integer[] periodosDParaParametros = new Integer[] { 3, 7, 20, 50 };
 
 	// IMPORTANTE: se asume que los datos estan ordenados de menor a mayor
 	// antiguedad, y agrupados por empresa
@@ -275,18 +274,21 @@ public class ConstructorElaborados implements Serializable {
 
 		HashMap<String, String> mapaParamsPrecio, mapaParamsVolumen;
 
-		while (itPeriodo.hasNext()) {
+		while (itPeriodo.hasNext()) { // periodo analizado: 3, 7 20, 50...
 			periodoActual = itPeriodo.next();
 			estadisticasPrecioPorAntiguedad = estadisticasPrecioPorAntiguedadYPeriodo.get(periodoActual);
 			estadisticasVolumenPorAntiguedad = estadisticasVolumenPorAntiguedadYPeriodo.get(periodoActual);
 			antiguedades = estadisticasPrecioPorAntiguedad.keySet();
 			itAntiguedad = antiguedades.iterator();
 
-			while (itAntiguedad.hasNext()) {
+			while (itAntiguedad.hasNext()) { // antigüedad de la vela analizada: 0 1 2 3... (días hacia atrás)
+
 				antiguedad = itAntiguedad.next();
 				estadisticasPrecio = estadisticasPrecioPorAntiguedad.get(antiguedad);
 				estadisticasVolumen = estadisticasVolumenPorAntiguedad.get(antiguedad);
-				antiguedadHistoricaMaxima = antiguedad + periodoActual;
+				antiguedadHistoricaMaxima = antiguedad + periodoActual; // se analiza el periodo desde la vela analizada
+																		// hacia atrás en el tiempo
+
 				// Se cogen sólo los datos con la antiguedad dentro del rango a analizar
 				if (antiguedadHistoricaMaxima < datosEmpresaEntrada.size()) {
 					parametros = datosEmpresaEntrada.get(antiguedad);

@@ -36,11 +36,15 @@ public class Pruebas {
 		String fechaEarningsStr = "Jan 28 AMC"; // BMO=(Before Market Open), AMC=(After Market Close)
 		String[] earningsFechaPartes = fechaEarningsStr.split(" ");
 		boolean earningsImpactaEnDiaSiguiente = false;
-		if (fechaEarningsStr.contains("AMC")) {
+		if (fechaEarningsStr.trim().contains("AMC")) {
 			earningsImpactaEnDiaSiguiente = false;
+		} else if (fechaEarningsStr.trim().contains("BMO")) {
+			earningsImpactaEnDiaSiguiente = false;
+		} else if (fechaEarningsStr == null | fechaEarningsStr.trim().equals("-")
+				|| fechaEarningsStr.trim().isEmpty()) {
 
-		} else if (fechaEarningsStr.contains("BMO")) {
-			earningsImpactaEnDiaSiguiente = false;
+		} else {
+
 		}
 
 		// ----------------------------------------------------

@@ -8,13 +8,20 @@ import java.util.Locale;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.commons.math3.util.ResizableDoubleArray;
 
+/**
+ * @author carloslinux
+ *
+ */
 public class Estadisticas extends DescriptiveStatistics {
 
 	private static final long serialVersionUID = 1L;
 
 	public final static String VALOR_INVALIDO = "null";
+	public final static double NUM100 = 100.0D;
+	public final static double NUM1K = 1000.0D;
+	public final static double NUM1M = 1000000.0D;
 
-	// Si a�ado m�s par�metros, debo modificar la constructora
+	// Si anhado mas parametros, debo modificar la constructora
 	private HashMap<Integer, String> ordenNombresParametrosElaborados;
 
 	public enum COMIENZO_NOMBRES_PARAMETROS_ELABORADOS {
@@ -34,8 +41,8 @@ public class Estadisticas extends DescriptiveStatistics {
 		Estadisticas e5 = new Estadisticas();
 		e5.addValue(1D);
 		e5.addValue(10D);
-		e5.addValue(100D);
-		e5.addValue(1000D);
+		e5.addValue(NUM100);
+		e5.addValue(NUM1K);
 		System.out.println("Valores: " + e5.toString());
 		System.out.println("e5.getPendienteRelativa(): " + e5.getPendienteRelativa());
 		System.out.println("e5.getPendienteRelativa1M(): " + e5.getPendienteRelativa1M());
@@ -64,7 +71,7 @@ public class Estadisticas extends DescriptiveStatistics {
 	}
 
 	/**
-	 * 
+	 * Constructora
 	 */
 	public Estadisticas() {
 		ordenNombresParametrosElaborados = new HashMap<Integer, String>();
@@ -86,50 +93,50 @@ public class Estadisticas extends DescriptiveStatistics {
 	}
 
 	/**
-	 * En porcentaje. Como si fuera la derivada, pero s�lo con el primer y �ltimo
+	 * En porcentaje. Como si fuera la derivada, pero solo con el primer y ultimo
 	 * valores
 	 */
 	public double getPendienteRelativa() {
-		double salida = 100 * (this.getElement((int) (this.getN() - 1)) - this.getElement(0))
+		double salida = NUM100 * (this.getElement((int) (this.getN() - 1)) - this.getElement(0))
 				/ (this.getN() * this.getElement(0));
 		// Para evitar infinitos, asumimos estos valores como infinito
-		if (salida > 1000000) {
-			salida = 1000000;
-		} else if (salida < -1000000) {
-			salida = -1000000;
+		if (salida > NUM1M) {
+			salida = NUM1M;
+		} else if (salida < (-1.0) * NUM1M) {
+			salida = (-1.0) * NUM1M;
 		}
 		return salida;
 	}
 
 	/**
 	 * En porcentaje. Como si fuera la derivada, de la primera mitad de valores,
-	 * pero s�lo con el primer y �ltimo valores.
+	 * pero solo con el primer y ultimo valores.
 	 */
 	public double getPendienteRelativa1M() {
-		double salida = 100 * (this.getElement((int) (Math.ceil(this.getN() / 2.0 - 1))) - this.getElement(0))
+		double salida = NUM100 * (this.getElement((int) (Math.ceil(this.getN() / 2.0 - 1))) - this.getElement(0))
 				/ ((Math.ceil(this.getN() / 2.0 - 1)) * this.getElement(0));
 		// Para evitar infinitos, asumimos estos valores como infinito
-		if (salida > 1000000) {
-			salida = 1000000;
-		} else if (salida < -1000000) {
-			salida = -1000000;
+		if (salida > NUM1M) {
+			salida = NUM1M;
+		} else if (salida < (-1.0) * NUM1M) {
+			salida = (-1.0) * NUM1M;
 		}
 		return salida;
 	}
 
 	/**
 	 * En porcentaje. Como si fuera la derivada, de la segunda mitad de valores,
-	 * pero s�lo con el primer y �ltimo valores.
+	 * pero solo con el primer y ultimo valores.
 	 */
 	public double getPendienteRelativa2M() {
-		double salida = 100
+		double salida = NUM100
 				* (this.getElement((int) (this.getN() - 1)) - this.getElement((int) ((int) this.getN() / 2.0)))
 				/ (Math.ceil(this.getN() / 2.0 - 1)) * this.getElement((int) ((int) this.getN() / 2.0));
 		// Para evitar infinitos, asumimos estos valores como infinito
-		if (salida > 1000000) {
-			salida = 1000000;
-		} else if (salida < -1000000) {
-			salida = -1000000;
+		if (salida > NUM1M) {
+			salida = NUM1M;
+		} else if (salida < (-1.0) * NUM1M) {
+			salida = (-1.0) * NUM1M;
 		}
 		return salida;
 	}
@@ -139,7 +146,7 @@ public class Estadisticas extends DescriptiveStatistics {
 	 * Puede tener valores negativos.
 	 */
 	public int getRatioSMA() {
-		return (int) Math.round(100 * (this.getElement(0) / getMean()));
+		return (int) Math.round(NUM100 * (this.getElement(0) / getMean()));
 	}
 
 	/**
@@ -147,7 +154,7 @@ public class Estadisticas extends DescriptiveStatistics {
 	 * Puede tener valores negativos.
 	 */
 	public int getRatioMax() {
-		return (int) Math.round(100 * (this.getElement(0) / this.getMax()));
+		return (int) Math.round(NUM100 * (this.getElement(0) / this.getMax()));
 	}
 
 	/**
@@ -155,7 +162,7 @@ public class Estadisticas extends DescriptiveStatistics {
 	 * Puede tener valores negativos.
 	 */
 	public int getRatioMin() {
-		return (int) Math.round(100 * (this.getElement(0) / this.getMin()));
+		return (int) Math.round(NUM100 * (this.getElement(0) / this.getMin()));
 	}
 
 	/**
@@ -163,7 +170,7 @@ public class Estadisticas extends DescriptiveStatistics {
 	 * Puede tener valores negativos.
 	 */
 	public int getRatioUltimoSMA() {
-		return (int) Math.round(100 * (this.getElement((int) getN() - 1) / getMean()));
+		return (int) Math.round(NUM100 * (this.getElement((int) getN() - 1) / getMean()));
 	}
 
 	/**
@@ -171,7 +178,7 @@ public class Estadisticas extends DescriptiveStatistics {
 	 * Puede tener valores negativos.
 	 */
 	public int getRatioUltimoMax() {
-		return (int) Math.round(100 * (this.getElement((int) getN() - 1) / this.getMax()));
+		return (int) Math.round(NUM100 * (this.getElement((int) getN() - 1) / this.getMax()));
 	}
 
 	/**
@@ -179,19 +186,19 @@ public class Estadisticas extends DescriptiveStatistics {
 	 * Puede tener valores negativos.
 	 */
 	public int getRatioUltimoMin() {
-		return (int) Math.round(100 * (this.getElement((int) getN() - 1) / this.getMin()));
+		return (int) Math.round(NUM100 * (this.getElement((int) getN() - 1) / this.getMin()));
 	}
 
 	/**
-	 * Se imprime al log una validaci�n de los c�lculos de esta funci�n.
+	 * Se imprime al log una validacion de los calculos de esta funcion.
 	 */
 	public void debugValidacion(final Integer numDatosGestionados) throws Exception {
-		// VALIDACI�N DE ENTRADA
+		// VALIDACION DE ENTRADA
 		// Si no se tienen todos los datos del periodo (por ejemplo, para una media de
-		// 200 d�as, 200*7 valores hacia atr�s), lanzar� excepci�n
+		// 200 dias, 200*7 valores hacia atras), lanzara excepcion
 		System.out.println("********************************************************");
 		if (getN() != numDatosGestionados) {
-			throw new Exception("El n�mero de datos a analizar no es el adecuado. Se usan " + getN()
+			throw new Exception("El numero de datos a analizar no es el adecuado. Se usan " + getN()
 					+ " y se necesitan " + numDatosGestionados);
 		} else {
 			System.out.println("Se tienen " + getN() + " y se usan " + numDatosGestionados);

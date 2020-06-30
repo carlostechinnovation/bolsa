@@ -1,0 +1,46 @@
+subgrupo|descripcion
+1|Capitalizacion MEGA
+2|Capitalizacion GRANDE
+3|Capitalizacion MID
+4|Capitalizacion PEQUENIA
+5|Capitalizacion MICRO
+6|Capitalizacion NANO
+7|Sector Materiales basicos o Utilities
+8|Sector Conglomerados
+9|Sector Bienes de consumo
+10|Sector Financiero
+11|Sector Healthcare
+12|Sector Bienes industriales
+13|Sector SERVICIOS
+14|Sector TECNOLOGIA
+15|Sector Utilities
+16|Sector Inmobiliario
+17|Con PER bajo
+18|Con PER medio
+19|Con PER alto
+20|Con PER muy alto
+21|Con PER desconocido (bajo o muy alto)
+22|Con DEUDA baja
+23|Con DEUDA media
+24|Con DEUDA alta
+25|Con DEUDA muy alta
+26|Con DEUDA desconocida (baja o muy alta)
+27|Ratio SMA50 vs Precio es bajo
+28|Ratio SMA50 vs Precio es medio
+29|Ratio SMA50 vs Precio es alto
+30|Ratio SMA50 vs Precio es muy alto
+31|Ratio SMA50 vs Precio es desconocido (bajo o alto)
+32|China
+33|Estados Unidos
+34|India
+35|Otros paises
+36|Pais desconocido (EEUU, Asia, Africa...)
+37|Porcentaje de participación institucional (fondos) bajo
+38|Porcentaje de participación institucional (fondos) medio
+39|Porcentaje de participación institucional (fondos) alto
+40|Porcentaje de participación institucional (fondos) desconocido
+41|Empresa que PAGA dividendo
+42|Empresa que NO paga dividendo
+43|Empresa del sector Healthcare que NO paga dividendo (SG11 + SG42)
+44|Se ha detectado un pico en volumen y precio en los ultimos 3 días (velas diarias)
+45|Se ha detectado un pico en volumen y precio en los ultimos 3 días (velas diarias)

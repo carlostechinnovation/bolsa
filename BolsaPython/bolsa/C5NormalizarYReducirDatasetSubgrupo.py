@@ -13,7 +13,7 @@ from sklearn.gaussian_process.kernels import RBF
 from sklearn.naive_bayes import GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neural_network import MLPClassifier
-from sklearn.preprocessing import StandardScaler, RobustScaler, PowerTransformer, QuantileTransformer
+from sklearn.preprocessing import StandardScaler, RobustScaler, PowerTransformer, QuantileTransformer, KBinsDiscretizer
 from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
 from sklearn.svm import SVC
@@ -30,7 +30,7 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.utils import resample
 import pickle
 from sklearn.impute import SimpleImputer
-
+import warnings
 
 print("**** CAPA 5  --> Selección de variables/ Reducción de dimensiones (para cada subgrupo) ****")
 print("URL PCA: https://scikit-learn.org/stable/modules/unsupervised_reduction.html")
@@ -47,15 +47,20 @@ print("maxFeatReducidas = %s" % maxFeatReducidas)
 
 varianza=0.90
 compatibleParaMuchasEmpresas = True  # Si hay muchas empresas, debo hacer ya el undersampling (en vez de capa 6)
-modoDebug = False  # En modo debug se pintan los dibujos. En otro caso, se evita calculo innecesario
+global modoDebug; modoDebug=False  # VARIABLE GLOBAL: En modo debug se pintan los dibujos. En otro caso, se evita calculo innecesario
+global dibujoBins; dibujoBins=20  #VARIABLE GLOBAL: al pintar los histogramas, define el número de barras posibles en las que se divide el eje X.
+numTramos=10  # Numero de tramos usado para tramificar las features dinámicas
 pathCsvCompleto = dir_subgrupo + "COMPLETO.csv"
 dir_subgrupo_img = dir_subgrupo + "img/"
 pathCsvIntermedio = dir_subgrupo + "intermedio.csv"
 pathCsvReducido = dir_subgrupo + "REDUCIDO.csv"
+pathFeaturesSeleccionadas = dir_subgrupo + "FEATURES_SELECCIONADAS.csv"
 pathModeloOutliers = (dir_subgrupo + "DETECTOR_OUTLIERS.tool").replace("futuro", "pasado") # Siempre lo cojo del pasado
+path_modelo_tramificador = (dir_subgrupo + "TRAMIFICADOR").replace("futuro", "pasado") # Siempre lo cojo del pasado
 path_modelo_normalizador = (dir_subgrupo + "NORMALIZADOR.tool").replace("futuro", "pasado") # Siempre lo cojo del pasado
 path_indices_out_capa5 = (dir_subgrupo + "indices_out_capa5.indices")
 path_modelo_reductor_features = (dir_subgrupo + "REDUCTOR.tool").replace("futuro", "pasado") # Siempre lo cojo del pasado
+
 balancear = False  # No usar este balanceo, sino el de Luis (capa 6), que solo actúa en el dataset de train, evitando tocar test y validation
 
 print("pathCsvCompleto = %s" % pathCsvCompleto)
@@ -70,7 +75,11 @@ print("balancear = " + str(balancear))
 
 ######################## FUNCIONES #######################################################
 
-def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmpresas, pathModeloOutliers, modoTiempo, modoDebug):
+with warnings.catch_warnings():
+    warnings.filterwarnings(action="ignore", message="Bins whose width are too small.*")  # Ignorar los warnings del tramificador (KBinsDiscretizer)
+
+
+def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmpresas, pathModeloOutliers, modoTiempo):
   print("----- leerFeaturesyTarget ------")
   print("PARAMS --> " + path_csv_completo + "|" + path_dir_img + "|" + str(compatibleParaMuchasEmpresas) + "|" + pathModeloOutliers + "|" + modoTiempo + "|" + str(modoDebug))
 
@@ -164,7 +173,7 @@ def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmp
   entradaFeaturesYTarget3.reset_index(drop=True, inplace=True)
   flagAnomaliasDf.reset_index(drop=True, inplace=True)
   entradaFeaturesYTarget4 = pd.concat([entradaFeaturesYTarget3, flagAnomaliasDf], axis=1)  #Column Bind, manteniendo el índice del DF izquierdo
-  entradaFeaturesYTarget4.set_index(indice3, inplace = True) #ponemos el indice que tenia el DF de la izquierda
+  entradaFeaturesYTarget4.set_index(indice3, inplace=True) #ponemos el indice que tenia el DF de la izquierda
 
   entradaFeaturesYTarget4 = entradaFeaturesYTarget4.loc[entradaFeaturesYTarget4['marca_anomalia'] == 1] #Cogemos solo las que no son anomalias
   entradaFeaturesYTarget4 = entradaFeaturesYTarget4.drop('marca_anomalia', axis=1)  #Quitamos la columna auxiliar
@@ -307,7 +316,7 @@ def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmp
       path_dibujo = path_dir_img + column + ".png"
       print("Guardando distrib de col: " + column + " en fichero: " + path_dibujo)
       datos_columna = featuresFichero[column]
-      sns.distplot(datos_columna, kde=False, color='red', bins=10)
+      sns.distplot(datos_columna, kde=False, color='red', bins=dibujoBins)
       plt.title(column, fontsize=10)
       plt.savefig(path_dibujo, bbox_inches='tight')
       plt.clf(); plt.cla(); plt.close()  # Limpiando dibujo
@@ -315,7 +324,102 @@ def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmp
   return featuresFichero, targetsFichero
 
 
-def normalizarFeatures(featuresFichero, path_modelo_normalizador, dir_subgrupo_img, modoTiempo, path_indices_out_capa5, pathCsvIntermedio, modoDebug):
+def tramificarFeatures(numTramos, featuresFichero, targetsFichero, path_modelo_tramificador, path_dir_img, modoTiempo):
+    print("-------- TRAMIFICAR FEATURES: análisis UNIVARIANTE (estudia CADA feature) ------")
+    print("Info sobre discretizar: http://exponentis.es/discretizacion-de-datos-en-python-manteniendo-el-nombre-de-las-columnas")
+    print("PASADO: para cada feature dinámica, tramificar, viendo en qué tramos caen los target=1 para que todos los tramos tengan ceros y unos, sin demasiado desbalanceo. Despues, guardar el discretizador para usarlo en el futuro")
+    print("FUTURO: aplicar el discretizador de columnas que se haya usado en el pasado")
+
+    print("Tramificador - Numero de tramos para cada feature: " + str(numTramos))
+    cabecera = list(featuresFichero)  # Guardamos los nombres de las columnas.
+    indice = -1  # Contador para iterar por columnas.
+
+    if modoTiempo == "pasado":
+
+        while indice < (len(cabecera) - 1):
+            indice = indice + 1
+
+            print("Tramificando feature '" + cabecera[indice] + "' (indice: " + str(indice) + ")")
+            featureAnalizada = featuresFichero[cabecera[indice]]  # Feature analizada
+            featureAnalizada = featureAnalizada.to_frame()  # Conversion a dataframe
+            featureAnalizada.set_index(featuresFichero.index)
+            path_tramificador_feature = path_modelo_tramificador + "_FEAT_" + cabecera[indice]
+            desv_std_feature = np.std(featureAnalizada)  # Si la desviaciones estandar 0, es una variable estatica y no necesitamos tramificarla
+
+            if desv_std_feature.sum() != 0:
+                modelo_discretizador = KBinsDiscretizer(n_bins=numTramos, encode='ordinal', strategy="kmeans").fit(featureAnalizada)
+                featureTramificada = pd.DataFrame(data=modelo_discretizador.transform(featureAnalizada), index=featuresFichero.index, columns=featureAnalizada.columns)
+
+                # Analisis del desbalanceo positivos/negativos dentro de cada feature
+                featureTramificadaConTarget = pd.concat([featureTramificada, targetsFichero], axis=1)
+                featureTramificadaConTarget['TARGET'] = np.where(featureTramificadaConTarget['TARGET']==True, 1, 0)
+                analisisBalanceoTramos = featureTramificadaConTarget.groupby(by=[cabecera[indice]])["TARGET"]
+                num_todos = featureTramificadaConTarget.shape[0]
+                tramo_estadisticas = analisisBalanceoTramos.aggregate(np.sum).to_frame().rename(columns={'TARGET':'positivos_en_tramo'}, inplace=False)
+                tramo_estadisticas['totales_en_tramo'] = analisisBalanceoTramos.count()
+                tramo_estadisticas['pct_positivos_en_tramo'] = 100 * tramo_estadisticas['positivos_en_tramo'] / tramo_estadisticas['totales_en_tramo']
+                num_positivos_totales = tramo_estadisticas['positivos_en_tramo'].aggregate(np.sum)
+                print("Feature = '" + cabecera[indice] + "' (indice: " + str(indice) + ") - Tiene " + str(num_positivos_totales) + " positivos (" + "{:.2f}".format(round(100*num_positivos_totales/num_todos, 2)) + "% de "+str(num_todos)+")" + ". Cada tramo debe tener suficientes positivos (>5%):" )
+                tramo_estadisticas = tramo_estadisticas.drop(columns=['totales_en_tramo', 'positivos_en_tramo'])
+                pd.set_option('display.max_columns', 30); print(tramo_estadisticas)
+
+                #TODO Podríamos ordenar los tramos según su 'pct_positivos_en_tramo' y reasignar ese valor "orden" a la featureTramificada. PERO ES COMPLICADO GUARDARLO PARA USARLO EN EL MODO FUTURO. Por tanto, de momento no lo hago
+                #tramo_estadisticas = tramo_estadisticas.sort_values(by='pct_positivos_en_tramo', ascending=False)
+                #mapeoTramoOrdenado = tramo_estadisticas.index
+
+                # Finalmente, damos el cambiazo a la feature en el DataFrame
+                featuresFichero[cabecera[indice]] = featureTramificada
+
+                #Y guardamos el tramificador DE ESTA FEATURE
+                print("Guardando modelo tramificador de feature: " + path_tramificador_feature)
+                pickle.dump(modelo_discretizador, open(path_tramificador_feature, 'wb'))
+
+                del featureAnalizada; del featureTramificada; del modelo_discretizador # Fin del IF
+            # Fin del WHILE
+
+        if modoDebug and modoTiempo == "pasado":
+            print("FUNCIONES DE DENSIDAD (tramificadas):")
+            for column in featuresFichero:
+                path_dibujo = dir_subgrupo_img + column + "_TRAMIF.png"
+                print("Guardando distrib de col tramificada: " + column + " en fichero: " + path_dibujo)
+                datos_columna = featuresFichero[column]
+                sns.distplot(datos_columna, kde=False, color='red', bins=dibujoBins)
+                plt.title(column + " (TRAMIF)", fontsize=10)
+                plt.savefig(path_dibujo, bbox_inches='tight')
+                plt.clf(); plt.cla(); plt.close()  # Limpiando dibujo
+
+        del indice; del cabecera; del numTramos  # fin del IF pasado
+
+    if modoTiempo == "futuro":
+
+        while indice < (len(cabecera) - 1):
+            indice = indice + 1
+            print("Tramificando feature '" + cabecera[indice] + "' (indice: " + str(indice) + ")")
+            featureAnalizada = featuresFichero[cabecera[indice]]  # Feature analizada
+            featureAnalizada = featureAnalizada.to_frame()  # Conversion a dataframe
+            featureAnalizada.set_index(featuresFichero.index)
+
+            path_tramificador_feature = path_modelo_tramificador+"_FEAT_"+cabecera[indice]
+
+            if os.path.exists(path_tramificador_feature):  # Si existe tramificador DE ESTA FEATURE, lo usamos. Si no, informamos en el log
+                modelo_discretizador = pickle.load(open(path_tramificador_feature, 'rb'))
+                featureTramificada = pd.DataFrame(data=modelo_discretizador.transform(featureAnalizada),
+                                                  index=featuresFichero.index, columns=featureAnalizada.columns)
+
+                # Finalmente, damos el cambiazo a la feature en el DataFrame
+                featuresFichero[cabecera[indice]] = featureTramificada
+
+                del featureTramificada; del modelo_discretizador
+
+            else:
+                print("No hay tramificador guardado (del pasado) de esta feature: ", path_tramificador_feature)
+
+        del indice; del cabecera; del numTramos  # Fin del IF
+
+    return featuresFichero
+
+
+def normalizarFeatures(featuresFichero, path_modelo_normalizador, dir_subgrupo_img, modoTiempo, path_indices_out_capa5, pathCsvIntermedio):
   print("----- normalizarFeatures ------")
   print("NORMALIZACION: hacemos que todas las features tengan distribución gaussiana media 0 y varianza 1. El target no se toca.")
   print("PARAMS --> " + path_modelo_normalizador + "|" + modoTiempo + "|" + str(modoDebug))
@@ -366,7 +470,7 @@ def normalizarFeatures(featuresFichero, path_modelo_normalizador, dir_subgrupo_i
         path_dibujo = dir_subgrupo_img + column + "_NORM.png"
         print("Guardando distrib de col normalizada: " + column + " en fichero: " + path_dibujo)
         datos_columna = featuresFicheroNorm[column]
-        sns.distplot(datos_columna, kde=False, color='red', bins=10)
+        sns.distplot(datos_columna, kde=False, color='red', bins=dibujoBins)
         plt.title(column+" (NORM)", fontsize=10)
         plt.savefig(path_dibujo, bbox_inches='tight')
         plt.clf(); plt.cla(); plt.close()  # Limpiando dibujo
@@ -374,7 +478,7 @@ def normalizarFeatures(featuresFichero, path_modelo_normalizador, dir_subgrupo_i
   return featuresFicheroNorm
 
 
-def comprobarSuficientesClasesTarget(featuresFicheroNorm, targetsFichero, modoDebug):
+def comprobarSuficientesClasesTarget(featuresFicheroNorm, targetsFichero):
   print("----- comprobarSuficientesClasesTarget ------")
   print("featuresFicheroNorm: " + str(featuresFicheroNorm.shape[0]) + " x " + str(featuresFicheroNorm.shape[1]) +"  Y  " + "targetsFichero: " + str(targetsFichero.shape[0]) + " x " + str(targetsFichero.shape[1]))
 
@@ -384,12 +488,13 @@ def comprobarSuficientesClasesTarget(featuresFicheroNorm, targetsFichero, modoDe
   return y_unicos.size
 
 
-def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, targetsFichero, pathCsvReducido, varianzaAcumuladaDeseada, dir_subgrupo_img, modoTiempo, maxFeatReducidas, modoDebug):
+def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, targetsFichero, pathCsvReducido, pathFeaturesSeleccionadas, varianzaAcumuladaDeseada, dir_subgrupo_img, modoTiempo, maxFeatReducidas):
   print("----- reducirFeaturesYGuardar ------")
   print("path_modelo_reductor_features --> " + path_modelo_reductor_features)
   print("featuresFicheroNorm: " + str(featuresFicheroNorm.shape[0]) + " x " + str(featuresFicheroNorm.shape[1]))
   print("targetsFichero: " + str(targetsFichero.shape[0]) + " x " + str(targetsFichero.shape[1]))
   print("pathCsvReducido --> " + pathCsvReducido)
+  print("pathFeaturesSeleccionadas --> " + pathFeaturesSeleccionadas)
   print("varianzaAcumuladaDeseada (PCA) --> " + str(varianzaAcumuladaDeseada))
   print("dir_subgrupo_img --> " + dir_subgrupo_img)
   print("modoTiempo: " + modoTiempo)
@@ -425,7 +530,7 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, 
         RandomForestClassifier(n_estimators=60, criterion="entropy", max_depth=500, min_samples_split=1, min_samples_leaf=2, min_weight_fraction_leaf=0.,
                             max_features="auto", max_leaf_nodes=None, min_impurity_decrease=0., min_impurity_split=None,
                             bootstrap=True, oob_score=False, n_jobs=None, random_state=None, verbose=0, warm_start=False,
-                            class_weight = None, ccp_alpha=0.0, max_samples=None)]
+                            class_weight=None, ccp_alpha=0.0, max_samples=None)]
 
         scoreAnterior = 0
         numFeaturesAnterior = 9999
@@ -483,8 +588,13 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, 
       # print(rfecv_modelo.support_)
       # print("El ranking de importancia de las features (rfecv_modelo.ranking_) no distingue las features mas importantes dentro de las seleccionadas:")
       # print(rfecv_modelo.ranking_)
-      print("Las columnas seleccionadas son:")
+      print("Guardando las columnas seleccionadas en: ", pathFeaturesSeleccionadas)
       print(columnasSeleccionadas)
+      columnasSeleccionadasStr='|'.join(columnasSeleccionadas)
+      featuresSeleccionadasFile = open(pathFeaturesSeleccionadas, "w")
+      featuresSeleccionadasFile.write(columnasSeleccionadasStr)
+      featuresSeleccionadasFile.close()
+
       featuresFicheroNormElegidas = featuresFicheroNorm[columnasSeleccionadas]
       # featuresFicheroNormElegidas.to_csv(pathCsvReducido + "_TEMP06", index=False, sep='|')  # UTIL ara testIntegracion
 
@@ -514,7 +624,7 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, 
       # print(targetsFichero.head())
 
       featuresytargets = pd.concat([featuresFicheroNormElegidas.reset_index(drop=True), targetsFichero.reset_index(drop=True)], axis=1)  #Column bind
-      featuresytargets.set_index(featuresFicheroNormElegidas.index, inplace = True)
+      featuresytargets.set_index(featuresFicheroNormElegidas.index, inplace=True)
       # print("FEATURES+TARGETS juntas (sample):")
       # print(featuresytargets.head())
       print("Justo antes de guardar, featuresytargets: " + str(featuresytargets.shape[0]) + " x " + str(featuresytargets.shape[1]))
@@ -525,14 +635,15 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, 
 
 if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.stat(pathCsvCompleto).st_size > 0:
 
-    featuresFichero, targetsFichero = leerFeaturesyTarget(pathCsvCompleto, dir_subgrupo_img, compatibleParaMuchasEmpresas, pathModeloOutliers, modoTiempo, modoDebug)
-    featuresFicheroNorm = normalizarFeatures(featuresFichero, path_modelo_normalizador, dir_subgrupo_img, modoTiempo, path_indices_out_capa5, pathCsvIntermedio, modoDebug)
-    numclases = comprobarSuficientesClasesTarget(featuresFicheroNorm, targetsFichero, modoDebug)
+    featuresFichero, targetsFichero = leerFeaturesyTarget(pathCsvCompleto, dir_subgrupo_img, compatibleParaMuchasEmpresas, pathModeloOutliers, modoTiempo)
+    featuresFicheroNorm = normalizarFeatures(featuresFichero, path_modelo_normalizador, dir_subgrupo_img, modoTiempo, path_indices_out_capa5, pathCsvIntermedio)
+    featuresTramificadas = tramificarFeatures(numTramos, featuresFicheroNorm, targetsFichero, path_modelo_tramificador, dir_subgrupo_img, modoTiempo)
+    numclases = comprobarSuficientesClasesTarget(featuresTramificadas, targetsFichero)
 
     if(modoTiempo == "pasado" and numclases <= 1):
         print("El subgrupo solo tiene " + str(numclases) + " clases en el target. Abortamos...")
     else:
-        reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, targetsFichero, pathCsvReducido, varianza, dir_subgrupo_img, modoTiempo, maxFeatReducidas, modoDebug)
+        reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, targetsFichero, pathCsvReducido, pathFeaturesSeleccionadas, varianza, dir_subgrupo_img, modoTiempo, maxFeatReducidas)
 
 
 print("------------ FIN de capa 5 ----------------")

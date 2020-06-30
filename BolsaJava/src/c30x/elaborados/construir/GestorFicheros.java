@@ -248,8 +248,9 @@ public class GestorFicheros {
 
 					// Si ya se han leído todas, no se sigue leyendo el fichero
 					filasDatosALeer--;
-					if (filasDatosALeer == 0)
+					if (filasDatosALeer == 0) {
 						break;
+					}
 				}
 			}
 
@@ -373,8 +374,10 @@ public class GestorFicheros {
 						totalCeros++;
 					}
 				}
+
 				MY_LOGGER.debug("---TARGETs-->: " + pathFichero + " con TotalTargetsUNO = " + totalUnos
 						+ " y TotalTargetsCERO = " + totalCeros);
+
 			} finally {
 				csvReader.close();
 			}

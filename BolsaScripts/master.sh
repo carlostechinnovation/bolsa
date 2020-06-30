@@ -202,6 +202,14 @@ if [ "$ACTIVAR_SG_Y_PREDICCION" = "S" ];  then
 fi
 
 ################################################################################################
+echo -e "Actualizando informe HTML de uso de DATOS..." >> ${LOG_VALIDADOR}
+java -jar ${PATH_JAR} --class "coordinador.Principal" "c70X.validacion.GeneradorInformeHtml" "${DIR_BASE}${DIR_TIEMPO}/" 2>>${LOG_VALIDADOR} 1>>${LOG_VALIDADOR}
+
+echo -e "Actualizando informe HTML de uso de FEATURES (mirando el pasado)..." >> ${LOG_VALIDADOR}
+DIR_SUBGRUPOS_PASADO=$(echo ${DIR_SUBGRUPOS} | sed -e "s/futuro/pasado/g")
+$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/FeaturesAnalisisPosteriori.py" "${DIR_SUBGRUPOS_PASADO}/" "/bolsa/pasado/matriz_features.html" >> ${LOG_MASTER}
+
+
 echo -e "MASTER - FIN: "$( date "+%Y%m%d%H%M%S" )
 echo -e "******** FIN de master**************" >> ${LOG_MASTER}
 
