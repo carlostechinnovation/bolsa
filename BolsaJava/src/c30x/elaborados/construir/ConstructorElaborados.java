@@ -3,6 +3,7 @@ package c30x.elaborados.construir;
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -16,6 +17,7 @@ import org.apache.log4j.helpers.NullEnumeration;
 
 import c20X.limpios.LimpiosUtils;
 import c30x.elaborados.construir.Estadisticas.FINAL_NOMBRES_PARAMETROS_ELABORADOS;
+import c30x.elaborados.construir.Estadisticas.OTROS_PARAMS_ELAB;
 
 public class ConstructorElaborados implements Serializable {
 
@@ -172,15 +174,17 @@ public class ConstructorElaborados implements Serializable {
 		datosEmpresaEntrada = datos.get(empresa);
 		MY_LOGGER.debug("anadirParametrosElaboradosDeSoloUnaEmpresa() -> Empresa: " + empresa);
 
-		HashMap<String, String> parametros = new HashMap<String, String>();
+		HashMap<String, String> parametros = new HashMap<String, String>(1);
 		Iterator<Integer> itAntiguedad;
 		Set<Integer> periodos, antiguedades;
-		HashMap<Integer, Estadisticas> estadisticasPrecioPorAntiguedad = new HashMap<Integer, Estadisticas>();
-		HashMap<Integer, Estadisticas> estadisticasVolumenPorAntiguedad = new HashMap<Integer, Estadisticas>();
+		HashMap<Integer, Estadisticas> estadisticasPrecioPorAntiguedad = new HashMap<Integer, Estadisticas>(1);
+		HashMap<Integer, Estadisticas> estadisticasVolumenPorAntiguedad = new HashMap<Integer, Estadisticas>(1);
 		Estadisticas estadisticasPrecio = new Estadisticas();
 		Estadisticas estadisticasVolumen = new Estadisticas();
-		HashMap<Integer, HashMap<Integer, Estadisticas>> estadisticasPrecioPorAntiguedadYPeriodo = new HashMap<Integer, HashMap<Integer, Estadisticas>>();
-		HashMap<Integer, HashMap<Integer, Estadisticas>> estadisticasVolumenPorAntiguedadYPeriodo = new HashMap<Integer, HashMap<Integer, Estadisticas>>();
+		HashMap<Integer, HashMap<Integer, Estadisticas>> estadisticasPrecioPorAntiguedadYPeriodo = new HashMap<Integer, HashMap<Integer, Estadisticas>>(
+				1);
+		HashMap<Integer, HashMap<Integer, Estadisticas>> estadisticasVolumenPorAntiguedadYPeriodo = new HashMap<Integer, HashMap<Integer, Estadisticas>>(
+				1);
 		HashMap<Integer, String> ordenPrecioNombresParametrosElaborados = estadisticasPrecio
 				.getOrdenNombresParametrosElaborados();
 		HashMap<Integer, String> ordenVolumenNombresParametrosElaborados = estadisticasPrecio
@@ -316,6 +320,10 @@ public class ConstructorElaborados implements Serializable {
 				datosEmpresaFinales.put(antiguedad, parametros);
 			}
 		}
+
+		// FEATURES RESPECTO AL FIN DE SEMANA, MES, TRIMESTRE
+		meterParametrosFinDeEtapaTemporal(datosEmpresaFinales);
+		int x = 0;
 
 //		// Se calculan parámetros elaborados ESTÁTICOS (por eso se coge sólo la vela 0).
 //		// Parámetro SCREENER1: basado en el screener que hemos visto que
@@ -765,6 +773,29 @@ public class ConstructorElaborados implements Serializable {
 			targetOut = "0";
 		}
 		return targetOut;
+	}
+
+	/**
+	 * @param datosEmpresaFinales Mapa de empresas y sus parametros
+	 */
+	public static void meterParametrosFinDeEtapaTemporal(HashMap<Integer, HashMap<String, String>> entrada) {
+
+		Calendar ahora = Calendar.getInstance();
+		Calendar ultimoDiaMes = Estadisticas.calcularUltimoDiaDelMes(ahora.getTime());
+		Calendar ultimoDiaTrimestre = Estadisticas.calcularUltimoDiaDelTrimestre(ahora.getTime());
+//		Calendar ultimoDiaAnio = Estadisticas.calcularUltimoDiaDelAnio(ahora.getTime());
+
+		int diasHastaFinMes = Estadisticas.restarTiempos(ahora.getTimeInMillis(), ultimoDiaMes.getTimeInMillis());
+		int diasHastaFinTrimestre = Estadisticas.restarTiempos(ahora.getTimeInMillis(),
+				ultimoDiaTrimestre.getTimeInMillis());
+//		int diasHastaFinAnio = Estadisticas.restarTiempos(ahora.getTimeInMillis(), ultimoDiaAnio.getTimeInMillis());
+
+		for (Integer clave : entrada.keySet()) {
+			entrada.get(clave).put(OTROS_PARAMS_ELAB.DIAS_HASTA_FIN_MES.toString(), String.valueOf(diasHastaFinMes));
+			entrada.get(clave).put(OTROS_PARAMS_ELAB.DIAS_HASTA_FIN_TRIMESTRE.toString(),
+					String.valueOf(diasHastaFinTrimestre));
+		}
+
 	}
 
 }

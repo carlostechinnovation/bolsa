@@ -40,15 +40,15 @@ for directorio in os.listdir(dir_subgrupos):
 
 #### MATRIZ ####
 columnas=featuresTodas.split("|")
-columnasConId=columnas.copy()
-columnasConId.insert(0, 'ID_SUBGRUPO')
+columnasConId = columnas.copy()
+columnasConId.insert(0, 'id_subgrupo')
 matrizDF = pd.DataFrame(columns=columnasConId)
 
 for row in acumuladoDF.itertuples(index=False):
     idSubgrupo=row.id_subgrupo
     colSeleccionadas=row.columnas_seleccionadas.split("|")
     fila = []
-    fila.append(idSubgrupo)
+    fila.append(int(idSubgrupo))
     for columna in columnas:
 
         if columna in colSeleccionadas:
@@ -64,20 +64,23 @@ for row in acumuladoDF.itertuples(index=False):
 
 # ESTILOS CSS
 def pintarColores(val):
-    color = 'red' if val==1 else 'black'
-    return 'background-color: %s' % color
+    color = 'green' if int(val) > 0 else 'white'
+    return 'border: 1px solid black; border-collapse: collapse; background-color: %s' % color
 
-matrizDF.style.applymap(pintarColores)
 
-matrizDF.style.background_gradient(cmap='Blues').hide_index()
-
+#Sort by id_subgrupo
+matrizDF = matrizDF.sort_values(by=['id_subgrupo'])
 #TRANSPONEMOS LA MATRIZ para que ocupe menos visualmente
 matrizDF = matrizDF.transpose()
+# Ponemos la primera fila en la cabecera
+new_header = matrizDF.iloc[0]
+matrizDF = matrizDF[1:]
+matrizDF.columns = new_header
 
 print("matrizDF: " + str(matrizDF.shape[0]) + " x " + str(matrizDF.shape[1]))
 # matrizDF.to_csv(pathSalida, index=False, sep='|')
 
-datosEnHtml = matrizDF.to_html()
+datosEnHtml = matrizDF.style.applymap(pintarColores).render()
 text_file = open(pathSalida, "w")
 text_file.write(datosEnHtml)
 text_file.close()

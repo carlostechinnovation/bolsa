@@ -2,20 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="22edbd2f-b3d9-42f0-a7dd-659033ab601a" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/bolsa/FeaturesAnalisisPosteriori.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/.classpath" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/.classpath" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/c10X/brutos/EstaticosFinvizDescargarYParsear.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/c10X/brutos/EstaticosFinvizDescargarYParsear.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../BolsaJava/src/c30x/elaborados/construir/ConstructorElaborados.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/c30x/elaborados/construir/ConstructorElaborados.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../BolsaJava/src/c30x/elaborados/construir/Estadisticas.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/c30x/elaborados/construir/Estadisticas.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/c30x/elaborados/construir/GestorFicheros.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/c30x/elaborados/construir/GestorFicheros.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/c40X/subgrupos/CrearDatasetsSubgrupos.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/c40X/subgrupos/CrearDatasetsSubgrupos.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/coordinador/Principal.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/coordinador/Principal.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../BolsaJava/src/main/resources/desconocidos.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/main/resources/desconocidos.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/pruebas/Pruebas.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/pruebas/Pruebas.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bolsa/C5NormalizarYReducirDatasetSubgrupo.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/C5NormalizarYReducirDatasetSubgrupo.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaScripts/master.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/master.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bolsa/FeaturesAnalisisPosteriori.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/FeaturesAnalisisPosteriori.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../BolsaScripts/parametros.config" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/parametros.config" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -53,11 +44,11 @@
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/bolsa" />
+    <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\DATOS\GITHUB_REPOS\bolsa\BolsaPython\bolsa" />
     </key>
-    <key name="MoveFile.RECENT_KEYS">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/bolsa" />
       <recent name="C:\DATOS\GITHUB_REPOS\bolsa\BolsaPython\bolsa" />
     </key>
   </component>
@@ -169,8 +160,8 @@
     </configuration>
     <list>
       <item itemvalue="Python.C5SeleccionDeVariablesDeSubgrupo" />
-      <item itemvalue="Python.FeaturesAnalisisPosteriori" />
       <item itemvalue="Python.C6CreadorModelosDeSubgrupo" />
+      <item itemvalue="Python.FeaturesAnalisisPosteriori" />
       <item itemvalue="Python.InversionUtilsPosteriori" />
       <item itemvalue="Python.pruebas" />
     </list>
@@ -238,10 +229,10 @@
       <screen x="65" y="24" width="1301" height="744" />
     </state>
     <state x="315" y="45" key="#Notifications/65.24.1301.744@65.24.1301.744" timestamp="1585834095628" />
-    <state x="174" y="414" width="1396" height="598" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1593550165343">
+    <state x="174" y="414" width="1396" height="598" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1593613657061">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
-    <state x="174" y="414" width="1396" height="598" key="#com.intellij.execution.impl.EditConfigurationsDialog/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1593550165343" />
+    <state x="174" y="414" width="1396" height="598" key="#com.intellij.execution.impl.EditConfigurationsDialog/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1593613657061" />
     <state x="109" y="85" key="#com.intellij.execution.impl.EditConfigurationsDialog/65.24.1301.744@65.24.1301.744" timestamp="1587243792586" />
     <state x="752" y="433" key="#com.jetbrains.python.refactoring.move.PyMoveModuleMembersDialog" timestamp="1592661994113">
       <screen x="65" y="24" width="1855" height="1056" />
@@ -265,45 +256,45 @@
     </state>
     <state x="584" y="396" key="FileChooserDialogImpl/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1593532282598" />
     <state x="429" y="286" key="FileChooserDialogImpl/65.24.1301.744@65.24.1301.744" timestamp="1585774375866" />
-    <state width="1855" height="185" key="GridCell.Tab.0.bottom" timestamp="1593551708133">
+    <state width="1855" height="322" key="GridCell.Tab.0.bottom" timestamp="1593624469618">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
-    <state width="1855" height="185" key="GridCell.Tab.0.bottom/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1593551708133" />
+    <state width="1855" height="322" key="GridCell.Tab.0.bottom/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1593624469618" />
     <state width="1278" height="119" key="GridCell.Tab.0.bottom/65.24.1301.744@65.24.1301.744" timestamp="1587247611414" />
-    <state width="1855" height="185" key="GridCell.Tab.0.center" timestamp="1593551708133">
+    <state width="1855" height="322" key="GridCell.Tab.0.center" timestamp="1593624469618">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
-    <state width="1855" height="185" key="GridCell.Tab.0.center/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1593551708133" />
+    <state width="1855" height="322" key="GridCell.Tab.0.center/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1593624469618" />
     <state width="1278" height="119" key="GridCell.Tab.0.center/65.24.1301.744@65.24.1301.744" timestamp="1587247611411" />
-    <state width="1855" height="185" key="GridCell.Tab.0.left" timestamp="1593551708133">
+    <state width="1855" height="322" key="GridCell.Tab.0.left" timestamp="1593624469618">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
-    <state width="1855" height="185" key="GridCell.Tab.0.left/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1593551708133" />
+    <state width="1855" height="322" key="GridCell.Tab.0.left/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1593624469618" />
     <state width="1278" height="119" key="GridCell.Tab.0.left/65.24.1301.744@65.24.1301.744" timestamp="1587247611410" />
-    <state width="1855" height="185" key="GridCell.Tab.0.right" timestamp="1593551708133">
+    <state width="1855" height="322" key="GridCell.Tab.0.right" timestamp="1593624469618">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
-    <state width="1855" height="185" key="GridCell.Tab.0.right/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1593551708133" />
+    <state width="1855" height="322" key="GridCell.Tab.0.right/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1593624469618" />
     <state width="1278" height="119" key="GridCell.Tab.0.right/65.24.1301.744@65.24.1301.744" timestamp="1587247611413" />
-    <state width="1855" height="322" key="GridCell.Tab.1.bottom" timestamp="1593551644568">
+    <state width="1855" height="322" key="GridCell.Tab.1.bottom" timestamp="1593624469618">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
-    <state width="1855" height="322" key="GridCell.Tab.1.bottom/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1593551644568" />
+    <state width="1855" height="322" key="GridCell.Tab.1.bottom/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1593624469618" />
     <state width="1278" height="215" key="GridCell.Tab.1.bottom/65.24.1301.744@65.24.1301.744" timestamp="1587245016478" />
-    <state width="1855" height="322" key="GridCell.Tab.1.center" timestamp="1593551644568">
+    <state width="1855" height="322" key="GridCell.Tab.1.center" timestamp="1593624469618">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
-    <state width="1855" height="322" key="GridCell.Tab.1.center/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1593551644568" />
+    <state width="1855" height="322" key="GridCell.Tab.1.center/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1593624469618" />
     <state width="1278" height="215" key="GridCell.Tab.1.center/65.24.1301.744@65.24.1301.744" timestamp="1587245016478" />
-    <state width="1855" height="322" key="GridCell.Tab.1.left" timestamp="1593551644568">
+    <state width="1855" height="322" key="GridCell.Tab.1.left" timestamp="1593624469618">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
-    <state width="1855" height="322" key="GridCell.Tab.1.left/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1593551644568" />
+    <state width="1855" height="322" key="GridCell.Tab.1.left/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1593624469618" />
     <state width="1278" height="215" key="GridCell.Tab.1.left/65.24.1301.744@65.24.1301.744" timestamp="1587245016478" />
-    <state width="1855" height="322" key="GridCell.Tab.1.right" timestamp="1593551644568">
+    <state width="1855" height="322" key="GridCell.Tab.1.right" timestamp="1593624469618">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
-    <state width="1855" height="322" key="GridCell.Tab.1.right/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1593551644568" />
+    <state width="1855" height="322" key="GridCell.Tab.1.right/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1593624469618" />
     <state width="1278" height="215" key="GridCell.Tab.1.right/65.24.1301.744@65.24.1301.744" timestamp="1587245016478" />
     <state x="518" y="76" key="RollbackChangesDialog" timestamp="1586511787447">
       <screen x="65" y="24" width="1301" height="744" />
@@ -357,8 +348,8 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/bolsa/FeaturesAnalisisPosteriori.py</url>
-          <line>80</line>
-          <option name="timeStamp" value="30" />
+          <line>71</line>
+          <option name="timeStamp" value="33" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

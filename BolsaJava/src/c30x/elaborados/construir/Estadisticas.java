@@ -2,6 +2,8 @@ package c30x.elaborados.construir;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -31,6 +33,10 @@ public class Estadisticas extends DescriptiveStatistics {
 
 	public enum FINAL_NOMBRES_PARAMETROS_ELABORADOS {
 		_PRECIO, _VOLUMEN;
+	}
+
+	public enum OTROS_PARAMS_ELAB {
+		DIAS_HASTA_FIN_MES, DIAS_HASTA_FIN_TRIMESTRE;
 	}
 
 	static Locale locale;
@@ -332,6 +338,79 @@ public class Estadisticas extends DescriptiveStatistics {
 		Double n = Double.valueOf(y.getNumElements());
 		average = average / n;
 		return Math.abs(max / average);
+	}
+
+	/**
+	 * Calcula el ultimo dia del MES
+	 * 
+	 * @param date
+	 * @return
+	 */
+	public static Calendar calcularUltimoDiaDelMes(Date date) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+		return cal;
+	}
+
+	/**
+	 * Calcula el ultimo dia del TRIMESTRE
+	 * 
+	 * @param date
+	 * @return
+	 */
+	public static Calendar calcularUltimoDiaDelTrimestre(Date date) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.set(Calendar.DAY_OF_MONTH, 1);
+		cal.set(Calendar.MONTH, cal.get(Calendar.MONTH) / 3 * 3 + 2);
+		cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DAY_OF_MONTH));
+		return cal;
+	}
+
+	/**
+	 * Calcula el ultimo dia del AÑO
+	 * 
+	 * @param date
+	 * @return
+	 */
+	public static Calendar calcularUltimoDiaDelAnio(Date date) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.set(Calendar.DAY_OF_MONTH, 31);
+		cal.set(Calendar.MONTH, Calendar.DECEMBER);
+		return cal;
+	}
+
+	/**
+	 * @param currentTime
+	 * @param endDateTime
+	 * @return
+	 */
+	public static int restarTiempos(long currentTime, long endDateTime) {
+
+		Calendar endDateCalendar;
+		Calendar currentDayCalendar;
+
+		// expiration day
+		endDateCalendar = Calendar.getInstance();
+		endDateCalendar.setTimeInMillis(endDateTime);
+		endDateCalendar.set(Calendar.MILLISECOND, 0);
+		endDateCalendar.set(Calendar.MINUTE, 0);
+		endDateCalendar.set(Calendar.HOUR, 0);
+
+		// current day
+		currentDayCalendar = Calendar.getInstance();
+		currentDayCalendar.setTimeInMillis(currentTime);
+		currentDayCalendar.set(Calendar.MILLISECOND, 0);
+		currentDayCalendar.set(Calendar.MINUTE, 0);
+		currentDayCalendar.set(Calendar.HOUR, 0);
+
+		int remainingDays = Math
+				.round((float) (endDateCalendar.getTimeInMillis() - currentDayCalendar.getTimeInMillis())
+						/ (24 * 60 * 60 * 1000));
+
+		return remainingDays;
 	}
 
 }

@@ -262,7 +262,7 @@ public class GeneradorInformeHtml implements Serializable {
 
 		String out = "";
 		File f = new File(pathCsv);
-		if (f.exists()) {
+		if (pathCsv != null && !pathCsv.isEmpty() && f.exists()) {
 			long numLineas = Files.lines(Paths.get(pathCsv)).count();
 			String[] primeraLinea = Files.lines(Paths.get(pathCsv)).map(s -> s.split(",")).findFirst().get();
 			String cabecera = primeraLinea[0];
