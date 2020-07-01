@@ -37,10 +37,5 @@ public class EstadisticasTest {
 		double esperado = 100.0D * (5.5D / 25.0D);
 		assertTrue(out == esperado);
 	}
-	
-	
-	calcularUltimoDiaDelTrimestre
-	
-	
 
 }
