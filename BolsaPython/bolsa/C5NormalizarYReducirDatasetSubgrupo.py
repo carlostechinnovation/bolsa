@@ -54,7 +54,6 @@ pathCsvCompleto = dir_subgrupo + "COMPLETO.csv"
 dir_subgrupo_img = dir_subgrupo + "img/"
 pathCsvIntermedio = dir_subgrupo + "intermedio.csv"
 pathCsvReducido = dir_subgrupo + "REDUCIDO.csv"
-pathFeaturesSeleccionadas = dir_subgrupo + "FEATURES_SELECCIONADAS.csv"
 pathModeloOutliers = (dir_subgrupo + "DETECTOR_OUTLIERS.tool").replace("futuro", "pasado") # Siempre lo cojo del pasado
 path_modelo_tramificador = (dir_subgrupo + "TRAMIFICADOR").replace("futuro", "pasado") # Siempre lo cojo del pasado
 path_modelo_normalizador = (dir_subgrupo + "NORMALIZADOR.tool").replace("futuro", "pasado") # Siempre lo cojo del pasado
@@ -488,13 +487,12 @@ def comprobarSuficientesClasesTarget(featuresFicheroNorm, targetsFichero):
   return y_unicos.size
 
 
-def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, targetsFichero, pathCsvReducido, pathFeaturesSeleccionadas, varianzaAcumuladaDeseada, dir_subgrupo_img, modoTiempo, maxFeatReducidas):
+def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, targetsFichero, pathCsvReducido, varianzaAcumuladaDeseada, dir_subgrupo_img, modoTiempo, maxFeatReducidas):
   print("----- reducirFeaturesYGuardar ------")
   print("path_modelo_reductor_features --> " + path_modelo_reductor_features)
   print("featuresFicheroNorm: " + str(featuresFicheroNorm.shape[0]) + " x " + str(featuresFicheroNorm.shape[1]))
   print("targetsFichero: " + str(targetsFichero.shape[0]) + " x " + str(targetsFichero.shape[1]))
   print("pathCsvReducido --> " + pathCsvReducido)
-  print("pathFeaturesSeleccionadas --> " + pathFeaturesSeleccionadas)
   print("varianzaAcumuladaDeseada (PCA) --> " + str(varianzaAcumuladaDeseada))
   print("dir_subgrupo_img --> " + dir_subgrupo_img)
   print("modoTiempo: " + modoTiempo)
@@ -588,12 +586,6 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, 
       # print(rfecv_modelo.support_)
       # print("El ranking de importancia de las features (rfecv_modelo.ranking_) no distingue las features mas importantes dentro de las seleccionadas:")
       # print(rfecv_modelo.ranking_)
-      print("Guardando las columnas seleccionadas en: ", pathFeaturesSeleccionadas)
-      print(columnasSeleccionadas)
-      columnasSeleccionadasStr='|'.join(columnasSeleccionadas)
-      featuresSeleccionadasFile = open(pathFeaturesSeleccionadas, "w")
-      featuresSeleccionadasFile.write(columnasSeleccionadasStr)
-      featuresSeleccionadasFile.close()
 
       featuresFicheroNormElegidas = featuresFicheroNorm[columnasSeleccionadas]
       # featuresFicheroNormElegidas.to_csv(pathCsvReducido + "_TEMP06", index=False, sep='|')  # UTIL ara testIntegracion
@@ -643,7 +635,7 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
     if(modoTiempo == "pasado" and numclases <= 1):
         print("El subgrupo solo tiene " + str(numclases) + " clases en el target. Abortamos...")
     else:
-        reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, targetsFichero, pathCsvReducido, pathFeaturesSeleccionadas, varianza, dir_subgrupo_img, modoTiempo, maxFeatReducidas)
+        reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, targetsFichero, pathCsvReducido, varianza, dir_subgrupo_img, modoTiempo, maxFeatReducidas)
 
 
 print("------------ FIN de capa 5 ----------------")

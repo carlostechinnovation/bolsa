@@ -43,6 +43,7 @@ print("PARAMETROS: ")
 dir_subgrupo = sys.argv[1]
 modoTiempo = sys.argv[2]
 desplazamientoAntiguedad = sys.argv[3]
+pathFeaturesSeleccionadas = dir_subgrupo + "FEATURES_SELECCIONADAS.csv"
 modoDebug = False  # En modo debug se pintan los dibujos. En otro caso, se evita calculo innecesario
 umbralCasosSuficientesClasePositiva = 50
 granProbTargetUno = 50  # De todos los target=1, nos quedaremos con los granProbTargetUno (en tanto por cien) MAS probables. Un valor de 100 o mayor anula este parámetro
@@ -245,10 +246,18 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         print("Guardamos esa lista de features muy correladas en: " + pathListaColumnasCorreladasDrop)
         pickle.dump(to_drop, open(pathListaColumnasCorreladasDrop, 'wb'))
         ift_juntas.drop(to_drop, axis=1, inplace=True)
-        print(ift_juntas)
-        print("Matriz de correlaciones corregida (PASADO):")
+        #print(ift_juntas)
+        print("Matriz de correlaciones corregida, habiendo quitado las muy correlacionadas (PASADO):")
         matrizCorr = ift_juntas.corr()
         print(matrizCorr)
+        ##################################################################
+        columnasSeleccionadas = ift_juntas.columns
+        print("Guardando las columnas seleccionadas en: ", pathFeaturesSeleccionadas)
+        print(columnasSeleccionadas)
+        columnasSeleccionadasStr = '|'.join(columnasSeleccionadas)
+        featuresSeleccionadasFile = open(pathFeaturesSeleccionadas, "w")
+        featuresSeleccionadasFile.write(columnasSeleccionadasStr)
+        featuresSeleccionadasFile.close()
         ##################################################################
 
         print("DIVIDIR EL DATASET DE ENTRADA EN 3 PARTES: TRAIN (50%), TEST (25%), VALIDACION (25%)...")
