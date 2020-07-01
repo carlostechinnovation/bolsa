@@ -61,12 +61,10 @@ for row in acumuladoDF.itertuples(index=False):
     matrizDF = matrizDF.append(filaDatos, ignore_index=True)
 
 
-
 # ESTILOS CSS
 def pintarColores(val):
     color = 'green' if int(val) > 0 else 'white'
     return 'border: 1px solid black; border-collapse: collapse; background-color: %s' % color
-
 
 #Sort by id_subgrupo
 matrizDF = matrizDF.sort_values(by=['id_subgrupo'])
@@ -84,10 +82,4 @@ datosEnHtml = matrizDF.style.applymap(pintarColores).render()
 text_file = open(pathSalida, "w")
 text_file.write(datosEnHtml)
 text_file.close()
-
-
-
-
-
-
 
