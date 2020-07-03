@@ -322,8 +322,7 @@ public class ConstructorElaborados implements Serializable {
 		}
 
 		// FEATURES RESPECTO AL FIN DE SEMANA, MES, TRIMESTRE
-		meterParametrosFinDeEtapaTemporal(datosEmpresaFinales);
-		int x = 0;
+		meterParametrosFinDeEtapaTemporal(datosEmpresaFinales, ordenNombresParametrosSalida);
 
 //		// Se calculan parámetros elaborados ESTÁTICOS (por eso se coge sólo la vela 0).
 //		// Parámetro SCREENER1: basado en el screener que hemos visto que
@@ -426,7 +425,8 @@ public class ConstructorElaborados implements Serializable {
 			// Se rellena el target en los datos de entrada tras el analisis, al final de
 			// todos los parametros
 			Iterator<Integer> itAntiguedadDatos = datosEmpresaFinales.keySet().iterator();
-			ordenNombresParametrosSalida.put(ordenNombresParametrosSalida.size(), "TARGET");
+			int indiceNuevoItem = ordenNombresParametrosSalida.size();
+			ordenNombresParametrosSalida.put(indiceNuevoItem, "TARGET");
 			while (itAntiguedadDatos.hasNext()) {
 				antiguedad = itAntiguedadDatos.next();
 				parametros = datosEmpresaFinales.get(antiguedad);
@@ -776,9 +776,14 @@ public class ConstructorElaborados implements Serializable {
 	}
 
 	/**
-	 * @param datosEmpresaFinales Mapa de empresas y sus parametros
+	 * Añade las features de FIN DE MES y FIN DE TRIMESTRE
+	 * 
+	 * @param datosEmpresaFinales          Mapa de empresas y sus parametros
+	 * @param ordenNombresParametrosSalida Mapa de parametros acumulados, a los que
+	 *                                     añadir estos nuevos
 	 */
-	public static void meterParametrosFinDeEtapaTemporal(HashMap<Integer, HashMap<String, String>> entrada) {
+	public static void meterParametrosFinDeEtapaTemporal(HashMap<Integer, HashMap<String, String>> entrada,
+			HashMap<Integer, String> ordenNombresParametrosSalida) {
 
 		Calendar ahora = Calendar.getInstance();
 		Calendar ultimoDiaMes = Estadisticas.calcularUltimoDiaDelMes(ahora.getTime());
@@ -795,6 +800,11 @@ public class ConstructorElaborados implements Serializable {
 			entrada.get(clave).put(OTROS_PARAMS_ELAB.DIAS_HASTA_FIN_TRIMESTRE.toString(),
 					String.valueOf(diasHastaFinTrimestre));
 		}
+
+		// AÑADIR LOS NUEVOS PARAMETROS
+		int indiceNuevoItem = ordenNombresParametrosSalida.size();
+		ordenNombresParametrosSalida.put(indiceNuevoItem, OTROS_PARAMS_ELAB.DIAS_HASTA_FIN_MES.toString());
+		ordenNombresParametrosSalida.put(indiceNuevoItem + 1, OTROS_PARAMS_ELAB.DIAS_HASTA_FIN_MES.toString());
 
 	}
 
