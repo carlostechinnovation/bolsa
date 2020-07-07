@@ -804,7 +804,7 @@ public class ConstructorElaborados implements Serializable {
 		// AÑADIR LOS NUEVOS PARAMETROS
 		int indiceNuevoItem = ordenNombresParametrosSalida.size();
 		ordenNombresParametrosSalida.put(indiceNuevoItem, OTROS_PARAMS_ELAB.DIAS_HASTA_FIN_MES.toString());
-		ordenNombresParametrosSalida.put(indiceNuevoItem + 1, OTROS_PARAMS_ELAB.DIAS_HASTA_FIN_MES.toString());
+		ordenNombresParametrosSalida.put(indiceNuevoItem + 1, OTROS_PARAMS_ELAB.DIAS_HASTA_FIN_TRIMESTRE.toString());
 
 	}
 

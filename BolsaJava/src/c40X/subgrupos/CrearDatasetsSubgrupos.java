@@ -605,8 +605,10 @@ public class CrearDatasetsSubgrupos implements Serializable {
 
 			ArrayList<String> pathFicherosEmpresas = empresasPorTipo.get(tipo);
 
-			// TODO Meter columnas calculadas que comparan cada empresa con todo su subgrupo
-			// anhadirColumnasDependientesDelSubgrupo(pathFicherosEmpresas);
+			// *******************************************************************
+			// Mete FEATURES DE SUBGRUPO en los CSVs de entrada (elaborados)
+			GeneradorFeaturesDeSubgrupo.anhadirColumnasDependientesDelSubgrupo(pathFicherosEmpresas, MY_LOGGER);
+			// *******************************************************************
 
 			// Antes se comprobará, en cada cluster, qué porcentaje hay de empresas con al
 			// menos una vela con target=1,
@@ -734,33 +736,6 @@ public class CrearDatasetsSubgrupos implements Serializable {
 			}
 
 		}
-
-	}
-
-	/**
-	 * Calcula las estadisticas de todas las empresas de un subgrupo. Estas columnas
-	 * se anhaden a todas las empresas de ese subgrupo, porque se supone que
-	 * arrastrarán a la empresa antes o despues hacia la tendencia del subgrupo.
-	 * 
-	 * @param pathFicherosEmpresas
-	 * @throws IOException
-	 */
-	public static void anhadirColumnasDependientesDelSubgrupo(ArrayList<String> pathsFicherosEmpresasDeUnSubgrupo)
-			throws IOException {
-
-		// TODO GRAN TABLON DE TODAS LAS EMPRESAS DEL SUBGRUPO
-		String row = "";
-		for (String pathFichero : pathsFicherosEmpresasDeUnSubgrupo) {
-			BufferedReader csvReader = new BufferedReader(new FileReader(pathFichero));
-			while ((row = csvReader.readLine()) != null) {
-
-			}
-		}
-
-		// TODO ESTADISTICAS DE SUBGRUPO: pendiente 3,7,20 dias
-
-		// TODO Meter las estadisticas del subgrupo a cada empresa de este subgrupo y
-		// guardar, pisando cada fichero existente.
 
 	}
 
