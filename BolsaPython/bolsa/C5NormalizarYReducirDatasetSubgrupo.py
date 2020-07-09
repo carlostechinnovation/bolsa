@@ -335,10 +335,12 @@ def tramificarFeatures(numTramos, featuresFichero, targetsFichero, path_modelo_t
 
     if modoTiempo == "pasado":
 
+        tramif_calidad_stddev_balanceotramo = pd.DataFrame(columns=['STD_DEV_del_pct_positivos_en_tramo', 'FEATURE'])
+
         while indice < (len(cabecera) - 1):
             indice = indice + 1
 
-            print("Tramificando feature '" + cabecera[indice] + "' (indice: " + str(indice) + ")")
+            #print("Tramificando feature '" + cabecera[indice] + "' (indice: " + str(indice) + ")")
             featureAnalizada = featuresFichero[cabecera[indice]]  # Feature analizada
             featureAnalizada = featureAnalizada.to_frame()  # Conversion a dataframe
             featureAnalizada.set_index(featuresFichero.index)
@@ -346,7 +348,7 @@ def tramificarFeatures(numTramos, featuresFichero, targetsFichero, path_modelo_t
             desv_std_feature = np.std(featureAnalizada)  # Si la desviaciones estandar 0, es una variable estatica y no necesitamos tramificarla
 
             if desv_std_feature.sum() != 0:
-                modelo_discretizador = KBinsDiscretizer(n_bins=numTramos, encode='ordinal', strategy="kmeans").fit(featureAnalizada)
+                modelo_discretizador = KBinsDiscretizer(n_bins=numTramos, encode='ordinal', strategy="quantile").fit(featureAnalizada)
                 featureTramificada = pd.DataFrame(data=modelo_discretizador.transform(featureAnalizada), index=featuresFichero.index, columns=featureAnalizada.columns)
 
                 # Analisis del desbalanceo positivos/negativos dentro de cada feature
@@ -358,9 +360,13 @@ def tramificarFeatures(numTramos, featuresFichero, targetsFichero, path_modelo_t
                 tramo_estadisticas['totales_en_tramo'] = analisisBalanceoTramos.count()
                 tramo_estadisticas['pct_positivos_en_tramo'] = 100 * tramo_estadisticas['positivos_en_tramo'] / tramo_estadisticas['totales_en_tramo']
                 num_positivos_totales = tramo_estadisticas['positivos_en_tramo'].aggregate(np.sum)
-                print("Feature = '" + cabecera[indice] + "' (indice: " + str(indice) + ") - Tiene " + str(num_positivos_totales) + " positivos (" + "{:.2f}".format(round(100*num_positivos_totales/num_todos, 2)) + "% de "+str(num_todos)+")" + ". Cada tramo debe tener suficientes positivos (>5%):" )
+                #print("Feature = '" + cabecera[indice] + "' (indice: " + str(indice) + ") - Tiene " + str(num_positivos_totales) + " positivos (" + "{:.2f}".format(round(100*num_positivos_totales/num_todos, 2)) + "% de "+str(num_todos)+")" + ". Cada tramo debe tener suficientes positivos (>5%):" )
                 tramo_estadisticas = tramo_estadisticas.drop(columns=['totales_en_tramo', 'positivos_en_tramo'])
-                pd.set_option('display.max_columns', 30); print(tramo_estadisticas)
+                # pd.set_option('display.max_columns', 30);  print(tramo_estadisticas)
+
+                calidad_discretizacion_stddev = pd.Series.std(tramo_estadisticas['pct_positivos_en_tramo'])
+                print("Tramificacion - CALIDAD - Feature = '" + cabecera[indice] + "' -> STD_DEV del porcentaje de positivos en tramo = " + str(calidad_discretizacion_stddev) + " (lo ideal es que sea 0: tramos con igual balanceo de positivos)")
+                tramif_calidad_stddev_balanceotramo = tramif_calidad_stddev_balanceotramo.append({'STD_DEV_del_pct_positivos_en_tramo':calidad_discretizacion_stddev, 'FEATURE':cabecera[indice]}, ignore_index = True)
 
                 #TODO Podríamos ordenar los tramos según su 'pct_positivos_en_tramo' y reasignar ese valor "orden" a la featureTramificada. PERO ES COMPLICADO GUARDARLO PARA USARLO EN EL MODO FUTURO. Por tanto, de momento no lo hago
                 #tramo_estadisticas = tramo_estadisticas.sort_values(by='pct_positivos_en_tramo', ascending=False)
@@ -370,11 +376,19 @@ def tramificarFeatures(numTramos, featuresFichero, targetsFichero, path_modelo_t
                 featuresFichero[cabecera[indice]] = featureTramificada
 
                 #Y guardamos el tramificador DE ESTA FEATURE
-                print("Guardando modelo tramificador de feature: " + path_tramificador_feature)
+                # print("Guardando modelo tramificador de feature: " + path_tramificador_feature)
                 pickle.dump(modelo_discretizador, open(path_tramificador_feature, 'wb'))
 
                 del featureAnalizada; del featureTramificada; del modelo_discretizador # Fin del IF
-            # Fin del WHILE
+        # Fin del WHILE
+
+        print("CALIDAD DE LA TRAMIFICACION - STD_DEV del porcentaje de positivos en tramo (lo ideal es que sea 0: tramos con igual balanceo de positivos):")
+        pd.set_option('display.max_columns', 30);
+        pd.set_option('display.max_rows', tramif_calidad_stddev_balanceotramo.shape[0] + 1)
+        print(tramif_calidad_stddev_balanceotramo.to_string(index=False))
+        tramif_calidad_stddev_media = pd.Series.mean(tramif_calidad_stddev_balanceotramo['STD_DEV_del_pct_positivos_en_tramo'])
+        print("CALIDAD DE LA TRAMIFICACION (ideal es 0): " +str(tramif_calidad_stddev_media))
+
 
         if modoDebug and modoTiempo == "pasado":
             print("FUNCIONES DE DENSIDAD (tramificadas):")
@@ -393,7 +407,7 @@ def tramificarFeatures(numTramos, featuresFichero, targetsFichero, path_modelo_t
 
         while indice < (len(cabecera) - 1):
             indice = indice + 1
-            print("Tramificando feature '" + cabecera[indice] + "' (indice: " + str(indice) + ")")
+            # print("Tramificando feature '" + cabecera[indice] + "' (indice: " + str(indice) + ")")
             featureAnalizada = featuresFichero[cabecera[indice]]  # Feature analizada
             featureAnalizada = featureAnalizada.to_frame()  # Conversion a dataframe
             featureAnalizada.set_index(featuresFichero.index)

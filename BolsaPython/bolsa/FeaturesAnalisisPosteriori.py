@@ -4,6 +4,7 @@ import csv
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 print("\n********* Analisis de uso de las FEATURES por cada modelo ganador en todos los subgrupos ********* ")
 
@@ -42,43 +43,62 @@ for directorio in os.listdir(dir_subgrupos):
 columnas=featuresTodas.split("|")
 columnasConId = columnas.copy()
 columnasConId.insert(0, 'id_subgrupo')
+columnasConId.append('Numero de features usadas')
 matrizDF = pd.DataFrame(columns=columnasConId)
 
 for row in acumuladoDF.itertuples(index=False):
-    idSubgrupo=row.id_subgrupo
-    colSeleccionadas=row.columnas_seleccionadas.split("|")
+    idSubgrupo = row.id_subgrupo
+    colSeleccionadas = row.columnas_seleccionadas.split("|")
     fila = []
-    fila.append(int(idSubgrupo))
+    fila.append(int(idSubgrupo))  # ID de SUBGRUPO
+    num_features = 0  # Numero de features usadas por este subgrupo
     for columna in columnas:
-
         if columna in colSeleccionadas:
             fila.append(1)
+            num_features += 1
         else:
             fila.append(0)
 
-      # anhadir elemento primero (prepend)
-    filaDatos = pd.Series(fila, index=columnasConId)
+    fila.insert(len(fila), num_features)
+    filaDatos = pd.Series(fila, index=columnasConId)   # anhadir elemento primero (prepend)
     matrizDF = matrizDF.append(filaDatos, ignore_index=True)
 
 
 # ESTILOS CSS
 def pintarColores(val):
-    color = 'green' if int(val) > 0 else 'white'
-    return 'border: 1px solid black; border-collapse: collapse; background-color: %s' % color
+    if int(val) == 1:
+        color = 'background-color: #64b41a99'
+    elif 2 <= int(val) < 20:
+        color = 'background-color: #f0f600b3'
+    elif 20 <= int(val) < 50:
+        color = 'background-color: #ea980ae6'
+    elif int(val) >= 50:
+        color = 'background-color: #18b054b3'
+    else:
+        color = ''
+
+    return 'text-align: right; border: 1px solid black; border-collapse: collapse; %s' % color
 
 #Sort by id_subgrupo
 matrizDF = matrizDF.sort_values(by=['id_subgrupo'])
+
+# IMPORTANCIA DE LAS FEATURES: porcentaje de veces que cada feature es usada por los modelos
+# Si queremos mejorar la métrica, debemos refinar esas features que las usan muchos modelos
+matrizDF.loc['Porcentaje de uso'] = 100 * matrizDF.sum(axis=0)/matrizDF.count(axis=0)
+matrizDF.at['Porcentaje de uso', 'id_subgrupo'] = 'Porcentaje de uso'  # Celda especial en la cabecera
+matrizDF.at['Porcentaje de uso', 'Numero de features usadas'] = '0'  # TOTAL de totales: vacio
+
 #TRANSPONEMOS LA MATRIZ para que ocupe menos visualmente
-matrizDF = matrizDF.transpose()
+matrizDFtraspuesta = matrizDF.transpose()
 # Ponemos la primera fila en la cabecera
-new_header = matrizDF.iloc[0]
-matrizDF = matrizDF[1:]
-matrizDF.columns = new_header
+new_header = matrizDFtraspuesta.iloc[0]
+matrizDFtraspuesta = matrizDFtraspuesta[1:]
+matrizDFtraspuesta.columns = new_header
 
-print("matrizDF: " + str(matrizDF.shape[0]) + " x " + str(matrizDF.shape[1]))
-# matrizDF.to_csv(pathSalida, index=False, sep='|')
+print("matrizDFtraspuesta: " + str(matrizDFtraspuesta.shape[0]) + " x " + str(matrizDFtraspuesta.shape[1]))
+# matrizDFtraspuesta.to_csv(pathSalida, index=False, sep='|')
 
-datosEnHtml = matrizDF.style.applymap(pintarColores).render()
+datosEnHtml = matrizDFtraspuesta.style.applymap(pintarColores).render()
 text_file = open(pathSalida, "w")
 text_file.write(datosEnHtml)
 text_file.close()
