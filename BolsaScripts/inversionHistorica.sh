@@ -88,9 +88,9 @@ rm -Rf "${PATH_BACKUP_BUENO_PASADO}" >>${LOG_INVERSION}
 mkdir "${PATH_BACKUP_BUENO_PASADO}" >>${LOG_INVERSION}
 cp -Rf "${DIR_BASE}/pasado/subgrupos/" "${PATH_BACKUP_BUENO_PASADO}" >>${LOG_INVERSION}
 echo -e "Se corta lo que existe en Dropbox hacia una carpeta temporal" >>${LOG_INVERSION}
-rm -Rf "${DIR_DROPBOX}temporal" >>${LOG_INVERSION}
-mkdir "${DIR_DROPBOX}temporal/" >>${LOG_INVERSION}
-cp "${DIR_DROPBOX}"* "${DIR_DROPBOX}temporal/" >>${LOG_INVERSION}
+rm -Rf "${DIR_DROPBOX}temporal_HISTORICO" >>${LOG_INVERSION}
+mkdir "${DIR_DROPBOX}temporal_HISTORICO/" >>${LOG_INVERSION}
+cp "${DIR_DROPBOX}"* "${DIR_DROPBOX}temporal_HISTORICO/" >>${LOG_INVERSION}
 rm "${DIR_DROPBOX}"* >>${LOG_INVERSION}
 echo -e "Se crea una carpeta para los resultados de ANALISIS_HISTORICO" >>${LOG_INVERSION}
 rm -Rf "${DIR_DROPBOX}ANALISIS_HISTORICO/" >>${LOG_INVERSION}
@@ -139,8 +139,8 @@ cp -Rf "${PATH_BACKUP_BUENO_PASADO}/subgrupos/" "${DIR_BASE}pasado/" >>${LOG_INV
 
 echo -e "Se REESTABLECE lo que ya existía en Dropbox" >>${LOG_INVERSION}
 rm "${DIR_DROPBOX}" >>${LOG_INVERSION}
-cp "${DIR_DROPBOX}temporal/"* "${DIR_DROPBOX}" >>${LOG_INVERSION}
-#rm -Rf "${DIR_DROPBOX}temporal" >>${LOG_INVERSION}
+cp "${DIR_DROPBOX}temporal_HISTORICO/"* "${DIR_DROPBOX}" >>${LOG_INVERSION}
+#rm -Rf "${DIR_DROPBOX}temporal_HISTORICO" >>${LOG_INVERSION}
 
 echo -e "Se reejecuta el análisis de la calidad con los datos restaurados" >>${LOG_INVERSION}
 ${PATH_ANALISIS}
