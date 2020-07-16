@@ -94,11 +94,11 @@ done 9< <( find ${DIR_FUT_SUBGRUPOS} -type f -exec printf '%s\0' {} + )
 
 
 ################################## GITHUB: commit and push##############################################################
-echo -e "Haciendo GIT COMMIT..." >>${LOG_INVERSION}
-cd "${DIR_GITHUB_INVERSION}" >> ${LOG_INVERSION}
-git add .  >> ${LOG_INVERSION}
-git commit -m "Ficheros diarios de inversion" *  >> ${LOG_INVERSION}	
-git push -u origin master >> ${LOG_INVERSION}
+#echo -e "Haciendo GIT COMMIT..." >>${LOG_INVERSION}
+#cd "${DIR_GITHUB_INVERSION}" >> ${LOG_INVERSION}
+#git add .  >> ${LOG_INVERSION}
+#git commit -m "Ficheros diarios de inversion" *  >> ${LOG_INVERSION}	
+#git push -u origin master >> ${LOG_INVERSION}
 
 ################################################################################################
 

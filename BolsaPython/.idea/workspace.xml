@@ -1,7 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="22edbd2f-b3d9-42f0-a7dd-659033ab601a" name="Default Changelist" comment="" />
+    <list default="true" id="22edbd2f-b3d9-42f0-a7dd-659033ab601a" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../inversion/20200714_GRANDE_0_SG_0_COMPLETO_PREDICCION.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../inversion/20200714_GRANDE_0_SG_11_COMPLETO_PREDICCION.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../inversion/20200714_GRANDE_0_SG_12_COMPLETO_PREDICCION.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../inversion/20200714_GRANDE_0_SG_21_COMPLETO_PREDICCION.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../inversion/20200714_GRANDE_0_SG_22_COMPLETO_PREDICCION.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../inversion/20200714_GRANDE_0_SG_23_COMPLETO_PREDICCION.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../inversion/20200714_GRANDE_0_SG_25_COMPLETO_PREDICCION.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../inversion/20200714_GRANDE_0_SG_26_COMPLETO_PREDICCION.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../inversion/20200714_GRANDE_0_SG_27_COMPLETO_PREDICCION.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../inversion/20200714_GRANDE_0_SG_30_COMPLETO_PREDICCION.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../inversion/20200714_GRANDE_0_SG_33_COMPLETO_PREDICCION.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../inversion/20200714_GRANDE_0_SG_38_COMPLETO_PREDICCION.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../inversion/20200714_GRANDE_0_SG_39_COMPLETO_PREDICCION.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../inversion/20200714_GRANDE_0_SG_3_COMPLETO_PREDICCION.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../inversion/20200714_GRANDE_0_SG_42_COMPLETO_PREDICCION.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../inversion/20200714_GRANDE_0_SG_43_COMPLETO_PREDICCION.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../inversion/20200714_GRANDE_0_SG_4_COMPLETO_PREDICCION.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../inversion/20200714_GRANDE_0_SG_5_COMPLETO_PREDICCION.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../inversion/20200714_MANEJABLE_0_SG_0_COMPLETO_PREDICCION.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../inversion/20200714_MANEJABLE_0_SG_11_COMPLETO_PREDICCION.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../inversion/20200714_MANEJABLE_0_SG_12_COMPLETO_PREDICCION.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../inversion/20200714_MANEJABLE_0_SG_21_COMPLETO_PREDICCION.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../inversion/20200714_MANEJABLE_0_SG_22_COMPLETO_PREDICCION.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../inversion/20200714_MANEJABLE_0_SG_23_COMPLETO_PREDICCION.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../inversion/20200714_MANEJABLE_0_SG_25_COMPLETO_PREDICCION.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../inversion/20200714_MANEJABLE_0_SG_26_COMPLETO_PREDICCION.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../inversion/20200714_MANEJABLE_0_SG_27_COMPLETO_PREDICCION.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../inversion/20200714_MANEJABLE_0_SG_30_COMPLETO_PREDICCION.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../inversion/20200714_MANEJABLE_0_SG_33_COMPLETO_PREDICCION.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../inversion/20200714_MANEJABLE_0_SG_38_COMPLETO_PREDICCION.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../inversion/20200714_MANEJABLE_0_SG_39_COMPLETO_PREDICCION.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../inversion/20200714_MANEJABLE_0_SG_3_COMPLETO_PREDICCION.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../inversion/20200714_MANEJABLE_0_SG_42_COMPLETO_PREDICCION.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../inversion/20200714_MANEJABLE_0_SG_43_COMPLETO_PREDICCION.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../inversion/20200714_MANEJABLE_0_SG_4_COMPLETO_PREDICCION.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../inversion/20200714_MANEJABLE_0_SG_5_COMPLETO_PREDICCION.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/c40X/subgrupos/AuxiliarEmpresaAMDpendientes.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/c40X/subgrupos/AuxiliarEmpresaAMDpendientes.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/main/resources/desconocidos.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/main/resources/desconocidos.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/pruebas/Pruebas.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/pruebas/Pruebas.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BolsaScripts/inversion.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/inversion.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BolsaScripts/inversionHistorica.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/inversionHistorica.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BolsaScripts/parametros.config" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/parametros.config" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -45,7 +89,7 @@
       <recent name="C:\DATOS\GITHUB_REPOS\bolsa\BolsaPython\bolsa" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.InversionUtilsPosteriori">
+  <component name="RunManager" selected="Python.C5SeleccionDeVariablesDeSubgrupo">
     <configuration name="C5SeleccionDeVariablesDeSubgrupo" type="PythonConfigurationType" factoryName="Python">
       <module name="BolsaPython" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -59,7 +103,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/bolsa/C5NormalizarYReducirDatasetSubgrupo.py" />
-      <option name="PARAMETERS" value="/bolsa/pasado/subgrupos/SG_25/ pasado 30" />
+      <option name="PARAMETERS" value="/bolsa/pasado/subgrupos/SG_25/ futuro 30" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -205,9 +249,10 @@
     <option name="LAST_COMMIT_MESSAGE" value="Machine Learning - Ejemplo" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="174" y="414" width="1396" height="598" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1594064726375">
-      <screen x="65" y="24" width="1855" height="1056" />
+    <state x="113" y="481" width="1396" height="598" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1594678422043">
+      <screen x="0" y="83" width="1920" height="1080" />
     </state>
+    <state x="113" y="481" key="#com.intellij.execution.impl.EditConfigurationsDialog/1920.0.1366.768/0.83.1920.1080@0.83.1920.1080" timestamp="1594678422043" />
     <state x="174" y="414" width="1396" height="598" key="#com.intellij.execution.impl.EditConfigurationsDialog/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1594064726375" />
     <state x="109" y="85" key="#com.intellij.execution.impl.EditConfigurationsDialog/65.24.1301.744@65.24.1301.744" timestamp="1587243792586" />
     <state x="752" y="433" key="#com.jetbrains.python.refactoring.move.PyMoveModuleMembersDialog" timestamp="1592661994113">
@@ -230,28 +275,28 @@
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
     <state x="584" y="396" key="FileChooserDialogImpl/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1593532282598" />
-    <state width="1832" height="327" key="GridCell.Tab.0.bottom" timestamp="1594588307479">
+    <state width="1832" height="267" key="GridCell.Tab.0.bottom" timestamp="1594679137160">
       <screen x="0" y="83" width="1920" height="1080" />
     </state>
-    <state width="1832" height="327" key="GridCell.Tab.0.bottom/1920.0.1366.768/0.83.1920.1080@0.83.1920.1080" timestamp="1594588307479" />
+    <state width="1832" height="267" key="GridCell.Tab.0.bottom/1920.0.1366.768/0.83.1920.1080@0.83.1920.1080" timestamp="1594679137160" />
     <state width="1855" height="263" key="GridCell.Tab.0.bottom/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1594064950731" />
     <state width="1278" height="119" key="GridCell.Tab.0.bottom/65.24.1301.744@65.24.1301.744" timestamp="1587247611414" />
-    <state width="1832" height="327" key="GridCell.Tab.0.center" timestamp="1594588307479">
+    <state width="1832" height="267" key="GridCell.Tab.0.center" timestamp="1594679137159">
       <screen x="0" y="83" width="1920" height="1080" />
     </state>
-    <state width="1832" height="327" key="GridCell.Tab.0.center/1920.0.1366.768/0.83.1920.1080@0.83.1920.1080" timestamp="1594588307479" />
+    <state width="1832" height="267" key="GridCell.Tab.0.center/1920.0.1366.768/0.83.1920.1080@0.83.1920.1080" timestamp="1594679137159" />
     <state width="1855" height="263" key="GridCell.Tab.0.center/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1594064950731" />
     <state width="1278" height="119" key="GridCell.Tab.0.center/65.24.1301.744@65.24.1301.744" timestamp="1587247611411" />
-    <state width="1832" height="327" key="GridCell.Tab.0.left" timestamp="1594588307479">
+    <state width="1832" height="267" key="GridCell.Tab.0.left" timestamp="1594679137159">
       <screen x="0" y="83" width="1920" height="1080" />
     </state>
-    <state width="1832" height="327" key="GridCell.Tab.0.left/1920.0.1366.768/0.83.1920.1080@0.83.1920.1080" timestamp="1594588307479" />
+    <state width="1832" height="267" key="GridCell.Tab.0.left/1920.0.1366.768/0.83.1920.1080@0.83.1920.1080" timestamp="1594679137159" />
     <state width="1855" height="263" key="GridCell.Tab.0.left/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1594064950731" />
     <state width="1278" height="119" key="GridCell.Tab.0.left/65.24.1301.744@65.24.1301.744" timestamp="1587247611410" />
-    <state width="1832" height="327" key="GridCell.Tab.0.right" timestamp="1594588307479">
+    <state width="1832" height="267" key="GridCell.Tab.0.right" timestamp="1594679137159">
       <screen x="0" y="83" width="1920" height="1080" />
     </state>
-    <state width="1832" height="327" key="GridCell.Tab.0.right/1920.0.1366.768/0.83.1920.1080@0.83.1920.1080" timestamp="1594588307479" />
+    <state width="1832" height="267" key="GridCell.Tab.0.right/1920.0.1366.768/0.83.1920.1080@0.83.1920.1080" timestamp="1594679137159" />
     <state width="1855" height="263" key="GridCell.Tab.0.right/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1594064950731" />
     <state width="1278" height="119" key="GridCell.Tab.0.right/65.24.1301.744@65.24.1301.744" timestamp="1587247611413" />
     <state width="1832" height="327" key="GridCell.Tab.1.bottom" timestamp="1594588307480">

@@ -1,6 +1,7 @@
 package c40X.subgrupos;
 
 import java.io.Serializable;
+import java.util.Locale;
 
 /**
  * Clase con ANIO,MES,DIA, PENDIENTE_HIGH_3D,PENDIENTE_HIGH_7D,
@@ -52,8 +53,10 @@ public class AuxiliarEmpresaAMDpendientes implements Serializable {
 	 * 
 	 */
 	public String getDatosParaCSVSinAMD() {
-		return "|" + String.format("%.6f", highPendiente3D) + "|" + String.format("%.6f", highPendiente7D) + "|"
-				+ String.format("%.6f", lowPendiente3D) + "|" + String.format("%.6f", lowPendiente7D);
+		return "|" + String.format(Locale.US, "%.6f", highPendiente3D) + "|"
+				+ String.format(Locale.US, "%.6f", highPendiente7D) + "|"
+				+ String.format(Locale.US, "%.6f", lowPendiente3D) + "|"
+				+ String.format(Locale.US, "%.6f", lowPendiente7D);
 	}
 
 	/**

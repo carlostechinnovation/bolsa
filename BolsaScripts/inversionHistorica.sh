@@ -13,7 +13,7 @@
 #Instantes de las descargas
 #Se analizará el tramo de antiguedad desde máxima hasta minima
 #OBLIGATORIO: LA ANTIGUEDAD_MINIMA debe ser 0 (en el análisis final, con las gráficas, en InversionUtilsPosteriori.sh se toma como base primaria de datos los ficheros *_GRANDE_0_SG_0_*. Se podrían copiar a mano ficheros de análisis anteriores, pero es ensuciar)
-ANTIGUEDAD_MAXIMA="20"
+ANTIGUEDAD_MAXIMA="30"
 ANTIGUEDAD_MINIMA="0" # OBLIGATORIO: valor 0
 
 
@@ -138,9 +138,12 @@ mkdir "${DIR_BASE}pasado/subgrupos/" >>${LOG_INVERSION}
 cp -Rf "${PATH_BACKUP_BUENO_PASADO}/subgrupos/" "${DIR_BASE}pasado/" >>${LOG_INVERSION}
 
 echo -e "Se REESTABLECE lo que ya existía en Dropbox" >>${LOG_INVERSION}
-rm "${DIR_DROPBOX}" >>${LOG_INVERSION}
+rm -Rf "${DIR_DROPBOX}HISTORICO" >>${LOG_INVERSION}
+mkdir "${DIR_DROPBOX}HISTORICO/" >>${LOG_INVERSION}
+cp "${DIR_DROPBOX}"* "${DIR_DROPBOX}HISTORICO/" >>${LOG_INVERSION}
+rm "${DIR_DROPBOX}"* >>${LOG_INVERSION}
 cp "${DIR_DROPBOX}temporal_HISTORICO/"* "${DIR_DROPBOX}" >>${LOG_INVERSION}
-#rm -Rf "${DIR_DROPBOX}temporal_HISTORICO" >>${LOG_INVERSION}
+rm -Rf "${DIR_DROPBOX}temporal_HISTORICO" >>${LOG_INVERSION}
 
 echo -e "Se reejecuta el análisis de la calidad con los datos restaurados" >>${LOG_INVERSION}
 ${PATH_ANALISIS}
