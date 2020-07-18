@@ -355,16 +355,19 @@ def calidadSubgrupos(resultadoAnalisis, subgrupos):
             resultadoPorSubgrupo=resultadoAnalisis.loc[resultadoAnalisis['subgrupo'] == subgrupo]
             rentaRelativaSP500=resultadoPorSubgrupo['rentaRelativaSP500']
             mediaRenta=np.mean(rentaRelativaSP500)
+            medianaRenta = np.median(rentaRelativaSP500)
             stdRenta=np.std(rentaRelativaSP500)
             numElementos=len(rentaRelativaSP500)
             #print("subgrupo: "+subgrupo+" ; media: "+str(mediaRenta) +" ; std: " + str(stdRenta)+" ; numElementos: " + str(numElementos))
 
             # Fórmula:
-            # CALIDAD = (media renta diaria - sqrt(varianza renta diaria)) * log (1 + número de elementos)
-            calidad=(mediaRenta-np.sqrt(stdRenta))*np.log10(1+numElementos)
+            # CALIDAD = mediana renta diaria * log (1 + número de elementos)
+            calidad = medianaRenta * np.log10(1 + numElementos)
+            #OBSOLETO# CALIDAD = (media renta diaria - sqrt(varianza renta diaria)) * log (1 + número de elementos)
+            #OBSOLETO: calidad=(mediaRenta-np.sqrt(stdRenta))*np.log10(1+numElementos)
             #print("CALIDAD: " + str(calidad))
 
-            nuevoGrupo = [{'subgrupo': subgrupo, 'calidad': '{:.2f}'.format(calidad)}]
+            nuevoGrupo = [{'subgrupo': subgrupo, 'calidad': calidad}]
             subgruposPorCalidad = subgruposPorCalidad.append(nuevoGrupo, ignore_index=True, sort=False)
             subgruposPorCalidad=subgruposPorCalidad.sort_values("calidad", ascending=False)
 
