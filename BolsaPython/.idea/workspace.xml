@@ -41,6 +41,8 @@
       <change beforePath="$PROJECT_DIR$/../BolsaJava/src/main/resources/desconocidos.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/main/resources/desconocidos.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bolsa/InversionUtilsPosteriori.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/InversionUtilsPosteriori.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BolsaScripts/inversionHistorica.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/inversionHistorica.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BolsaScripts/parametros.config" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/parametros.config" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -271,58 +273,54 @@
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
     <state x="584" y="396" key="FileChooserDialogImpl/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1593532282598" />
-    <state width="1278" height="214" key="GridCell.Tab.0.bottom" timestamp="1595102561282">
+    <state width="1278" height="214" key="GridCell.Tab.0.bottom" timestamp="1595321894607">
       <screen x="65" y="24" width="1301" height="744" />
     </state>
     <state width="1832" height="267" key="GridCell.Tab.0.bottom/1920.0.1366.768/0.83.1920.1080@0.83.1920.1080" timestamp="1594679137160" />
     <state width="1855" height="263" key="GridCell.Tab.0.bottom/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1594064950731" />
-    <state width="1278" height="214" key="GridCell.Tab.0.bottom/65.24.1301.744@65.24.1301.744" timestamp="1595102561282" />
-    <state width="1278" height="214" key="GridCell.Tab.0.center" timestamp="1595102561280">
+    <state width="1278" height="214" key="GridCell.Tab.0.bottom/65.24.1301.744@65.24.1301.744" timestamp="1595321894607" />
+    <state width="1278" height="214" key="GridCell.Tab.0.center" timestamp="1595321894606">
       <screen x="65" y="24" width="1301" height="744" />
     </state>
     <state width="1832" height="267" key="GridCell.Tab.0.center/1920.0.1366.768/0.83.1920.1080@0.83.1920.1080" timestamp="1594679137159" />
     <state width="1855" height="263" key="GridCell.Tab.0.center/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1594064950731" />
-    <state width="1278" height="214" key="GridCell.Tab.0.center/65.24.1301.744@65.24.1301.744" timestamp="1595102561280" />
-    <state width="1278" height="214" key="GridCell.Tab.0.left" timestamp="1595102561279">
+    <state width="1278" height="214" key="GridCell.Tab.0.center/65.24.1301.744@65.24.1301.744" timestamp="1595321894606" />
+    <state width="1278" height="214" key="GridCell.Tab.0.left" timestamp="1595321894605">
       <screen x="65" y="24" width="1301" height="744" />
     </state>
     <state width="1832" height="267" key="GridCell.Tab.0.left/1920.0.1366.768/0.83.1920.1080@0.83.1920.1080" timestamp="1594679137159" />
     <state width="1855" height="263" key="GridCell.Tab.0.left/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1594064950731" />
-    <state width="1278" height="214" key="GridCell.Tab.0.left/65.24.1301.744@65.24.1301.744" timestamp="1595102561279" />
-    <state width="1278" height="214" key="GridCell.Tab.0.right" timestamp="1595102561281">
+    <state width="1278" height="214" key="GridCell.Tab.0.left/65.24.1301.744@65.24.1301.744" timestamp="1595321894605" />
+    <state width="1278" height="214" key="GridCell.Tab.0.right" timestamp="1595321894606">
       <screen x="65" y="24" width="1301" height="744" />
     </state>
     <state width="1832" height="267" key="GridCell.Tab.0.right/1920.0.1366.768/0.83.1920.1080@0.83.1920.1080" timestamp="1594679137159" />
     <state width="1855" height="263" key="GridCell.Tab.0.right/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1594064950731" />
-    <state width="1278" height="214" key="GridCell.Tab.0.right/65.24.1301.744@65.24.1301.744" timestamp="1595102561281" />
-    <state width="1278" height="214" key="GridCell.Tab.1.bottom" timestamp="1595102561287">
+    <state width="1278" height="214" key="GridCell.Tab.0.right/65.24.1301.744@65.24.1301.744" timestamp="1595321894606" />
+    <state width="1278" height="214" key="GridCell.Tab.1.bottom" timestamp="1595321894611">
       <screen x="65" y="24" width="1301" height="744" />
     </state>
     <state width="1832" height="327" key="GridCell.Tab.1.bottom/1920.0.1366.768/0.83.1920.1080@0.83.1920.1080" timestamp="1594588307480" />
     <state width="1855" height="322" key="GridCell.Tab.1.bottom/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1593624469618" />
-    <state width="1278" height="214" key="GridCell.Tab.1.bottom/65.24.1301.744@65.24.1301.744" timestamp="1595102561287" />
-    <state width="1278" height="214" key="GridCell.Tab.1.center" timestamp="1595102561284">
+    <state width="1278" height="214" key="GridCell.Tab.1.bottom/65.24.1301.744@65.24.1301.744" timestamp="1595321894611" />
+    <state width="1278" height="214" key="GridCell.Tab.1.center" timestamp="1595321894609">
       <screen x="65" y="24" width="1301" height="744" />
     </state>
     <state width="1832" height="327" key="GridCell.Tab.1.center/1920.0.1366.768/0.83.1920.1080@0.83.1920.1080" timestamp="1594588307479" />
     <state width="1855" height="322" key="GridCell.Tab.1.center/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1593624469618" />
-    <state width="1278" height="214" key="GridCell.Tab.1.center/65.24.1301.744@65.24.1301.744" timestamp="1595102561284" />
-    <state width="1278" height="214" key="GridCell.Tab.1.left" timestamp="1595102561283">
+    <state width="1278" height="214" key="GridCell.Tab.1.center/65.24.1301.744@65.24.1301.744" timestamp="1595321894609" />
+    <state width="1278" height="214" key="GridCell.Tab.1.left" timestamp="1595321894608">
       <screen x="65" y="24" width="1301" height="744" />
     </state>
     <state width="1832" height="327" key="GridCell.Tab.1.left/1920.0.1366.768/0.83.1920.1080@0.83.1920.1080" timestamp="1594588307479" />
     <state width="1855" height="322" key="GridCell.Tab.1.left/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1593624469618" />
-    <state width="1278" height="214" key="GridCell.Tab.1.left/65.24.1301.744@65.24.1301.744" timestamp="1595102561283" />
-    <state width="1278" height="214" key="GridCell.Tab.1.right" timestamp="1595102561285">
+    <state width="1278" height="214" key="GridCell.Tab.1.left/65.24.1301.744@65.24.1301.744" timestamp="1595321894608" />
+    <state width="1278" height="214" key="GridCell.Tab.1.right" timestamp="1595321894610">
       <screen x="65" y="24" width="1301" height="744" />
     </state>
     <state width="1832" height="327" key="GridCell.Tab.1.right/1920.0.1366.768/0.83.1920.1080@0.83.1920.1080" timestamp="1594588307479" />
     <state width="1855" height="322" key="GridCell.Tab.1.right/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1593624469618" />
-    <state width="1278" height="214" key="GridCell.Tab.1.right/65.24.1301.744@65.24.1301.744" timestamp="1595102561285" />
-    <state x="518" y="76" key="RollbackChangesDialog" timestamp="1586511787447">
-      <screen x="65" y="24" width="1301" height="744" />
-    </state>
-    <state x="518" y="76" key="RollbackChangesDialog/65.24.1301.744@65.24.1301.744" timestamp="1586511787447" />
+    <state width="1278" height="214" key="GridCell.Tab.1.right/65.24.1301.744@65.24.1301.744" timestamp="1595321894610" />
     <state x="400" y="45" key="SettingsEditor" timestamp="1593550789142">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
@@ -349,6 +347,13 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/bolsa/InversionUtilsPosteriori.py</url>
+          <line>501</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
       <default-breakpoints>
         <breakpoint type="python-exception">
           <properties notifyOnTerminate="true" exception="BaseException">

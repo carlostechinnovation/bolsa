@@ -358,18 +358,15 @@ def calidadSubgrupos(resultadoAnalisis, subgrupos):
             medianaRenta = np.median(rentaRelativaSP500)
             stdRenta=np.std(rentaRelativaSP500)
             numElementos=len(rentaRelativaSP500)
-            #print("subgrupo: "+subgrupo+" ; media: "+str(mediaRenta) +" ; std: " + str(stdRenta)+" ; numElementos: " + str(numElementos))
 
             # Fórmula:
             # CALIDAD = mediana renta diaria * log (1 + número de elementos)
-            calidad = medianaRenta * np.log10(1 + numElementos)
-            #OBSOLETO# CALIDAD = (media renta diaria - sqrt(varianza renta diaria)) * log (1 + número de elementos)
-            #OBSOLETO: calidad=(mediaRenta-np.sqrt(stdRenta))*np.log10(1+numElementos)
-            #print("CALIDAD: " + str(calidad))
+            calidadMediana = medianaRenta * np.log10(1 + numElementos)
+            calidadMediaStd =(mediaRenta-np.sqrt(stdRenta))*np.log10(1+numElementos)
 
-            nuevoGrupo = [{'subgrupo': subgrupo, 'calidad': calidad}]
+            nuevoGrupo = [{'subgrupo': subgrupo, 'calidadMediana': calidadMediana, 'calidadMediaStd': calidadMediaStd}]
             subgruposPorCalidad = subgruposPorCalidad.append(nuevoGrupo, ignore_index=True, sort=False)
-            subgruposPorCalidad=subgruposPorCalidad.sort_values("calidad", ascending=False)
+            subgruposPorCalidad=subgruposPorCalidad.sort_values("calidadMediana", ascending=False)
 
         # Se sacan por log
         for row_index, row in subgruposPorCalidad.iterrows():

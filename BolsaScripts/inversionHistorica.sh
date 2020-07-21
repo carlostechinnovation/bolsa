@@ -12,9 +12,9 @@
 
 #Instantes de las descargas
 #Se analizará el tramo de antiguedad desde máxima hasta minima
-#OBLIGATORIO: LA ANTIGUEDAD_MINIMA debe ser 0 (en el análisis final, con las gráficas, en InversionUtilsPosteriori.sh se toma como base primaria de datos los ficheros *_GRANDE_0_SG_0_*. Se podrían copiar a mano ficheros de análisis anteriores, pero es ensuciar)
-ANTIGUEDAD_MAXIMA="30"
-ANTIGUEDAD_MINIMA="0" # OBLIGATORIO: valor 0
+#Se tomarán los ficheros *_GRANDE_0_SG_0_* generados, o que ya se tienen de ejecuciones antiguas, para usarlo como base de información futura.
+ANTIGUEDAD_MAXIMA="25"
+ANTIGUEDAD_MINIMA="0" # Se puede usar cualquier valor
 
 
 echo -e "INVERSION - INICIO: "$( date "+%Y%m%d%H%M%S" )
@@ -124,6 +124,13 @@ do
 	done 9< <( find ${DIR_FUT_SUBGRUPOS} -type f -exec printf '%s\0' {} + )
 
 done
+
+echo -e "Se añaden también todos los ficheros GRANDE_0 del subgrupo 0 que tenemos de ejecuciones anteriores, que servirán para fijar una base de comparación futura" >>${LOG_INVERSION}
+origen="${DIR_DROPBOX}HISTORICO/"
+patronGrandeAntiguedadCero="_GRANDE_0_SG_0_"
+destino="${DIR_DROPBOX}/"
+
+find "${origen}" -name "*${patronGrandeAntiguedadCero}*" -exec cp {} ${destino} \; -print  >>${LOG_INVERSION}
 
 echo -e "Se añade el análisis de la calidad para ver las gráficas y qué subgrupos son los mejores" >>${LOG_INVERSION}
 ${PATH_ANALISIS}
