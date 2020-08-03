@@ -16,6 +16,7 @@ import org.apache.log4j.PatternLayout;
 import org.apache.log4j.helpers.NullEnumeration;
 
 import c20X.limpios.LimpiosUtils;
+import c30x.elaborados.construir.Estadisticas.COMIENZO_NOMBRES_PARAMETROS_ELABORADOS;
 import c30x.elaborados.construir.Estadisticas.FINAL_NOMBRES_PARAMETROS_ELABORADOS;
 import c30x.elaborados.construir.Estadisticas.OTROS_PARAMS_ELAB;
 
@@ -38,9 +39,9 @@ public class ConstructorElaborados implements Serializable {
 		return instancia;
 	}
 
-	// Se usan los periodos típicos que suelen usar los robots: 3, 7, 20, 50 días
+	// Se usan los periodos típicos que suelen usar los robots: 4, 7, 20, 50 días
 	// (consideraremos velas)
-	public final static Integer[] periodosDParaParametros = new Integer[] { 3, 7, 20, 50 };
+	public final static Integer[] periodosDParaParametros = new Integer[] { 4, 7, 20, 50 };
 
 	// IMPORTANTE: se asume que los datos estan ordenados de menor a mayor
 	// antiguedad, y agrupados por empresa
@@ -324,61 +325,61 @@ public class ConstructorElaborados implements Serializable {
 		// FEATURES RESPECTO AL FIN DE SEMANA, MES, TRIMESTRE
 		meterParametrosFinDeEtapaTemporal(datosEmpresaFinales, ordenNombresParametrosSalida);
 
-//		// Se calculan parámetros elaborados ESTÁTICOS (por eso se coge sólo la vela 0).
-//		// Parámetro SCREENER1: basado en el screener que hemos visto que
-//		// funciona:
-//		// EPSgrowthNextYear > 0, CurrentRatio > 2,QuickRatio > 2, LongTermDebt <
-//		// 0.0, InstitutionalOwnership > 10(%)
-//		// Valores: Si no se tienen los datos o no se cumplen las condiciones, será 0.
-//		// Si sí se cumple todo, será 1
-//		String SCREENER1 = "0";
-//
-//		try {
-//			parametros = datosEmpresaEntrada.get(0);
-//			String EPSgrowthNextYear = parametros.get("EPS next Y");
-//			String CurrentRatio = parametros.get("Current Ratio");
-//			String QuickRatio = parametros.get("Quick Ratio");
-//			String LongTermDebt = parametros.get("LT Debt/Eq");
-//			String InstitutionalOwnership = parametros.get("Inst Own");
-//
-//			Float EPSgrowthNextYearF = Float.valueOf(EPSgrowthNextYear);
-//			Float CurrentRatioF = Float.valueOf(CurrentRatio);
-//			Float QuickRatioF = Float.valueOf(QuickRatio);
-//			Float LongTermDebtF = Float.valueOf(LongTermDebt);
-//			Float InstitutionalOwnershipF = Float.valueOf(InstitutionalOwnership);
-//
-//			// Cálculo del parámetro
-//			if (EPSgrowthNextYearF > 0F && CurrentRatioF > 2F && QuickRatioF > 2F && LongTermDebtF > 0F
-//					&& InstitutionalOwnershipF > 10F) {
-//				SCREENER1 = "1";
-//			}
-//
-//		} catch (Exception e) {
-//			MY_LOGGER.debug("La empresa " + empresa + " no tiene alguno de los parámetros necesarios para calcular "
-//					+ "el parámetro elaborado SCREENER1, o directamente no tiene ningún parámetro para la primera vela. Se pone SCREENER1=0");
-//		}
-//
+		// Se calculan parámetros elaborados ESTÁTICOS (por eso se coge sólo la vela 0).
+		// Parámetro SCREENER1: basado en el screener que hemos visto que
+		// funciona:
+		// EPSgrowthNextYear > 0, CurrentRatio > 2,QuickRatio > 2, LongTermDebt <
+		// 0.0, InstitutionalOwnership > 10(%)
+		// Valores: Si no se tienen los datos o no se cumplen las condiciones, será 0.
+		// Si sí se cumple todo, será 1
+		String SCREENER1 = "0";
+
+		try {
+			parametros = datosEmpresaEntrada.get(0);
+			String EPSgrowthNextYear = parametros.get("EPS next Y");
+			String CurrentRatio = parametros.get("Current Ratio");
+			String QuickRatio = parametros.get("Quick Ratio");
+			String LongTermDebt = parametros.get("LT Debt/Eq");
+			String InstitutionalOwnership = parametros.get("Inst Own");
+
+			Float EPSgrowthNextYearF = Float.valueOf(EPSgrowthNextYear);
+			Float CurrentRatioF = Float.valueOf(CurrentRatio);
+			Float QuickRatioF = Float.valueOf(QuickRatio);
+			Float LongTermDebtF = Float.valueOf(LongTermDebt);
+			Float InstitutionalOwnershipF = Float.valueOf(InstitutionalOwnership);
+
+			// Cálculo del parámetro
+			if (EPSgrowthNextYearF > 0F && CurrentRatioF > 2F && QuickRatioF > 2F && LongTermDebtF > 0F
+					&& InstitutionalOwnershipF > 10F) {
+				SCREENER1 = "1";
+			}
+
+		} catch (Exception e) {
+			MY_LOGGER.debug("La empresa " + empresa + " no tiene alguno de los parámetros necesarios para calcular "
+					+ "el parámetro elaborado SCREENER1, o directamente no tiene ningún parámetro para la primera vela. Se pone SCREENER1=0");
+		}
+
 //		MY_LOGGER.debug("SCREENER1: " + SCREENER1 + " para la empresa " + empresa);
-//
-//		// Se añade el parámetro SCREENER1
-//		ordenNombresParametrosSalida.put(ordenNombresParametrosSalida.size(), "SCREENER1");
-//		parametrosAcumulados++;
-//
-//		// Se añade el parámetro HYPE1
-//		ordenNombresParametrosSalida.put(ordenNombresParametrosSalida.size(), "HYPE1");
-//		parametrosAcumulados++;
-//
-//		// Se añade el parámetro HYPE2
-//		ordenNombresParametrosSalida.put(ordenNombresParametrosSalida.size(), "HYPE2");
-//		parametrosAcumulados++;
-//
-//		// Se añade el parámetro HYPE3
-//		ordenNombresParametrosSalida.put(ordenNombresParametrosSalida.size(), "HYPE3");
-//		parametrosAcumulados++;
-//
-//		// Se añade el parámetro HYPE4
-//		ordenNombresParametrosSalida.put(ordenNombresParametrosSalida.size(), "HYPE4");
-//		parametrosAcumulados++;
+
+		// Se añade el parámetro SCREENER1
+		ordenNombresParametrosSalida.put(ordenNombresParametrosSalida.size(), "SCREENER1");
+		parametrosAcumulados++;
+
+		// Se añade el parámetro HYPE1
+		ordenNombresParametrosSalida.put(ordenNombresParametrosSalida.size(), "HYPE1");
+		parametrosAcumulados++;
+
+		// Se añade el parámetro HYPE2
+		ordenNombresParametrosSalida.put(ordenNombresParametrosSalida.size(), "HYPE2");
+		parametrosAcumulados++;
+
+		// Se añade el parámetro HYPE3
+		ordenNombresParametrosSalida.put(ordenNombresParametrosSalida.size(), "HYPE3");
+		parametrosAcumulados++;
+
+		// Se añade el parámetro HYPE4
+		ordenNombresParametrosSalida.put(ordenNombresParametrosSalida.size(), "HYPE4");
+		parametrosAcumulados++;
 
 		// Aniado el TARGET
 		// Target=0 es que no se cumple. 1 es que sí. TARGET_INVALIDO es que no se puede
@@ -415,12 +416,12 @@ public class ConstructorElaborados implements Serializable {
 				antiguedadYTarget.put(antiguedad, target);
 			}
 
-//			// Auxiliares
-//			String Sprecio, Svolumen, Ssma20Precio, Ssma50Precio, Ssma7Precio, Ssma3Precio, Ssma20Volumen, Ssma7Volumen,
-//					Ssma3Volumen, Smaximo3Precio, Smaximo7Precio, Sstdsma3Precio, Sstdsma20Precio;
-//			Float precio, volumen, sma20Precio, sma50Precio, sma7Precio, sma3Precio, sma20Volumen, sma7Volumen,
-//					sma3Volumen, maximo3Precio, maximo7Precio, stdsma3Precio, stdsma20Precio;
-//			String HYPE1 = "0", HYPE2 = "0", HYPE3 = "0", HYPE4 = "0";
+			// Auxiliares
+			String Sprecio, Svolumen, Ssma20Precio, Ssma50Precio, Ssma7Precio, Ssma4Precio, Ssma20Volumen, Ssma7Volumen,
+					Ssma4Volumen, Smaximo4Precio, Smaximo7Precio, Sstdsma4Precio, Sstdsma20Precio;
+			Float precio, volumen, sma20Precio, sma50Precio, sma7Precio, sma4Precio, sma20Volumen, sma7Volumen,
+					sma4Volumen, maximo4Precio, maximo7Precio, stdsma4Precio, stdsma20Precio;
+			String HYPE1 = "0", HYPE2 = "0", HYPE3 = "0", HYPE4 = "0";
 
 			// Se rellena el target en los datos de entrada tras el analisis, al final de
 			// todos los parametros
@@ -431,151 +432,151 @@ public class ConstructorElaborados implements Serializable {
 				antiguedad = itAntiguedadDatos.next();
 				parametros = datosEmpresaFinales.get(antiguedad);
 
-//				// Se AÑADEN parámetros elaborados ESTÁTICOS
-//				parametros.put("SCREENER1", SCREENER1);
-//
-//				// Se AÑADEN parámetros elaborados DINÁMICOS. Para ello deben estar ya guardados
-//				// el resto de parámetros que se referencien.
-//
-//				// PARÁMETRO HYPE1:
-//				// PATRÓN DIP BUY
-//				// PRECIO -> Menor que media 3, 7 y 20
-//				// VOLUMEN -> Mayor que media 3, 7 y 20
-//				// Valores: Si no se tienen los datos, será null. Si no se cumplen las
-//				// condiciones, será 0.
-//				// Si sí se cumple todo, será 1
-//				Sprecio = parametros.get("close");
-//				Svolumen = parametros.get("volumen");
-//				Ssma20Precio = parametros.get("MEDIA_SMA_20_PRECIO");
-//				Ssma7Precio = parametros.get("MEDIA_SMA_7_PRECIO");
-//				Ssma3Precio = parametros.get("MEDIA_SMA_3_PRECIO");
-//				Ssma20Volumen = parametros.get("MEDIA_SMA_20_VOLUMEN");
-//				Ssma7Volumen = parametros.get("MEDIA_SMA_7_VOLUMEN");
-//				Ssma3Volumen = parametros.get("MEDIA_SMA_3_VOLUMEN");
-//				if (Sprecio != null && Svolumen != null && Ssma3Precio != null && Ssma7Precio != null
-//						&& Ssma20Precio != null && Ssma3Volumen != null && Ssma7Volumen != null
-//						&& Ssma20Volumen != null) {
-//					precio = Float.valueOf(Sprecio);
-//					volumen = Float.valueOf(Svolumen);
-//					sma3Precio = Float.valueOf(Ssma3Precio);
-//					sma7Precio = Float.valueOf(Ssma7Precio);
-//					sma20Precio = Float.valueOf(Ssma20Precio);
-//					sma3Volumen = Float.valueOf(Ssma3Volumen);
-//					sma7Volumen = Float.valueOf(Ssma7Volumen);
-//					sma20Volumen = Float.valueOf(Ssma20Volumen);
-//					if (precio < sma3Precio && precio < sma7Precio && precio < sma20Precio && volumen > sma3Volumen
-//							&& volumen > sma7Volumen && volumen > sma20Volumen) {
-//						HYPE1 = "1";
-//					} else {
-//						HYPE1 = "0";
-//					}
-//				} else {
-//					HYPE1 = "null";
-//				}
-//
-//				// PARÁMETRO HYPE2:
-//				// PRECIO -> Mayor que sma7 y SMA20
-//				// PRECIO -> mayor (o igual, ya que será el máximo xD) que el máximo de 3 velas,
-//				// en positivo
-//				// VOLUMEN -> 3 veces mayor que SMA7
-//				// Valores: Si no se tienen los datos, será null. Si no se cumplen las
-//				// condiciones, será 0.
-//				// Si sí se cumple todo, será 1
-//				Sprecio = parametros.get("close");
-//				Svolumen = parametros.get("volumen");
-//				Ssma20Precio = parametros.get("MEDIA_SMA_20_PRECIO");
-//				Ssma7Precio = parametros.get("MEDIA_SMA_7_PRECIO");
-//				Ssma7Volumen = parametros.get("MEDIA_SMA_7_VOLUMEN");
-//				Smaximo3Precio = parametros.get("MAXIMO_3_PRECIO");
-//				if (Sprecio != null && Svolumen != null && Ssma20Precio != null && Ssma7Precio != null
-//						&& Ssma7Volumen != null && Smaximo3Precio != null) {
-//					precio = Float.valueOf(Sprecio);
-//					volumen = Float.valueOf(Svolumen);
-//					sma20Precio = Float.valueOf(Ssma20Precio);
-//					sma7Precio = Float.valueOf(Ssma7Precio);
-//					sma7Volumen = Float.valueOf(Ssma7Volumen);
-//					maximo3Precio = Float.valueOf(Smaximo3Precio);
-//					if (precio > sma7Precio && precio > sma20Precio && precio >= maximo3Precio
-//							&& volumen > 3 * sma7Volumen) {
-//						HYPE2 = "1";
-//					} else {
-//						HYPE2 = "0";
-//					}
-//				} else {
-//					HYPE2 = "null";
-//				}
-//
-//				// PARÁMETRO HYPE3:
-//				// PATRÓN subida VBLT 22/1/2020
-//				// Precio: mayor que SMA20, pero menor que SMA3, SMA7
-//				// Volumen: mayor que SMA3, pero menor que SMA7, SMA20
-//				// Valores: Si no se tienen los datos, será null. Si no se cumplen las
-//				// condiciones, será 0.
-//				// Si sí se cumple todo, será 1
-//				Sprecio = parametros.get("close");
-//				Svolumen = parametros.get("volumen");
-//				Ssma20Precio = parametros.get("MEDIA_SMA_20_PRECIO");
-//				Ssma7Precio = parametros.get("MEDIA_SMA_7_PRECIO");
-//				Ssma3Precio = parametros.get("MEDIA_SMA_3_PRECIO");
-//				Ssma20Volumen = parametros.get("MEDIA_SMA_20_VOLUMEN");
-//				Ssma7Volumen = parametros.get("MEDIA_SMA_7_VOLUMEN");
-//				Ssma3Volumen = parametros.get("MEDIA_SMA_3_VOLUMEN");
-//				if (Sprecio != null && Svolumen != null && Ssma3Precio != null && Ssma7Precio != null
-//						&& Ssma20Precio != null && Ssma3Volumen != null && Ssma7Volumen != null
-//						&& Ssma20Volumen != null) {
-//					precio = Float.valueOf(Sprecio);
-//					volumen = Float.valueOf(Svolumen);
-//					sma3Precio = Float.valueOf(Ssma3Precio);
-//					sma7Precio = Float.valueOf(Ssma7Precio);
-//					sma20Precio = Float.valueOf(Ssma20Precio);
-//					sma3Volumen = Float.valueOf(Ssma3Volumen);
-//					sma7Volumen = Float.valueOf(Ssma7Volumen);
-//					sma20Volumen = Float.valueOf(Ssma20Volumen);
-//					if (precio < sma3Precio && precio < sma7Precio && precio > sma20Precio && volumen > sma3Volumen
-//							&& volumen < sma7Volumen && volumen < sma20Volumen) {
-//						HYPE3 = "1";
-//					} else {
-//						HYPE3 = "0";
-//					}
-//				} else {
-//					HYPE3 = "null";
-//				}
-//
-//				// PARÁMETRO HYPE4:
-//				// Sacado a ojo, leyendo las combinaciones de resultados, para eliminar los falsos positivos
-//				// STD_SMA_3_PRECIO > 1.5
-//				// STD_SMA_20_PRECIO > 0.5
-//				// Valores: Si no se tienen los datos, será null. Si no se cumplen las
-//				// condiciones, será 0.
-//				// Si sí se cumple todo, será 1
-//				Sstdsma3Precio = parametros.get("STD_SMA_3_PRECIO");
-//				Sstdsma20Precio = parametros.get("STD_SMA_20_PRECIO");
-//
-//				if (Sstdsma3Precio != null && Sstdsma20Precio != null) {
-//					stdsma3Precio = Float.valueOf(Sstdsma3Precio);
-//					stdsma20Precio = Float.valueOf(Sstdsma20Precio);
-//					if (stdsma3Precio > 1.5 && stdsma20Precio > 0.5) {
-//						HYPE4 = "1";
-//					} else {
-//						HYPE4 = "0";
-//					}
-//				} else {
-//					HYPE4 = "null";
-//				}
-//
-//				// AÑADO PARÁMETROS. TAMBIÉN HAY QUE AÑADIRLO EN LA LÍNEA 358 (VER OTROS
-//				// EJEMPLOS)
-//				// Se añade HYPE1
-//				parametros.put("HYPE1", HYPE1);
-//
-//				// Se añade HYPE2
-//				parametros.put("HYPE2", HYPE2);
-//
-//				// Se añade HYPE3
-//				parametros.put("HYPE3", HYPE3);
-//
-//				// Se añade HYPE4
-//				parametros.put("HYPE4", HYPE4);
+				// Se AÑADEN parámetros elaborados ESTÁTICOS
+				parametros.put("SCREENER1", SCREENER1);
+
+				// Se AÑADEN parámetros elaborados DINÁMICOS. Para ello deben estar ya guardados
+				// el resto de parámetros que se referencien.
+
+				// PARÁMETRO HYPE1:
+				// PATRÓN DIP BUY
+				// PRECIO -> Menor que media 4, 7 y 20
+				// VOLUMEN -> Mayor que media 4, 7 y 20
+				// Valores: Si no se tienen los datos, será null. Si no se cumplen las
+				// condiciones, será 0.
+				// Si sí se cumple todo, será 1
+				Sprecio = parametros.get("close");
+				Svolumen = parametros.get("volumen");
+				Ssma20Precio = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_+"20_PRECIO");
+				Ssma7Precio = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_+"7_PRECIO");
+				Ssma4Precio = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_+"4_PRECIO");
+				Ssma20Volumen = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_+"20_VOLUMEN");
+				Ssma7Volumen = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_+"7_VOLUMEN");
+				Ssma4Volumen = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_+"4_VOLUMEN");
+				if (Sprecio != null && Svolumen != null && Ssma4Precio != null && Ssma7Precio != null
+						&& Ssma20Precio != null && Ssma4Volumen != null && Ssma7Volumen != null
+						&& Ssma20Volumen != null) {
+					precio = Float.valueOf(Sprecio);
+					volumen = Float.valueOf(Svolumen);
+					sma4Precio = Float.valueOf(Ssma4Precio);
+					sma7Precio = Float.valueOf(Ssma7Precio);
+					sma20Precio = Float.valueOf(Ssma20Precio);
+					sma4Volumen = Float.valueOf(Ssma4Volumen);
+					sma7Volumen = Float.valueOf(Ssma7Volumen);
+					sma20Volumen = Float.valueOf(Ssma20Volumen);
+					if (precio < sma4Precio && precio < sma7Precio && precio < sma20Precio && volumen > sma4Volumen
+							&& volumen > sma7Volumen && volumen > sma20Volumen) {
+						HYPE1 = "1";
+					} else {
+						HYPE1 = "0";
+					}
+				} else {
+					HYPE1 = "null";
+				}
+
+				// PARÁMETRO HYPE2:
+				// PRECIO -> Mayor que sma7 y SMA20
+				// PRECIO -> mayor (o igual, ya que será el máximo xD) que el máximo de 3 velas,
+				// en positivo
+				// VOLUMEN -> 3 veces mayor que SMA7
+				// Valores: Si no se tienen los datos, será null. Si no se cumplen las
+				// condiciones, será 0.
+				// Si sí se cumple todo, será 1
+				Sprecio = parametros.get("close");
+				Svolumen = parametros.get("volumen");
+				Ssma20Precio = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_+"20_PRECIO");
+				Ssma7Precio = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_+"7_PRECIO");
+				Ssma7Volumen = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_+"7_VOLUMEN");
+				Smaximo4Precio = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_+"4_PRECIO");
+				if (Sprecio != null && Svolumen != null && Ssma20Precio != null && Ssma7Precio != null
+						&& Ssma7Volumen != null && Smaximo4Precio != null) {
+					precio = Float.valueOf(Sprecio);
+					volumen = Float.valueOf(Svolumen);
+					sma20Precio = Float.valueOf(Ssma20Precio);
+					sma7Precio = Float.valueOf(Ssma7Precio);
+					sma7Volumen = Float.valueOf(Ssma7Volumen);
+					maximo4Precio = Float.valueOf(Smaximo4Precio);
+					if (precio > sma7Precio && precio > sma20Precio && precio >= maximo4Precio
+							&& volumen > 3 * sma7Volumen) {
+						HYPE2 = "1";
+					} else {
+						HYPE2 = "0";
+					}
+				} else {
+					HYPE2 = "null";
+				}
+
+				// PARÁMETRO HYPE3:
+				// PATRÓN subida VBLT 22/1/2020
+				// Precio: mayor que SMA20, pero menor que SMA4, SMA7
+				// Volumen: mayor que SMA4, pero menor que SMA7, SMA20
+				// Valores: Si no se tienen los datos, será null. Si no se cumplen las
+				// condiciones, será 0.
+				// Si sí se cumple todo, será 1
+				Sprecio = parametros.get("close");
+				Svolumen = parametros.get("volumen");
+				Ssma20Precio = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_+"20_PRECIO");
+				Ssma7Precio = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_+"7_PRECIO");
+				Ssma4Precio = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_+"4_PRECIO");
+				Ssma20Volumen = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_+"20_VOLUMEN");
+				Ssma7Volumen = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_+"7_VOLUMEN");
+				Ssma4Volumen = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_+"4_VOLUMEN");
+				if (Sprecio != null && Svolumen != null && Ssma4Precio != null && Ssma7Precio != null
+						&& Ssma20Precio != null && Ssma4Volumen != null && Ssma7Volumen != null
+						&& Ssma20Volumen != null) {
+					precio = Float.valueOf(Sprecio);
+					volumen = Float.valueOf(Svolumen);
+					sma4Precio = Float.valueOf(Ssma4Precio);
+					sma7Precio = Float.valueOf(Ssma7Precio);
+					sma20Precio = Float.valueOf(Ssma20Precio);
+					sma4Volumen = Float.valueOf(Ssma4Volumen);
+					sma7Volumen = Float.valueOf(Ssma7Volumen);
+					sma20Volumen = Float.valueOf(Ssma20Volumen);
+					if (precio < sma4Precio && precio < sma7Precio && precio > sma20Precio && volumen > sma4Volumen
+							&& volumen < sma7Volumen && volumen < sma20Volumen) {
+						HYPE3 = "1";
+					} else {
+						HYPE3 = "0";
+					}
+				} else {
+					HYPE3 = "null";
+				}
+
+				// PARÁMETRO HYPE4:
+				// Sacado a ojo, leyendo las combinaciones de resultados, para eliminar los falsos positivos
+				// STD_SMA_4_PRECIO > 1.5
+				// STD_SMA_20_PRECIO > 0.5
+				// Valores: Si no se tienen los datos, será null. Si no se cumplen las
+				// condiciones, será 0.
+				// Si sí se cumple todo, será 1
+				Sstdsma4Precio = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.STD_SMA_+"4_PRECIO");
+				Sstdsma20Precio = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.STD_SMA_+"20_PRECIO");
+
+				if (Sstdsma4Precio != null && Sstdsma20Precio != null) {
+					stdsma4Precio = Float.valueOf(Sstdsma4Precio);
+					stdsma20Precio = Float.valueOf(Sstdsma20Precio);
+					if (stdsma4Precio > 1.5 && stdsma20Precio > 0.5) {
+						HYPE4 = "1";
+					} else {
+						HYPE4 = "0";
+					}
+				} else {
+					HYPE4 = "null";
+				}
+
+				// AÑADO PARÁMETROS. TAMBIÉN HAY QUE AÑADIRLO EN LA LÍNEA 358 (VER OTROS
+				// EJEMPLOS)
+				// Se añade HYPE1
+				parametros.put("HYPE1", HYPE1);
+
+				// Se añade HYPE2
+				parametros.put("HYPE2", HYPE2);
+
+				// Se añade HYPE3
+				parametros.put("HYPE3", HYPE3);
+
+				// Se añade HYPE4
+				parametros.put("HYPE4", HYPE4);
 
 				// SE AÑADE EL TARGET
 				parametros.put("TARGET", String.valueOf(antiguedadYTarget.get(antiguedad)));

@@ -27,7 +27,7 @@ public class Estadisticas extends DescriptiveStatistics {
 	private HashMap<Integer, String> ordenNombresParametrosElaborados;
 
 	public enum COMIENZO_NOMBRES_PARAMETROS_ELABORADOS {
-		PENDIENTE_SMA_, PENDIENTE_1M_SMA_, PENDIENTE_2M_SMA_, RATIO_SMA_, RATIO_MAXRELATIVO_, RATIO_MINRELATIVO_,
+		MEDIA_SMA_, STD_SMA_, PENDIENTE_SMA_, PENDIENTE_1M_SMA_, PENDIENTE_2M_SMA_, RATIO_SMA_, RATIO_MAXRELATIVO_, RATIO_MINRELATIVO_,
 		RATIO_U_SMA_, RATIO_U_MAXRELATIVO_, RATIO_U_MINRELATIVO_, CURTOSIS_, SKEWNESS_;
 	}
 
@@ -81,23 +81,40 @@ public class Estadisticas extends DescriptiveStatistics {
 	 */
 	public Estadisticas() {
 		ordenNombresParametrosElaborados = new HashMap<Integer, String>();
-		ordenNombresParametrosElaborados.put(1, COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.PENDIENTE_SMA_.toString());
-		ordenNombresParametrosElaborados.put(2, COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.PENDIENTE_1M_SMA_.toString());
-		ordenNombresParametrosElaborados.put(3, COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.PENDIENTE_2M_SMA_.toString());
-		ordenNombresParametrosElaborados.put(4, COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_SMA_.toString());
-		ordenNombresParametrosElaborados.put(5, COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_MAXRELATIVO_.toString());
-		ordenNombresParametrosElaborados.put(6, COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_MINRELATIVO_.toString());
-		ordenNombresParametrosElaborados.put(7, COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_U_SMA_.toString());
-		ordenNombresParametrosElaborados.put(8, COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_U_MAXRELATIVO_.toString());
-		ordenNombresParametrosElaborados.put(9, COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_U_MINRELATIVO_.toString());
-		ordenNombresParametrosElaborados.put(10, COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.CURTOSIS_.toString());
-		ordenNombresParametrosElaborados.put(11, COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.SKEWNESS_.toString());
+		ordenNombresParametrosElaborados.put(1, COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_.toString());
+		ordenNombresParametrosElaborados.put(2, COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.STD_SMA_.toString());
+		ordenNombresParametrosElaborados.put(3, COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.PENDIENTE_SMA_.toString());
+		ordenNombresParametrosElaborados.put(4, COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.PENDIENTE_1M_SMA_.toString());
+		ordenNombresParametrosElaborados.put(5, COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.PENDIENTE_2M_SMA_.toString());
+		ordenNombresParametrosElaborados.put(6, COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_SMA_.toString());
+		ordenNombresParametrosElaborados.put(7, COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_MAXRELATIVO_.toString());
+		ordenNombresParametrosElaborados.put(8, COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_MINRELATIVO_.toString());
+		ordenNombresParametrosElaborados.put(9, COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_U_SMA_.toString());
+		ordenNombresParametrosElaborados.put(10, COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_U_MAXRELATIVO_.toString());
+		ordenNombresParametrosElaborados.put(11, COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_U_MINRELATIVO_.toString());
+		ordenNombresParametrosElaborados.put(12, COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.CURTOSIS_.toString());
+		ordenNombresParametrosElaborados.put(13, COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.SKEWNESS_.toString());
 
 		locale = new Locale("en", "UK");
 		df = (DecimalFormat) NumberFormat.getNumberInstance(locale);
 		df.applyPattern("#0.#");
 	}
 
+	/**
+	 * Media.
+	 */
+	public double getMedia() {
+		return this.getMean();
+	}
+	
+	/**
+	 * Desviación estándar.
+	 */
+	public double getStd() {
+		return this.getStandardDeviation();
+	}
+	
+	
 	/**
 	 * En porcentaje. Como si fuera la derivada, pero solo con el primer y ultimo
 	 * valores
@@ -214,8 +231,8 @@ public class Estadisticas extends DescriptiveStatistics {
 			System.out.println("");
 		}
 
-		System.out.println("media_sma = " + getMean());
-		System.out.println("std_sma = " + getStandardDeviation());
+		System.out.println("media_sma = " + getMedia());
+		System.out.println("std_sma = " + getStd());
 		System.out.println("pendiente_sma = " + getPendienteRelativa());
 		System.out.println("pendiente_1m_sma = " + getPendienteRelativa1M());
 		System.out.println("pendiente_2m_sma = " + getPendienteRelativa2M());
@@ -241,6 +258,8 @@ public class Estadisticas extends DescriptiveStatistics {
 		String periodoString = periodo.toString();
 		HashMap<String, String> parametros = new HashMap<String, String>();
 
+		String media_sma = VALOR_INVALIDO;// default
+		String std_sma = VALOR_INVALIDO;// default
 		String pendiente_sma = VALOR_INVALIDO;// default
 		String pendiente_1m_sma = VALOR_INVALIDO;// default
 		String pendiente_2m_sma = VALOR_INVALIDO;// default
@@ -255,6 +274,8 @@ public class Estadisticas extends DescriptiveStatistics {
 
 		if (rellenarConInvalidos == false) {
 
+			double d_media_sma = this.getMedia();
+			double d_std_sma = this.getStd();
 			double d_pendiente_sma = this.getPendienteRelativa();
 			double d_pendiente_1m_sma = this.getPendienteRelativa1M();
 			double d_pendiente_2m_sma = this.getPendienteRelativa2M();
@@ -267,6 +288,8 @@ public class Estadisticas extends DescriptiveStatistics {
 			double d_kurtosis = this.getKurtosis();
 			double d_skewness = this.getSkewness();
 
+			media_sma = Double.isNaN(d_media_sma) ? VALOR_INVALIDO : df.format(d_media_sma);
+			std_sma = Double.isNaN(d_std_sma) ? VALOR_INVALIDO : df.format(d_std_sma);
 			pendiente_sma = Double.isNaN(d_pendiente_sma) ? VALOR_INVALIDO : df.format(d_pendiente_sma);
 			pendiente_1m_sma = Double.isNaN(d_pendiente_1m_sma) ? VALOR_INVALIDO : df.format(d_pendiente_1m_sma);
 			pendiente_2m_sma = Double.isNaN(d_pendiente_2m_sma) ? VALOR_INVALIDO : df.format(d_pendiente_2m_sma);
@@ -283,6 +306,10 @@ public class Estadisticas extends DescriptiveStatistics {
 			skewness = Double.isNaN(d_skewness) ? VALOR_INVALIDO : df.format(d_skewness);
 		}
 
+		parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_ + periodoString + finalNombreParametro,
+				media_sma);
+		parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.STD_SMA_ + periodoString + finalNombreParametro,
+				std_sma);
 		parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.PENDIENTE_SMA_ + periodoString + finalNombreParametro,
 				pendiente_sma);
 		parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.PENDIENTE_1M_SMA_ + periodoString + finalNombreParametro,
