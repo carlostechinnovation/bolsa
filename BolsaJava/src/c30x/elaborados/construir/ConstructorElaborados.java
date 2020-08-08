@@ -178,32 +178,145 @@ public class ConstructorElaborados implements Serializable {
 		HashMap<String, String> parametros = new HashMap<String, String>(1);
 		Iterator<Integer> itAntiguedad;
 		Set<Integer> periodos, antiguedades;
-		HashMap<Integer, Estadisticas> estadisticasPrecioPorAntiguedad = new HashMap<Integer, Estadisticas>(1);
 		HashMap<Integer, Estadisticas> estadisticasVolumenPorAntiguedad = new HashMap<Integer, Estadisticas>(1);
-		Estadisticas estadisticasPrecio = new Estadisticas();
+		HashMap<Integer, Estadisticas> estadisticasClosePorAntiguedad = new HashMap<Integer, Estadisticas>(1);
+		HashMap<Integer, Estadisticas> estadisticasHighPorAntiguedad = new HashMap<Integer, Estadisticas>(1);
+		HashMap<Integer, Estadisticas> estadisticasLowPorAntiguedad = new HashMap<Integer, Estadisticas>(1);
+		HashMap<Integer, Estadisticas> estadisticasOpenPorAntiguedad = new HashMap<Integer, Estadisticas>(1);
+		HashMap<Integer, Estadisticas> estadisticasCloseHighPorAntiguedad = new HashMap<Integer, Estadisticas>(1);
+		HashMap<Integer, Estadisticas> estadisticasCloseLowPorAntiguedad = new HashMap<Integer, Estadisticas>(1);
+		HashMap<Integer, Estadisticas> estadisticasOpenHighPorAntiguedad = new HashMap<Integer, Estadisticas>(1);
+		HashMap<Integer, Estadisticas> estadisticasOpenLowPorAntiguedad = new HashMap<Integer, Estadisticas>(1);
+		HashMap<Integer, Estadisticas> estadisticasHighLowPorAntiguedad = new HashMap<Integer, Estadisticas>(1);
 		Estadisticas estadisticasVolumen = new Estadisticas();
-		HashMap<Integer, HashMap<Integer, Estadisticas>> estadisticasPrecioPorAntiguedadYPeriodo = new HashMap<Integer, HashMap<Integer, Estadisticas>>(
-				1);
+		Estadisticas estadisticasClose = new Estadisticas();
+		Estadisticas estadisticasHigh = new Estadisticas();
+		Estadisticas estadisticasLow = new Estadisticas();
+		Estadisticas estadisticasOpen = new Estadisticas();
+		Estadisticas estadisticasCloseHigh = new Estadisticas();
+		Estadisticas estadisticasCloseLow = new Estadisticas();
+		Estadisticas estadisticasOpenHigh = new Estadisticas();
+		Estadisticas estadisticasOpenLow = new Estadisticas();
+		Estadisticas estadisticasHighLow = new Estadisticas();
 		HashMap<Integer, HashMap<Integer, Estadisticas>> estadisticasVolumenPorAntiguedadYPeriodo = new HashMap<Integer, HashMap<Integer, Estadisticas>>(
 				1);
-		HashMap<Integer, String> ordenPrecioNombresParametrosElaborados = estadisticasPrecio
+		HashMap<Integer, HashMap<Integer, Estadisticas>> estadisticasClosePorAntiguedadYPeriodo = new HashMap<Integer, HashMap<Integer, Estadisticas>>(
+				1);
+		HashMap<Integer, HashMap<Integer, Estadisticas>> estadisticasHighPorAntiguedadYPeriodo = new HashMap<Integer, HashMap<Integer, Estadisticas>>(
+				1);
+		HashMap<Integer, HashMap<Integer, Estadisticas>> estadisticasLowPorAntiguedadYPeriodo = new HashMap<Integer, HashMap<Integer, Estadisticas>>(
+				1);
+		HashMap<Integer, HashMap<Integer, Estadisticas>> estadisticasOpenPorAntiguedadYPeriodo = new HashMap<Integer, HashMap<Integer, Estadisticas>>(
+				1);
+		HashMap<Integer, HashMap<Integer, Estadisticas>> estadisticasCloseHighPorAntiguedadYPeriodo = new HashMap<Integer, HashMap<Integer, Estadisticas>>(
+				1);
+		HashMap<Integer, HashMap<Integer, Estadisticas>> estadisticasCloseLowPorAntiguedadYPeriodo = new HashMap<Integer, HashMap<Integer, Estadisticas>>(
+				1);
+		HashMap<Integer, HashMap<Integer, Estadisticas>> estadisticasOpenHighPorAntiguedadYPeriodo = new HashMap<Integer, HashMap<Integer, Estadisticas>>(
+				1);
+		HashMap<Integer, HashMap<Integer, Estadisticas>> estadisticasOpenLowPorAntiguedadYPeriodo = new HashMap<Integer, HashMap<Integer, Estadisticas>>(
+				1);
+		HashMap<Integer, HashMap<Integer, Estadisticas>> estadisticasHighLowPorAntiguedadYPeriodo = new HashMap<Integer, HashMap<Integer, Estadisticas>>(
+				1);
+		HashMap<Integer, String> ordenVolumenNombresParametrosElaborados = estadisticasVolumen
 				.getOrdenNombresParametrosElaborados();
-		HashMap<Integer, String> ordenVolumenNombresParametrosElaborados = estadisticasPrecio
+		HashMap<Integer, String> ordenCloseNombresParametrosElaborados = estadisticasClose
+				.getOrdenNombresParametrosElaborados();
+		HashMap<Integer, String> ordenHighNombresParametrosElaborados = estadisticasHigh
+				.getOrdenNombresParametrosElaborados();
+		HashMap<Integer, String> ordenLowNombresParametrosElaborados = estadisticasLow
+				.getOrdenNombresParametrosElaborados();
+		HashMap<Integer, String> ordenOpenNombresParametrosElaborados = estadisticasOpen
+				.getOrdenNombresParametrosElaborados();
+		HashMap<Integer, String> ordenCloseHighNombresParametrosElaborados = estadisticasCloseHigh
+				.getOrdenNombresParametrosElaborados();
+		HashMap<Integer, String> ordenCloseLowNombresParametrosElaborados = estadisticasCloseLow
+				.getOrdenNombresParametrosElaborados();
+		HashMap<Integer, String> ordenOpenHighNombresParametrosElaborados = estadisticasOpenHigh
+				.getOrdenNombresParametrosElaborados();
+		HashMap<Integer, String> ordenOpenLowNombresParametrosElaborados = estadisticasOpenLow
+				.getOrdenNombresParametrosElaborados();
+		HashMap<Integer, String> ordenHighLowNombresParametrosElaborados = estadisticasHighLow
 				.getOrdenNombresParametrosElaborados();
 		Integer parametrosAcumulados = numeroParametrosEntrada;
-		String auxPrecio, auxVolumen;
+		String auxClose, auxVolumen, auxHigh, auxLow, auxOpen;
 		Integer antiguedadHistoricaMaxima;
 
 		for (Integer periodo : periodosDParaParametros) {
 
 			// Se guarda el orden de los datos elaborados
-			for (int i = 0; i < ordenPrecioNombresParametrosElaborados.size(); i++) {
-				// PRECIO
+			for (int i = 0; i < ordenCloseNombresParametrosElaborados.size(); i++) {
+				// CLOSE
 				ordenNombresParametrosSalida.put(parametrosAcumulados + i,
-						ordenPrecioNombresParametrosElaborados.get(i + 1) + periodo
-								+ FINAL_NOMBRES_PARAMETROS_ELABORADOS._PRECIO.toString());
+						ordenCloseNombresParametrosElaborados.get(i + 1) + periodo
+								+ FINAL_NOMBRES_PARAMETROS_ELABORADOS._CLOSE.toString());
 			}
-			parametrosAcumulados += ordenPrecioNombresParametrosElaborados.size();
+			parametrosAcumulados += ordenCloseNombresParametrosElaborados.size();
+
+			for (int i = 0; i < ordenHighNombresParametrosElaborados.size(); i++) {
+				// HIGH
+				ordenNombresParametrosSalida.put(parametrosAcumulados + i,
+						ordenHighNombresParametrosElaborados.get(i + 1) + periodo
+								+ FINAL_NOMBRES_PARAMETROS_ELABORADOS._HIGH.toString());
+			}
+			parametrosAcumulados += ordenHighNombresParametrosElaborados.size();
+
+			for (int i = 0; i < ordenLowNombresParametrosElaborados.size(); i++) {
+				// LOW
+				ordenNombresParametrosSalida.put(parametrosAcumulados + i,
+						ordenLowNombresParametrosElaborados.get(i + 1) + periodo
+								+ FINAL_NOMBRES_PARAMETROS_ELABORADOS._LOW.toString());
+			}
+			parametrosAcumulados += ordenLowNombresParametrosElaborados.size();
+
+			for (int i = 0; i < ordenOpenNombresParametrosElaborados.size(); i++) {
+				// OPEN
+				ordenNombresParametrosSalida.put(parametrosAcumulados + i,
+						ordenOpenNombresParametrosElaborados.get(i + 1) + periodo
+								+ FINAL_NOMBRES_PARAMETROS_ELABORADOS._OPEN.toString());
+			}
+			parametrosAcumulados += ordenOpenNombresParametrosElaborados.size();
+
+//			for (int i = 0; i < ordenCloseHighNombresParametrosElaborados.size(); i++) {
+//				// CLOSEHIGH
+//				ordenNombresParametrosSalida.put(parametrosAcumulados + i,
+//						ordenCloseHighNombresParametrosElaborados.get(i + 1) + periodo
+//								+ FINAL_NOMBRES_PARAMETROS_ELABORADOS._CLOSEHIGH.toString());
+//			}
+//			parametrosAcumulados += ordenCloseHighNombresParametrosElaborados.size();
+
+//			for (int i = 0; i < ordenCloseLowNombresParametrosElaborados.size(); i++) {
+//				// CLOSELOW
+//				ordenNombresParametrosSalida.put(parametrosAcumulados + i,
+//						ordenCloseLowNombresParametrosElaborados.get(i + 1) + periodo
+//								+ FINAL_NOMBRES_PARAMETROS_ELABORADOS._CLOSELOW.toString());
+//			}
+//			parametrosAcumulados += ordenCloseLowNombresParametrosElaborados.size();
+
+			for (int i = 0; i < ordenOpenHighNombresParametrosElaborados.size(); i++) {
+				// OPENHIGH
+				ordenNombresParametrosSalida.put(parametrosAcumulados + i,
+						ordenOpenHighNombresParametrosElaborados.get(i + 1) + periodo
+								+ FINAL_NOMBRES_PARAMETROS_ELABORADOS._OPENHIGH.toString());
+			}
+			parametrosAcumulados += ordenOpenHighNombresParametrosElaborados.size();
+
+//			for (int i = 0; i < ordenOpenLowNombresParametrosElaborados.size(); i++) {
+//				// OPENLOW
+//				ordenNombresParametrosSalida.put(parametrosAcumulados + i,
+//						ordenOpenLowNombresParametrosElaborados.get(i + 1) + periodo
+//								+ FINAL_NOMBRES_PARAMETROS_ELABORADOS._OPENLOW.toString());
+//			}
+//			parametrosAcumulados += ordenOpenLowNombresParametrosElaborados.size();
+
+			for (int i = 0; i < ordenHighLowNombresParametrosElaborados.size(); i++) {
+				// HIGHLOW
+				ordenNombresParametrosSalida.put(parametrosAcumulados + i,
+						ordenHighLowNombresParametrosElaborados.get(i + 1) + periodo
+								+ FINAL_NOMBRES_PARAMETROS_ELABORADOS._HIGHLOW.toString());
+			}
+			parametrosAcumulados += ordenHighLowNombresParametrosElaborados.size();
+
 
 			for (int i = 0; i < ordenVolumenNombresParametrosElaborados.size(); i++) {
 				// VOLUMEN
@@ -212,6 +325,7 @@ public class ConstructorElaborados implements Serializable {
 								+ FINAL_NOMBRES_PARAMETROS_ELABORADOS._VOLUMEN.toString());
 			}
 			parametrosAcumulados += ordenVolumenNombresParametrosElaborados.size();
+
 			Iterator<Integer> itAntiguedadTarget = datosEmpresaEntrada.keySet().iterator();
 
 			while (itAntiguedadTarget.hasNext()) {
@@ -237,16 +351,31 @@ public class ConstructorElaborados implements Serializable {
 									+ " Posible causa: el mercado estaba abierto cuando hemos ejecutado la descarga de datos");
 
 						} else {
-							// Se toma el parámetro "close" para las estadisticas de precio
-							// Se toma el parámetro "volumen" para las estadisticas de volumen
-							auxPrecio = parametros.get("close");
+							auxClose = parametros.get("close");
+							auxHigh = parametros.get("high");
+							auxLow = parametros.get("low");
+							auxOpen = parametros.get("open");
 							auxVolumen = parametros.get("volumen");
-							estadisticasPrecio.addValue(new Double(auxPrecio));
-							estadisticasVolumen.addValue(new Double(auxVolumen));
-							MY_LOGGER.debug("(antiguedad: " + antiguedad + ", periodo: " + periodo
-									+ ") Metido para estadísticas: " + auxPrecio);
-						}
 
+							// Precio simple
+							estadisticasClose.addValue(new Double(auxClose));
+							estadisticasHigh.addValue(new Double(auxHigh));
+							estadisticasLow.addValue(new Double(auxLow));
+							estadisticasOpen.addValue(new Double(auxOpen));
+
+							// Precio complejo
+							estadisticasCloseHigh.addValue(new Double(auxClose) - new Double(auxHigh));
+							estadisticasCloseLow.addValue(new Double(auxClose) - new Double(auxLow));
+							estadisticasOpenHigh.addValue(new Double(auxOpen) - new Double(auxHigh));
+							estadisticasOpenLow.addValue(new Double(auxOpen) - new Double(auxLow));
+							estadisticasHighLow.addValue(new Double(auxHigh) - new Double(auxLow));
+
+							// Volumen
+							estadisticasVolumen.addValue(new Double(auxVolumen));
+
+							MY_LOGGER.debug("(antiguedad: " + antiguedad + ", periodo: " + periodo
+									+ ") Metido para estadísticas: " + auxClose);
+						}
 					}
 
 				} else {
@@ -257,40 +386,96 @@ public class ConstructorElaborados implements Serializable {
 				// VALIDACIÓN DE ESTADíSTICAS
 				// La empresa y la antigüedad no las usamos
 
-				MY_LOGGER.debug("------------------>>>>>>> Periodo: " + periodo + ", n: " + estadisticasPrecio.getN());
-				estadisticasPrecioPorAntiguedad.put(antiguedad, estadisticasPrecio);
+				MY_LOGGER.debug("------------------>>>>>>> Periodo: " + periodo + ", n: " + estadisticasClose.getN());
 				estadisticasVolumenPorAntiguedad.put(antiguedad, estadisticasVolumen);
+				estadisticasClosePorAntiguedad.put(antiguedad, estadisticasClose);
+				estadisticasHighPorAntiguedad.put(antiguedad, estadisticasHigh);
+				estadisticasLowPorAntiguedad.put(antiguedad, estadisticasLow);
+				estadisticasOpenPorAntiguedad.put(antiguedad, estadisticasOpen);
+				estadisticasCloseHighPorAntiguedad.put(antiguedad, estadisticasCloseHigh);
+				estadisticasCloseLowPorAntiguedad.put(antiguedad, estadisticasCloseLow);
+				estadisticasOpenHighPorAntiguedad.put(antiguedad, estadisticasOpenHigh);
+				estadisticasOpenLowPorAntiguedad.put(antiguedad, estadisticasOpenLow);
+				estadisticasHighLowPorAntiguedad.put(antiguedad, estadisticasHighLow);
+				
 				// Se limpia este almacén temporal
-				estadisticasPrecio = new Estadisticas();
 				estadisticasVolumen = new Estadisticas();
+				estadisticasClose = new Estadisticas();
+				estadisticasHigh = new Estadisticas();
+				estadisticasLow = new Estadisticas();
+				estadisticasOpen = new Estadisticas();
+				estadisticasCloseHigh = new Estadisticas();
+				estadisticasCloseLow = new Estadisticas();
+				estadisticasOpenHigh = new Estadisticas();
+				estadisticasOpenLow = new Estadisticas();
+				estadisticasHighLow = new Estadisticas();
+
 			}
 
-			estadisticasPrecioPorAntiguedadYPeriodo.put(periodo, estadisticasPrecioPorAntiguedad);
+
 			estadisticasVolumenPorAntiguedadYPeriodo.put(periodo, estadisticasVolumenPorAntiguedad);
+			estadisticasClosePorAntiguedadYPeriodo.put(periodo, estadisticasClosePorAntiguedad);
+			estadisticasHighPorAntiguedadYPeriodo.put(periodo, estadisticasHighPorAntiguedad);
+			estadisticasLowPorAntiguedadYPeriodo.put(periodo, estadisticasLowPorAntiguedad);
+			estadisticasOpenPorAntiguedadYPeriodo.put(periodo, estadisticasOpenPorAntiguedad);
+			estadisticasCloseHighPorAntiguedadYPeriodo.put(periodo, estadisticasCloseHighPorAntiguedad);
+			estadisticasCloseLowPorAntiguedadYPeriodo.put(periodo, estadisticasCloseLowPorAntiguedad);
+			estadisticasOpenHighPorAntiguedadYPeriodo.put(periodo, estadisticasOpenHighPorAntiguedad);
+			estadisticasOpenLowPorAntiguedadYPeriodo.put(periodo, estadisticasOpenLowPorAntiguedad);
+			estadisticasHighLowPorAntiguedadYPeriodo.put(periodo, estadisticasHighLowPorAntiguedad);
+
 			// Se limpia este almacén temporal
-			estadisticasPrecioPorAntiguedad = new HashMap<Integer, Estadisticas>();
 			estadisticasVolumenPorAntiguedad = new HashMap<Integer, Estadisticas>();
+			estadisticasClosePorAntiguedad = new HashMap<Integer, Estadisticas>();
+			estadisticasHighPorAntiguedad = new HashMap<Integer, Estadisticas>();
+			estadisticasLowPorAntiguedad = new HashMap<Integer, Estadisticas>();
+			estadisticasOpenPorAntiguedad = new HashMap<Integer, Estadisticas>();
+			estadisticasCloseHighPorAntiguedad = new HashMap<Integer, Estadisticas>();
+			estadisticasCloseLowPorAntiguedad = new HashMap<Integer, Estadisticas>();
+			estadisticasOpenHighPorAntiguedad = new HashMap<Integer, Estadisticas>();
+			estadisticasOpenLowPorAntiguedad = new HashMap<Integer, Estadisticas>();
+			estadisticasHighLowPorAntiguedad = new HashMap<Integer, Estadisticas>();
 		}
 
 		// ESTADÍSTICA --> A la vez: CALCULA y RELLENA
-		periodos = estadisticasPrecioPorAntiguedadYPeriodo.keySet();
+		periodos = estadisticasClosePorAntiguedadYPeriodo.keySet();
 		Integer periodoActual;
 		Iterator<Integer> itPeriodo = periodos.iterator();
 
-		HashMap<String, String> mapaParamsPrecio, mapaParamsVolumen;
+		HashMap<String, String> mapaParamsVolumen, mapaParamsClose, mapaParamsHigh, mapaParamsLow, mapaParamsOpen,
+				mapaParamsCloseHigh, mapaParamsCloseLow, mapaParamsOpenHigh, mapaParamsOpenLow, mapaParamsHighLow;
 
-		while (itPeriodo.hasNext()) { // periodo analizado: 3, 7 20, 50...
+		while (itPeriodo.hasNext()) { // periodo analizado: 4, 7, 20, 50...
 			periodoActual = itPeriodo.next();
-			estadisticasPrecioPorAntiguedad = estadisticasPrecioPorAntiguedadYPeriodo.get(periodoActual);
 			estadisticasVolumenPorAntiguedad = estadisticasVolumenPorAntiguedadYPeriodo.get(periodoActual);
-			antiguedades = estadisticasPrecioPorAntiguedad.keySet();
+			estadisticasClosePorAntiguedad = estadisticasClosePorAntiguedadYPeriodo.get(periodoActual);
+			estadisticasHighPorAntiguedad = estadisticasHighPorAntiguedadYPeriodo.get(periodoActual);
+			estadisticasLowPorAntiguedad = estadisticasLowPorAntiguedadYPeriodo.get(periodoActual);
+			estadisticasOpenPorAntiguedad = estadisticasOpenPorAntiguedadYPeriodo.get(periodoActual);
+			estadisticasCloseHighPorAntiguedad = estadisticasCloseHighPorAntiguedadYPeriodo.get(periodoActual);
+			estadisticasCloseLowPorAntiguedad = estadisticasCloseLowPorAntiguedadYPeriodo.get(periodoActual);
+			estadisticasOpenHighPorAntiguedad = estadisticasOpenHighPorAntiguedadYPeriodo.get(periodoActual);
+			estadisticasOpenLowPorAntiguedad = estadisticasOpenLowPorAntiguedadYPeriodo.get(periodoActual);
+			estadisticasHighLowPorAntiguedad = estadisticasHighLowPorAntiguedadYPeriodo.get(periodoActual);
+			
+			antiguedades = estadisticasClosePorAntiguedad.keySet();
 			itAntiguedad = antiguedades.iterator();
 
 			while (itAntiguedad.hasNext()) { // antigüedad de la vela analizada: 0 1 2 3... (días hacia atrás)
 
 				antiguedad = itAntiguedad.next();
-				estadisticasPrecio = estadisticasPrecioPorAntiguedad.get(antiguedad);
+
 				estadisticasVolumen = estadisticasVolumenPorAntiguedad.get(antiguedad);
+				estadisticasClose = estadisticasClosePorAntiguedad.get(antiguedad);
+				estadisticasHigh = estadisticasHighPorAntiguedad.get(antiguedad);
+				estadisticasLow = estadisticasLowPorAntiguedad.get(antiguedad);
+				estadisticasOpen = estadisticasOpenPorAntiguedad.get(antiguedad);
+				estadisticasCloseHigh = estadisticasCloseHighPorAntiguedad.get(antiguedad);
+				estadisticasCloseLow = estadisticasCloseLowPorAntiguedad.get(antiguedad);
+				estadisticasOpenHigh = estadisticasOpenHighPorAntiguedad.get(antiguedad);
+				estadisticasOpenLow = estadisticasOpenLowPorAntiguedad.get(antiguedad);
+				estadisticasHighLow = estadisticasHighLowPorAntiguedad.get(antiguedad);
+
 				antiguedadHistoricaMaxima = antiguedad + periodoActual; // se analiza el periodo desde la vela analizada
 																		// hacia atrás en el tiempo
 
@@ -300,14 +485,39 @@ public class ConstructorElaborados implements Serializable {
 					// COSTE DE COMPUTACION
 					// <<<<<<<<-------
 
-					mapaParamsPrecio = estadisticasPrecio.getParametros(periodoActual,
-							FINAL_NOMBRES_PARAMETROS_ELABORADOS._PRECIO.toString(), Boolean.FALSE);
 
 					mapaParamsVolumen = estadisticasVolumen.getParametros(periodoActual,
 							FINAL_NOMBRES_PARAMETROS_ELABORADOS._VOLUMEN.toString(), Boolean.FALSE);
+					mapaParamsClose = estadisticasClose.getParametros(periodoActual,
+							FINAL_NOMBRES_PARAMETROS_ELABORADOS._CLOSE.toString(), Boolean.FALSE);
+					mapaParamsHigh = estadisticasHigh.getParametros(periodoActual,
+							FINAL_NOMBRES_PARAMETROS_ELABORADOS._HIGH.toString(), Boolean.FALSE);
+					mapaParamsLow = estadisticasLow.getParametros(periodoActual,
+							FINAL_NOMBRES_PARAMETROS_ELABORADOS._LOW.toString(), Boolean.FALSE);
+					mapaParamsOpen = estadisticasOpen.getParametros(periodoActual,
+							FINAL_NOMBRES_PARAMETROS_ELABORADOS._OPEN.toString(), Boolean.FALSE);
+//					mapaParamsCloseHigh = estadisticasCloseHigh.getParametros(periodoActual,
+//							FINAL_NOMBRES_PARAMETROS_ELABORADOS._CLOSEHIGH.toString(), Boolean.FALSE);
+//					mapaParamsCloseLow = estadisticasCloseLow.getParametros(periodoActual,
+//							FINAL_NOMBRES_PARAMETROS_ELABORADOS._CLOSELOW.toString(), Boolean.FALSE);
+					mapaParamsOpenHigh = estadisticasOpenHigh.getParametros(periodoActual,
+							FINAL_NOMBRES_PARAMETROS_ELABORADOS._OPENHIGH.toString(), Boolean.FALSE);
+//					mapaParamsOpenLow = estadisticasOpenLow.getParametros(periodoActual,
+//							FINAL_NOMBRES_PARAMETROS_ELABORADOS._OPENLOW.toString(), Boolean.FALSE);
+					mapaParamsHighLow = estadisticasHighLow.getParametros(periodoActual,
+							FINAL_NOMBRES_PARAMETROS_ELABORADOS._HIGHLOW.toString(), Boolean.FALSE);
+					
 
-					parametros.putAll(mapaParamsPrecio);
 					parametros.putAll(mapaParamsVolumen);
+					parametros.putAll(mapaParamsClose);
+					parametros.putAll(mapaParamsHigh);
+					parametros.putAll(mapaParamsLow);
+					parametros.putAll(mapaParamsOpen);
+//					parametros.putAll(mapaParamsCloseHigh);
+//					parametros.putAll(mapaParamsCloseLow);
+					parametros.putAll(mapaParamsOpenHigh);
+//					parametros.putAll(mapaParamsOpenLow);
+					parametros.putAll(mapaParamsHighLow);
 
 					// <<<<<<<------
 				} else {
@@ -325,61 +535,61 @@ public class ConstructorElaborados implements Serializable {
 		// FEATURES RESPECTO AL FIN DE SEMANA, MES, TRIMESTRE
 		meterParametrosFinDeEtapaTemporal(datosEmpresaFinales, ordenNombresParametrosSalida);
 
-		// Se calculan parámetros elaborados ESTÁTICOS (por eso se coge sólo la vela 0).
-		// Parámetro SCREENER1: basado en el screener que hemos visto que
-		// funciona:
-		// EPSgrowthNextYear > 0, CurrentRatio > 2,QuickRatio > 2, LongTermDebt <
-		// 0.0, InstitutionalOwnership > 10(%)
-		// Valores: Si no se tienen los datos o no se cumplen las condiciones, será 0.
-		// Si sí se cumple todo, será 1
-		String SCREENER1 = "0";
-
-		try {
-			parametros = datosEmpresaEntrada.get(0);
-			String EPSgrowthNextYear = parametros.get("EPS next Y");
-			String CurrentRatio = parametros.get("Current Ratio");
-			String QuickRatio = parametros.get("Quick Ratio");
-			String LongTermDebt = parametros.get("LT Debt/Eq");
-			String InstitutionalOwnership = parametros.get("Inst Own");
-
-			Float EPSgrowthNextYearF = Float.valueOf(EPSgrowthNextYear);
-			Float CurrentRatioF = Float.valueOf(CurrentRatio);
-			Float QuickRatioF = Float.valueOf(QuickRatio);
-			Float LongTermDebtF = Float.valueOf(LongTermDebt);
-			Float InstitutionalOwnershipF = Float.valueOf(InstitutionalOwnership);
-
-			// Cálculo del parámetro
-			if (EPSgrowthNextYearF > 0F && CurrentRatioF > 2F && QuickRatioF > 2F && LongTermDebtF > 0F
-					&& InstitutionalOwnershipF > 10F) {
-				SCREENER1 = "1";
-			}
-
-		} catch (Exception e) {
-			MY_LOGGER.debug("La empresa " + empresa + " no tiene alguno de los parámetros necesarios para calcular "
-					+ "el parámetro elaborado SCREENER1, o directamente no tiene ningún parámetro para la primera vela. Se pone SCREENER1=0");
-		}
-
+//		// Se calculan parámetros elaborados ESTÁTICOS (por eso se coge sólo la vela 0).
+//		// Parámetro SCREENER1: basado en el screener que hemos visto que
+//		// funciona:
+//		// EPSgrowthNextYear > 0, CurrentRatio > 2,QuickRatio > 2, LongTermDebt <
+//		// 0.0, InstitutionalOwnership > 10(%)
+//		// Valores: Si no se tienen los datos o no se cumplen las condiciones, será 0.
+//		// Si sí se cumple todo, será 1
+//		String SCREENER1 = "0";
+//
+//		try {
+//			parametros = datosEmpresaEntrada.get(0);
+//			String EPSgrowthNextYear = parametros.get("EPS next Y");
+//			String CurrentRatio = parametros.get("Current Ratio");
+//			String QuickRatio = parametros.get("Quick Ratio");
+//			String LongTermDebt = parametros.get("LT Debt/Eq");
+//			String InstitutionalOwnership = parametros.get("Inst Own");
+//
+//			Float EPSgrowthNextYearF = Float.valueOf(EPSgrowthNextYear);
+//			Float CurrentRatioF = Float.valueOf(CurrentRatio);
+//			Float QuickRatioF = Float.valueOf(QuickRatio);
+//			Float LongTermDebtF = Float.valueOf(LongTermDebt);
+//			Float InstitutionalOwnershipF = Float.valueOf(InstitutionalOwnership);
+//
+//			// Cálculo del parámetro
+//			if (EPSgrowthNextYearF > 0F && CurrentRatioF > 2F && QuickRatioF > 2F && LongTermDebtF > 0F
+//					&& InstitutionalOwnershipF > 10F) {
+//				SCREENER1 = "1";
+//			}
+//
+//		} catch (Exception e) {
+//			MY_LOGGER.debug("La empresa " + empresa + " no tiene alguno de los parámetros necesarios para calcular "
+//					+ "el parámetro elaborado SCREENER1, o directamente no tiene ningún parámetro para la primera vela. Se pone SCREENER1=0");
+//		}
+//
 //		MY_LOGGER.debug("SCREENER1: " + SCREENER1 + " para la empresa " + empresa);
-
-		// Se añade el parámetro SCREENER1
-		ordenNombresParametrosSalida.put(ordenNombresParametrosSalida.size(), "SCREENER1");
-		parametrosAcumulados++;
-
-		// Se añade el parámetro HYPE1
-		ordenNombresParametrosSalida.put(ordenNombresParametrosSalida.size(), "HYPE1");
-		parametrosAcumulados++;
-
-		// Se añade el parámetro HYPE2
-		ordenNombresParametrosSalida.put(ordenNombresParametrosSalida.size(), "HYPE2");
-		parametrosAcumulados++;
-
-		// Se añade el parámetro HYPE3
-		ordenNombresParametrosSalida.put(ordenNombresParametrosSalida.size(), "HYPE3");
-		parametrosAcumulados++;
-
-		// Se añade el parámetro HYPE4
-		ordenNombresParametrosSalida.put(ordenNombresParametrosSalida.size(), "HYPE4");
-		parametrosAcumulados++;
+//
+//		// Se añade el parámetro SCREENER1
+//		ordenNombresParametrosSalida.put(ordenNombresParametrosSalida.size(), "SCREENER1");
+//		parametrosAcumulados++;
+//
+//		// Se añade el parámetro HYPE1
+//		ordenNombresParametrosSalida.put(ordenNombresParametrosSalida.size(), "HYPE1");
+//		parametrosAcumulados++;
+//
+//		// Se añade el parámetro HYPE2
+//		ordenNombresParametrosSalida.put(ordenNombresParametrosSalida.size(), "HYPE2");
+//		parametrosAcumulados++;
+//
+//		// Se añade el parámetro HYPE3
+//		ordenNombresParametrosSalida.put(ordenNombresParametrosSalida.size(), "HYPE3");
+//		parametrosAcumulados++;
+//
+//		// Se añade el parámetro HYPE4
+//		ordenNombresParametrosSalida.put(ordenNombresParametrosSalida.size(), "HYPE4");
+//		parametrosAcumulados++;
 
 		// Aniado el TARGET
 		// Target=0 es que no se cumple. 1 es que sí. TARGET_INVALIDO es que no se puede
@@ -417,11 +627,11 @@ public class ConstructorElaborados implements Serializable {
 			}
 
 			// Auxiliares
-			String Sprecio, Svolumen, Ssma20Precio, Ssma50Precio, Ssma7Precio, Ssma4Precio, Ssma20Volumen, Ssma7Volumen,
-					Ssma4Volumen, Smaximo4Precio, Smaximo7Precio, Sstdsma4Precio, Sstdsma20Precio;
-			Float precio, volumen, sma20Precio, sma50Precio, sma7Precio, sma4Precio, sma20Volumen, sma7Volumen,
-					sma4Volumen, maximo4Precio, maximo7Precio, stdsma4Precio, stdsma20Precio;
-			String HYPE1 = "0", HYPE2 = "0", HYPE3 = "0", HYPE4 = "0";
+//			String Sprecio, Svolumen, Ssma20Precio, Ssma50Precio, Ssma7Precio, Ssma4Precio, Ssma20Volumen, Ssma7Volumen,
+//					Ssma4Volumen, Smaximo4Precio, Smaximo7Precio, Sstdsma4Precio, Sstdsma20Precio;
+//			Float precio, volumen, sma20Precio, sma50Precio, sma7Precio, sma4Precio, sma20Volumen, sma7Volumen,
+//					sma4Volumen, maximo4Precio, maximo7Precio, stdsma4Precio, stdsma20Precio;
+//			String HYPE1 = "0", HYPE2 = "0", HYPE3 = "0", HYPE4 = "0";
 
 			// Se rellena el target en los datos de entrada tras el analisis, al final de
 			// todos los parametros
@@ -432,151 +642,151 @@ public class ConstructorElaborados implements Serializable {
 				antiguedad = itAntiguedadDatos.next();
 				parametros = datosEmpresaFinales.get(antiguedad);
 
-				// Se AÑADEN parámetros elaborados ESTÁTICOS
-				parametros.put("SCREENER1", SCREENER1);
-
-				// Se AÑADEN parámetros elaborados DINÁMICOS. Para ello deben estar ya guardados
-				// el resto de parámetros que se referencien.
-
-				// PARÁMETRO HYPE1:
-				// PATRÓN DIP BUY
-				// PRECIO -> Menor que media 4, 7 y 20
-				// VOLUMEN -> Mayor que media 4, 7 y 20
-				// Valores: Si no se tienen los datos, será null. Si no se cumplen las
-				// condiciones, será 0.
-				// Si sí se cumple todo, será 1
-				Sprecio = parametros.get("close");
-				Svolumen = parametros.get("volumen");
-				Ssma20Precio = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_+"20_PRECIO");
-				Ssma7Precio = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_+"7_PRECIO");
-				Ssma4Precio = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_+"4_PRECIO");
-				Ssma20Volumen = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_+"20_VOLUMEN");
-				Ssma7Volumen = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_+"7_VOLUMEN");
-				Ssma4Volumen = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_+"4_VOLUMEN");
-				if (Sprecio != null && Svolumen != null && Ssma4Precio != null && Ssma7Precio != null
-						&& Ssma20Precio != null && Ssma4Volumen != null && Ssma7Volumen != null
-						&& Ssma20Volumen != null) {
-					precio = Float.valueOf(Sprecio);
-					volumen = Float.valueOf(Svolumen);
-					sma4Precio = Float.valueOf(Ssma4Precio);
-					sma7Precio = Float.valueOf(Ssma7Precio);
-					sma20Precio = Float.valueOf(Ssma20Precio);
-					sma4Volumen = Float.valueOf(Ssma4Volumen);
-					sma7Volumen = Float.valueOf(Ssma7Volumen);
-					sma20Volumen = Float.valueOf(Ssma20Volumen);
-					if (precio < sma4Precio && precio < sma7Precio && precio < sma20Precio && volumen > sma4Volumen
-							&& volumen > sma7Volumen && volumen > sma20Volumen) {
-						HYPE1 = "1";
-					} else {
-						HYPE1 = "0";
-					}
-				} else {
-					HYPE1 = "null";
-				}
-
-				// PARÁMETRO HYPE2:
-				// PRECIO -> Mayor que sma7 y SMA20
-				// PRECIO -> mayor (o igual, ya que será el máximo xD) que el máximo de 3 velas,
-				// en positivo
-				// VOLUMEN -> 3 veces mayor que SMA7
-				// Valores: Si no se tienen los datos, será null. Si no se cumplen las
-				// condiciones, será 0.
-				// Si sí se cumple todo, será 1
-				Sprecio = parametros.get("close");
-				Svolumen = parametros.get("volumen");
-				Ssma20Precio = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_+"20_PRECIO");
-				Ssma7Precio = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_+"7_PRECIO");
-				Ssma7Volumen = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_+"7_VOLUMEN");
-				Smaximo4Precio = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_+"4_PRECIO");
-				if (Sprecio != null && Svolumen != null && Ssma20Precio != null && Ssma7Precio != null
-						&& Ssma7Volumen != null && Smaximo4Precio != null) {
-					precio = Float.valueOf(Sprecio);
-					volumen = Float.valueOf(Svolumen);
-					sma20Precio = Float.valueOf(Ssma20Precio);
-					sma7Precio = Float.valueOf(Ssma7Precio);
-					sma7Volumen = Float.valueOf(Ssma7Volumen);
-					maximo4Precio = Float.valueOf(Smaximo4Precio);
-					if (precio > sma7Precio && precio > sma20Precio && precio >= maximo4Precio
-							&& volumen > 3 * sma7Volumen) {
-						HYPE2 = "1";
-					} else {
-						HYPE2 = "0";
-					}
-				} else {
-					HYPE2 = "null";
-				}
-
-				// PARÁMETRO HYPE3:
-				// PATRÓN subida VBLT 22/1/2020
-				// Precio: mayor que SMA20, pero menor que SMA4, SMA7
-				// Volumen: mayor que SMA4, pero menor que SMA7, SMA20
-				// Valores: Si no se tienen los datos, será null. Si no se cumplen las
-				// condiciones, será 0.
-				// Si sí se cumple todo, será 1
-				Sprecio = parametros.get("close");
-				Svolumen = parametros.get("volumen");
-				Ssma20Precio = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_+"20_PRECIO");
-				Ssma7Precio = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_+"7_PRECIO");
-				Ssma4Precio = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_+"4_PRECIO");
-				Ssma20Volumen = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_+"20_VOLUMEN");
-				Ssma7Volumen = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_+"7_VOLUMEN");
-				Ssma4Volumen = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_+"4_VOLUMEN");
-				if (Sprecio != null && Svolumen != null && Ssma4Precio != null && Ssma7Precio != null
-						&& Ssma20Precio != null && Ssma4Volumen != null && Ssma7Volumen != null
-						&& Ssma20Volumen != null) {
-					precio = Float.valueOf(Sprecio);
-					volumen = Float.valueOf(Svolumen);
-					sma4Precio = Float.valueOf(Ssma4Precio);
-					sma7Precio = Float.valueOf(Ssma7Precio);
-					sma20Precio = Float.valueOf(Ssma20Precio);
-					sma4Volumen = Float.valueOf(Ssma4Volumen);
-					sma7Volumen = Float.valueOf(Ssma7Volumen);
-					sma20Volumen = Float.valueOf(Ssma20Volumen);
-					if (precio < sma4Precio && precio < sma7Precio && precio > sma20Precio && volumen > sma4Volumen
-							&& volumen < sma7Volumen && volumen < sma20Volumen) {
-						HYPE3 = "1";
-					} else {
-						HYPE3 = "0";
-					}
-				} else {
-					HYPE3 = "null";
-				}
-
-				// PARÁMETRO HYPE4:
-				// Sacado a ojo, leyendo las combinaciones de resultados, para eliminar los falsos positivos
-				// STD_SMA_4_PRECIO > 1.5
-				// STD_SMA_20_PRECIO > 0.5
-				// Valores: Si no se tienen los datos, será null. Si no se cumplen las
-				// condiciones, será 0.
-				// Si sí se cumple todo, será 1
-				Sstdsma4Precio = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.STD_SMA_+"4_PRECIO");
-				Sstdsma20Precio = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.STD_SMA_+"20_PRECIO");
-
-				if (Sstdsma4Precio != null && Sstdsma20Precio != null) {
-					stdsma4Precio = Float.valueOf(Sstdsma4Precio);
-					stdsma20Precio = Float.valueOf(Sstdsma20Precio);
-					if (stdsma4Precio > 1.5 && stdsma20Precio > 0.5) {
-						HYPE4 = "1";
-					} else {
-						HYPE4 = "0";
-					}
-				} else {
-					HYPE4 = "null";
-				}
-
-				// AÑADO PARÁMETROS. TAMBIÉN HAY QUE AÑADIRLO EN LA LÍNEA 358 (VER OTROS
-				// EJEMPLOS)
-				// Se añade HYPE1
-				parametros.put("HYPE1", HYPE1);
-
-				// Se añade HYPE2
-				parametros.put("HYPE2", HYPE2);
-
-				// Se añade HYPE3
-				parametros.put("HYPE3", HYPE3);
-
-				// Se añade HYPE4
-				parametros.put("HYPE4", HYPE4);
+//				// Se AÑADEN parámetros elaborados ESTÁTICOS
+//				parametros.put("SCREENER1", SCREENER1);
+//
+//				// Se AÑADEN parámetros elaborados DINÁMICOS. Para ello deben estar ya guardados
+//				// el resto de parámetros que se referencien.
+//
+//				// PARÁMETRO HYPE1:
+//				// PATRÓN DIP BUY
+//				// PRECIO -> Menor que media 4, 7 y 20
+//				// VOLUMEN -> Mayor que media 4, 7 y 20
+//				// Valores: Si no se tienen los datos, será null. Si no se cumplen las
+//				// condiciones, será 0.
+//				// Si sí se cumple todo, será 1
+//				Sprecio = parametros.get("close");
+//				Svolumen = parametros.get("volumen");
+//				Ssma20Precio = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_+"20_PRECIO");
+//				Ssma7Precio = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_+"7_PRECIO");
+//				Ssma4Precio = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_+"4_PRECIO");
+//				Ssma20Volumen = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_+"20_VOLUMEN");
+//				Ssma7Volumen = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_+"7_VOLUMEN");
+//				Ssma4Volumen = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_+"4_VOLUMEN");
+//				if (Sprecio != null && Svolumen != null && Ssma4Precio != null && Ssma7Precio != null
+//						&& Ssma20Precio != null && Ssma4Volumen != null && Ssma7Volumen != null
+//						&& Ssma20Volumen != null) {
+//					precio = Float.valueOf(Sprecio);
+//					volumen = Float.valueOf(Svolumen);
+//					sma4Precio = Float.valueOf(Ssma4Precio);
+//					sma7Precio = Float.valueOf(Ssma7Precio);
+//					sma20Precio = Float.valueOf(Ssma20Precio);
+//					sma4Volumen = Float.valueOf(Ssma4Volumen);
+//					sma7Volumen = Float.valueOf(Ssma7Volumen);
+//					sma20Volumen = Float.valueOf(Ssma20Volumen);
+//					if (precio < sma4Precio && precio < sma7Precio && precio < sma20Precio && volumen > sma4Volumen
+//							&& volumen > sma7Volumen && volumen > sma20Volumen) {
+//						HYPE1 = "1";
+//					} else {
+//						HYPE1 = "0";
+//					}
+//				} else {
+//					HYPE1 = "null";
+//				}
+//
+//				// PARÁMETRO HYPE2:
+//				// PRECIO -> Mayor que sma7 y SMA20
+//				// PRECIO -> mayor (o igual, ya que será el máximo xD) que el máximo de 3 velas,
+//				// en positivo
+//				// VOLUMEN -> 3 veces mayor que SMA7
+//				// Valores: Si no se tienen los datos, será null. Si no se cumplen las
+//				// condiciones, será 0.
+//				// Si sí se cumple todo, será 1
+//				Sprecio = parametros.get("close");
+//				Svolumen = parametros.get("volumen");
+//				Ssma20Precio = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_+"20_PRECIO");
+//				Ssma7Precio = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_+"7_PRECIO");
+//				Ssma7Volumen = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_+"7_VOLUMEN");
+//				Smaximo4Precio = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_+"4_PRECIO");
+//				if (Sprecio != null && Svolumen != null && Ssma20Precio != null && Ssma7Precio != null
+//						&& Ssma7Volumen != null && Smaximo4Precio != null) {
+//					precio = Float.valueOf(Sprecio);
+//					volumen = Float.valueOf(Svolumen);
+//					sma20Precio = Float.valueOf(Ssma20Precio);
+//					sma7Precio = Float.valueOf(Ssma7Precio);
+//					sma7Volumen = Float.valueOf(Ssma7Volumen);
+//					maximo4Precio = Float.valueOf(Smaximo4Precio);
+//					if (precio > sma7Precio && precio > sma20Precio && precio >= maximo4Precio
+//							&& volumen > 3 * sma7Volumen) {
+//						HYPE2 = "1";
+//					} else {
+//						HYPE2 = "0";
+//					}
+//				} else {
+//					HYPE2 = "null";
+//				}
+//
+//				// PARÁMETRO HYPE3:
+//				// PATRÓN subida VBLT 22/1/2020
+//				// Precio: mayor que SMA20, pero menor que SMA4, SMA7
+//				// Volumen: mayor que SMA4, pero menor que SMA7, SMA20
+//				// Valores: Si no se tienen los datos, será null. Si no se cumplen las
+//				// condiciones, será 0.
+//				// Si sí se cumple todo, será 1
+//				Sprecio = parametros.get("close");
+//				Svolumen = parametros.get("volumen");
+//				Ssma20Precio = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_+"20_PRECIO");
+//				Ssma7Precio = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_+"7_PRECIO");
+//				Ssma4Precio = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_+"4_PRECIO");
+//				Ssma20Volumen = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_+"20_VOLUMEN");
+//				Ssma7Volumen = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_+"7_VOLUMEN");
+//				Ssma4Volumen = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_+"4_VOLUMEN");
+//				if (Sprecio != null && Svolumen != null && Ssma4Precio != null && Ssma7Precio != null
+//						&& Ssma20Precio != null && Ssma4Volumen != null && Ssma7Volumen != null
+//						&& Ssma20Volumen != null) {
+//					precio = Float.valueOf(Sprecio);
+//					volumen = Float.valueOf(Svolumen);
+//					sma4Precio = Float.valueOf(Ssma4Precio);
+//					sma7Precio = Float.valueOf(Ssma7Precio);
+//					sma20Precio = Float.valueOf(Ssma20Precio);
+//					sma4Volumen = Float.valueOf(Ssma4Volumen);
+//					sma7Volumen = Float.valueOf(Ssma7Volumen);
+//					sma20Volumen = Float.valueOf(Ssma20Volumen);
+//					if (precio < sma4Precio && precio < sma7Precio && precio > sma20Precio && volumen > sma4Volumen
+//							&& volumen < sma7Volumen && volumen < sma20Volumen) {
+//						HYPE3 = "1";
+//					} else {
+//						HYPE3 = "0";
+//					}
+//				} else {
+//					HYPE3 = "null";
+//				}
+//
+//				// PARÁMETRO HYPE4:
+//				// Sacado a ojo, leyendo las combinaciones de resultados, para eliminar los falsos positivos
+//				// STD_SMA_4_PRECIO > 1.5
+//				// STD_SMA_20_PRECIO > 0.5
+//				// Valores: Si no se tienen los datos, será null. Si no se cumplen las
+//				// condiciones, será 0.
+//				// Si sí se cumple todo, será 1
+//				Sstdsma4Precio = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.STD_SMA_+"4_PRECIO");
+//				Sstdsma20Precio = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.STD_SMA_+"20_PRECIO");
+//
+//				if (Sstdsma4Precio != null && Sstdsma20Precio != null) {
+//					stdsma4Precio = Float.valueOf(Sstdsma4Precio);
+//					stdsma20Precio = Float.valueOf(Sstdsma20Precio);
+//					if (stdsma4Precio > 1.5 && stdsma20Precio > 0.5) {
+//						HYPE4 = "1";
+//					} else {
+//						HYPE4 = "0";
+//					}
+//				} else {
+//					HYPE4 = "null";
+//				}
+//
+//				// AÑADO PARÁMETROS. TAMBIÉN HAY QUE AÑADIRLO EN LA LÍNEA 358 (VER OTROS
+//				// EJEMPLOS)
+//				// Se añade HYPE1
+//				parametros.put("HYPE1", HYPE1);
+//
+//				// Se añade HYPE2
+//				parametros.put("HYPE2", HYPE2);
+//
+//				// Se añade HYPE3
+//				parametros.put("HYPE3", HYPE3);
+//
+//				// Se añade HYPE4
+//				parametros.put("HYPE4", HYPE4);
 
 				// SE AÑADE EL TARGET
 				parametros.put("TARGET", String.valueOf(antiguedadYTarget.get(antiguedad)));
