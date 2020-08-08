@@ -19,6 +19,7 @@ public class Estadisticas extends DescriptiveStatistics {
 	private static final long serialVersionUID = 1L;
 
 	public final static String VALOR_INVALIDO = "null";
+	public final static int VALOR_FAKE = 0;
 	public final static double NUM100 = 100.0D;
 	public final static double NUM1K = 1000.0D;
 	public final static double NUM1M = 1000000.0D;
@@ -37,7 +38,7 @@ public class Estadisticas extends DescriptiveStatistics {
 //	Otros menos útiles: 
 //  _CLOSEHIGH, _CLOSELOW, _OPENLOW,
 	public enum FINAL_NOMBRES_PARAMETROS_ELABORADOS {
-		_VOLUMEN, _CLOSE, _HIGH, _LOW, _OPEN, _OPENHIGH, _HIGHLOW;
+		_VOLUMEN, _CLOSE, _HIGH, _LOW, _OPEN, _CLOSEOPEN, _OPENHIGH, _HIGHLOW;
 	}
 
 	public enum OTROS_PARAMS_ELAB {
@@ -257,7 +258,10 @@ public class Estadisticas extends DescriptiveStatistics {
 	 * Puede tener valores negativos.
 	 */
 	public int getRatioSMASegundo() {
-		return (int) Math.round(NUM100 * (this.getElement(1) / getMean()));
+		int salida = VALOR_FAKE;
+		if (this.getN() > 1)
+			salida = (int) Math.round(NUM100 * (this.getElement(1) / getMean()));
+		return salida;
 	}
 
 	/**
@@ -281,7 +285,10 @@ public class Estadisticas extends DescriptiveStatistics {
 	 * datos. Puede tener valores negativos.
 	 */
 	public int getRatioMaxSegundo() {
-		return (int) Math.round(NUM100 * (this.getElement(1) / this.getMax()));
+		int salida = VALOR_FAKE;
+		if (this.getN() > 1)
+			salida = (int) Math.round(NUM100 * (this.getElement(1) / this.getMax()));
+		return salida;
 	}
 
 	/**
@@ -297,7 +304,10 @@ public class Estadisticas extends DescriptiveStatistics {
 	 * Puede tener valores negativos.
 	 */
 	public int getRatioUltimoSMA() {
-		return (int) Math.round(NUM100 * (this.getElement((int) getN() - 1) / getMean()));
+		int salida = VALOR_FAKE;
+		if (this.getN() > 1)
+			salida = (int) Math.round(NUM100 * (this.getElement((int) getN() - 1) / getMean()));
+		return salida;
 	}
 
 	/**
@@ -305,7 +315,10 @@ public class Estadisticas extends DescriptiveStatistics {
 	 * Puede tener valores negativos.
 	 */
 	public int getRatioUltimoMax() {
-		return (int) Math.round(NUM100 * (this.getElement((int) getN() - 1) / this.getMax()));
+		int salida = VALOR_FAKE;
+		if (this.getN() > 1)
+			salida = (int) Math.round(NUM100 * (this.getElement((int) getN() - 1) / this.getMax()));
+		return salida;
 	}
 
 	/**

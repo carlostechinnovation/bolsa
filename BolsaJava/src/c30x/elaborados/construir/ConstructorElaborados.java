@@ -39,9 +39,10 @@ public class ConstructorElaborados implements Serializable {
 		return instancia;
 	}
 
-	// Se usan los periodos típicos que suelen usar los robots: 4, 7, 20, 50 días
+	// Se usan los periodos típicos que suelen usar los robots
 	// (consideraremos velas)
-	public final static Integer[] periodosDParaParametros = new Integer[] { 4, 7, 20, 50 };
+	// Se añade el periodo 1, para obtener el tamaño de vela, etc.
+	public final static Integer[] periodosDParaParametros = new Integer[] { 1, 4, 7, 20, 50 };
 
 	// IMPORTANTE: se asume que los datos estan ordenados de menor a mayor
 	// antiguedad, y agrupados por empresa
@@ -183,20 +184,22 @@ public class ConstructorElaborados implements Serializable {
 		HashMap<Integer, Estadisticas> estadisticasHighPorAntiguedad = new HashMap<Integer, Estadisticas>(1);
 		HashMap<Integer, Estadisticas> estadisticasLowPorAntiguedad = new HashMap<Integer, Estadisticas>(1);
 		HashMap<Integer, Estadisticas> estadisticasOpenPorAntiguedad = new HashMap<Integer, Estadisticas>(1);
-		HashMap<Integer, Estadisticas> estadisticasCloseHighPorAntiguedad = new HashMap<Integer, Estadisticas>(1);
-		HashMap<Integer, Estadisticas> estadisticasCloseLowPorAntiguedad = new HashMap<Integer, Estadisticas>(1);
+		HashMap<Integer, Estadisticas> estadisticasCloseOpenPorAntiguedad = new HashMap<Integer, Estadisticas>(1);
+//		HashMap<Integer, Estadisticas> estadisticasCloseHighPorAntiguedad = new HashMap<Integer, Estadisticas>(1);
+//		HashMap<Integer, Estadisticas> estadisticasCloseLowPorAntiguedad = new HashMap<Integer, Estadisticas>(1);
 		HashMap<Integer, Estadisticas> estadisticasOpenHighPorAntiguedad = new HashMap<Integer, Estadisticas>(1);
-		HashMap<Integer, Estadisticas> estadisticasOpenLowPorAntiguedad = new HashMap<Integer, Estadisticas>(1);
+//		HashMap<Integer, Estadisticas> estadisticasOpenLowPorAntiguedad = new HashMap<Integer, Estadisticas>(1);
 		HashMap<Integer, Estadisticas> estadisticasHighLowPorAntiguedad = new HashMap<Integer, Estadisticas>(1);
 		Estadisticas estadisticasVolumen = new Estadisticas();
 		Estadisticas estadisticasClose = new Estadisticas();
 		Estadisticas estadisticasHigh = new Estadisticas();
 		Estadisticas estadisticasLow = new Estadisticas();
 		Estadisticas estadisticasOpen = new Estadisticas();
-		Estadisticas estadisticasCloseHigh = new Estadisticas();
-		Estadisticas estadisticasCloseLow = new Estadisticas();
+		Estadisticas estadisticasCloseOpen = new Estadisticas();
+//		Estadisticas estadisticasCloseHigh = new Estadisticas();
+//		Estadisticas estadisticasCloseLow = new Estadisticas();
 		Estadisticas estadisticasOpenHigh = new Estadisticas();
-		Estadisticas estadisticasOpenLow = new Estadisticas();
+//		Estadisticas estadisticasOpenLow = new Estadisticas();
 		Estadisticas estadisticasHighLow = new Estadisticas();
 		HashMap<Integer, HashMap<Integer, Estadisticas>> estadisticasVolumenPorAntiguedadYPeriodo = new HashMap<Integer, HashMap<Integer, Estadisticas>>(
 				1);
@@ -208,14 +211,16 @@ public class ConstructorElaborados implements Serializable {
 				1);
 		HashMap<Integer, HashMap<Integer, Estadisticas>> estadisticasOpenPorAntiguedadYPeriodo = new HashMap<Integer, HashMap<Integer, Estadisticas>>(
 				1);
-		HashMap<Integer, HashMap<Integer, Estadisticas>> estadisticasCloseHighPorAntiguedadYPeriodo = new HashMap<Integer, HashMap<Integer, Estadisticas>>(
+		HashMap<Integer, HashMap<Integer, Estadisticas>> estadisticasCloseOpenPorAntiguedadYPeriodo = new HashMap<Integer, HashMap<Integer, Estadisticas>>(
 				1);
-		HashMap<Integer, HashMap<Integer, Estadisticas>> estadisticasCloseLowPorAntiguedadYPeriodo = new HashMap<Integer, HashMap<Integer, Estadisticas>>(
-				1);
+//		HashMap<Integer, HashMap<Integer, Estadisticas>> estadisticasCloseHighPorAntiguedadYPeriodo = new HashMap<Integer, HashMap<Integer, Estadisticas>>(
+//				1);
+//		HashMap<Integer, HashMap<Integer, Estadisticas>> estadisticasCloseLowPorAntiguedadYPeriodo = new HashMap<Integer, HashMap<Integer, Estadisticas>>(
+//				1);
 		HashMap<Integer, HashMap<Integer, Estadisticas>> estadisticasOpenHighPorAntiguedadYPeriodo = new HashMap<Integer, HashMap<Integer, Estadisticas>>(
 				1);
-		HashMap<Integer, HashMap<Integer, Estadisticas>> estadisticasOpenLowPorAntiguedadYPeriodo = new HashMap<Integer, HashMap<Integer, Estadisticas>>(
-				1);
+//		HashMap<Integer, HashMap<Integer, Estadisticas>> estadisticasOpenLowPorAntiguedadYPeriodo = new HashMap<Integer, HashMap<Integer, Estadisticas>>(
+//				1);
 		HashMap<Integer, HashMap<Integer, Estadisticas>> estadisticasHighLowPorAntiguedadYPeriodo = new HashMap<Integer, HashMap<Integer, Estadisticas>>(
 				1);
 		HashMap<Integer, String> ordenVolumenNombresParametrosElaborados = estadisticasVolumen
@@ -228,14 +233,16 @@ public class ConstructorElaborados implements Serializable {
 				.getOrdenNombresParametrosElaborados();
 		HashMap<Integer, String> ordenOpenNombresParametrosElaborados = estadisticasOpen
 				.getOrdenNombresParametrosElaborados();
-		HashMap<Integer, String> ordenCloseHighNombresParametrosElaborados = estadisticasCloseHigh
+		HashMap<Integer, String> ordenCloseOpenNombresParametrosElaborados = estadisticasCloseOpen
 				.getOrdenNombresParametrosElaborados();
-		HashMap<Integer, String> ordenCloseLowNombresParametrosElaborados = estadisticasCloseLow
-				.getOrdenNombresParametrosElaborados();
+//		HashMap<Integer, String> ordenCloseHighNombresParametrosElaborados = estadisticasCloseHigh
+//				.getOrdenNombresParametrosElaborados();
+//		HashMap<Integer, String> ordenCloseLowNombresParametrosElaborados = estadisticasCloseLow
+//				.getOrdenNombresParametrosElaborados();
 		HashMap<Integer, String> ordenOpenHighNombresParametrosElaborados = estadisticasOpenHigh
 				.getOrdenNombresParametrosElaborados();
-		HashMap<Integer, String> ordenOpenLowNombresParametrosElaborados = estadisticasOpenLow
-				.getOrdenNombresParametrosElaborados();
+//		HashMap<Integer, String> ordenOpenLowNombresParametrosElaborados = estadisticasOpenLow
+//				.getOrdenNombresParametrosElaborados();
 		HashMap<Integer, String> ordenHighLowNombresParametrosElaborados = estadisticasHighLow
 				.getOrdenNombresParametrosElaborados();
 		Integer parametrosAcumulados = numeroParametrosEntrada;
@@ -277,6 +284,14 @@ public class ConstructorElaborados implements Serializable {
 			}
 			parametrosAcumulados += ordenOpenNombresParametrosElaborados.size();
 
+			for (int i = 0; i < ordenCloseOpenNombresParametrosElaborados.size(); i++) {
+				// CLOSEOPEN
+				ordenNombresParametrosSalida.put(parametrosAcumulados + i,
+						ordenCloseOpenNombresParametrosElaborados.get(i + 1) + periodo
+								+ FINAL_NOMBRES_PARAMETROS_ELABORADOS._CLOSEOPEN.toString());
+			}
+			parametrosAcumulados += ordenCloseOpenNombresParametrosElaborados.size();
+
 //			for (int i = 0; i < ordenCloseHighNombresParametrosElaborados.size(); i++) {
 //				// CLOSEHIGH
 //				ordenNombresParametrosSalida.put(parametrosAcumulados + i,
@@ -317,7 +332,6 @@ public class ConstructorElaborados implements Serializable {
 			}
 			parametrosAcumulados += ordenHighLowNombresParametrosElaborados.size();
 
-
 			for (int i = 0; i < ordenVolumenNombresParametrosElaborados.size(); i++) {
 				// VOLUMEN
 				ordenNombresParametrosSalida.put(parametrosAcumulados + i,
@@ -351,11 +365,11 @@ public class ConstructorElaborados implements Serializable {
 									+ " Posible causa: el mercado estaba abierto cuando hemos ejecutado la descarga de datos");
 
 						} else {
+							auxVolumen = parametros.get("volumen");
 							auxClose = parametros.get("close");
 							auxHigh = parametros.get("high");
 							auxLow = parametros.get("low");
 							auxOpen = parametros.get("open");
-							auxVolumen = parametros.get("volumen");
 
 							// Precio simple
 							estadisticasClose.addValue(new Double(auxClose));
@@ -364,10 +378,11 @@ public class ConstructorElaborados implements Serializable {
 							estadisticasOpen.addValue(new Double(auxOpen));
 
 							// Precio complejo
-							estadisticasCloseHigh.addValue(new Double(auxClose) - new Double(auxHigh));
-							estadisticasCloseLow.addValue(new Double(auxClose) - new Double(auxLow));
+							estadisticasCloseOpen.addValue(new Double(auxClose) - new Double(auxOpen));
+//							estadisticasCloseHigh.addValue(new Double(auxClose) - new Double(auxHigh));
+//							estadisticasCloseLow.addValue(new Double(auxClose) - new Double(auxLow));
 							estadisticasOpenHigh.addValue(new Double(auxOpen) - new Double(auxHigh));
-							estadisticasOpenLow.addValue(new Double(auxOpen) - new Double(auxLow));
+//							estadisticasOpenLow.addValue(new Double(auxOpen) - new Double(auxLow));
 							estadisticasHighLow.addValue(new Double(auxHigh) - new Double(auxLow));
 
 							// Volumen
@@ -392,36 +407,38 @@ public class ConstructorElaborados implements Serializable {
 				estadisticasHighPorAntiguedad.put(antiguedad, estadisticasHigh);
 				estadisticasLowPorAntiguedad.put(antiguedad, estadisticasLow);
 				estadisticasOpenPorAntiguedad.put(antiguedad, estadisticasOpen);
-				estadisticasCloseHighPorAntiguedad.put(antiguedad, estadisticasCloseHigh);
-				estadisticasCloseLowPorAntiguedad.put(antiguedad, estadisticasCloseLow);
+				estadisticasCloseOpenPorAntiguedad.put(antiguedad, estadisticasCloseOpen);
+//				estadisticasCloseHighPorAntiguedad.put(antiguedad, estadisticasCloseHigh);
+//				estadisticasCloseLowPorAntiguedad.put(antiguedad, estadisticasCloseLow);
 				estadisticasOpenHighPorAntiguedad.put(antiguedad, estadisticasOpenHigh);
-				estadisticasOpenLowPorAntiguedad.put(antiguedad, estadisticasOpenLow);
+//				estadisticasOpenLowPorAntiguedad.put(antiguedad, estadisticasOpenLow);
 				estadisticasHighLowPorAntiguedad.put(antiguedad, estadisticasHighLow);
-				
+
 				// Se limpia este almacén temporal
 				estadisticasVolumen = new Estadisticas();
 				estadisticasClose = new Estadisticas();
 				estadisticasHigh = new Estadisticas();
 				estadisticasLow = new Estadisticas();
 				estadisticasOpen = new Estadisticas();
-				estadisticasCloseHigh = new Estadisticas();
-				estadisticasCloseLow = new Estadisticas();
+				estadisticasCloseOpen = new Estadisticas();
+//				estadisticasCloseHigh = new Estadisticas();
+//				estadisticasCloseLow = new Estadisticas();
 				estadisticasOpenHigh = new Estadisticas();
-				estadisticasOpenLow = new Estadisticas();
+//				estadisticasOpenLow = new Estadisticas();
 				estadisticasHighLow = new Estadisticas();
 
 			}
-
 
 			estadisticasVolumenPorAntiguedadYPeriodo.put(periodo, estadisticasVolumenPorAntiguedad);
 			estadisticasClosePorAntiguedadYPeriodo.put(periodo, estadisticasClosePorAntiguedad);
 			estadisticasHighPorAntiguedadYPeriodo.put(periodo, estadisticasHighPorAntiguedad);
 			estadisticasLowPorAntiguedadYPeriodo.put(periodo, estadisticasLowPorAntiguedad);
 			estadisticasOpenPorAntiguedadYPeriodo.put(periodo, estadisticasOpenPorAntiguedad);
-			estadisticasCloseHighPorAntiguedadYPeriodo.put(periodo, estadisticasCloseHighPorAntiguedad);
-			estadisticasCloseLowPorAntiguedadYPeriodo.put(periodo, estadisticasCloseLowPorAntiguedad);
+			estadisticasCloseOpenPorAntiguedadYPeriodo.put(periodo, estadisticasCloseOpenPorAntiguedad);
+//			estadisticasCloseHighPorAntiguedadYPeriodo.put(periodo, estadisticasCloseHighPorAntiguedad);
+//			estadisticasCloseLowPorAntiguedadYPeriodo.put(periodo, estadisticasCloseLowPorAntiguedad);
 			estadisticasOpenHighPorAntiguedadYPeriodo.put(periodo, estadisticasOpenHighPorAntiguedad);
-			estadisticasOpenLowPorAntiguedadYPeriodo.put(periodo, estadisticasOpenLowPorAntiguedad);
+//			estadisticasOpenLowPorAntiguedadYPeriodo.put(periodo, estadisticasOpenLowPorAntiguedad);
 			estadisticasHighLowPorAntiguedadYPeriodo.put(periodo, estadisticasHighLowPorAntiguedad);
 
 			// Se limpia este almacén temporal
@@ -430,10 +447,11 @@ public class ConstructorElaborados implements Serializable {
 			estadisticasHighPorAntiguedad = new HashMap<Integer, Estadisticas>();
 			estadisticasLowPorAntiguedad = new HashMap<Integer, Estadisticas>();
 			estadisticasOpenPorAntiguedad = new HashMap<Integer, Estadisticas>();
-			estadisticasCloseHighPorAntiguedad = new HashMap<Integer, Estadisticas>();
-			estadisticasCloseLowPorAntiguedad = new HashMap<Integer, Estadisticas>();
+			estadisticasCloseOpenPorAntiguedad = new HashMap<Integer, Estadisticas>();
+//			estadisticasCloseHighPorAntiguedad = new HashMap<Integer, Estadisticas>();
+//			estadisticasCloseLowPorAntiguedad = new HashMap<Integer, Estadisticas>();
 			estadisticasOpenHighPorAntiguedad = new HashMap<Integer, Estadisticas>();
-			estadisticasOpenLowPorAntiguedad = new HashMap<Integer, Estadisticas>();
+//			estadisticasOpenLowPorAntiguedad = new HashMap<Integer, Estadisticas>();
 			estadisticasHighLowPorAntiguedad = new HashMap<Integer, Estadisticas>();
 		}
 
@@ -443,21 +461,23 @@ public class ConstructorElaborados implements Serializable {
 		Iterator<Integer> itPeriodo = periodos.iterator();
 
 		HashMap<String, String> mapaParamsVolumen, mapaParamsClose, mapaParamsHigh, mapaParamsLow, mapaParamsOpen,
-				mapaParamsCloseHigh, mapaParamsCloseLow, mapaParamsOpenHigh, mapaParamsOpenLow, mapaParamsHighLow;
+				mapaParamsCloseOpen, mapaParamsCloseHigh, mapaParamsCloseLow, mapaParamsOpenHigh, mapaParamsOpenLow,
+				mapaParamsHighLow;
 
-		while (itPeriodo.hasNext()) { // periodo analizado: 4, 7, 20, 50...
+		while (itPeriodo.hasNext()) { // periodo analizado
 			periodoActual = itPeriodo.next();
 			estadisticasVolumenPorAntiguedad = estadisticasVolumenPorAntiguedadYPeriodo.get(periodoActual);
 			estadisticasClosePorAntiguedad = estadisticasClosePorAntiguedadYPeriodo.get(periodoActual);
 			estadisticasHighPorAntiguedad = estadisticasHighPorAntiguedadYPeriodo.get(periodoActual);
 			estadisticasLowPorAntiguedad = estadisticasLowPorAntiguedadYPeriodo.get(periodoActual);
 			estadisticasOpenPorAntiguedad = estadisticasOpenPorAntiguedadYPeriodo.get(periodoActual);
-			estadisticasCloseHighPorAntiguedad = estadisticasCloseHighPorAntiguedadYPeriodo.get(periodoActual);
-			estadisticasCloseLowPorAntiguedad = estadisticasCloseLowPorAntiguedadYPeriodo.get(periodoActual);
+			estadisticasCloseOpenPorAntiguedad = estadisticasCloseOpenPorAntiguedadYPeriodo.get(periodoActual);
+//			estadisticasCloseHighPorAntiguedad = estadisticasCloseHighPorAntiguedadYPeriodo.get(periodoActual);
+//			estadisticasCloseLowPorAntiguedad = estadisticasCloseLowPorAntiguedadYPeriodo.get(periodoActual);
 			estadisticasOpenHighPorAntiguedad = estadisticasOpenHighPorAntiguedadYPeriodo.get(periodoActual);
-			estadisticasOpenLowPorAntiguedad = estadisticasOpenLowPorAntiguedadYPeriodo.get(periodoActual);
+//			estadisticasOpenLowPorAntiguedad = estadisticasOpenLowPorAntiguedadYPeriodo.get(periodoActual);
 			estadisticasHighLowPorAntiguedad = estadisticasHighLowPorAntiguedadYPeriodo.get(periodoActual);
-			
+
 			antiguedades = estadisticasClosePorAntiguedad.keySet();
 			itAntiguedad = antiguedades.iterator();
 
@@ -470,10 +490,11 @@ public class ConstructorElaborados implements Serializable {
 				estadisticasHigh = estadisticasHighPorAntiguedad.get(antiguedad);
 				estadisticasLow = estadisticasLowPorAntiguedad.get(antiguedad);
 				estadisticasOpen = estadisticasOpenPorAntiguedad.get(antiguedad);
-				estadisticasCloseHigh = estadisticasCloseHighPorAntiguedad.get(antiguedad);
-				estadisticasCloseLow = estadisticasCloseLowPorAntiguedad.get(antiguedad);
+				estadisticasCloseOpen = estadisticasCloseOpenPorAntiguedad.get(antiguedad);
+//				estadisticasCloseHigh = estadisticasCloseHighPorAntiguedad.get(antiguedad);
+//				estadisticasCloseLow = estadisticasCloseLowPorAntiguedad.get(antiguedad);
 				estadisticasOpenHigh = estadisticasOpenHighPorAntiguedad.get(antiguedad);
-				estadisticasOpenLow = estadisticasOpenLowPorAntiguedad.get(antiguedad);
+//				estadisticasOpenLow = estadisticasOpenLowPorAntiguedad.get(antiguedad);
 				estadisticasHighLow = estadisticasHighLowPorAntiguedad.get(antiguedad);
 
 				antiguedadHistoricaMaxima = antiguedad + periodoActual; // se analiza el periodo desde la vela analizada
@@ -485,7 +506,6 @@ public class ConstructorElaborados implements Serializable {
 					// COSTE DE COMPUTACION
 					// <<<<<<<<-------
 
-
 					mapaParamsVolumen = estadisticasVolumen.getParametros(periodoActual,
 							FINAL_NOMBRES_PARAMETROS_ELABORADOS._VOLUMEN.toString(), Boolean.FALSE);
 					mapaParamsClose = estadisticasClose.getParametros(periodoActual,
@@ -496,6 +516,8 @@ public class ConstructorElaborados implements Serializable {
 							FINAL_NOMBRES_PARAMETROS_ELABORADOS._LOW.toString(), Boolean.FALSE);
 					mapaParamsOpen = estadisticasOpen.getParametros(periodoActual,
 							FINAL_NOMBRES_PARAMETROS_ELABORADOS._OPEN.toString(), Boolean.FALSE);
+					mapaParamsCloseOpen = estadisticasCloseOpen.getParametros(periodoActual,
+							FINAL_NOMBRES_PARAMETROS_ELABORADOS._CLOSEOPEN.toString(), Boolean.FALSE);
 //					mapaParamsCloseHigh = estadisticasCloseHigh.getParametros(periodoActual,
 //							FINAL_NOMBRES_PARAMETROS_ELABORADOS._CLOSEHIGH.toString(), Boolean.FALSE);
 //					mapaParamsCloseLow = estadisticasCloseLow.getParametros(periodoActual,
@@ -506,13 +528,13 @@ public class ConstructorElaborados implements Serializable {
 //							FINAL_NOMBRES_PARAMETROS_ELABORADOS._OPENLOW.toString(), Boolean.FALSE);
 					mapaParamsHighLow = estadisticasHighLow.getParametros(periodoActual,
 							FINAL_NOMBRES_PARAMETROS_ELABORADOS._HIGHLOW.toString(), Boolean.FALSE);
-					
 
 					parametros.putAll(mapaParamsVolumen);
 					parametros.putAll(mapaParamsClose);
 					parametros.putAll(mapaParamsHigh);
 					parametros.putAll(mapaParamsLow);
 					parametros.putAll(mapaParamsOpen);
+					parametros.putAll(mapaParamsCloseOpen);
 //					parametros.putAll(mapaParamsCloseHigh);
 //					parametros.putAll(mapaParamsCloseLow);
 					parametros.putAll(mapaParamsOpenHigh);
