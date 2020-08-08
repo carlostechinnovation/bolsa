@@ -296,7 +296,10 @@ public class Estadisticas extends DescriptiveStatistics {
 	 * datos. Puede tener valores negativos.
 	 */
 	public int getRatioMinSegundo() {
-		return (int) Math.round(NUM100 * (this.getElement(1) / this.getMin()));
+		int salida = VALOR_FAKE;
+		if (this.getN() > 1)
+			salida = (int) Math.round(NUM100 * (this.getElement(1) / this.getMin()));
+		return salida;
 	}
 
 	/**
