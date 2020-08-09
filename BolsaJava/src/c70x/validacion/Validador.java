@@ -9,8 +9,11 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -38,6 +41,8 @@ public class Validador implements Serializable {
 	private static String DEFINICION_PREDICCION = "COMPLETO_PREDICCION.csv";
 	private static String MODO_VALIDAR = "VALIDAR";
 	private static String MODO_MEDIR_OVERFITTING = "MEDIR_OVERFITTING";
+
+	public static final Integer UMBRAL_SUFICIENTES_ITEMS_OVERFITTING = 10;
 
 	private Validador() {
 		super();
@@ -92,6 +97,7 @@ public class Validador implements Serializable {
 			analizarPrediccion(velasRetroceso, pathValidacion, S, X, R, M);
 
 		} else if (MODO != null && MODO_MEDIR_OVERFITTING.equalsIgnoreCase(MODO)) {
+			medirOverfitting(PATH_VALIDADOR_LOG);
 
 		} else {
 			MY_LOGGER.error("Parametro de entrada SOLO_MEDIR_SOBREENTRENAMIENTO es incorrecto! Saliendo...");
@@ -400,8 +406,10 @@ public class Validador implements Serializable {
 	 */
 	public static void medirOverfitting(final String validadorLog) throws IOException {
 
-		List<String> datosPasado = new ArrayList<String>();
-		List<String> datosFut1Fut2 = new ArrayList<String>();
+		List<String> datosPasadoStr = new ArrayList<String>();
+		List<String> datosFut1Fut2Str = new ArrayList<String>();
+		Map<Integer, Float> mapaSubgrupoMetricaPasado = new HashMap<Integer, Float>();
+		Map<Integer, Float> mapaSubgrupoMetricaFuturo = new HashMap<Integer, Float>();
 
 		// ---------------------------- FICHERO--------------------------------------
 		File file = new File(validadorLog);
@@ -412,18 +420,71 @@ public class Validador implements Serializable {
 			if (linea != null && !linea.isEmpty()) {
 
 				if (linea.contains("PASADO") && linea.contains("METRICA")) {
-					datosPasado.add(linea);
+					datosPasadoStr.add(linea);
 				} else if (linea.contains("FUTURO") && linea.contains("aciertos")) {
-					datosFut1Fut2.add(linea);
+					datosFut1Fut2Str.add(linea);
 				}
 			}
 		}
 		fr.close();
 		// ------------------------------------------------------------------
 
-		// TODO pendiente
+		// PASADO
+		for (String cad : datosPasadoStr) {
+			MY_LOGGER.info(cad);
+			if (cad != null && cad.contains("SG_") && cad.contains("METRICA")) {
+				Integer subgrupo = Integer.valueOf((cad.split("SG_"))[1].split(" ")[0]);
+				Float metrica = Float.valueOf((cad.split("METRICA = "))[1].split(" ")[0]);
 
-		MY_LOGGER.info("MEDIDA DEL SOBREENTRENAMIENTO (overfitting): [PENDIENTE]");
+				mapaSubgrupoMetricaPasado.put(subgrupo, metrica);
+			}
+		}
+
+		// FUTURO
+		for (String cad : datosFut1Fut2Str) {
+			MY_LOGGER.info(cad);
+
+			if (cad != null && cad.contains("Porcentaje") && cad.contains("SG") && cad.contains("%")) {
+
+				String[] partes = (cad.split("Porcentaje aciertos subgrupo "))[1].split("_");
+				Integer subgrupo = Integer.valueOf(partes[2]);
+				String[] partes2 = partes[4].split(" = ");
+				String[] partes3 = (partes2[0].split(" "))[1].split("/");
+				Float aciertos = Float.valueOf(partes3[0]);
+				Float totales = Float.valueOf(partes3[1]);
+
+				if (totales.intValue() >= UMBRAL_SUFICIENTES_ITEMS_OVERFITTING) {
+					mapaSubgrupoMetricaFuturo.put(subgrupo, 100.0F * aciertos / totales);
+				}
+
+			}
+
+		}
+
+//OVERFITTING
+		// Para cada subgrupo, se compara la métrica del pasado (train) y la real del
+		// fut1fut2. El overfitting será su diferencia.
+		// Idealmente debería ser 0
+		Map<Integer, Float> mapaOverfitting = new HashMap<Integer, Float>();
+		for (Integer subgrupo : mapaSubgrupoMetricaPasado.keySet()) {
+			if (mapaSubgrupoMetricaFuturo.containsKey(subgrupo)) {
+
+				mapaOverfitting.put(subgrupo,
+						Math.abs(mapaSubgrupoMetricaPasado.get(subgrupo) - mapaSubgrupoMetricaFuturo.get(subgrupo)));
+			}
+		}
+
+		DecimalFormat df = new DecimalFormat("0.00");
+		MY_LOGGER.info("*******************");
+		MY_LOGGER.info("MEDIDA DEL SOBREENTRENAMIENTO (overfitting):");
+		for (Integer sg : mapaOverfitting.keySet()) {
+			MY_LOGGER.info("Overfitting subgrupo=" + sg + " -> " + df.format(mapaOverfitting.get(sg)));
+		}
+		MY_LOGGER.info("*******************");
+		double suma = mapaOverfitting.values().stream().mapToDouble(a -> a).sum();
+		MY_LOGGER.info("OVERFITTING (sobreentrenamiento) TOTAL = " + df.format(suma));
+		MY_LOGGER.info("*******************");
+
 	}
 
 }
