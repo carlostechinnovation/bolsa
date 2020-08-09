@@ -51,11 +51,12 @@ public class Estadisticas extends DescriptiveStatistics {
 	public static void main(String[] args) {
 
 		Estadisticas e5 = new Estadisticas();
-		e5.addValue(1D);
-		e5.addValue(10D);
+		e5.addValue(1.123456789D);
+		e5.addValue(10.123456789D);
 		e5.addValue(NUM100);
 		e5.addValue(NUM1K);
 		System.out.println("Valores: " + e5.toString());
+		System.out.println("e5.getMedia(): " + e5.getMedia());
 		System.out.println("e5.getPendienteRelativa(): " + e5.getPendienteRelativa());
 //		System.out.println("e5.getPendienteRelativaSegundo(): " + e5.getPendienteRelativaSegundo());
 		System.out.println("e5.getPendienteRelativa1M(): " + e5.getPendienteRelativa1M());
@@ -246,90 +247,90 @@ public class Estadisticas extends DescriptiveStatistics {
 	}
 
 	/**
-	 * Ratio, en porcentaje, entre el PRIMER dato y la MEDIA del conjunto de datos.
+	 * Ratio, en porcentaje de MILLÓN, entre el PRIMER dato y la MEDIA del conjunto de datos.
 	 * Puede tener valores negativos.
 	 */
 	public int getRatioSMA() {
-		return (int) Math.round(NUM100 * (this.getElement(0) / getMean()));
+		return (int) Math.round(NUM1M * (this.getElement(0) / getMean()));
 	}
 
 	/**
-	 * Ratio, en porcentaje, entre el SEGUNDO dato y la MEDIA del conjunto de datos.
+	 * Ratio, en porcentaje de MILLÓN, entre el SEGUNDO dato y la MEDIA del conjunto de datos.
 	 * Puede tener valores negativos.
 	 */
 	public int getRatioSMASegundo() {
 		int salida = VALOR_FAKE;
 		if (this.getN() > 1)
-			salida = (int) Math.round(NUM100 * (this.getElement(1) / getMean()));
+			salida = (int) Math.round(NUM1M * (this.getElement(1) / getMean()));
 		return salida;
 	}
 
 	/**
-	 * Ratio, en porcentaje, entre el PRIMER dato y el MAXIMO del conjunto de datos.
+	 * Ratio, en porcentaje de MILLÓN, entre el PRIMER dato y el MAXIMO del conjunto de datos.
 	 * Puede tener valores negativos.
 	 */
 	public int getRatioMax() {
-		return (int) Math.round(NUM100 * (this.getElement(0) / this.getMax()));
+		return (int) Math.round(NUM1M * (this.getElement(0) / this.getMax()));
 	}
 
 	/**
-	 * Ratio, en porcentaje, entre el PRIMER dato y el MINIMO del conjunto de datos.
+	 * Ratio, en porcentajede MILLÓN, entre el PRIMER dato y el MINIMO del conjunto de datos.
 	 * Puede tener valores negativos.
 	 */
 	public int getRatioMin() {
-		return (int) Math.round(NUM100 * (this.getElement(0) / this.getMin()));
+		return (int) Math.round(NUM1M * (this.getElement(0) / this.getMin()));
 	}
 
 	/**
-	 * Ratio, en porcentaje, entre el SEGUNDO dato y el MAXIMO del conjunto de
+	 * Ratio, en porcentajede MILLÓN, entre el SEGUNDO dato y el MAXIMO del conjunto de
 	 * datos. Puede tener valores negativos.
 	 */
 	public int getRatioMaxSegundo() {
 		int salida = VALOR_FAKE;
 		if (this.getN() > 1)
-			salida = (int) Math.round(NUM100 * (this.getElement(1) / this.getMax()));
+			salida = (int) Math.round(NUM1M * (this.getElement(1) / this.getMax()));
 		return salida;
 	}
 
 	/**
-	 * Ratio, en porcentaje, entre el SEGUNDO dato y el MINIMO del conjunto de
+	 * Ratio, en porcentaje de MILLÓN, entre el SEGUNDO dato y el MINIMO del conjunto de
 	 * datos. Puede tener valores negativos.
 	 */
 	public int getRatioMinSegundo() {
 		int salida = VALOR_FAKE;
 		if (this.getN() > 1)
-			salida = (int) Math.round(NUM100 * (this.getElement(1) / this.getMin()));
+			salida = (int) Math.round(NUM1M * (this.getElement(1) / this.getMin()));
 		return salida;
 	}
 
 	/**
-	 * Ratio, en porcentaje, entre el ULTIMO dato y la MEDIA del conjunto de datos.
+	 * Ratio, en porcentaje de MILLÓN, entre el ULTIMO dato y la MEDIA del conjunto de datos.
 	 * Puede tener valores negativos.
 	 */
 	public int getRatioUltimoSMA() {
 		int salida = VALOR_FAKE;
 		if (this.getN() > 1)
-			salida = (int) Math.round(NUM100 * (this.getElement((int) getN() - 1) / getMean()));
+			salida = (int) Math.round(NUM1M * (this.getElement((int) getN() - 1) / getMean()));
 		return salida;
 	}
 
 	/**
-	 * Ratio, en porcentaje, entre el ULTIMO dato y el MAXIMO del conjunto de datos.
+	 * Ratio, en porcentaje de MILLÓN, entre el ULTIMO dato y el MAXIMO del conjunto de datos.
 	 * Puede tener valores negativos.
 	 */
 	public int getRatioUltimoMax() {
 		int salida = VALOR_FAKE;
 		if (this.getN() > 1)
-			salida = (int) Math.round(NUM100 * (this.getElement((int) getN() - 1) / this.getMax()));
+			salida = (int) Math.round(NUM1M * (this.getElement((int) getN() - 1) / this.getMax()));
 		return salida;
 	}
 
 	/**
-	 * Ratio, en porcentaje, entre el ULTIMO dato y el MINIMO del conjunto de datos.
+	 * Ratio, en porcentaje de MILLÓN, entre el ULTIMO dato y el MINIMO del conjunto de datos.
 	 * Puede tener valores negativos.
 	 */
 	public int getRatioUltimoMin() {
-		return (int) Math.round(NUM100 * (this.getElement((int) getN() - 1) / this.getMin()));
+		return (int) Math.round(NUM1M * (this.getElement((int) getN() - 1) / this.getMin()));
 	}
 
 	/**

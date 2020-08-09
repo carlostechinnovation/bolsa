@@ -41,9 +41,7 @@
       <change beforePath="$PROJECT_DIR$/../BolsaJava/src/c30x/elaborados/construir/ConstructorElaborados.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/c30x/elaborados/construir/ConstructorElaborados.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../BolsaJava/src/c30x/elaborados/construir/Estadisticas.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/c30x/elaborados/construir/Estadisticas.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../BolsaJava/src/c40X/subgrupos/CrearDatasetsSubgrupos.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/c40X/subgrupos/CrearDatasetsSubgrupos.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/main/resources/desconocidos.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/main/resources/desconocidos.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaScripts/parametros.config" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/parametros.config" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
