@@ -75,8 +75,7 @@ public class GeneradorFeaturesDeSubgrupo implements Serializable {
 		for (String pathFichero : pathsFicherosEmpresasDeUnSubgrupo) {
 
 			// System.out.println("FEATURES de subgrupo - Empresa: " + pathFichero); //
-			// DEBUG
-			MY_LOGGER.info("FEATURES de subgrupo - Empresa: " + pathFichero);
+			// MY_LOGGER.info("FEATURES de subgrupo - Empresa: " + pathFichero);
 
 			BufferedReader csvReader = new BufferedReader(new FileReader(pathFichero));
 			int numFila = 0;
@@ -158,7 +157,7 @@ public class GeneradorFeaturesDeSubgrupo implements Serializable {
 		// ESTADISTICAS DE SUBGRUPO: para cada AMD, calcular las FEATURES MEDIAS
 		Map<String, List<Float>> highPendiente3Dtodas = new HashMap<String, List<Float>>(1);
 		Map<String, List<Float>> highPendiente7Dtodas = new HashMap<String, List<Float>>(1);
-		Map<String, List<Float>> lowPendiente3Dtodas = new HashMap<String, List<Float>>(1);
+		Map<String, List<Float>> lowPendiente20Dtodas = new HashMap<String, List<Float>>(1);
 		Map<String, List<Float>> lowPendiente7Dtodas = new HashMap<String, List<Float>>(1);
 		Float numAniadidos1 = 0F, numAniadidos2 = 0F, numAniadidos3 = 0F, numAniadidos4 = 0F;
 		for (String amd : mapaAMDFeaturesTodasLasEmpresas.keySet()) {
@@ -167,7 +166,7 @@ public class GeneradorFeaturesDeSubgrupo implements Serializable {
 
 			highPendiente3Dtodas.put(amd, new ArrayList<Float>(1));
 			highPendiente7Dtodas.put(amd, new ArrayList<Float>(1));
-			lowPendiente3Dtodas.put(amd, new ArrayList<Float>(1));
+			lowPendiente20Dtodas.put(amd, new ArrayList<Float>(1));
 			lowPendiente7Dtodas.put(amd, new ArrayList<Float>(1));
 
 			for (AuxiliarEmpresaAMDpendientes featuresUnaEmpresa : featuresDeEmpresas) {
@@ -179,8 +178,8 @@ public class GeneradorFeaturesDeSubgrupo implements Serializable {
 					highPendiente7Dtodas.get(amd).add(featuresUnaEmpresa.highPendiente7D);
 					numAniadidos2++;
 				}
-				if (featuresUnaEmpresa.lowPendiente3D != null) {
-					lowPendiente3Dtodas.get(amd).add(featuresUnaEmpresa.lowPendiente3D);
+				if (featuresUnaEmpresa.lowPendiente20D != null) {
+					lowPendiente20Dtodas.get(amd).add(featuresUnaEmpresa.lowPendiente20D);
 					numAniadidos3++;
 				}
 				if (featuresUnaEmpresa.lowPendiente7D != null) {
@@ -201,7 +200,7 @@ public class GeneradorFeaturesDeSubgrupo implements Serializable {
 							Integer.valueOf(amdStr[2]),
 							sumarItemsEnLista(highPendiente3Dtodas.get(amd)) / numAniadidos1,
 							sumarItemsEnLista(highPendiente7Dtodas.get(amd)) / numAniadidos2,
-							sumarItemsEnLista(lowPendiente3Dtodas.get(amd)) / numAniadidos3,
+							sumarItemsEnLista(lowPendiente20Dtodas.get(amd)) / numAniadidos3,
 							sumarItemsEnLista(lowPendiente7Dtodas.get(amd)) / numAniadidos4));
 		}
 
@@ -233,10 +232,13 @@ public class GeneradorFeaturesDeSubgrupo implements Serializable {
 
 				Integer ordenHace3D = precio.ordenCreacion + 3;
 				Integer ordenHace7D = precio.ordenCreacion + 7;
+				Integer ordenHace20D = precio.ordenCreacion + 20;
 
 				AuxiliarEmpresaAMDprecios precioHace3D = ordenHace3D != null ? datosUtilesEmpresa.get(ordenHace3D)
 						: null;
 				AuxiliarEmpresaAMDprecios precioHace7D = ordenHace7D != null ? datosUtilesEmpresa.get(ordenHace7D)
+						: null;
+				AuxiliarEmpresaAMDprecios precioHace20D = ordenHace20D != null ? datosUtilesEmpresa.get(ordenHace20D)
 						: null;
 
 				Float highPendiente3D = precioHace3D != null
@@ -245,13 +247,14 @@ public class GeneradorFeaturesDeSubgrupo implements Serializable {
 				Float highPendiente7D = precioHace7D != null
 						? 100 * (precio.high - precioHace7D.high) / precioHace7D.high
 						: null;
-				Float lowPendiente3D = precioHace3D != null ? 100 * (precio.low - precioHace3D.low) / precioHace3D.low
+				Float lowPendiente20D = precioHace20D != null
+						? 100 * (precio.low - precioHace20D.low) / precioHace20D.low
 						: null;
 				Float lowPendiente7D = precioHace7D != null ? 100 * (precio.low - precioHace7D.low) / precioHace7D.low
 						: null;
 
 				salida.put(claveAMD, new AuxiliarEmpresaAMDpendientes(precio.anio, precio.mes, precio.dia,
-						highPendiente3D, highPendiente7D, lowPendiente3D, lowPendiente7D));
+						highPendiente3D, highPendiente7D, lowPendiente20D, lowPendiente7D));
 			}
 		}
 
@@ -317,7 +320,7 @@ public class GeneradorFeaturesDeSubgrupo implements Serializable {
 
 					posAux1 = filaLista.indexOf(AuxiliarEmpresaAMDpendientes.SG_HIGH_PENDIENTE3D);
 					posAux2 = filaLista.indexOf(AuxiliarEmpresaAMDpendientes.SG_HIGH_PENDIENTE7D);
-					posAux3 = filaLista.indexOf(AuxiliarEmpresaAMDpendientes.SG_LOW_PENDIENTE3D);
+					posAux3 = filaLista.indexOf(AuxiliarEmpresaAMDpendientes.SG_LOW_PENDIENTE20D);
 					posAux4 = filaLista.indexOf(AuxiliarEmpresaAMDpendientes.SG_LOW_PENDIENTE7D);
 
 					posicionTarget = filaLista.indexOf("TARGET");

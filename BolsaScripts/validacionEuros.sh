@@ -165,7 +165,7 @@ echo -e "- Futuro con t1=${FUTURO2_t1} ==> Nos sirve para descargar qué pasó r
 echo -e "Lo CORRECTO es comparar el target PREDICHO en ejecucion futuro1 y compararlo con un target GENERADO en futuro2" >> ${LOG_VALIDADOR}
 
 echo -e "-------" >> ${LOG_VALIDADOR}
-java -jar ${PATH_JAR} --class "coordinador.Principal" "c70X.validacion.Validador" "${VELAS_RETROCESO}" "${DIR_VALIDACION}" "${S}" "${X}" "${R}" "${M}" 2>>${LOG_VALIDADOR} 1>>${LOG_VALIDADOR}
+java -jar ${PATH_JAR} --class "coordinador.Principal" "c70X.validacion.Validador" "${VELAS_RETROCESO}" "${DIR_VALIDACION}" "${S}" "${X}" "${R}" "${M}" "VALIDAR" "${LOG_VALIDADOR}" 2>>${LOG_VALIDADOR} 1>>${LOG_VALIDADOR}
 
 echo -e "Un sistema CLASIFICADOR BINOMIAL tonto acierta el 50% de las veces. El nuestro..." >> ${LOG_VALIDADOR}
 
@@ -189,6 +189,9 @@ cat "${DIR_LOGS}"$(ls ${DIR_LOGS} | grep "pasado") | grep "Modelo ganador"  | gr
 echo -e "---- FUTURO (fut1-fut2, lista inversa) ---"    >> ${LOG_VALIDADOR}
 cat "${LOG_VALIDADOR}" | grep "Porcentaje aciertos"   >> ${LOG_VALIDADOR}
 
+echo -e "--------- SOBREENTRENAMIENTO OBTENIDO (overfitting): -------------" >> ${LOG_VALIDADOR}
+java -jar ${PATH_JAR} --class "coordinador.Principal" "c70X.validacion.Validador" "${VELAS_RETROCESO}" "${DIR_VALIDACION}" "${S}" "${X}" "${R}" "${M}" "MEDIR_OVERFITTING" "${LOG_VALIDADOR}" 2>>${LOG_VALIDADOR} 1>>${LOG_VALIDADOR}
+echo -e "----------------------------------------------------------------------------------------------" >> ${LOG_VALIDADOR}
 ################################################################################################
 
 echo -e "VALIDACION - FIN: "$( date "+%Y%m%d%H%M%S" )

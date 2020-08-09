@@ -1,5 +1,8 @@
 package c70x.validacion;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.file.DirectoryStream;
@@ -33,6 +36,8 @@ public class Validador implements Serializable {
 	private static Validador instancia = null;
 
 	private static String DEFINICION_PREDICCION = "COMPLETO_PREDICCION.csv";
+	private static String MODO_VALIDAR = "VALIDAR";
+	private static String MODO_MEDIR_OVERFITTING = "MEDIR_OVERFITTING";
 
 	private Validador() {
 		super();
@@ -64,10 +69,12 @@ public class Validador implements Serializable {
 		Integer X = ElaboradosUtils.X; // DEFAULT
 		Integer R = ElaboradosUtils.R; // DEFAULT
 		Integer M = ElaboradosUtils.M; // DEFAULT
+		String MODO = MODO_VALIDAR; // DEFAULT
+		String PATH_VALIDADOR_LOG = "/bolsa/logs/validador.log"; // DEFAULT
 
 		if (args.length == 0) {
 			MY_LOGGER.info("Sin parametros de entrada. Rellenamos los DEFAULT...");
-		} else if (args.length != 6) {
+		} else if (args.length != 8) {
 			MY_LOGGER.error("Parametros de entrada incorrectos!!");
 			System.exit(-1);
 		} else {
@@ -77,9 +84,19 @@ public class Validador implements Serializable {
 			X = Integer.valueOf(args[3]);
 			R = Integer.valueOf(args[4]);
 			M = Integer.valueOf(args[5]);
+			MODO = args[6];
+			PATH_VALIDADOR_LOG = args[7];
 		}
 
-		analizarPrediccion(velasRetroceso, pathValidacion, S, X, R, M);
+		if (MODO != null && MODO_VALIDAR.equalsIgnoreCase(MODO)) {
+			analizarPrediccion(velasRetroceso, pathValidacion, S, X, R, M);
+
+		} else if (MODO != null && MODO_MEDIR_OVERFITTING.equalsIgnoreCase(MODO)) {
+
+		} else {
+			MY_LOGGER.error("Parametro de entrada SOLO_MEDIR_SOBREENTRENAMIENTO es incorrecto! Saliendo...");
+			System.exit(-1);
+		}
 
 		MY_LOGGER.info("FIN");
 	}
@@ -312,9 +329,9 @@ public class Validador implements Serializable {
 			}
 
 			// PORCENTAJE ACIERTOS por SUBGRUPO
-			MY_LOGGER.info("COBERTURA - aciertosTargetUnoSubgrupo (PREDICHOS)=" + aciertosTargetUnoSubgrupo);
-			MY_LOGGER.info("COBERTURA - totalTargetUnoEnSubgrupo (REALES)=" + totalTargetUnoEnSubgrupo);
-			MY_LOGGER.info("COBERTURA - Porcentaje aciertos subgrupo " + predicho.getFileName() + ": "
+			MY_LOGGER.info("FUTURO -> PRECISION - aciertosTargetUnoSubgrupo (PREDICHOS)=" + aciertosTargetUnoSubgrupo);
+			MY_LOGGER.info("FUTURO -> PRECISION - totalTargetUnoEnSubgrupo (REALES)=" + totalTargetUnoEnSubgrupo);
+			MY_LOGGER.info("FUTURO -> PRECISION - Porcentaje aciertos subgrupo " + predicho.getFileName() + ": "
 					+ aciertosTargetUnoSubgrupo + "/" + totalTargetUnoEnSubgrupo + " = "
 					+ Math.round((aciertosTargetUnoSubgrupo / totalTargetUnoEnSubgrupo) * 100)
 					+ "% de elementos PREDICHOS con TARGET=1");
@@ -371,4 +388,42 @@ public class Validador implements Serializable {
 		}
 		return fileList;
 	}
+
+	/**
+	 * Asumiendo que ya se ha calculado la validacion (PASADO vs FUT1-FUT2), esta
+	 * función analiza el log para obtener una MEDIDA del OVERFITTING. Lo ideal es
+	 * que sea 0. Se calculará mirando sólo los subgrupos con población suficiente
+	 * en fut1-fut2.
+	 * 
+	 * @param validadorLog Path absoluto del log de validador.
+	 * @throws IOException
+	 */
+	public static void medirOverfitting(final String validadorLog) throws IOException {
+
+		List<String> datosPasado = new ArrayList<String>();
+		List<String> datosFut1Fut2 = new ArrayList<String>();
+
+		// ---------------------------- FICHERO--------------------------------------
+		File file = new File(validadorLog);
+		FileReader fr = new FileReader(file);
+		BufferedReader br = new BufferedReader(fr);
+		String linea = "";
+		while ((linea = br.readLine()) != null) {
+			if (linea != null && !linea.isEmpty()) {
+
+				if (linea.contains("PASADO") && linea.contains("METRICA")) {
+					datosPasado.add(linea);
+				} else if (linea.contains("FUTURO") && linea.contains("aciertos")) {
+					datosFut1Fut2.add(linea);
+				}
+			}
+		}
+		fr.close();
+		// ------------------------------------------------------------------
+
+		// TODO pendiente
+
+		MY_LOGGER.info("MEDIDA DEL SOBREENTRENAMIENTO (overfitting): [PENDIENTE]");
+	}
+
 }

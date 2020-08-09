@@ -200,6 +200,7 @@ def cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, id_s
 # GANADOR DEL SUBGRUPO (acumuladores)
 ganador_nombreModelo = "NINGUNO"
 ganador_metrica = 0
+ganador_metrica_avg = 0
 ganador_grid_mejores_parametros = []
 pathListaColumnasCorreladasDrop = (dir_subgrupo + "columnas_correladas_drop" + ".txt").replace("futuro",
                                                                                                "pasado")  # lo guardamos siempre en el pasado
@@ -369,6 +370,7 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
             # print(type(modelo_metrica))
             # if modelo_metrica > ganador_metrica:
             #     ganador_metrica = modelo_metrica
+            #     ganador_metrica_avg = modelo_metrica
             #     ganador_nombreModelo = nombreModelo
             #     ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
 
@@ -426,6 +428,7 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
                 precision_media) + " (average precision = " + '{0:0.2f}'.format(precision_avg_media) + ")")
             if precision_media > ganador_metrica:
                 ganador_metrica = precision_media
+                ganador_metrica_avg = precision_avg_media
                 ganador_nombreModelo = nombreModelo
                 ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
             print("Fin de XGBOOST")
@@ -449,6 +452,7 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
             # print(id_subgrupo + " " + nombreModelo + " -> Precision = " + '{0:0.2f}'.format(precision_media) + " (average precision = " + '{0:0.2f}'.format(precision_avg_media) + ")")
             # if precision_media > ganador_metrica:
             #     ganador_metrica = precision_media
+            #     ganador_metrica_avg = precision_avg_media
             #     ganador_nombreModelo = nombreModelo
             #     ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
             #
@@ -476,6 +480,7 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
             #     precision_media) + " (average precision = " + '{0:0.2f}'.format(precision_avg_media) + ")")
             # if precision_media > ganador_metrica:
             #     ganador_metrica = precision_media
+            #     ganador_metrica_avg = precision_avg_media
             #     ganador_nombreModelo = nombreModelo
             #     ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
             #
@@ -504,6 +509,7 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
             # #     precision_media) + " (average precision = " + '{0:0.2f}'.format(precision_avg_media) + ")")
             # # if precision_media > ganador_metrica:
             # #     ganador_metrica = precision_media
+            # #     ganador_metrica_avg = precision_avg_media
             # #     ganador_nombreModelo = nombreModelo
             # #     ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
             #
@@ -531,6 +537,7 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
             #     precision_media) + " (average precision = " + '{0:0.2f}'.format(precision_avg_media) + ")")
             # if precision_media > ganador_metrica:
             #     ganador_metrica = precision_media
+            #     ganador_metrica_avg = precision_avg_media
             #     ganador_nombreModelo = nombreModelo
             #     ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
             #
@@ -564,6 +571,7 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
             #     precision_media) + " (average precision = " + '{0:0.2f}'.format(precision_avg_media) + ")")
             # if precision_media > ganador_metrica:
             #     ganador_metrica = precision_media
+            #     ganador_metrica_avg = precision_avg_media
             #     ganador_nombreModelo = nombreModelo
             #     ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
             #
@@ -591,6 +599,7 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
             #     precision_media) + " (average precision = " + '{0:0.2f}'.format(precision_avg_media) + ")")
             # if precision_media > ganador_metrica:
             #     ganador_metrica = precision_media
+            #     ganador_metrica_avg = precision_avg_media
             #     ganador_nombreModelo = nombreModelo
             #     ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
             #
@@ -621,6 +630,7 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
             #     precision_media) + " (average precision = " + '{0:0.2f}'.format(precision_avg_media) + ")")
             # if precision_media > ganador_metrica:
             #     ganador_metrica = precision_media
+            #     ganador_metrica_avg = precision_avg_media
             #     ganador_nombreModelo = nombreModelo
             #     ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
 
@@ -628,9 +638,10 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
             ######################################################################################################################
 
             print("********* GANADOR de subgrupo *************")
-            print(id_subgrupo + " (num features = " + str(
+            print("PASADO -> " + id_subgrupo + " (num features = " + str(
                 ds_train_f.shape[1]) + ")" + " -> Modelo ganador = " + ganador_nombreModelo + " --> METRICA = " + str(
-                round(ganador_metrica, 4)) + " --> Hiperparametros: ")
+                round(ganador_metrica, 4)) + " (avg_precision = " + str(round(ganador_metrica_avg, 4)) + ") ")
+            print("Hiperparametros:")
             print(ganador_grid_mejores_parametros)
             pathModeloGanadorDeSubgrupoOrigen = dir_subgrupo + ganador_nombreModelo + ".modelo"
             pathModeloGanadorDeSubgrupoDestino = pathModeloGanadorDeSubgrupoOrigen + "_ganador"
