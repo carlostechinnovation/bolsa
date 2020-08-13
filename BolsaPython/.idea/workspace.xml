@@ -40,8 +40,10 @@
       <change afterPath="$PROJECT_DIR$/../inversion/20200714_MANEJABLE_0_SG_5_COMPLETO_PREDICCION.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../BolsaJava/src/c30x/elaborados/construir/ConstructorElaborados.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/c30x/elaborados/construir/ConstructorElaborados.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../BolsaJava/src/c30x/elaborados/construir/Estadisticas.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/c30x/elaborados/construir/Estadisticas.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/c40X/subgrupos/CrearDatasetsSubgrupos.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/c40X/subgrupos/CrearDatasetsSubgrupos.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/main/resources/desconocidos.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/main/resources/desconocidos.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bolsa/C5NormalizarYReducirDatasetSubgrupo.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/C5NormalizarYReducirDatasetSubgrupo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BolsaScripts/parametros.config" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/parametros.config" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -73,7 +75,7 @@
     <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/bolsa/FeaturesAnalisisPosteriori.py" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/bolsa/ValidadorPython.py" />
     <property name="run.code.analysis.last.selected.profile" value="aDefault" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
@@ -86,7 +88,7 @@
       <recent name="C:\DATOS\GITHUB_REPOS\bolsa\BolsaPython\bolsa" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.InversionUtilsPosteriori">
+  <component name="RunManager" selected="Python.ValidadorPython">
     <configuration name="C5SeleccionDeVariablesDeSubgrupo" type="PythonConfigurationType" factoryName="Python">
       <module name="BolsaPython" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -171,6 +173,27 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="ValidadorPython" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+      <module name="BolsaPython" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="$USER_HOME$/anaconda3/envs/BolsaPython/bin/python" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/bolsa" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/bolsa/ValidadorPython.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="pruebas" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="BolsaPython" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -197,6 +220,7 @@
       <item itemvalue="Python.C6CreadorModelosDeSubgrupo" />
       <item itemvalue="Python.FeaturesAnalisisPosteriori" />
       <item itemvalue="Python.InversionUtilsPosteriori" />
+      <item itemvalue="Python.ValidadorPython" />
       <item itemvalue="Python.pruebas" />
     </list>
   </component>
@@ -247,12 +271,12 @@
     <option name="LAST_COMMIT_MESSAGE" value="Machine Learning - Ejemplo" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="113" y="481" width="1396" height="598" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1594678422043">
-      <screen x="0" y="83" width="1920" height="1080" />
+    <state x="142" y="196" width="946" height="572" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1597005678878">
+      <screen x="65" y="24" width="1301" height="744" />
     </state>
     <state x="113" y="481" key="#com.intellij.execution.impl.EditConfigurationsDialog/1920.0.1366.768/0.83.1920.1080@0.83.1920.1080" timestamp="1594678422043" />
     <state x="174" y="414" width="1396" height="598" key="#com.intellij.execution.impl.EditConfigurationsDialog/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1594064726375" />
-    <state x="109" y="85" key="#com.intellij.execution.impl.EditConfigurationsDialog/65.24.1301.744@65.24.1301.744" timestamp="1587243792586" />
+    <state x="142" y="196" width="946" height="572" key="#com.intellij.execution.impl.EditConfigurationsDialog/65.24.1301.744@65.24.1301.744" timestamp="1597005678878" />
     <state x="752" y="433" key="#com.jetbrains.python.refactoring.move.PyMoveModuleMembersDialog" timestamp="1592661994113">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
@@ -261,18 +285,15 @@
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
     <state x="867" y="393" key="#xdebugger.evaluate/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1592088945731" />
-    <state x="455" y="239" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1" timestamp="1586721526901">
-      <screen x="65" y="24" width="1301" height="744" />
-    </state>
-    <state x="455" y="239" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/65.24.1301.744@65.24.1301.744" timestamp="1586721526901" />
     <state width="1853" height="432" key="DebuggerActiveHint" timestamp="1592660763513">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
     <state width="1853" height="432" key="DebuggerActiveHint/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1592660763513" />
-    <state x="584" y="396" key="FileChooserDialogImpl" timestamp="1593532282598">
-      <screen x="65" y="24" width="1855" height="1056" />
+    <state x="429" y="286" key="FileChooserDialogImpl" timestamp="1597005672095">
+      <screen x="65" y="24" width="1301" height="744" />
     </state>
     <state x="584" y="396" key="FileChooserDialogImpl/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1593532282598" />
+    <state x="429" y="286" key="FileChooserDialogImpl/65.24.1301.744@65.24.1301.744" timestamp="1597005672095" />
     <state width="1278" height="214" key="GridCell.Tab.0.bottom" timestamp="1595321894607">
       <screen x="65" y="24" width="1301" height="744" />
     </state>
@@ -325,21 +346,14 @@
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
     <state x="400" y="45" key="SettingsEditor/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1593550789142" />
-    <state x="300" y="39" key="SettingsEditor/65.24.1301.744@65.24.1301.744" timestamp="1587130502889" />
     <state width="937" height="538" key="XDebugger.FullValuePopup" timestamp="1593551547639">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
     <state width="937" height="538" key="XDebugger.FullValuePopup/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1593551547639" />
-    <state width="657" height="379" key="XDebugger.FullValuePopup/65.24.1301.744@65.24.1301.744" timestamp="1587244096477" />
     <state x="256" y="135" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2" timestamp="1592659675224">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
     <state x="256" y="135" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1592659675224" />
-    <state x="199" y="102" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2/65.24.1301.744@65.24.1301.744" timestamp="1586728196534" />
-    <state x="430" y="155" width="672" height="160" key="search.everywhere.popup" timestamp="1586683131450">
-      <screen x="65" y="24" width="1301" height="744" />
-    </state>
-    <state x="430" y="155" width="672" height="160" key="search.everywhere.popup/65.24.1301.744@65.24.1301.744" timestamp="1586683131450" />
     <state x="722" y="454" key="vcs.readOnlyHandler.ReadOnlyStatusDialog" timestamp="1593550896152">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>

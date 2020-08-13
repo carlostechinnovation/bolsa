@@ -45,8 +45,7 @@ public class ConstructorElaborados implements Serializable {
 
 	// Se usan los periodos típicos que suelen usar los robots
 	// (consideraremos velas)
-	// Se añade el periodo 1, para obtener el tamaño de vela, etc.
-	public final static Integer[] periodosDParaParametros = new Integer[] { 1, 4, 20, 50 };
+	public final static Integer[] periodosDParaParametros = new Integer[] { 3, 20, 50 };
 
 	// IMPORTANTE: se asume que los datos estan ordenados de menor a mayor
 	// antiguedad, y agrupados por empresa
@@ -231,14 +230,14 @@ public class ConstructorElaborados implements Serializable {
 				.getOrdenNombresParametrosElaborados();
 		HashMap<Integer, String> ordenCloseNombresParametrosElaborados = estadisticasClose
 				.getOrdenNombresParametrosElaborados();
-		HashMap<Integer, String> ordenHighNombresParametrosElaborados = estadisticasHigh
-				.getOrdenNombresParametrosElaborados();
-		HashMap<Integer, String> ordenLowNombresParametrosElaborados = estadisticasLow
-				.getOrdenNombresParametrosElaborados();
-		HashMap<Integer, String> ordenOpenNombresParametrosElaborados = estadisticasOpen
-				.getOrdenNombresParametrosElaborados();
-		HashMap<Integer, String> ordenCloseOpenNombresParametrosElaborados = estadisticasCloseOpen
-				.getOrdenNombresParametrosElaborados();
+//		HashMap<Integer, String> ordenHighNombresParametrosElaborados = estadisticasHigh
+//				.getOrdenNombresParametrosElaborados();
+//		HashMap<Integer, String> ordenLowNombresParametrosElaborados = estadisticasLow
+//				.getOrdenNombresParametrosElaborados();
+//		HashMap<Integer, String> ordenOpenNombresParametrosElaborados = estadisticasOpen
+//				.getOrdenNombresParametrosElaborados();
+//		HashMap<Integer, String> ordenCloseOpenNombresParametrosElaborados = estadisticasCloseOpen
+//				.getOrdenNombresParametrosElaborados();
 //		HashMap<Integer, String> ordenCloseHighNombresParametrosElaborados = estadisticasCloseHigh
 //				.getOrdenNombresParametrosElaborados();
 //		HashMap<Integer, String> ordenCloseLowNombresParametrosElaborados = estadisticasCloseLow
@@ -264,38 +263,38 @@ public class ConstructorElaborados implements Serializable {
 			}
 			parametrosAcumulados += ordenCloseNombresParametrosElaborados.size();
 
-			for (int i = 0; i < ordenHighNombresParametrosElaborados.size(); i++) {
-				// HIGH
-				ordenNombresParametrosSalida.put(parametrosAcumulados + i,
-						ordenHighNombresParametrosElaborados.get(i + 1) + periodo
-								+ FINAL_NOMBRES_PARAMETROS_ELABORADOS._HIGH.toString());
-			}
-			parametrosAcumulados += ordenHighNombresParametrosElaborados.size();
-
-			for (int i = 0; i < ordenLowNombresParametrosElaborados.size(); i++) {
-				// LOW
-				ordenNombresParametrosSalida.put(parametrosAcumulados + i,
-						ordenLowNombresParametrosElaborados.get(i + 1) + periodo
-								+ FINAL_NOMBRES_PARAMETROS_ELABORADOS._LOW.toString());
-			}
-			parametrosAcumulados += ordenLowNombresParametrosElaborados.size();
-
-			for (int i = 0; i < ordenOpenNombresParametrosElaborados.size(); i++) {
-				// OPEN
-				ordenNombresParametrosSalida.put(parametrosAcumulados + i,
-						ordenOpenNombresParametrosElaborados.get(i + 1) + periodo
-								+ FINAL_NOMBRES_PARAMETROS_ELABORADOS._OPEN.toString());
-			}
-			parametrosAcumulados += ordenOpenNombresParametrosElaborados.size();
-
-			for (int i = 0; i < ordenCloseOpenNombresParametrosElaborados.size(); i++) {
-				// CLOSEOPEN
-				ordenNombresParametrosSalida.put(parametrosAcumulados + i,
-						ordenCloseOpenNombresParametrosElaborados.get(i + 1) + periodo
-								+ FINAL_NOMBRES_PARAMETROS_ELABORADOS._CLOSEOPEN.toString());
-			}
-			parametrosAcumulados += ordenCloseOpenNombresParametrosElaborados.size();
-
+//			for (int i = 0; i < ordenHighNombresParametrosElaborados.size(); i++) {
+//				// HIGH
+//				ordenNombresParametrosSalida.put(parametrosAcumulados + i,
+//						ordenHighNombresParametrosElaborados.get(i + 1) + periodo
+//								+ FINAL_NOMBRES_PARAMETROS_ELABORADOS._HIGH.toString());
+//			}
+//			parametrosAcumulados += ordenHighNombresParametrosElaborados.size();
+//
+//			for (int i = 0; i < ordenLowNombresParametrosElaborados.size(); i++) {
+//				// LOW
+//				ordenNombresParametrosSalida.put(parametrosAcumulados + i,
+//						ordenLowNombresParametrosElaborados.get(i + 1) + periodo
+//								+ FINAL_NOMBRES_PARAMETROS_ELABORADOS._LOW.toString());
+//			}
+//			parametrosAcumulados += ordenLowNombresParametrosElaborados.size();
+//
+//			for (int i = 0; i < ordenOpenNombresParametrosElaborados.size(); i++) {
+//				// OPEN
+//				ordenNombresParametrosSalida.put(parametrosAcumulados + i,
+//						ordenOpenNombresParametrosElaborados.get(i + 1) + periodo
+//								+ FINAL_NOMBRES_PARAMETROS_ELABORADOS._OPEN.toString());
+//			}
+//			parametrosAcumulados += ordenOpenNombresParametrosElaborados.size();
+//
+//			for (int i = 0; i < ordenCloseOpenNombresParametrosElaborados.size(); i++) {
+//				// CLOSEOPEN
+//				ordenNombresParametrosSalida.put(parametrosAcumulados + i,
+//						ordenCloseOpenNombresParametrosElaborados.get(i + 1) + periodo
+//								+ FINAL_NOMBRES_PARAMETROS_ELABORADOS._CLOSEOPEN.toString());
+//			}
+//			parametrosAcumulados += ordenCloseOpenNombresParametrosElaborados.size();
+//
 //			for (int i = 0; i < ordenCloseHighNombresParametrosElaborados.size(); i++) {
 //				// CLOSEHIGH
 //				ordenNombresParametrosSalida.put(parametrosAcumulados + i,
@@ -514,14 +513,14 @@ public class ConstructorElaborados implements Serializable {
 							FINAL_NOMBRES_PARAMETROS_ELABORADOS._VOLUMEN.toString(), Boolean.FALSE);
 					mapaParamsClose = estadisticasClose.getParametros(periodoActual,
 							FINAL_NOMBRES_PARAMETROS_ELABORADOS._CLOSE.toString(), Boolean.FALSE);
-					mapaParamsHigh = estadisticasHigh.getParametros(periodoActual,
-							FINAL_NOMBRES_PARAMETROS_ELABORADOS._HIGH.toString(), Boolean.FALSE);
-					mapaParamsLow = estadisticasLow.getParametros(periodoActual,
-							FINAL_NOMBRES_PARAMETROS_ELABORADOS._LOW.toString(), Boolean.FALSE);
-					mapaParamsOpen = estadisticasOpen.getParametros(periodoActual,
-							FINAL_NOMBRES_PARAMETROS_ELABORADOS._OPEN.toString(), Boolean.FALSE);
-					mapaParamsCloseOpen = estadisticasCloseOpen.getParametros(periodoActual,
-							FINAL_NOMBRES_PARAMETROS_ELABORADOS._CLOSEOPEN.toString(), Boolean.FALSE);
+//					mapaParamsHigh = estadisticasHigh.getParametros(periodoActual,
+//							FINAL_NOMBRES_PARAMETROS_ELABORADOS._HIGH.toString(), Boolean.FALSE);
+//					mapaParamsLow = estadisticasLow.getParametros(periodoActual,
+//							FINAL_NOMBRES_PARAMETROS_ELABORADOS._LOW.toString(), Boolean.FALSE);
+//					mapaParamsOpen = estadisticasOpen.getParametros(periodoActual,
+//							FINAL_NOMBRES_PARAMETROS_ELABORADOS._OPEN.toString(), Boolean.FALSE);
+//					mapaParamsCloseOpen = estadisticasCloseOpen.getParametros(periodoActual,
+//							FINAL_NOMBRES_PARAMETROS_ELABORADOS._CLOSEOPEN.toString(), Boolean.FALSE);
 //					mapaParamsCloseHigh = estadisticasCloseHigh.getParametros(periodoActual,
 //							FINAL_NOMBRES_PARAMETROS_ELABORADOS._CLOSEHIGH.toString(), Boolean.FALSE);
 //					mapaParamsCloseLow = estadisticasCloseLow.getParametros(periodoActual,
@@ -535,10 +534,10 @@ public class ConstructorElaborados implements Serializable {
 
 					parametros.putAll(mapaParamsVolumen);
 					parametros.putAll(mapaParamsClose);
-					parametros.putAll(mapaParamsHigh);
-					parametros.putAll(mapaParamsLow);
-					parametros.putAll(mapaParamsOpen);
-					parametros.putAll(mapaParamsCloseOpen);
+//					parametros.putAll(mapaParamsHigh);
+//					parametros.putAll(mapaParamsLow);
+//					parametros.putAll(mapaParamsOpen);
+//					parametros.putAll(mapaParamsCloseOpen);
 //					parametros.putAll(mapaParamsCloseHigh);
 //					parametros.putAll(mapaParamsCloseLow);
 					parametros.putAll(mapaParamsOpenHigh);
@@ -820,8 +819,8 @@ public class ConstructorElaborados implements Serializable {
 			}
 
 			// Se dejan pasar sólo los parámetros autorizados
-			datosEmpresaFinales = filtrarParametrosAutorizados(datosEmpresaFinales);
-			ordenNombresParametrosSalida = filtrarNombresParametrosAutorizados(ordenNombresParametrosSalida);
+//			datosEmpresaFinales = filtrarParametrosAutorizados(datosEmpresaFinales);
+//			ordenNombresParametrosSalida = filtrarNombresParametrosAutorizados(ordenNombresParametrosSalida);
 
 			// Vuelco todos los parámetros
 			datosSalida.put(empresa, datosEmpresaFinales);

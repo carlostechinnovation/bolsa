@@ -30,15 +30,16 @@ public class Estadisticas extends DescriptiveStatistics {
 	// Otros menos útiles:
 //	PENDIENTE_SMA_SEGUNDO_, PENDIENTE_1M_SMA_SEGUNDO_, PENDIENTE_2M_SMA_SEGUNDO_
 //	RATIO_MAXRELATIVO_SEGUNDO_, RATIO_SMA_SEGUNDO_, STD_SMA_, PENDIENTE_1M_SMA_, 
+//	RATIO_MINRELATIVO_SEGUNDO_, RATIO_U_SMA_, RATIO_U_MAXRELATIVO_, RATIO_U_MINRELATIVO_,
 	public enum COMIENZO_NOMBRES_PARAMETROS_ELABORADOS {
 		MEDIA_SMA_, PENDIENTE_SMA_, PENDIENTE_2M_SMA_, RATIO_SMA_, RATIO_MAXRELATIVO_, RATIO_MINRELATIVO_,
-		RATIO_MINRELATIVO_SEGUNDO_, RATIO_U_SMA_, RATIO_U_MAXRELATIVO_, RATIO_U_MINRELATIVO_, CURTOSIS_, SKEWNESS_;
+		 CURTOSIS_, SKEWNESS_;
 	}
 
 //	Otros menos útiles: 
-//  _CLOSEHIGH, _CLOSELOW, _OPENLOW,
+//  _CLOSEHIGH, _CLOSELOW, _OPENLOW, _HIGH, _LOW, _OPEN, _CLOSEOPEN,
 	public enum FINAL_NOMBRES_PARAMETROS_ELABORADOS {
-		_VOLUMEN, _CLOSE, _HIGH, _LOW, _OPEN, _CLOSEOPEN, _OPENHIGH, _HIGHLOW;
+		_VOLUMEN, _CLOSE, _OPENHIGH, _HIGHLOW;
 	}
 
 	public enum OTROS_PARAMS_ELAB {
@@ -58,11 +59,11 @@ public class Estadisticas extends DescriptiveStatistics {
 		System.out.println("Valores: " + e5.toString());
 		System.out.println("e5.getMedia(): " + e5.getMedia());
 		System.out.println("e5.getPendienteRelativa(): " + e5.getPendienteRelativa());
-//		System.out.println("e5.getPendienteRelativaSegundo(): " + e5.getPendienteRelativaSegundo());
+		System.out.println("e5.getPendienteRelativaSegundo(): " + e5.getPendienteRelativaSegundo());
 		System.out.println("e5.getPendienteRelativa1M(): " + e5.getPendienteRelativa1M());
-//		System.out.println("e5.getPendienteRelativa1MSegundo(): " + e5.getPendienteRelativa1MSegundo());
+		System.out.println("e5.getPendienteRelativa1MSegundo(): " + e5.getPendienteRelativa1MSegundo());
 		System.out.println("e5.getPendienteRelativa2M(): " + e5.getPendienteRelativa2M());
-//		System.out.println("e5.getPendienteRelativa2MSegundo(): " + e5.getPendienteRelativa2MSegundo());
+		System.out.println("e5.getPendienteRelativa2MSegundo(): " + e5.getPendienteRelativa2MSegundo());
 		System.out.println("e5.getRatioSMA(): " + e5.getRatioSMA());
 		System.out.println("e5.getRatioSMASegundo(): " + e5.getRatioSMASegundo());
 		System.out.println("e5.getRatioMax(): " + e5.getRatioMax());
@@ -116,14 +117,14 @@ public class Estadisticas extends DescriptiveStatistics {
 				COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_MAXRELATIVO_.toString());
 		ordenNombresParametrosElaborados.put(ordenNombresParametrosElaborados.size() + 1,
 				COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_MINRELATIVO_.toString());
-		ordenNombresParametrosElaborados.put(ordenNombresParametrosElaborados.size() + 1,
-				COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_MINRELATIVO_SEGUNDO_.toString());
-		ordenNombresParametrosElaborados.put(ordenNombresParametrosElaborados.size() + 1,
-				COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_U_SMA_.toString());
-		ordenNombresParametrosElaborados.put(ordenNombresParametrosElaborados.size() + 1,
-				COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_U_MAXRELATIVO_.toString());
-		ordenNombresParametrosElaborados.put(ordenNombresParametrosElaborados.size() + 1,
-				COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_U_MINRELATIVO_.toString());
+//		ordenNombresParametrosElaborados.put(ordenNombresParametrosElaborados.size() + 1,
+//				COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_MINRELATIVO_SEGUNDO_.toString());
+//		ordenNombresParametrosElaborados.put(ordenNombresParametrosElaborados.size() + 1,
+//				COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_U_SMA_.toString());
+//		ordenNombresParametrosElaborados.put(ordenNombresParametrosElaborados.size() + 1,
+//				COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_U_MAXRELATIVO_.toString());
+//		ordenNombresParametrosElaborados.put(ordenNombresParametrosElaborados.size() + 1,
+//				COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_U_MINRELATIVO_.toString());
 		ordenNombresParametrosElaborados.put(ordenNombresParametrosElaborados.size() + 1,
 				COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.CURTOSIS_.toString());
 		ordenNombresParametrosElaborados.put(ordenNombresParametrosElaborados.size() + 1,
@@ -355,11 +356,11 @@ public class Estadisticas extends DescriptiveStatistics {
 		System.out.println("media_sma = " + getMedia());
 		System.out.println("std_sma = " + getStd());
 		System.out.println("pendiente_sma = " + getPendienteRelativa());
-//		System.out.println("pendiente_sma_segundo = " + getPendienteRelativaSegundo());
+		System.out.println("pendiente_sma_segundo = " + getPendienteRelativaSegundo());
 		System.out.println("pendiente_1m_sma = " + getPendienteRelativa1M());
-//		System.out.println("pendiente_1m_sma_segundo = " + getPendienteRelativa1MSegundo());
+		System.out.println("pendiente_1m_sma_segundo = " + getPendienteRelativa1MSegundo());
 		System.out.println("pendiente_2m_sma = " + getPendienteRelativa2M());
-//		System.out.println("pendiente_2m_sma_segundo = " + getPendienteRelativa2MSegundo());
+		System.out.println("pendiente_2m_sma_segundo = " + getPendienteRelativa2MSegundo());
 		System.out.println("ratio_SMA = " + getRatioSMA());
 		System.out.println("ratio_SMASegundo = " + getRatioSMASegundo());
 		System.out.println("ratio_maxrelativo = " + getRatioMax());
@@ -386,66 +387,66 @@ public class Estadisticas extends DescriptiveStatistics {
 		HashMap<String, String> parametros = new HashMap<String, String>();
 
 		String media_sma = VALOR_INVALIDO;// default
-		String std_sma = VALOR_INVALIDO;// default
+//		String std_sma = VALOR_INVALIDO;// default
 		String pendiente_sma = VALOR_INVALIDO;// default
-		String pendiente_sma_segundo = VALOR_INVALIDO;// default
-		String pendiente_1m_sma = VALOR_INVALIDO;// default
-		String pendiente_1m_sma_segundo = VALOR_INVALIDO;// default
+//		String pendiente_sma_segundo = VALOR_INVALIDO;// default
+//		String pendiente_1m_sma = VALOR_INVALIDO;// default
+//		String pendiente_1m_sma_segundo = VALOR_INVALIDO;// default
 		String pendiente_2m_sma = VALOR_INVALIDO;// default
-		String pendiente_2m_sma_segundo = VALOR_INVALIDO;// default
+//		String pendiente_2m_sma_segundo = VALOR_INVALIDO;// default
 		String ratio_sma = VALOR_INVALIDO;// default
-		String ratio_smaSegundo = VALOR_INVALIDO;// default
+//		String ratio_smaSegundo = VALOR_INVALIDO;// default
 		String ratio_maxrelativo = VALOR_INVALIDO;// default
 		String ratio_minrelativo = VALOR_INVALIDO;// default
-		String ratio_maxrelativoSegundo = VALOR_INVALIDO;// default
-		String ratio_minrelativoSegundo = VALOR_INVALIDO;// default
-		String ratio_usma = VALOR_INVALIDO;// default
-		String ratio_umaxrelativo = VALOR_INVALIDO;// default
-		String ratio_uminrelativo = VALOR_INVALIDO;// default
+//		String ratio_maxrelativoSegundo = VALOR_INVALIDO;// default
+//		String ratio_minrelativoSegundo = VALOR_INVALIDO;// default
+//		String ratio_usma = VALOR_INVALIDO;// default
+//		String ratio_umaxrelativo = VALOR_INVALIDO;// default
+//		String ratio_uminrelativo = VALOR_INVALIDO;// default
 		String kurtosis = VALOR_INVALIDO;// default
 		String skewness = VALOR_INVALIDO;// default
 
 		if (rellenarConInvalidos == false) {
 
 			double d_media_sma = this.getMedia();
-			double d_std_sma = this.getStd();
+//			double d_std_sma = this.getStd();
 			double d_pendiente_sma = this.getPendienteRelativa();
 //			double d_pendiente_sma_segundo = this.getPendienteRelativaSegundo();
-			double d_pendiente_1m_sma = this.getPendienteRelativa1M();
+//			double d_pendiente_1m_sma = this.getPendienteRelativa1M();
 //			double d_pendiente_1m_sma_segundo = this.getPendienteRelativa1MSegundo();
 			double d_pendiente_2m_sma = this.getPendienteRelativa2M();
 //			double d_pendiente_2m_sma_segundo = this.getPendienteRelativa2MSegundo();
 			double d_ratio_sma = this.getRatioSMA();
-			double d_ratio_smaSegundo = this.getRatioSMASegundo();
+//			double d_ratio_smaSegundo = this.getRatioSMASegundo();
 			double d_ratio_maxrelativo = this.getRatioMax();
 			double d_ratio_minrelativo = this.getRatioMin();
-			double d_ratio_maxrelativoSegundo = this.getRatioMaxSegundo();
-			double d_ratio_minrelativoSegundo = this.getRatioMinSegundo();
-			double d_ratio_usma = this.getRatioUltimoSMA();
-			double d_ratio_umaxrelativo = this.getRatioUltimoMax();
-			double d_ratio_uminrelativo = this.getRatioUltimoMin();
+//			double d_ratio_maxrelativoSegundo = this.getRatioMaxSegundo();
+//			double d_ratio_minrelativoSegundo = this.getRatioMinSegundo();
+//			double d_ratio_usma = this.getRatioUltimoSMA();
+//			double d_ratio_umaxrelativo = this.getRatioUltimoMax();
+//			double d_ratio_uminrelativo = this.getRatioUltimoMin();
 			double d_kurtosis = this.getKurtosis();
 			double d_skewness = this.getSkewness();
 
 			media_sma = Double.isNaN(d_media_sma) ? VALOR_INVALIDO : df.format(d_media_sma);
-			std_sma = Double.isNaN(d_std_sma) ? VALOR_INVALIDO : df.format(d_std_sma);
+//			std_sma = Double.isNaN(d_std_sma) ? VALOR_INVALIDO : df.format(d_std_sma);
 			pendiente_sma = Double.isNaN(d_pendiente_sma) ? VALOR_INVALIDO : df.format(d_pendiente_sma);
 //			pendiente_sma_segundo = Double.isNaN(d_pendiente_sma_segundo) ? VALOR_INVALIDO : df.format(d_pendiente_sma_segundo);
-			pendiente_1m_sma = Double.isNaN(d_pendiente_1m_sma) ? VALOR_INVALIDO : df.format(d_pendiente_1m_sma);
+//			pendiente_1m_sma = Double.isNaN(d_pendiente_1m_sma) ? VALOR_INVALIDO : df.format(d_pendiente_1m_sma);
 //			pendiente_1m_sma_segundo = Double.isNaN(d_pendiente_1m_sma_segundo) ? VALOR_INVALIDO : df.format(d_pendiente_1m_sma_segundo);
 			pendiente_2m_sma = Double.isNaN(d_pendiente_2m_sma) ? VALOR_INVALIDO : df.format(d_pendiente_2m_sma);
 //			pendiente_2m_sma_segundo = Double.isNaN(d_pendiente_2m_sma_segundo) ? VALOR_INVALIDO : df.format(d_pendiente_2m_sma_segundo);
 			ratio_sma = Double.isNaN(d_ratio_sma) ? VALOR_INVALIDO : df.format(d_ratio_sma);
-			ratio_smaSegundo = Double.isNaN(d_ratio_smaSegundo) ? VALOR_INVALIDO : df.format(d_ratio_smaSegundo);
+//			ratio_smaSegundo = Double.isNaN(d_ratio_smaSegundo) ? VALOR_INVALIDO : df.format(d_ratio_smaSegundo);
 			ratio_maxrelativo = Double.isNaN(d_ratio_maxrelativo) ? VALOR_INVALIDO : df.format(d_ratio_maxrelativo);
 			ratio_minrelativo = Double.isNaN(d_ratio_minrelativo) ? VALOR_INVALIDO : df.format(d_ratio_minrelativo);
-			ratio_maxrelativoSegundo = Double.isNaN(d_ratio_maxrelativoSegundo) ? VALOR_INVALIDO
-					: df.format(d_ratio_maxrelativoSegundo);
-			ratio_minrelativoSegundo = Double.isNaN(d_ratio_minrelativoSegundo) ? VALOR_INVALIDO
-					: df.format(d_ratio_minrelativoSegundo);
-			ratio_usma = Double.isNaN(d_ratio_usma) ? VALOR_INVALIDO : df.format(d_ratio_usma);
-			ratio_umaxrelativo = Double.isNaN(d_ratio_umaxrelativo) ? VALOR_INVALIDO : df.format(d_ratio_umaxrelativo);
-			ratio_uminrelativo = Double.isNaN(d_ratio_uminrelativo) ? VALOR_INVALIDO : df.format(d_ratio_uminrelativo);
+//			ratio_maxrelativoSegundo = Double.isNaN(d_ratio_maxrelativoSegundo) ? VALOR_INVALIDO
+//					: df.format(d_ratio_maxrelativoSegundo);
+//			ratio_minrelativoSegundo = Double.isNaN(d_ratio_minrelativoSegundo) ? VALOR_INVALIDO
+//					: df.format(d_ratio_minrelativoSegundo);
+//			ratio_usma = Double.isNaN(d_ratio_usma) ? VALOR_INVALIDO : df.format(d_ratio_usma);
+//			ratio_umaxrelativo = Double.isNaN(d_ratio_umaxrelativo) ? VALOR_INVALIDO : df.format(d_ratio_umaxrelativo);
+//			ratio_uminrelativo = Double.isNaN(d_ratio_uminrelativo) ? VALOR_INVALIDO : df.format(d_ratio_uminrelativo);
 			// Se pone un 0 si la kurtosis no es válida. Para menos de 4 valores, será
 			// siempre inválido. Se pone 0 en vez de null para que no se descarten todas las
 			// filas. El clasificador no lo usará, ya que no lo considerará útil
@@ -478,16 +479,16 @@ public class Estadisticas extends DescriptiveStatistics {
 				ratio_minrelativo);
 //		parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_MAXRELATIVO_SEGUNDO_ + periodoString
 //				+ finalNombreParametro, ratio_maxrelativoSegundo);
-		parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_MINRELATIVO_SEGUNDO_ + periodoString
-				+ finalNombreParametro, ratio_minrelativoSegundo);
-		parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_U_SMA_ + periodoString + finalNombreParametro,
-				ratio_usma);
-		parametros.put(
-				COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_U_MAXRELATIVO_ + periodoString + finalNombreParametro,
-				ratio_umaxrelativo);
-		parametros.put(
-				COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_U_MINRELATIVO_ + periodoString + finalNombreParametro,
-				ratio_uminrelativo);
+//		parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_MINRELATIVO_SEGUNDO_ + periodoString
+//				+ finalNombreParametro, ratio_minrelativoSegundo);
+//		parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_U_SMA_ + periodoString + finalNombreParametro,
+//				ratio_usma);
+//		parametros.put(
+//				COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_U_MAXRELATIVO_ + periodoString + finalNombreParametro,
+//				ratio_umaxrelativo);
+//		parametros.put(
+//				COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_U_MINRELATIVO_ + periodoString + finalNombreParametro,
+//				ratio_uminrelativo);
 		parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.CURTOSIS_ + periodoString + finalNombreParametro,
 				kurtosis);
 		parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.SKEWNESS_ + periodoString + finalNombreParametro,
