@@ -13,7 +13,7 @@
 #Instantes de las descargas
 #Se analizará el tramo de antiguedad desde máxima hasta minima
 #Se tomarán los ficheros *_GRANDE_0_SG_0_* generados, o que ya se tienen de ejecuciones antiguas, para usarlo como base de información futura.
-ANTIGUEDAD_MAXIMA="25"
+ANTIGUEDAD_MAXIMA="15"
 ANTIGUEDAD_MINIMA="0" # Se puede usar cualquier valor
 
 

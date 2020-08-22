@@ -431,7 +431,7 @@ public class Validador implements Serializable {
 
 		// PASADO
 		for (String cad : datosPasadoStr) {
-			MY_LOGGER.info(cad);
+			// MY_LOGGER.info(cad);
 			if (cad != null && cad.contains("SG_") && cad.contains("METRICA")) {
 				Integer subgrupo = Integer.valueOf((cad.split("SG_"))[1].split(" ")[0]);
 				Float metrica = Float.valueOf((cad.split("METRICA = "))[1].split(" ")[0]);
@@ -442,7 +442,7 @@ public class Validador implements Serializable {
 
 		// FUTURO
 		for (String cad : datosFut1Fut2Str) {
-			MY_LOGGER.info(cad);
+			// MY_LOGGER.info(cad);
 
 			if (cad != null && cad.contains("Porcentaje") && cad.contains("SG") && cad.contains("%")) {
 
@@ -461,7 +461,7 @@ public class Validador implements Serializable {
 
 		}
 
-//OVERFITTING
+		// OVERFITTING
 		// Para cada subgrupo, se compara la métrica del pasado (train) y la real del
 		// fut1fut2. El overfitting será su diferencia.
 		// Idealmente debería ser 0
@@ -476,13 +476,13 @@ public class Validador implements Serializable {
 
 		DecimalFormat df = new DecimalFormat("0.00");
 		MY_LOGGER.info("*******************");
-		MY_LOGGER.info("MEDIDA DEL SOBREENTRENAMIENTO (overfitting):");
+		MY_LOGGER.info("MEDIDA DEL SOBREENTRENAMIENTO (overfitting) de todos los subgrupos:");
 		for (Integer sg : mapaOverfitting.keySet()) {
-			MY_LOGGER.info("Overfitting subgrupo=" + sg + " -> " + df.format(mapaOverfitting.get(sg)));
+			MY_LOGGER.info("Overfitting del subgrupo=" + sg + " -> " + df.format(mapaOverfitting.get(sg)));
 		}
 		MY_LOGGER.info("*******************");
 		double suma = mapaOverfitting.values().stream().mapToDouble(a -> a).sum();
-		MY_LOGGER.info("OVERFITTING (sobreentrenamiento) TOTAL = " + df.format(suma));
+		MY_LOGGER.info("OVERFITTING (sobreentrenamiento) MEDIO = " + df.format(suma / mapaOverfitting.size()));
 		MY_LOGGER.info("*******************");
 
 	}

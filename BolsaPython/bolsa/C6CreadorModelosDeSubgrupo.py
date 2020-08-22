@@ -33,6 +33,7 @@ from sklearn.tree import export_graphviz
 from subprocess import call
 from xgboost import XGBClassifier
 # from bolsa.bayes_opt import BayesianOptimization
+from matplotlib import pyplot
 
 np.random.seed(12345)
 
@@ -44,7 +45,7 @@ dir_subgrupo = sys.argv[1]
 modoTiempo = sys.argv[2]
 desplazamientoAntiguedad = sys.argv[3]
 pathFeaturesSeleccionadas = dir_subgrupo + "FEATURES_SELECCIONADAS.csv"
-modoDebug = False  # En modo debug se pintan los dibujos. En otro caso, se evita calculo innecesario
+modoDebug = True  # En modo debug se pintan los dibujos. En otro caso, se evita calculo innecesario
 umbralCasosSuficientesClasePositiva = 50
 granProbTargetUno = 50  # De todos los target=1, nos quedaremos con los granProbTargetUno (en tanto por cien) MAS probables. Un valor de 100 o mayor anula este parámetro
 balancearConSmoteSoloTrain = True
@@ -116,12 +117,42 @@ def corr_drop(corr_m, factor=.9):
     return remove_corr()
 
 
-def ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_train_t, feature_names, modeloEsGrid,
-                             modoDebug):
+def ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_train_t, ds_test_f, ds_test_t, feature_names, modeloEsGrid,
+                             modoDebug, dir_subgrupo_img):
     print("Ejecutando " + nombreModelo + " ...")
     out_grid_best_params = []
 
-    modelo.fit(ds_train_f, ds_train_t)  # ENTRENAMIENTO (TRAIN)
+    param_parada_iteraciones = 10  # early_stopping_rounds: es el numero de iteraciones en las que ya no mejora el error diferencial train-test, evitando iterar tanto en XGBoost y reducir el overfitting
+    eval_set = [(ds_train_f, ds_train_t), (ds_test_f, ds_test_t)]
+
+    #-------- PINTAR EL ERROR DE OVERFITTING ---------------------------
+    #-------------------URL: https://machinelearningmastery.com/avoid-overfitting-by-early-stopping-with-xgboost-in-python/
+    #--- URL: https://xgboost.readthedocs.io/en/latest/parameter.html
+
+    METODO_EVALUACION="map"  # Mean Average Precision
+
+    # Con PARAMETROS PARA VER EL OVERFITTING
+    modelo.fit(ds_train_f, ds_train_t , eval_metric=[METODO_EVALUACION], early_stopping_rounds=param_parada_iteraciones, eval_set=eval_set, verbose=False)  # ENTRENAMIENTO (TRAIN)
+
+    # --------------- Pintar dibujo---------------------------------------------------------------
+    y_pred = modelo.predict(ds_test_f)
+    predictions = [round(value) for value in y_pred]
+    precision_para_medir_overfitting = precision_score(ds_test_t, predictions)
+    print("Accuracy (PRECISION) para medir el overfitting: %.2f%%" % (precision_para_medir_overfitting * 100.0))
+    # retrieve performance metrics
+    results = modelo.evals_result()
+    epochs = len(results['validation_0'][METODO_EVALUACION])
+    x_axis = range(0, epochs)
+    fig, ax = pyplot.subplots()
+    ax.plot(x_axis, results['validation_0'][METODO_EVALUACION], label='Train')
+    ax.plot(x_axis, results['validation_1'][METODO_EVALUACION], label='Test')
+    ax.legend()
+    pyplot.ylabel(METODO_EVALUACION)
+    pyplot.title(METODO_EVALUACION + ': ' + nombreModelo)
+    plt.savefig(dir_subgrupo_img + nombreModelo + "_"+METODO_EVALUACION+".png", bbox_inches='tight')
+    plt.clf();        plt.cla();        plt.close();  # Limpiando dibujo
+    #------------------------------------------------------------------------------
+
 
     # print("Se guarda el modelo " + nombreModelo + " en: " + pathModelo)
     if modeloEsGrid:
@@ -261,9 +292,11 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         featuresSeleccionadasFile.close()
         ##################################################################
 
-        print("DIVIDIR EL DATASET DE ENTRADA EN 3 PARTES: TRAIN (50%), TEST (25%), VALIDACION (25%)...")
+        fraccion_train=0.8;  fraccion_test=0.1;  fraccion_valid = 1-(fraccion_train - fraccion_test)
+        print("DIVIDIR EL DATASET DE ENTRADA EN 3 PARTES: TRAIN ("+str(fraccion_train)+"), TEST ("+str(fraccion_test)+"), VALIDACION ("+str(fraccion_valid)+")")
         ds_train, ds_test, ds_validacion = np.split(ift_juntas.sample(frac=1),
-                                                    [int(0.5 * len(ift_juntas)), int(0.75 * len(ift_juntas))])
+                                                    [int(fraccion_train * len(ift_juntas)),
+                                                     int((fraccion_train+fraccion_test) * len(ift_juntas))])
         print("TRAIN = " + str(ds_train.shape[0]) + " x " + str(ds_train.shape[1]) + "  " + "TEST --> " + str(
             ds_test.shape[0]) + " x " + str(ds_test.shape[1]) + "  " + "VALIDACION --> " + str(
             ds_validacion.shape[0]) + " x " + str(ds_validacion.shape[1]))
@@ -364,7 +397,7 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
             #                           max_depth=4, max_features='sqrt',
             #                           min_samples_leaf=15, min_samples_split=10, random_state=42)
             # modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f,
-            #                                                           ds_train_t, feature_names, False, modoDebug)
+            #                                                           ds_train_t, ds_test_f, ds_test_t, feature_names, False, modoDebug, dir_subgrupo_img)
             # modelo_metrica = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, id_subgrupo,
             #                                      modoDebug)
             # print(type(modelo_metrica))
@@ -408,12 +441,16 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
             # print("Inicio de XGBOOST")
             nombreModelo = "xgboost"
             pathModelo = dir_subgrupo + nombreModelo + ".modelo"
-            modelo = XGBClassifier(learning_rate=0.1174, n_estimators=291,
-                                   max_depth=8,
-                                   gamma=1.95, subsample=0.8531,
-                                   colsample_bytree=0.4302)
+            #Parametros: https://xgboost.readthedocs.io/en/latest/parameter.html
+            modelo = XGBClassifier(base_score=0.9, colsample_bylevel=0.05, colsample_bytree=0.05,
+                                   gamma=0, learning_rate=0.09
+                                   , max_delta_step=0, max_depth=10,
+                                   min_child_weight=1, missing=None, n_estimators=100, nthread=-1,
+                                   objective='binary:logitraw', reg_alpha=0.5, reg_lambda=1,
+                                   scale_pos_weight=1, seed=0, silent=True, subsample=1)
+
             modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f,
-                                                                      ds_train_t, feature_names, False, modoDebug)
+                                                                      ds_train_t, ds_test_f, ds_test_t, feature_names, False, modoDebug, dir_subgrupo_img)
             cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, id_subgrupo, modoDebug)
 
             test_t_predicho = modelo.predict(ds_test_f);
@@ -441,7 +478,7 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
             #                               max_leaf_nodes=ARBOLES_max_leaf_nodes, min_impurity_decrease=ARBOLES_min_impurity_decrease,
             #                               criterion="gini", min_weight_fraction_leaf=0., min_impurity_split=None, bootstrap=False, oob_score=False,
             #                               n_jobs=None, random_state=1, verbose=0, warm_start=False, class_weight=None, ccp_alpha=0.0, max_samples=None)
-            # modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_train_t, feature_names, False, modoDebug)
+            # modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_train_t, ds_test_f, ds_test_t, feature_names, False, modoDebug, dir_subgrupo_img)
             # cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, id_subgrupo, modoDebug)
             #
             # test_t_predicho = modelo.predict(ds_test_f); validac_t_predicho = modelo.predict(ds_validac_f)
@@ -465,7 +502,7 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
             #                        verbose=False, warm_start=False, momentum=0.9, nesterovs_momentum=True, early_stopping=False,
             #                        validation_fraction=0.1, beta_1=0.9, beta_2=0.999, epsilon=1e-8, n_iter_no_change=10, max_fun=15000)
             #
-            # modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_train_t, feature_names, False, modoDebug)
+            # modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_train_t, ds_test_f, ds_test_t, feature_names, False, modoDebug, dir_subgrupo_img)
             # cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, id_subgrupo, modoDebug)
             #
             # test_t_predicho = modelo.predict(ds_test_f);
@@ -494,7 +531,7 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
             # # modelo_base = svm.SVC()
             # # hiperparametros = [{'C': [10, 50], 'gamma':[10, 30], 'kernel':['rbf']}]
             # # modelos_grid = GridSearchCV(modelo_base, hiperparametros, scoring='precision', n_jobs=-1, refit=True, cv=cv_todos, pre_dispatch='2*n_jobs', return_train_score=False)
-            # # modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelos_grid, pathModelo, ds_train_f, ds_train_t, feature_names, True, modoDebug)
+            # # modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelos_grid, pathModelo, ds_train_f, ds_train_t, ds_test_f, ds_test_t, feature_names, True, modoDebug, dir_subgrupo_img)
             # # cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, id_subgrupo, modoDebug)
             # #
             # # test_t_predicho = modelo.predict(ds_test_f);
@@ -523,7 +560,7 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
             #                        max_fun=15000)
             # hiperparametros = {'hidden_layer_sizes': [(5, 2), (20, 5), (50, 20)], 'solver': ['lbfgs'], 'activation': ['identity', 'logistic', 'tanh', 'relu']}
             # modelos_grid = GridSearchCV(modelo_base, hiperparametros, scoring='precision', n_jobs=-1, refit=True, cv=cv_todos,pre_dispatch='2*n_jobs', return_train_score=False)
-            # modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelos_grid, pathModelo,ds_train_f, ds_train_t, feature_names, True, modoDebug)
+            # modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelos_grid, pathModelo,ds_train_f, ds_train_t, ds_test_f, ds_test_t, feature_names, True, modoDebug, dir_subgrupo_img)
             # cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, id_subgrupo, modoDebug)
             # test_t_predicho = modelo.predict(ds_test_f);
             # validac_t_predicho = modelo.predict(ds_validac_f)
@@ -552,7 +589,7 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
             #      l1_ratio=None)
             # hiperparametros = dict(C=np.logspace(0, 2, num=10, base=10), penalty=['l2'])
             # modelos_grid = GridSearchCV(modelo_base, hiperparametros, scoring='precision', n_jobs=-1, refit=True, cv=cv_todos, pre_dispatch='2*n_jobs', return_train_score=False)
-            # modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelos_grid, pathModelo, ds_train_f, ds_train_t, feature_names, True, modoDebug)
+            # modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelos_grid, pathModelo, ds_train_f, ds_train_t, ds_test_f, ds_test_t, feature_names, True, modoDebug, dir_subgrupo_img)
             # cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, id_subgrupo, modoDebug)
             #
             # logreg_coef = modelos_grid.best_estimator_.coef_
@@ -584,7 +621,7 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
             #                                      max_leaf_nodes=ARBOLES_max_leaf_nodes, min_impurity_decrease=ARBOLES_min_impurity_decrease, random_state=1)
             # hiperparametros = {'min_impurity_decrease': [0.001, 0.00001], 'max_depth': [9, 11, 13]}
             # modelos_grid = GridSearchCV(modelo_base, hiperparametros, scoring='precision', n_jobs=-1, refit=True, return_train_score=False, cv=cv_todos)
-            # modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelos_grid, pathModelo, ds_train_f, ds_train_t, feature_names, True, modoDebug)
+            # modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelos_grid, pathModelo, ds_train_f, ds_train_t, ds_test_f, ds_test_t, feature_names, True, modoDebug, dir_subgrupo_img)
             # cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, id_subgrupo, modoDebug)
             #
             # test_t_predicho = modelo.predict(ds_test_f);
@@ -615,7 +652,7 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
             # hiperparametros = {"n_estimators": [100], "criterion": ["gini"], "max_depth": [9, 11, 13], "min_impurity_decrease": [0.001, 0.00001],
             #                    "max_features": ["auto"], "min_samples_leaf": [15, 25], "min_samples_split": [3], "class_weight": [None]}
             # modelos_grid = GridSearchCV(modelo_base, hiperparametros, scoring='precision', n_jobs=-1, refit=True, return_train_score=False, cv=cv_todos)
-            # modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelos_grid, pathModelo, ds_train_f, ds_train_t, feature_names, True, modoDebug)
+            # modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelos_grid, pathModelo, ds_train_f, ds_train_t, ds_test_f, ds_test_t, feature_names, True, modoDebug, dir_subgrupo_img)
             # cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, id_subgrupo, modoDebug)
             #
             # test_t_predicho = modelo.predict(ds_test_f);
