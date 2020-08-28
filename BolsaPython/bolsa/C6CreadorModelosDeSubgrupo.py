@@ -442,13 +442,11 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
             nombreModelo = "xgboost"
             pathModelo = dir_subgrupo + nombreModelo + ".modelo"
             #Parametros: https://xgboost.readthedocs.io/en/latest/parameter.html
-            modelo = XGBClassifier(base_score=0.9, colsample_bylevel=0.05, colsample_bytree=0.05,
-                                   gamma=0, learning_rate=0.09
-                                   , max_delta_step=0, max_depth=10,
-                                   min_child_weight=1, missing=None, n_estimators=100, nthread=-1,
-                                   objective='binary:logitraw', reg_alpha=0.5, reg_lambda=1,
-                                   scale_pos_weight=1, seed=0, silent=True, subsample=1)
-
+            modelo = XGBClassifier(learning_rate=0.1174, n_estimators=291,
+                                   max_depth=8,
+                                   gamma=1.95, subsample=0.8531,
+                                   colsample_bytree=0.4302)
+            
             modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f,
                                                                       ds_train_t, ds_test_f, ds_test_t, feature_names, False, modoDebug, dir_subgrupo_img)
             cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, id_subgrupo, modoDebug)
