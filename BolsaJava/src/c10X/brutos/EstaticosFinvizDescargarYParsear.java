@@ -86,6 +86,7 @@ public class EstaticosFinvizDescargarYParsear {
 
 		if (args.length == 0) {
 			MY_LOGGER.info("Sin parametros de entrada. Rellenamos los DEFAULT...");
+
 		} else if (args.length != 4) {
 			MY_LOGGER.error("Parametros de entrada incorrectos!! --> " + args.length);
 			int numParams = args.length;
@@ -140,7 +141,11 @@ public class EstaticosFinvizDescargarYParsear {
 					volcarEnCSV(BrutosUtils.MERCADO_NQ, nasdaqEstaticos1.get(i).symbol, mapaExtraidos, rutaCsvBruto);
 				}
 
-			} else {
+			} else if (empresa != null && !empresa.equalsIgnoreCase("AAPL")) {
+
+				// Si se desconoce la empresa, la añadimos a la lista (excepto AAPL, que es
+				// nuestra empresa de referencia)
+
 //				Files.write(Paths.get(BrutosUtils.DESCONOCIDOS_CSV), (empresa + "\n").getBytes(),
 //						StandardOpenOption.APPEND);
 
@@ -183,6 +188,21 @@ public class EstaticosFinvizDescargarYParsear {
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
 			con.setRequestMethod("GET");
 			// con.setDoOutput(true); // Conexion usada para output
+
+			// ---------------------------------------------------------------------
+			con.setRequestProperty("Accept", "text/html,application/xhtml+xm…plication/xml;q=0.9,*/*;q=0.8");
+			con.setRequestProperty("Accept-Encoding", "gzip, deflate, br");
+			con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
+			con.setRequestProperty("Cache-Control", "no-cache");
+			con.setRequestProperty("Connection", "keep-alive");
+			con.setRequestProperty("Cookie", "_ga=GA1.2.664407810.1574533266…; IC_ViewCounter_finviz.com=3");
+			con.setRequestProperty("Host", "finviz.com");
+			con.setRequestProperty("Pragma", "no-cache");
+			con.setRequestProperty("Referer", "https://finviz.com/");
+			con.setRequestProperty("TE", "Trailers");
+			con.setRequestProperty("Upgrade-Insecure-Requests", "1");
+			con.setRequestProperty("User-Agent", "Mozilla/5.0 (X11; Ubuntu; Linu…) Gecko/20100101 Firefox/64.0");
+			// ---------------------------------------------------------------------
 
 			// Request Headers
 //			con.setRequestProperty("Content-Type",
@@ -320,6 +340,8 @@ public class EstaticosFinvizDescargarYParsear {
 	 * @param datoBuscado
 	 * @param t
 	 * @param mapaExtraidos
+	 * @param escala
+	 * @param esFecha
 	 */
 	private static void extraerInfoDeFila(String datoBuscado, Element t, Map<String, String> mapaExtraidos,
 			String escala, boolean esFecha) {
