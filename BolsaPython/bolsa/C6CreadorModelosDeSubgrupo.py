@@ -464,7 +464,7 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
                                    gamma=1.601, subsample=1, colsample_bylevel=0.06404,
                                    objective='binary:logistic',
                                    colsample_bytree=0.3396)
-           modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f,
+            modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f,
                                                                       ds_train_t, ds_test_f, ds_test_t, feature_names, False, modoDebug, dir_subgrupo_img)
             cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, id_subgrupo, modoDebug)
 
