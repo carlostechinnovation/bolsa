@@ -32,7 +32,6 @@ from sklearn.metrics import make_scorer, accuracy_score
 from sklearn.tree import export_graphviz
 from subprocess import call
 from xgboost import XGBClassifier
-# from bolsa.bayes_opt import BayesianOptimization
 from matplotlib import pyplot
 
 np.random.seed(12345)
@@ -292,7 +291,7 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         featuresSeleccionadasFile.close()
         ##################################################################
 
-        fraccion_train=0.8;  fraccion_test=0.1;  fraccion_valid = 1-(fraccion_train - fraccion_test)
+        fraccion_train=0.8;  fraccion_test=0.1;  fraccion_valid = 1-(fraccion_train + fraccion_test)
         print("DIVIDIR EL DATASET DE ENTRADA EN 3 PARTES: TRAIN ("+str(fraccion_train)+"), TEST ("+str(fraccion_test)+"), VALIDACION ("+str(fraccion_valid)+")")
         ds_train, ds_test, ds_validacion = np.split(ift_juntas.sample(frac=1),
                                                     [int(fraccion_train * len(ift_juntas)),
@@ -407,38 +406,38 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
             #     ganador_nombreModelo = nombreModelo
             #     ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
 
+            #################### OPTIMIZACION DE PARAMETROS DE XGBOOST ###############################################################
             # # Descomentar para obtener los parámetros con optimización Bayesiana
             # # Se imprimirán en el log, pero debo luego meterlos manualmente en el modelo
             # pbounds = {
-            #     'learning_rate': (0.1, 1.0),
-            #     'n_estimators': (100, 1000),
-            #     'max_depth': (3, 10),
-            #     'subsample': (0.8, 1.0),  # Change for big datasets
-            #     'colsample_bytree': (0.2, 1.0),  # Change for datasets with lots of features
-            #     'gamma': (0, 15)}
-            # def xgboost_hyper_param(learning_rate,
-            #                         n_estimators,
-            #                         max_depth,
-            #                         subsample,
-            #                         colsample_bytree,
-            #                         gamma):
+            #     'learning_rate': (0.05, 0.12),
+            #     'n_estimators': (100,200),
+            #     'max_depth': (7, 11),
+            #     'colsample_bylevel': (0.05, 0.15),
+            #     'colsample_bytree': (0.3, 0.5),
+            #     'gamma': (0, 2)}
+            #
+            # def xgboost_hyper_param(learning_rate, n_estimators, max_depth, colsample_bylevel, colsample_bytree, gamma):
             #     max_depth = int(max_depth)
             #     n_estimators = int(n_estimators)
-            #     clf = XGBClassifier(
-            #         max_depth=max_depth,
-            #         learning_rate=learning_rate,
-            #         n_estimators=n_estimators,
-            #         gamma=gamma)
-            #     return np.mean(cross_val_score(clf, ds_train_f, ds_train_t, cv=5, scoring='precision'))
-            # optimizer = BayesianOptimization(
-            #     f=xgboost_hyper_param,
-            #     pbounds=pbounds,
-            #     random_state=1,
-            # )
+            #
+            #     clf = XGBClassifier(base_score=0.5, learning_rate=learning_rate, n_estimators=n_estimators,
+            #                            max_depth=max_depth, min_child_weight=1, missing=None, nthread=-1,
+            #                            gamma=gamma, subsample=1, colsample_bylevel=colsample_bylevel,
+            #                            objective='binary:logistic',
+            #                            colsample_bytree=colsample_bytree)
+            #
+            #     return np.median(cross_val_score(clf, ds_train_f, ds_train_t, cv=5, scoring='average_precision'))
+            #
+            #
+            # from bolsa.bayes_opt import BayesianOptimization
+            # optimizer = BayesianOptimization(f=xgboost_hyper_param, pbounds=pbounds, random_state=1)
             # optimizer.maximize(init_points=10, n_iter=50)
             # valoresOptimizados=optimizer.max
             # print(valoresOptimizados)
-            # print("Inicio de XGBOOST")
+            ###################################################################################
+
+            print("Inicio de XGBOOST")
             nombreModelo = "xgboost"
             pathModelo = dir_subgrupo + nombreModelo + ".modelo"
             #Parametros: https://xgboost.readthedocs.io/en/latest/parameter.html
@@ -465,7 +464,7 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
                                    gamma=1.601, subsample=1, colsample_bylevel=0.06404,
                                    objective='binary:logistic',
                                    colsample_bytree=0.3396)
-            modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f,
+           modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f,
                                                                       ds_train_t, ds_test_f, ds_test_t, feature_names, False, modoDebug, dir_subgrupo_img)
             cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, id_subgrupo, modoDebug)
 
