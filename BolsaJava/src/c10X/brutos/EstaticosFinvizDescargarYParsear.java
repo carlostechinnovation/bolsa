@@ -191,11 +191,11 @@ public class EstaticosFinvizDescargarYParsear {
 
 			// ---------------------------------------------------------------------
 			con.setRequestProperty("Accept", "text/html,application/xhtml+xm…plication/xml;q=0.9,*/*;q=0.8");
-			con.setRequestProperty("Accept-Encoding", "gzip, deflate, br");
+			//con.setRequestProperty("Accept-Encoding", "gzip, deflate, br");
 			con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
 			con.setRequestProperty("Cache-Control", "no-cache");
 			con.setRequestProperty("Connection", "keep-alive");
-			con.setRequestProperty("Cookie", "_ga=GA1.2.664407810.1574533266…; IC_ViewCounter_finviz.com=3");
+			con.setRequestProperty("Cookie", "ga:GA1.2.1329824635.1600257143");
 			con.setRequestProperty("Host", "finviz.com");
 			con.setRequestProperty("Pragma", "no-cache");
 			con.setRequestProperty("Referer", "https://finviz.com/");
