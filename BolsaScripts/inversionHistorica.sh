@@ -13,11 +13,14 @@
 #Instantes de las descargas
 #Se analizará el tramo de antiguedad desde máxima hasta minima
 #Se tomarán los ficheros *_GRANDE_0_SG_0_* generados, o que ya se tienen de ejecuciones antiguas, para usarlo como base de información futura.
-ANTIGUEDAD_MAXIMA="15"
+ANTIGUEDAD_MAXIMA="50"
 ANTIGUEDAD_MINIMA="0" # Se puede usar cualquier valor
-
+NUM_EMPRESAS_TRAIN="1000" # Número de empresas de entrenamiento, NO para los días posteriores (que estarán en el fichero de parámetros). Se recomienda dejar 1000 siempre.
 
 echo -e "INVERSION - INICIO: "$( date "+%Y%m%d%H%M%S" )
+
+echo -e "Parando cron..."
+sudo service cron  stop
 
 #################### DIRECTORIOS ###############################################################
 DIR_CODIGOS_CARLOS="/home/carloslinux/Desktop/GIT_BOLSA/"
@@ -99,7 +102,7 @@ mkdir "${DIR_DROPBOX}ANALISIS_HISTORICO/" >>${LOG_INVERSION}
 echo -e "Se obtiene el modelo de predicción para la antigüedad máxima. Luego se irá hacia adelante en el tiempo, prediciendo tiempos futuros para el modelo entrenado" >>${LOG_INVERSION}
 echo -e $( date '+%Y%m%d_%H%M%S' )" Ejecución del PASADO (para velas de ANTIGUEDAD_MAXIMA=${ANTIGUEDAD_MAXIMA}): entrenamiento del modelo..." >>${LOG_INVERSION}
 
-${PATH_SCRIPTS}master.sh "pasado" "${ANTIGUEDAD_MAXIMA}" "0" "${ACTIVAR_DESCARGAS}" "S" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" "${NUM_EMPRESAS}" "${UMBRAL_SUBIDA_POR_VELA}" "${MIN_COBERTURA_CLUSTER}" "${MIN_EMPRESAS_POR_CLUSTER}" "${P_INICIO}" "${P_FIN}" "${MAX_NUM_FEAT_REDUCIDAS}" 2>>${LOG_INVERSION} 1>>${LOG_INVERSION}
+${PATH_SCRIPTS}master.sh "pasado" "${ANTIGUEDAD_MAXIMA}" "0" "${ACTIVAR_DESCARGAS}" "S" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" "${NUM_EMPRESAS_TRAIN}" "${UMBRAL_SUBIDA_POR_VELA}" "${MIN_COBERTURA_CLUSTER}" "${MIN_EMPRESAS_POR_CLUSTER}" "${P_INICIO}" "${P_FIN}" "${MAX_NUM_FEAT_REDUCIDAS}" 2>>${LOG_INVERSION} 1>>${LOG_INVERSION}
 
 echo -e "Análisis de inversión histórica. Se recorre cada antigüedad, y se predice su futuro" >>${LOG_INVERSION}
 for (( ANTIGUEDAD=${ANTIGUEDAD_MINIMA}; ANTIGUEDAD<=${ANTIGUEDAD_MAXIMA}; ANTIGUEDAD++ ))
@@ -154,6 +157,9 @@ rm -Rf "${DIR_DROPBOX}temporal_HISTORICO" >>${LOG_INVERSION}
 
 echo -e "Se reejecuta el análisis de la calidad con los datos restaurados" >>${LOG_INVERSION}
 ${PATH_ANALISIS}
+
+echo -e "Arrancando cron..."
+sudo service cron  start
 
 echo -e "INVERSION - FIN: "$( date "+%Y%m%d%H%M%S" )
 
