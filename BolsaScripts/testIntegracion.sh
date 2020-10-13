@@ -1,7 +1,8 @@
 #!/bin/bash
 
-echo -e "TEST INTEGRACION - INICIO: "$( date "+%Y%m%d%H%M%S" )
+#set -e
 
+echo -e "TEST INTEGRACION - INICIO: "$( date "+%Y%m%d%H%M%S" )
 
 DIR_VALIDACION="/bolsa/validacion/"
 LOG_INTEGRACION="/bolsa/logs/integracion.log"

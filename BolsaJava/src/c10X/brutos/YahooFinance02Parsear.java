@@ -76,6 +76,7 @@ public class YahooFinance02Parsear implements Serializable {
 
 		if (args.length == 0) {
 			MY_LOGGER.info("Sin parametros de entrada. Rellenamos los DEFAULT...");
+
 		} else if (args.length != 4) {
 			MY_LOGGER.error("Parametros de entrada incorrectos!!");
 			int numParams = args.length;
@@ -84,6 +85,7 @@ public class YahooFinance02Parsear implements Serializable {
 				MY_LOGGER.info("Param: " + param);
 			}
 			System.exit(-1);
+
 		} else {
 			directorioIn = args[0];
 			directorioOut = args[1];
@@ -91,17 +93,22 @@ public class YahooFinance02Parsear implements Serializable {
 			entornoDeValidacion = Integer.valueOf(args[3]);
 		}
 
+		MY_LOGGER.info("Parametros de entrada -> " + directorioIn + " | " + directorioOut + " | " + modo + "|"
+				+ entornoDeValidacion);
+
 		// EMPRESAS NASDAQ
+		MY_LOGGER.info("Cargando empresas del NASDAQ...");
 		List<EstaticoNasdaqModelo> nasdaqEstaticos1 = EstaticosNasdaqDescargarYParsear
 				.descargarNasdaqEstaticosSoloLocal1(entornoDeValidacion);
 
 		// VELAS (tomando una empresa buena, que tendra todo relleno)
+		MY_LOGGER.info("Cargando VELAS de empresa de REFERENCIA...");
 		Map<String, Integer> velas = new HashMap<String, Integer>();
 		extraerVelasReferencia(velas, directorioIn, directorioOut, modo);// coger todas las velas pasadas
 																			// de la empresa de referencia
 
 		if (velas != null && velas.size() > 0) {
-			// DATOS DINAMICOS DE TODAS LAS EMPRESAS
+			MY_LOGGER.info("Descargando datos DINAMICOS de todas las empresas...");
 			parsearDinamicos01(nasdaqEstaticos1, directorioIn, directorioOut, false, modo);
 			rellenarVelasDiariasHuecoyAntiguedad02(nasdaqEstaticos1, directorioOut, velas);
 		} else {
@@ -164,7 +171,7 @@ public class YahooFinance02Parsear implements Serializable {
 	public static List<String> parsearDinamicos01(List<EstaticoNasdaqModelo> nasdaqEstaticos1, String directorioIn,
 			String directorioOut, Boolean soloVelas, String modo) throws IOException {
 
-		MY_LOGGER.debug("parsearNasdaqDinamicos01 --> " + directorioIn + "|" + directorioOut);
+		MY_LOGGER.info("parsearNasdaqDinamicos01 --> " + directorioIn + "|" + directorioOut);
 
 		String mercado = "NASDAQ"; // DEFAULT
 		List<String> ficherosSalida = new ArrayList<String>();
@@ -203,10 +210,6 @@ public class YahooFinance02Parsear implements Serializable {
 
 		if (Files.exists(Paths.get(pathBruto))) {
 			Files.deleteIfExists(Paths.get(pathBrutoCsv)); // Borramos el fichero de salida si existe
-
-			if (pathBruto.contains("YF_NASDAQ_ZYXI")) {
-				int x = 0;
-			}
 
 			out = parsearJson(mercado, ticker, pathBruto, pathBrutoCsv, soloVelas, modo);
 
@@ -388,14 +391,15 @@ public class YahooFinance02Parsear implements Serializable {
 
 		// Recorrer todo el directorio, cogiendo los ficheros de Yahoo Finance y
 		// metiendoles las velas que falten
+		MY_LOGGER.info("rellenarVelasDiariasHuecoyAntiguedad02 --> " + nasdaqEstaticos1.size() + "|" + directorioCsv
+				+ "|" + velas.size());
 
 		final File folder = new File(directorioCsv);
 		List<String> result = new ArrayList<String>();
 		BrutosUtils.encontrarFicherosEnCarpeta("YF.*\\.csv", folder, result);
 
 		for (String pathFichero : result) {
-			MY_LOGGER.debug(pathFichero);
-
+			MY_LOGGER.info(pathFichero);
 			rellenarVelasDiariasHuecoyAntiguedadPorFichero03(pathFichero, velas);
 		}
 	}

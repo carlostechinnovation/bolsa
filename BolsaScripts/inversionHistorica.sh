@@ -1,5 +1,7 @@
 #!/bin/bash
 
+#set -e
+
 #################### DESCRIPCIÓN Y PARÁMETROS FUNDAMENTALES ###############################
 # Permite sacar las predicciones en un rango de tiempos del pasado. El modelo predictor NO SERÁ el usado en 
 # antigüedad =0, sino que cogeremos la antigüedad máxima deseada, y lo entrenaremos con datos anteriores.

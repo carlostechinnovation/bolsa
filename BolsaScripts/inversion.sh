@@ -1,5 +1,7 @@
 #!/bin/bash
 
+#set -e
+
 echo -e "INVERSION - INICIO: "$( date "+%Y%m%d%H%M%S" )
 
 #################### DIRECTORIOS ###############################################################
@@ -87,7 +89,7 @@ do
 		echo "Procesamos  ${REPLY}  y lo copiamos en ${DIR_INVERSION} ..."  >>${LOG_INVERSION}
 		ficheronombre=$(basename $REPLY)
 		directorio=$(dirname $REPLY)
-		$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/InversionUtils.py" "${directorio}/${ficheronombre}"  "0" "${DIR_GITHUB_INVERSION}" "${ficheronombre}" >> ${LOG_INVERSION}		
+		#$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/InversionUtils.py" "${directorio}/${ficheronombre}"  "0" "${DIR_GITHUB_INVERSION}" "${ficheronombre}" >> ${LOG_INVERSION}		
 		$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/InversionUtils.py" "${directorio}/${ficheronombre}"  "0" "${DIR_DROPBOX}" "${ficheronombre}" >> ${LOG_INVERSION}
 	fi
 done 9< <( find ${DIR_FUT_SUBGRUPOS} -type f -exec printf '%s\0' {} + )

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+#set -e
+
 echo -e "MASTER - INICIO: "$( date "+%Y%m%d%H%M%S" )
 
 #################### DIRECTORIOS ###############################################################
@@ -49,12 +51,14 @@ crearCarpetaSiNoExiste() {
 	param1=${1} 			#directorio
 	echo "Creando carpeta: $param1"
 	mkdir -p ${param1}
+	chmod 777 -Rf ${param1}
 }
 
 crearCarpetaSiNoExisteYVaciar() {
 	param1=${1} 			#directorio
 	echo "Creando carpeta: $param1"
 	mkdir -p ${param1}
+	chmod 777 -Rf ${param1}
 	rm -f ${param1}*
 }
 
@@ -62,7 +66,17 @@ crearCarpetaSiNoExisteYVaciarRecursivo() {
 	param1=${1} 			#directorio
 	echo "Creando carpeta: $param1"
 	mkdir -p ${param1}
+	chmod 777 -Rf ${param1}
 	rm -Rf ${param1}*
+}
+
+comprobarQueDirectorioNoEstaVacio(){
+	param1="${1}"
+	a=`(ls -lrt "${param1}"  | grep "total 0")`
+	if [ $? == "0" ]; then
+		echo "El directorio está vacio, pero debería estar lleno!!! DIR: ${param1}   Saliendo..."
+		exit -1
+	fi
 }
 
 ################ VARIABLES DE EJECUCION #########################################################
@@ -123,12 +137,15 @@ if [ "$ACTIVAR_DESCARGA" = "S" ];  then
 	echo -e "ESTATICOS + DINAMICOS: limpiando CSVs intermedios brutos..." >> ${LOG_MASTER}
 	java -jar ${PATH_JAR} --class "coordinador.Principal" "c10X.brutos.LimpiarCSVBrutosTemporales" "${DIR_BRUTOS_CSV}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 
+	comprobarQueDirectorioNoEstaVacio "${DIR_BRUTOS}"
+	comprobarQueDirectorioNoEstaVacio "${DIR_BRUTOS_CSV}"
+
 fi;
 
-NUM_FICHEROS_10x=$(ls -l ${DIR_BRUTOS_CSV} | wc -l)
+NUM_FICHEROS_10x=$(ls -l ${DIR_BRUTOS_CSV} | grep -v 'total' | wc -l)
 echo -e "La capa 10X ha generado $NUM_FICHEROS_10x ficheros" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 if [ "$NUM_FICHEROS_10x" -lt 1 ]; then
-	echo -e "El numero de ficheros es menor que el de la capa anterior. Asi que se han perdido algunos por algun problema. Debemos analizarlo. Saliendo..." 2>>${LOG_MASTER} 1>>${LOG_MASTER}
+	echo -e "El numero de ficheros es 0. Asi que se han perdido algunos por algun problema. Debemos analizarlo. Saliendo..." 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 	exit -1
 fi
 
@@ -142,12 +159,14 @@ java -jar ${PATH_JAR} --class "coordinador.Principal" "c30X.elaborados.LimpiarOp
 
 # cp ${DIR_BRUTOS_CSV}*.csv ${DIR_LIMPIOS} 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 
-NUM_FICHEROS_20x=$(ls -l ${DIR_LIMPIOS} | wc -l)
+NUM_FICHEROS_20x=$(ls -l ${DIR_LIMPIOS} | grep -v 'total' | wc -l)
 echo -e "La capa 20X ha generado $NUM_FICHEROS_20x ficheros" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 if [ "$NUM_FICHEROS_20x" -lt "$NUM_FICHEROS_10x" ]; then
 	echo -e "El numero de ficheros es menor que el de la capa anterior. Asi que se han perdido algunos por algun problema. Debemos analizarlo. Saliendo..." 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 	exit -1
 fi
+
+comprobarQueDirectorioNoEstaVacio "${DIR_LIMPIOS}"
 
 ################################################################################################
 echo -e $( date '+%Y%m%d_%H%M%S' )" -------- VARIABLES ELABORADAS -------------" >> ${LOG_MASTER}
@@ -159,12 +178,14 @@ java -jar ${PATH_JAR} --class "coordinador.Principal" "c30X.elaborados.Construct
 
 echo -e "Elaborados (incluye la variable elaborada TARGET) ya calculados" >> ${LOG_MASTER}
 
-NUM_FICHEROS_30x=$(ls -l ${DIR_ELABORADOS} | wc -l)
+NUM_FICHEROS_30x=$(ls -l ${DIR_ELABORADOS} | grep -v 'total' | wc -l)
 echo -e "La capa 30X ha generado $NUM_FICHEROS_30x ficheros" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 if [ "$NUM_FICHEROS_30x" -lt "$NUM_FICHEROS_20x" ]; then
 	echo -e "El numero de ficheros es menor que el de la capa anterior. Asi que se han perdido algunos por algun problema. Debemos analizarlo. Saliendo..." 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 	exit -1
 fi
+
+comprobarQueDirectorioNoEstaVacio "${DIR_ELABORADOS}"
 
 ############## Calcular Subgrupos ####################################################################
 

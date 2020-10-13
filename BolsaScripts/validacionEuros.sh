@@ -1,5 +1,7 @@
 #!/bin/bash
 
+#set -e
+
 echo -e "VALIDACION - INICIO: "$( date "+%Y%m%d%H%M%S" )
 
 #################### DIRECTORIOS ###############################################################

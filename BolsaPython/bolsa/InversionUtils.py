@@ -43,11 +43,13 @@ else:
     prefijo = str(amd)
     print(prefijo)
 
-    pathEntrada = dirSalida + prefijo + "_GRANDE_"+sufijoFicheroSalida
-    pathSalida = dirSalida + prefijo + "_MANEJABLE_"+sufijoFicheroSalida
-    print("pathEntrada = " + pathEntrada)
-    print("pathSalida = " + pathSalida)
-    datosEntrada.to_csv(pathEntrada, index=False, sep='|')
-    filasFiltradas.to_csv(pathSalida, index=False, sep='|')
+    pathSalidaGrande = dirSalida + prefijo + "_GRANDE_" + sufijoFicheroSalida
+    pathSalidaManejable = dirSalida + prefijo + "_MANEJABLE_" + sufijoFicheroSalida
+    print("pathSalidaGrande = " + pathSalidaGrande)
+    print("pathSalidaManejable = " + pathSalidaManejable)
+    if "_SG_0_" in pathFicheroEntrada:
+        datosEntrada.to_csv(pathSalidaGrande, index=False, sep='|') #Solo se guarda el GRANDE del subgrupo 0
+
+    filasFiltradas.to_csv(pathSalidaManejable, index=False, sep='|')
 
 print("--- InversionUtils: FIN ---")

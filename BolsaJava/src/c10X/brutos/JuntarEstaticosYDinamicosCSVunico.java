@@ -61,6 +61,7 @@ public class JuntarEstaticosYDinamicosCSVunico {
 
 		if (args.length == 0) {
 			MY_LOGGER.info("Sin parametros de entrada. Rellenamos los DEFAULT...");
+
 		} else if (args.length != 3) {
 			MY_LOGGER.error("Parametros de entrada incorrectos!! --> " + args.length);
 			int numParams = args.length;
@@ -82,7 +83,6 @@ public class JuntarEstaticosYDinamicosCSVunico {
 
 		nucleo(dirBrutoCsv, desplazamientoAntiguedad, entornoDeValidacion);
 		MY_LOGGER.info("FIN");
-
 	}
 
 	/**
@@ -109,7 +109,19 @@ public class JuntarEstaticosYDinamicosCSVunico {
 
 			if (fileEstat.exists() && fileDin.exists()) {
 				nucleoEmpresa(dirBrutoCsv, enm, fileEstat, fileDin, desplazamientoAntiguedad);
+
+			} else if (!fileEstat.exists() || fileDin.exists()) {
+				MY_LOGGER.error("nucleo() - existe_csv_estatico= " + fileEstat.exists() + "   y existe_csv_dinamico="
+						+ fileDin.exists() + "  Deberían estar los 2!!! Empresa: " + enm.symbol + "   Saliendo...");
+				MY_LOGGER.error(
+						"finvizEstaticos=" + finvizEstaticos + " | yahooFinanceDinamicos=" + yahooFinanceDinamicos);
+				System.exit(-1);
+
 			}
+//			else {
+//				MY_LOGGER.warn("nucleo() - existe_csv_estatico= " + fileEstat.exists() + "   y existe_csv_dinamico="
+//						+ fileDin.exists() + "  Deberían estar los 2!!! No procesamos esa empresa: " + enm.symbol);
+//			}
 
 		}
 	}
@@ -213,6 +225,7 @@ public class JuntarEstaticosYDinamicosCSVunico {
 
 		// ---------- JUNTOS -----------------------
 		String juntos = dirBrutoCsv + BrutosUtils.MERCADO_NQ + "_" + enm.symbol + ".csv";
+		MY_LOGGER.info("Escribiendo CSV juntos en: " + juntos);
 		File fjuntos = new File(juntos);
 		if (fjuntos.exists()) {
 			PrintWriter writer = new PrintWriter(fjuntos);

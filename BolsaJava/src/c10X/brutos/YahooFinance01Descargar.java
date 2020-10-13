@@ -59,6 +59,7 @@ public class YahooFinance01Descargar implements Serializable {
 
 		if (args.length == 0) {
 			MY_LOGGER.info("Sin parametros de entrada. Rellenamos los DEFAULT...");
+
 		} else if (args.length != 6) {
 			MY_LOGGER.error("Parametros de entrada incorrectos!!");
 			int numParams = args.length;

@@ -139,6 +139,9 @@ public class EstaticosFinvizDescargarYParsear {
 					String rutaCsvBruto = dirBrutoCsv + BrutosUtils.FINVIZ + "_" + BrutosUtils.MERCADO_NQ + "_"
 							+ nasdaqEstaticos1.get(i).symbol + ".csv";
 					volcarEnCSV(BrutosUtils.MERCADO_NQ, nasdaqEstaticos1.get(i).symbol, mapaExtraidos, rutaCsvBruto);
+
+				} else {
+					MY_LOGGER.warn("main() - Caso raro - 001 - Error al parsear FINVIZ de empresa: " + empresa);
 				}
 
 			} else if (empresa != null && !empresa.equalsIgnoreCase("AAPL")) {
@@ -155,6 +158,8 @@ public class EstaticosFinvizDescargarYParsear {
 				out.write("\n");
 				out.close();
 
+			} else {
+				MY_LOGGER.warn("main() - Caso raro - 002: " + empresa);
 			}
 		}
 
@@ -241,18 +246,24 @@ public class EstaticosFinvizDescargarYParsear {
 			con.disconnect();
 
 			// Escribir SALIDA
-			boolean escribible = Files.isWritable(Paths.get(pathOut));
+			boolean escribible = Files.isWritable(Paths.get(pathOut).getParent());
 			MY_LOGGER.debug("Carpeta escribible:" + escribible);
+
+			if (escribible == false) {
+				MY_LOGGER.error("La carpeta destino no es escribible!!! Path: " + Paths.get(pathOut).getParent()
+						+ "   Saliendo...");
+				System.exit(-1);
+			}
+
 			MY_LOGGER.debug("Escribiendo a fichero...");
-			MY_LOGGER.debug("StringBuffer con " + content.length() + " elementos de 16-bits)");
-			// contenido = content.toString();
+			MY_LOGGER.debug("StringBuffer con " + content.length() + " elementos de 16-bits");
 
 			Files.write(Paths.get(pathOut), content.toString().getBytes());
 
 			out = true;
 
 		} catch (IOException e) {
-			MY_LOGGER.error("Error:" + e.getMessage());
+			MY_LOGGER.error("descargarPaginaFinviz() - ERROR: " + e.getMessage());
 			e.printStackTrace();
 		}
 
@@ -378,28 +389,34 @@ public class EstaticosFinvizDescargarYParsear {
 		MY_LOGGER.debug("volcarEnCSV --> " + mercado + "|" + empresa + "|" + mapaExtraidos.size() + "|" + rutaCsvBruto);
 
 		// ---------------------------- ESCRITURA ---------------
-		MY_LOGGER.debug("Escritura...");
-		File fout = new File(rutaCsvBruto);
-		FileOutputStream fos = new FileOutputStream(fout, false);
-		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
+		if (mapaExtraidos.size() > 0) {
+			MY_LOGGER.debug("Escritura...");
+			File fout = new File(rutaCsvBruto);
+			FileOutputStream fos = new FileOutputStream(fout, false);
+			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
 
-		// Cabecera
-		String cabecera = "mercado|empresa";
-		for (String s : mapaExtraidos.keySet()) {
-			cabecera += "|" + s;
+			// Cabecera
+			String cabecera = "mercado|empresa";
+			for (String s : mapaExtraidos.keySet()) {
+				cabecera += "|" + s;
+			}
+
+			bw.write(cabecera);
+			bw.newLine();
+
+			String fila = mercado + "|" + empresa;
+			for (String item : mapaExtraidos.values()) {
+				fila += "|" + item;
+			}
+			bw.write(fila);
+			bw.newLine();
+
+			bw.close();
+		} else {
+			MY_LOGGER.error(
+					"No escribimos FINVIZ de empresa=" + empresa + " porque no se han extraido datos. Saliendo...");
+			System.exit(-1);
 		}
-
-		bw.write(cabecera);
-		bw.newLine();
-
-		String fila = mercado + "|" + empresa;
-		for (String item : mapaExtraidos.values()) {
-			fila += "|" + item;
-		}
-		bw.write(fila);
-		bw.newLine();
-
-		bw.close();
 
 	}
 
