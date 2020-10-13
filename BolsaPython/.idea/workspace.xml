@@ -3,9 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="22edbd2f-b3d9-42f0-a7dd-659033ab601a" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bolsa/C6CreadorModelosDeSubgrupo.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/C6CreadorModelosDeSubgrupo.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaScripts/inversionHistorica.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/inversionHistorica.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaScripts/parametros.config" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/parametros.config" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bolsa/InversionUtils.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/InversionUtils.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,7 +35,7 @@
     <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/bolsa/FeaturesAnalisisPosteriori.py" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/bolsa/InversionUtils.py" />
     <property name="run.code.analysis.last.selected.profile" value="aDefault" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
@@ -50,7 +48,7 @@
       <recent name="C:\DATOS\GITHUB_REPOS\bolsa\BolsaPython\bolsa" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.C6CreadorModelosDeSubgrupo">
+  <component name="RunManager" selected="Python.InversionUtils">
     <configuration name="C5SeleccionDeVariablesDeSubgrupo" type="PythonConfigurationType" factoryName="Python">
       <module name="BolsaPython" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -114,6 +112,27 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="InversionUtils" type="PythonConfigurationType" factoryName="Python">
+      <module name="BolsaPython" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="$PROJECT_DIR$/../../PROGRAMAS/anaconda3/envs/BolsaPython/bin/python" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/bolsa" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/bolsa/InversionUtils.py" />
+      <option name="PARAMETERS" value="/bolsa/futuro/subgrupos/SG_9/0_SG_9_COMPLETO_PREDICCION.csv 0 /bolsa/ OUT.csv" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="InversionUtilsPosteriori" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="BolsaPython" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -161,10 +180,23 @@
       <item itemvalue="Python.C6CreadorModelosDeSubgrupo" />
       <item itemvalue="Python.FeaturesAnalisisPosteriori" />
       <item itemvalue="Python.InversionUtilsPosteriori" />
+      <item itemvalue="Python.InversionUtils" />
       <item itemvalue="Python.pruebas" />
     </list>
   </component>
-  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="ServiceViewManager">
+    <option name="viewStates">
+      <list>
+        <serviceView>
+          <treeState>
+            <expand />
+            <select />
+          </treeState>
+        </serviceView>
+      </list>
+    </option>
+  </component>
+  <component name="SpellCheckerSettings" BundledDictionaries="0" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" Dictionaries="0" CorrectionsLimit="5" DefaultDictionary="application-level" UseSingleDictionary="true" />
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -198,12 +230,13 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>
     </option>
-    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Hola mundo en python" />
@@ -211,50 +244,38 @@
     <option name="LAST_COMMIT_MESSAGE" value="Machine Learning - Ejemplo" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="174" y="414" width="1396" height="598" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1598047467643">
+    <state x="174" y="414" width="1396" height="598" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1602622947055">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
     <state x="113" y="481" key="#com.intellij.execution.impl.EditConfigurationsDialog/1920.0.1366.768/0.83.1920.1080@0.83.1920.1080" timestamp="1594678422043" />
-    <state x="174" y="414" width="1396" height="598" key="#com.intellij.execution.impl.EditConfigurationsDialog/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1598047467643" />
-    <state x="752" y="433" key="#com.jetbrains.python.refactoring.move.PyMoveModuleMembersDialog" timestamp="1592661994113">
+    <state x="174" y="414" width="1396" height="598" key="#com.intellij.execution.impl.EditConfigurationsDialog/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1602622947055" />
+    <state x="660" y="472" key="FileChooserDialogImpl" timestamp="1602622904621">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
-    <state x="752" y="433" key="#com.jetbrains.python.refactoring.move.PyMoveModuleMembersDialog/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1592661994113" />
-    <state x="867" y="393" key="#xdebugger.evaluate" timestamp="1592088945731">
-      <screen x="65" y="24" width="1855" height="1056" />
-    </state>
-    <state x="867" y="393" key="#xdebugger.evaluate/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1592088945731" />
-    <state width="1853" height="432" key="DebuggerActiveHint" timestamp="1592660763513">
-      <screen x="65" y="24" width="1855" height="1056" />
-    </state>
-    <state width="1853" height="432" key="DebuggerActiveHint/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1592660763513" />
-    <state x="584" y="396" key="FileChooserDialogImpl" timestamp="1593532282598">
-      <screen x="65" y="24" width="1855" height="1056" />
-    </state>
-    <state x="584" y="396" key="FileChooserDialogImpl/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1593532282598" />
-    <state width="1855" height="368" key="GridCell.Tab.0.bottom" timestamp="1598131504683">
+    <state x="660" y="472" key="FileChooserDialogImpl/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1602622904621" />
+    <state width="1855" height="224" key="GridCell.Tab.0.bottom" timestamp="1602622952824">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
     <state width="1832" height="267" key="GridCell.Tab.0.bottom/1920.0.1366.768/0.83.1920.1080@0.83.1920.1080" timestamp="1594679137160" />
-    <state width="1855" height="368" key="GridCell.Tab.0.bottom/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1598131504683" />
+    <state width="1855" height="224" key="GridCell.Tab.0.bottom/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1602622952824" />
     <state width="1278" height="214" key="GridCell.Tab.0.bottom/65.24.1301.744@65.24.1301.744" timestamp="1595321894607" />
-    <state width="1855" height="368" key="GridCell.Tab.0.center" timestamp="1598131504683">
+    <state width="1855" height="224" key="GridCell.Tab.0.center" timestamp="1602622952824">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
     <state width="1832" height="267" key="GridCell.Tab.0.center/1920.0.1366.768/0.83.1920.1080@0.83.1920.1080" timestamp="1594679137159" />
-    <state width="1855" height="368" key="GridCell.Tab.0.center/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1598131504683" />
+    <state width="1855" height="224" key="GridCell.Tab.0.center/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1602622952824" />
     <state width="1278" height="214" key="GridCell.Tab.0.center/65.24.1301.744@65.24.1301.744" timestamp="1595321894606" />
-    <state width="1855" height="368" key="GridCell.Tab.0.left" timestamp="1598131504683">
+    <state width="1855" height="224" key="GridCell.Tab.0.left" timestamp="1602622952824">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
     <state width="1832" height="267" key="GridCell.Tab.0.left/1920.0.1366.768/0.83.1920.1080@0.83.1920.1080" timestamp="1594679137159" />
-    <state width="1855" height="368" key="GridCell.Tab.0.left/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1598131504683" />
+    <state width="1855" height="224" key="GridCell.Tab.0.left/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1602622952824" />
     <state width="1278" height="214" key="GridCell.Tab.0.left/65.24.1301.744@65.24.1301.744" timestamp="1595321894605" />
-    <state width="1855" height="368" key="GridCell.Tab.0.right" timestamp="1598131504683">
+    <state width="1855" height="224" key="GridCell.Tab.0.right" timestamp="1602622952824">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
     <state width="1832" height="267" key="GridCell.Tab.0.right/1920.0.1366.768/0.83.1920.1080@0.83.1920.1080" timestamp="1594679137159" />
-    <state width="1855" height="368" key="GridCell.Tab.0.right/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1598131504683" />
+    <state width="1855" height="224" key="GridCell.Tab.0.right/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1602622952824" />
     <state width="1278" height="214" key="GridCell.Tab.0.right/65.24.1301.744@65.24.1301.744" timestamp="1595321894606" />
     <state width="927" height="351" key="GridCell.Tab.1.bottom" timestamp="1597698314531">
       <screen x="65" y="24" width="1855" height="1056" />
@@ -280,22 +301,6 @@
     <state width="1832" height="327" key="GridCell.Tab.1.right/1920.0.1366.768/0.83.1920.1080@0.83.1920.1080" timestamp="1594588307479" />
     <state width="927" height="351" key="GridCell.Tab.1.right/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1597698314531" />
     <state width="1278" height="214" key="GridCell.Tab.1.right/65.24.1301.744@65.24.1301.744" timestamp="1595321894610" />
-    <state x="400" y="45" key="SettingsEditor" timestamp="1593550789142">
-      <screen x="65" y="24" width="1855" height="1056" />
-    </state>
-    <state x="400" y="45" key="SettingsEditor/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1593550789142" />
-    <state width="937" height="538" key="XDebugger.FullValuePopup" timestamp="1593551547639">
-      <screen x="65" y="24" width="1855" height="1056" />
-    </state>
-    <state width="937" height="538" key="XDebugger.FullValuePopup/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1593551547639" />
-    <state x="256" y="135" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2" timestamp="1592659675224">
-      <screen x="65" y="24" width="1855" height="1056" />
-    </state>
-    <state x="256" y="135" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1592659675224" />
-    <state x="722" y="454" key="vcs.readOnlyHandler.ReadOnlyStatusDialog" timestamp="1593550896152">
-      <screen x="65" y="24" width="1855" height="1056" />
-    </state>
-    <state x="722" y="454" key="vcs.readOnlyHandler.ReadOnlyStatusDialog/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1593550896152" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
