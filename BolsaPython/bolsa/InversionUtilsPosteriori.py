@@ -454,6 +454,7 @@ datosManejables=pd.DataFrame()
 contenidosManejables=[]
 
 for filename in ficherosManejables:
+    print("Fichero analizado: "+filename)
     datosFichero = pd.read_csv(filepath_or_buffer=filename, sep='|')
     datosFicheroReducidos=datosFichero[columnasManejables]
     datosFicheroInteresantes=pd.DataFrame(datosFicheroReducidos.loc[datosFicheroReducidos['TARGET_PREDICHO'] == 1],

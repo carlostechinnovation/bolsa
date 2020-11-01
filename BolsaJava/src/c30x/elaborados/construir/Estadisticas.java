@@ -28,12 +28,11 @@ public class Estadisticas extends DescriptiveStatistics {
 	private HashMap<Integer, String> ordenNombresParametrosElaborados;
 
 	// Otros menos útiles:
-//	PENDIENTE_SMA_SEGUNDO_, PENDIENTE_1M_SMA_SEGUNDO_, PENDIENTE_2M_SMA_SEGUNDO_
 //	RATIO_MAXRELATIVO_SEGUNDO_, RATIO_SMA_SEGUNDO_, STD_SMA_, PENDIENTE_1M_SMA_, 
-//	RATIO_MINRELATIVO_SEGUNDO_, RATIO_U_SMA_, RATIO_U_MAXRELATIVO_, RATIO_U_MINRELATIVO_,
+//	RATIO_MINRELATIVO_SEGUNDO_, RATIO_U_SMA_, RATIO_U_MAXRELATIVO_, RATIO_U_MINRELATIVO_, FASEWYCKOFF_
 	public enum COMIENZO_NOMBRES_PARAMETROS_ELABORADOS {
-		MEDIA_SMA_, PENDIENTE_SMA_, PENDIENTE_2M_SMA_, RATIO_SMA_, RATIO_MAXRELATIVO_, RATIO_MINRELATIVO_,
-		 CURTOSIS_, SKEWNESS_;
+		PENDIENTE_SMA_SEGUNDO_, PENDIENTE_1M_SMA_SEGUNDO_, PENDIENTE_2M_SMA_SEGUNDO_, MEDIA_SMA_, PENDIENTE_SMA_,
+		PENDIENTE_2M_SMA_, RATIO_SMA_, RATIO_MAXRELATIVO_, RATIO_MINRELATIVO_, CURTOSIS_, SKEWNESS_;
 	}
 
 //	Otros menos útiles: 
@@ -52,10 +51,12 @@ public class Estadisticas extends DescriptiveStatistics {
 	public static void main(String[] args) {
 
 		Estadisticas e5 = new Estadisticas();
-		e5.addValue(1.123456789D);
-		e5.addValue(10.123456789D);
-		e5.addValue(NUM100);
-		e5.addValue(NUM1K);
+		e5.addValue(10D);
+		e5.addValue(11D);
+		e5.addValue(12D);
+		e5.addValue(16D);
+		e5.addValue(21D);
+		e5.addValue(19D);
 		System.out.println("Valores: " + e5.toString());
 		System.out.println("e5.getMedia(): " + e5.getMedia());
 		System.out.println("e5.getPendienteRelativa(): " + e5.getPendienteRelativa());
@@ -75,6 +76,7 @@ public class Estadisticas extends DescriptiveStatistics {
 		System.out.println("e5.getRatioUltimoMin(): " + e5.getRatioUltimoMin());
 		System.out.println("e5.getKurtosis(): " + e5.getKurtosis());
 		System.out.println("e5.getSkewness(): " + e5.getSkewness());
+		System.out.println("e5.getFaseWyckoff(): " + e5.getFaseWyckoff());
 
 	}
 
@@ -95,16 +97,20 @@ public class Estadisticas extends DescriptiveStatistics {
 	 */
 	public Estadisticas() {
 		ordenNombresParametrosElaborados = new HashMap<Integer, String>();
-		// otros nó útiles:
-//		ordenNombresParametrosElaborados.put(4, COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.PENDIENTE_SMA_SEGUNDO_.toString());
-//		ordenNombresParametrosElaborados.put(6, COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.PENDIENTE_1M_SMA_SEGUNDO_.toString());
-//		ordenNombresParametrosElaborados.put(8, COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.PENDIENTE_2M_SMA_SEGUNDO_.toString());
-//		ordenNombresParametrosElaborados.put(2, COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.STD_SMA_.toString());
-//		ordenNombresParametrosElaborados.put(4, COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.PENDIENTE_1M_SMA_.toString());
-//		ordenNombresParametrosElaborados.put(7, COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_SMA_SEGUNDO_.toString());
-//		ordenNombresParametrosElaborados.put(10,
+		// otros no útiles:
+
+//		ordenNombresParametrosElaborados.put(ordenNombresParametrosElaborados.size() + 1, COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.STD_SMA_.toString());
+//		ordenNombresParametrosElaborados.put(ordenNombresParametrosElaborados.size() + 1, COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.PENDIENTE_1M_SMA_.toString());
+//		ordenNombresParametrosElaborados.put(ordenNombresParametrosElaborados.size() + 1, COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_SMA_SEGUNDO_.toString());
+//		ordenNombresParametrosElaborados.put(ordenNombresParametrosElaborados.size() + 1,
 //				COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_MAXRELATIVO_SEGUNDO_.toString());
 
+//		ordenNombresParametrosElaborados.put(ordenNombresParametrosElaborados.size() + 1,
+//				COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.PENDIENTE_SMA_SEGUNDO_.toString());
+//		ordenNombresParametrosElaborados.put(ordenNombresParametrosElaborados.size() + 1,
+//				COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.PENDIENTE_1M_SMA_SEGUNDO_.toString());
+//		ordenNombresParametrosElaborados.put(ordenNombresParametrosElaborados.size() + 1,
+//				COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.PENDIENTE_2M_SMA_SEGUNDO_.toString());
 		ordenNombresParametrosElaborados.put(ordenNombresParametrosElaborados.size() + 1,
 				COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_.toString());
 		ordenNombresParametrosElaborados.put(ordenNombresParametrosElaborados.size() + 1,
@@ -129,6 +135,8 @@ public class Estadisticas extends DescriptiveStatistics {
 				COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.CURTOSIS_.toString());
 		ordenNombresParametrosElaborados.put(ordenNombresParametrosElaborados.size() + 1,
 				COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.SKEWNESS_.toString());
+//		ordenNombresParametrosElaborados.put(ordenNombresParametrosElaborados.size() + 1,
+//				COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.FASEWYCKOFF_.toString());
 
 		locale = new Locale("en", "UK");
 		df = (DecimalFormat) NumberFormat.getNumberInstance(locale);
@@ -248,16 +256,16 @@ public class Estadisticas extends DescriptiveStatistics {
 	}
 
 	/**
-	 * Ratio, en porcentaje de MILLÓN, entre el PRIMER dato y la MEDIA del conjunto de datos.
-	 * Puede tener valores negativos.
+	 * Ratio, en porcentaje de MILLÓN, entre el PRIMER dato y la MEDIA del conjunto
+	 * de datos. Puede tener valores negativos.
 	 */
 	public int getRatioSMA() {
 		return (int) Math.round(NUM1M * (this.getElement(0) / getMean()));
 	}
 
 	/**
-	 * Ratio, en porcentaje de MILLÓN, entre el SEGUNDO dato y la MEDIA del conjunto de datos.
-	 * Puede tener valores negativos.
+	 * Ratio, en porcentaje de MILLÓN, entre el SEGUNDO dato y la MEDIA del conjunto
+	 * de datos. Puede tener valores negativos.
 	 */
 	public int getRatioSMASegundo() {
 		int salida = VALOR_FAKE;
@@ -267,24 +275,24 @@ public class Estadisticas extends DescriptiveStatistics {
 	}
 
 	/**
-	 * Ratio, en porcentaje de MILLÓN, entre el PRIMER dato y el MAXIMO del conjunto de datos.
-	 * Puede tener valores negativos.
+	 * Ratio, en porcentaje de MILLÓN, entre el PRIMER dato y el MAXIMO del conjunto
+	 * de datos. Puede tener valores negativos.
 	 */
 	public int getRatioMax() {
 		return (int) Math.round(NUM1M * (this.getElement(0) / this.getMax()));
 	}
 
 	/**
-	 * Ratio, en porcentajede MILLÓN, entre el PRIMER dato y el MINIMO del conjunto de datos.
-	 * Puede tener valores negativos.
+	 * Ratio, en porcentajede MILLÓN, entre el PRIMER dato y el MINIMO del conjunto
+	 * de datos. Puede tener valores negativos.
 	 */
 	public int getRatioMin() {
 		return (int) Math.round(NUM1M * (this.getElement(0) / this.getMin()));
 	}
 
 	/**
-	 * Ratio, en porcentajede MILLÓN, entre el SEGUNDO dato y el MAXIMO del conjunto de
-	 * datos. Puede tener valores negativos.
+	 * Ratio, en porcentajede MILLÓN, entre el SEGUNDO dato y el MAXIMO del conjunto
+	 * de datos. Puede tener valores negativos.
 	 */
 	public int getRatioMaxSegundo() {
 		int salida = VALOR_FAKE;
@@ -294,8 +302,8 @@ public class Estadisticas extends DescriptiveStatistics {
 	}
 
 	/**
-	 * Ratio, en porcentaje de MILLÓN, entre el SEGUNDO dato y el MINIMO del conjunto de
-	 * datos. Puede tener valores negativos.
+	 * Ratio, en porcentaje de MILLÓN, entre el SEGUNDO dato y el MINIMO del
+	 * conjunto de datos. Puede tener valores negativos.
 	 */
 	public int getRatioMinSegundo() {
 		int salida = VALOR_FAKE;
@@ -305,8 +313,8 @@ public class Estadisticas extends DescriptiveStatistics {
 	}
 
 	/**
-	 * Ratio, en porcentaje de MILLÓN, entre el ULTIMO dato y la MEDIA del conjunto de datos.
-	 * Puede tener valores negativos.
+	 * Ratio, en porcentaje de MILLÓN, entre el ULTIMO dato y la MEDIA del conjunto
+	 * de datos. Puede tener valores negativos.
 	 */
 	public int getRatioUltimoSMA() {
 		int salida = VALOR_FAKE;
@@ -316,8 +324,8 @@ public class Estadisticas extends DescriptiveStatistics {
 	}
 
 	/**
-	 * Ratio, en porcentaje de MILLÓN, entre el ULTIMO dato y el MAXIMO del conjunto de datos.
-	 * Puede tener valores negativos.
+	 * Ratio, en porcentaje de MILLÓN, entre el ULTIMO dato y el MAXIMO del conjunto
+	 * de datos. Puede tener valores negativos.
 	 */
 	public int getRatioUltimoMax() {
 		int salida = VALOR_FAKE;
@@ -327,11 +335,41 @@ public class Estadisticas extends DescriptiveStatistics {
 	}
 
 	/**
-	 * Ratio, en porcentaje de MILLÓN, entre el ULTIMO dato y el MINIMO del conjunto de datos.
-	 * Puede tener valores negativos.
+	 * Ratio, en porcentaje de MILLÓN, entre el ULTIMO dato y el MINIMO del conjunto
+	 * de datos. Puede tener valores negativos.
 	 */
 	public int getRatioUltimoMin() {
 		return (int) Math.round(NUM1M * (this.getElement((int) getN() - 1) / this.getMin()));
+	}
+
+	/**
+	 * Ratio, en porcentaje en MILLÓN, entre la pendiente de la segunda mitad de
+	 * datos, y la pendiente de la primera mitad.
+	 */
+	public int getFaseWyckoff() {
+		int salida = VALOR_FAKE;
+		double salidaTemp = VALOR_FAKE;
+		if (this.getN() > 4) {
+			double numerador, denominador;
+			double primero_1m, ultimo_1m, primero_2m, ultimo_2m, num_elementos;
+			primero_1m=this.getElement(0);
+			ultimo_1m=this.getElement((int) ((int) this.getN() / 2.0 - 1));
+			primero_2m=this.getElement((int) (Math.floor(this.getN() / 2.0 )));
+			ultimo_2m=this.getElement((int) (Math.ceil(this.getN() - 1)));
+			num_elementos=Math.ceil(this.getN() - 1);
+			numerador = (ultimo_2m-primero_2m)/primero_2m;
+			denominador = (ultimo_1m-primero_1m)/primero_1m;
+			salidaTemp = numerador / denominador;
+		}
+		// Para evitar infinitos, asumimos estos valores como infinito
+		if (salidaTemp > NUM1M) {
+			salidaTemp = NUM1M;
+		} else if (salidaTemp < (-1.0) * NUM1M) {
+			salidaTemp = (-1.0) * NUM1M;
+		}
+		salida = (int) Math.round(NUM1M * salidaTemp);
+		return salida;
+
 	}
 
 	/**
@@ -372,6 +410,7 @@ public class Estadisticas extends DescriptiveStatistics {
 		System.out.println("ratio_Ultimominrelativo = " + getRatioUltimoMin());
 		System.out.println("curtosis = " + getKurtosis());
 		System.out.println("skewness = " + getSkewness());
+		System.out.println("faseWyckoff = " + getFaseWyckoff());
 	}
 
 	/**
@@ -405,6 +444,7 @@ public class Estadisticas extends DescriptiveStatistics {
 //		String ratio_uminrelativo = VALOR_INVALIDO;// default
 		String kurtosis = VALOR_INVALIDO;// default
 		String skewness = VALOR_INVALIDO;// default
+//		String faseWyckoff = VALOR_INVALIDO;// default
 
 		if (rellenarConInvalidos == false) {
 
@@ -427,6 +467,7 @@ public class Estadisticas extends DescriptiveStatistics {
 //			double d_ratio_uminrelativo = this.getRatioUltimoMin();
 			double d_kurtosis = this.getKurtosis();
 			double d_skewness = this.getSkewness();
+//			double d_faseWyckoff = this.getFaseWyckoff();
 
 			media_sma = Double.isNaN(d_media_sma) ? VALOR_INVALIDO : df.format(d_media_sma);
 //			std_sma = Double.isNaN(d_std_sma) ? VALOR_INVALIDO : df.format(d_std_sma);
@@ -452,6 +493,7 @@ public class Estadisticas extends DescriptiveStatistics {
 			// filas. El clasificador no lo usará, ya que no lo considerará útil
 			kurtosis = Double.isNaN(d_kurtosis) ? "0" : df.format(d_kurtosis);
 			skewness = Double.isNaN(d_skewness) ? VALOR_INVALIDO : df.format(d_skewness);
+//			faseWyckoff = Double.isNaN(d_faseWyckoff) ? VALOR_INVALIDO : df.format(d_faseWyckoff);
 		}
 
 		parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_ + periodoString + finalNombreParametro,
@@ -493,6 +535,8 @@ public class Estadisticas extends DescriptiveStatistics {
 				kurtosis);
 		parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.SKEWNESS_ + periodoString + finalNombreParametro,
 				skewness);
+//		parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.FASEWYCKOFF_ + periodoString + finalNombreParametro,
+//				faseWyckoff);
 
 		return parametros;
 	}

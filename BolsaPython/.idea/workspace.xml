@@ -2,16 +2,1180 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="22edbd2f-b3d9-42f0-a7dd-659033ab601a" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/c30x/elaborados/construir/Estadisticas.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/c30x/elaborados/construir/Estadisticas.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bolsa/C6CreadorModelosDeSubgrupo.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/C6CreadorModelosDeSubgrupo.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bolsa/InversionUtils.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/InversionUtils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bolsa/InversionUtilsPosteriori.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/InversionUtilsPosteriori.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BolsaScripts/inversionHistorica.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/inversionHistorica.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200401_GRANDE_0_SG_10_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200401_GRANDE_0_SG_11_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200401_GRANDE_0_SG_12_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200401_GRANDE_0_SG_14_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200401_GRANDE_0_SG_19_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200401_GRANDE_0_SG_20_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200401_GRANDE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200401_GRANDE_0_SG_22_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200401_GRANDE_0_SG_23_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200401_GRANDE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200401_GRANDE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200401_GRANDE_0_SG_27_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200401_GRANDE_0_SG_28_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200401_GRANDE_0_SG_2_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200401_GRANDE_0_SG_33_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200401_GRANDE_0_SG_35_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200401_GRANDE_0_SG_37_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200401_GRANDE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200401_GRANDE_0_SG_3_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200401_GRANDE_0_SG_40_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200401_GRANDE_0_SG_41_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200401_GRANDE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200401_GRANDE_0_SG_43_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200401_GRANDE_0_SG_4_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200401_GRANDE_0_SG_5_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200401_GRANDE_0_SG_9_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200401_MANEJABLE_0_SG_10_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200401_MANEJABLE_0_SG_11_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200401_MANEJABLE_0_SG_12_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200401_MANEJABLE_0_SG_14_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200401_MANEJABLE_0_SG_19_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200401_MANEJABLE_0_SG_20_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200401_MANEJABLE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200401_MANEJABLE_0_SG_22_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200401_MANEJABLE_0_SG_23_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200401_MANEJABLE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200401_MANEJABLE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200401_MANEJABLE_0_SG_27_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200401_MANEJABLE_0_SG_28_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200401_MANEJABLE_0_SG_2_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200401_MANEJABLE_0_SG_33_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200401_MANEJABLE_0_SG_35_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200401_MANEJABLE_0_SG_37_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200401_MANEJABLE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200401_MANEJABLE_0_SG_3_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200401_MANEJABLE_0_SG_40_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200401_MANEJABLE_0_SG_41_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200401_MANEJABLE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200401_MANEJABLE_0_SG_43_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200401_MANEJABLE_0_SG_4_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200401_MANEJABLE_0_SG_5_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200401_MANEJABLE_0_SG_9_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200402_GRANDE_0_SG_10_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200402_GRANDE_0_SG_11_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200402_GRANDE_0_SG_12_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200402_GRANDE_0_SG_14_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200402_GRANDE_0_SG_19_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200402_GRANDE_0_SG_20_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200402_GRANDE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200402_GRANDE_0_SG_22_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200402_GRANDE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200402_GRANDE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200402_GRANDE_0_SG_27_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200402_GRANDE_0_SG_28_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200402_GRANDE_0_SG_33_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200402_GRANDE_0_SG_35_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200402_GRANDE_0_SG_37_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200402_GRANDE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200402_GRANDE_0_SG_41_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200402_GRANDE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200402_GRANDE_0_SG_43_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200402_GRANDE_0_SG_4_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200402_GRANDE_0_SG_5_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200402_MANEJABLE_0_SG_10_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200402_MANEJABLE_0_SG_11_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200402_MANEJABLE_0_SG_12_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200402_MANEJABLE_0_SG_14_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200402_MANEJABLE_0_SG_19_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200402_MANEJABLE_0_SG_20_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200402_MANEJABLE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200402_MANEJABLE_0_SG_22_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200402_MANEJABLE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200402_MANEJABLE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200402_MANEJABLE_0_SG_27_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200402_MANEJABLE_0_SG_28_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200402_MANEJABLE_0_SG_33_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200402_MANEJABLE_0_SG_35_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200402_MANEJABLE_0_SG_37_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200402_MANEJABLE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200402_MANEJABLE_0_SG_41_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200402_MANEJABLE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200402_MANEJABLE_0_SG_43_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200402_MANEJABLE_0_SG_4_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200402_MANEJABLE_0_SG_5_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200403_GRANDE_0_SG_10_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200403_GRANDE_0_SG_11_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200403_GRANDE_0_SG_14_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200403_GRANDE_0_SG_19_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200403_GRANDE_0_SG_20_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200403_GRANDE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200403_GRANDE_0_SG_22_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200403_GRANDE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200403_GRANDE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200403_GRANDE_0_SG_27_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200403_GRANDE_0_SG_28_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200403_GRANDE_0_SG_33_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200403_GRANDE_0_SG_35_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200403_GRANDE_0_SG_37_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200403_GRANDE_0_SG_40_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200403_GRANDE_0_SG_41_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200403_GRANDE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200403_GRANDE_0_SG_43_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200403_GRANDE_0_SG_4_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200403_GRANDE_0_SG_5_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200403_MANEJABLE_0_SG_10_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200403_MANEJABLE_0_SG_11_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200403_MANEJABLE_0_SG_14_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200403_MANEJABLE_0_SG_19_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200403_MANEJABLE_0_SG_20_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200403_MANEJABLE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200403_MANEJABLE_0_SG_22_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200403_MANEJABLE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200403_MANEJABLE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200403_MANEJABLE_0_SG_27_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200403_MANEJABLE_0_SG_28_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200403_MANEJABLE_0_SG_33_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200403_MANEJABLE_0_SG_35_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200403_MANEJABLE_0_SG_37_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200403_MANEJABLE_0_SG_40_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200403_MANEJABLE_0_SG_41_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200403_MANEJABLE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200403_MANEJABLE_0_SG_43_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200403_MANEJABLE_0_SG_4_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200403_MANEJABLE_0_SG_5_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200407_GRANDE_0_SG_11_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200407_GRANDE_0_SG_13_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200407_GRANDE_0_SG_14_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200407_GRANDE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200407_GRANDE_0_SG_22_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200407_GRANDE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200407_GRANDE_0_SG_27_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200407_GRANDE_0_SG_33_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200407_GRANDE_0_SG_37_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200407_GRANDE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200407_GRANDE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200407_GRANDE_0_SG_6_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200407_MANEJABLE_0_SG_11_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200407_MANEJABLE_0_SG_13_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200407_MANEJABLE_0_SG_14_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200407_MANEJABLE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200407_MANEJABLE_0_SG_22_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200407_MANEJABLE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200407_MANEJABLE_0_SG_27_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200407_MANEJABLE_0_SG_33_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200407_MANEJABLE_0_SG_37_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200407_MANEJABLE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200407_MANEJABLE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200407_MANEJABLE_0_SG_6_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200408_GRANDE_0_SG_13_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200408_GRANDE_0_SG_14_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200408_GRANDE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200408_GRANDE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200408_GRANDE_0_SG_27_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200408_GRANDE_0_SG_33_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200408_GRANDE_0_SG_37_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200408_GRANDE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200408_GRANDE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200408_GRANDE_0_SG_6_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200408_MANEJABLE_0_SG_13_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200408_MANEJABLE_0_SG_14_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200408_MANEJABLE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200408_MANEJABLE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200408_MANEJABLE_0_SG_27_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200408_MANEJABLE_0_SG_33_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200408_MANEJABLE_0_SG_37_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200408_MANEJABLE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200408_MANEJABLE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200408_MANEJABLE_0_SG_6_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200409_GRANDE_0_SG_14_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200409_GRANDE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200409_GRANDE_0_SG_22_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200409_GRANDE_0_SG_27_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200409_GRANDE_0_SG_33_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200409_GRANDE_0_SG_37_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200409_GRANDE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200409_GRANDE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200409_GRANDE_0_SG_6_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200409_MANEJABLE_0_SG_14_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200409_MANEJABLE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200409_MANEJABLE_0_SG_22_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200409_MANEJABLE_0_SG_27_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200409_MANEJABLE_0_SG_33_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200409_MANEJABLE_0_SG_37_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200409_MANEJABLE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200409_MANEJABLE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200409_MANEJABLE_0_SG_6_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200413_GRANDE_0_SG_12_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200413_GRANDE_0_SG_14_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200413_GRANDE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200413_GRANDE_0_SG_22_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200413_GRANDE_0_SG_23_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200413_GRANDE_0_SG_24_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200413_GRANDE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200413_GRANDE_0_SG_27_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200413_GRANDE_0_SG_28_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200413_GRANDE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200413_GRANDE_0_SG_33_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200413_GRANDE_0_SG_35_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200413_GRANDE_0_SG_37_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200413_GRANDE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200413_GRANDE_0_SG_39_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200413_GRANDE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200413_GRANDE_0_SG_43_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200413_GRANDE_0_SG_4_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200413_GRANDE_0_SG_6_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200413_MANEJABLE_0_SG_12_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200413_MANEJABLE_0_SG_14_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200413_MANEJABLE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200413_MANEJABLE_0_SG_22_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200413_MANEJABLE_0_SG_23_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200413_MANEJABLE_0_SG_24_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200413_MANEJABLE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200413_MANEJABLE_0_SG_27_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200413_MANEJABLE_0_SG_28_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200413_MANEJABLE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200413_MANEJABLE_0_SG_33_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200413_MANEJABLE_0_SG_35_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200413_MANEJABLE_0_SG_37_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200413_MANEJABLE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200413_MANEJABLE_0_SG_39_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200413_MANEJABLE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200413_MANEJABLE_0_SG_43_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200413_MANEJABLE_0_SG_4_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200413_MANEJABLE_0_SG_6_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200417_GRANDE_0_SG_11_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200417_GRANDE_0_SG_28_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200417_GRANDE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200417_GRANDE_0_SG_43_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200417_GRANDE_0_SG_6_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200417_MANEJABLE_0_SG_11_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200417_MANEJABLE_0_SG_28_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200417_MANEJABLE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200417_MANEJABLE_0_SG_43_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200417_MANEJABLE_0_SG_6_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200424_GRANDE_0_SG_11_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200424_GRANDE_0_SG_13_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200424_GRANDE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200424_GRANDE_0_SG_22_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200424_GRANDE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200424_GRANDE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200424_GRANDE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200424_GRANDE_0_SG_33_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200424_GRANDE_0_SG_35_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200424_GRANDE_0_SG_37_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200424_GRANDE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200424_GRANDE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200424_GRANDE_0_SG_43_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200424_GRANDE_0_SG_4_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200424_GRANDE_0_SG_5_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200424_GRANDE_0_SG_6_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200424_MANEJABLE_0_SG_11_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200424_MANEJABLE_0_SG_13_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200424_MANEJABLE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200424_MANEJABLE_0_SG_22_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200424_MANEJABLE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200424_MANEJABLE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200424_MANEJABLE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200424_MANEJABLE_0_SG_33_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200424_MANEJABLE_0_SG_35_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200424_MANEJABLE_0_SG_37_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200424_MANEJABLE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200424_MANEJABLE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200424_MANEJABLE_0_SG_43_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200424_MANEJABLE_0_SG_4_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200424_MANEJABLE_0_SG_5_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200424_MANEJABLE_0_SG_6_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200427_GRANDE_0_SG_11_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200427_GRANDE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200427_GRANDE_0_SG_22_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200427_GRANDE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200427_GRANDE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200427_GRANDE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200427_GRANDE_0_SG_33_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200427_GRANDE_0_SG_35_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200427_GRANDE_0_SG_37_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200427_GRANDE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200427_GRANDE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200427_GRANDE_0_SG_43_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200427_GRANDE_0_SG_5_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200427_GRANDE_0_SG_6_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200427_MANEJABLE_0_SG_11_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200427_MANEJABLE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200427_MANEJABLE_0_SG_22_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200427_MANEJABLE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200427_MANEJABLE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200427_MANEJABLE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200427_MANEJABLE_0_SG_33_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200427_MANEJABLE_0_SG_35_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200427_MANEJABLE_0_SG_37_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200427_MANEJABLE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200427_MANEJABLE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200427_MANEJABLE_0_SG_43_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200427_MANEJABLE_0_SG_5_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200427_MANEJABLE_0_SG_6_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200428_GRANDE_0_SG_11_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200428_GRANDE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200428_GRANDE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200428_GRANDE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200428_GRANDE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200428_GRANDE_0_SG_33_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200428_GRANDE_0_SG_35_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200428_GRANDE_0_SG_37_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200428_GRANDE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200428_GRANDE_0_SG_43_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200428_GRANDE_0_SG_6_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200428_MANEJABLE_0_SG_11_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200428_MANEJABLE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200428_MANEJABLE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200428_MANEJABLE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200428_MANEJABLE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200428_MANEJABLE_0_SG_33_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200428_MANEJABLE_0_SG_35_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200428_MANEJABLE_0_SG_37_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200428_MANEJABLE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200428_MANEJABLE_0_SG_43_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200428_MANEJABLE_0_SG_6_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200429_GRANDE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200429_GRANDE_0_SG_22_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200429_GRANDE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200429_GRANDE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200429_GRANDE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200429_GRANDE_0_SG_33_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200429_GRANDE_0_SG_35_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200429_GRANDE_0_SG_37_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200429_GRANDE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200429_GRANDE_0_SG_43_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200429_GRANDE_0_SG_6_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200429_MANEJABLE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200429_MANEJABLE_0_SG_22_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200429_MANEJABLE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200429_MANEJABLE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200429_MANEJABLE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200429_MANEJABLE_0_SG_33_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200429_MANEJABLE_0_SG_35_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200429_MANEJABLE_0_SG_37_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200429_MANEJABLE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200429_MANEJABLE_0_SG_43_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200429_MANEJABLE_0_SG_6_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200430_GRANDE_0_SG_11_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200430_GRANDE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200430_GRANDE_0_SG_22_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200430_GRANDE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200430_GRANDE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200430_GRANDE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200430_GRANDE_0_SG_33_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200430_GRANDE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200430_GRANDE_0_SG_43_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200430_GRANDE_0_SG_6_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200430_MANEJABLE_0_SG_11_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200430_MANEJABLE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200430_MANEJABLE_0_SG_22_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200430_MANEJABLE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200430_MANEJABLE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200430_MANEJABLE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200430_MANEJABLE_0_SG_33_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200430_MANEJABLE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200430_MANEJABLE_0_SG_43_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200430_MANEJABLE_0_SG_6_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200501_GRANDE_0_SG_11_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200501_GRANDE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200501_GRANDE_0_SG_22_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200501_GRANDE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200501_GRANDE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200501_GRANDE_0_SG_28_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200501_GRANDE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200501_GRANDE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200501_GRANDE_0_SG_5_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200501_MANEJABLE_0_SG_11_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200501_MANEJABLE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200501_MANEJABLE_0_SG_22_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200501_MANEJABLE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200501_MANEJABLE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200501_MANEJABLE_0_SG_28_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200501_MANEJABLE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200501_MANEJABLE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200501_MANEJABLE_0_SG_5_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200504_GRANDE_0_SG_19_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200504_GRANDE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200504_GRANDE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200504_GRANDE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200504_GRANDE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200504_GRANDE_0_SG_37_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200504_GRANDE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200504_GRANDE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200504_GRANDE_0_SG_43_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200504_GRANDE_0_SG_4_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200504_GRANDE_0_SG_5_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200504_GRANDE_0_SG_6_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200504_MANEJABLE_0_SG_19_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200504_MANEJABLE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200504_MANEJABLE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200504_MANEJABLE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200504_MANEJABLE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200504_MANEJABLE_0_SG_37_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200504_MANEJABLE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200504_MANEJABLE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200504_MANEJABLE_0_SG_43_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200504_MANEJABLE_0_SG_4_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200504_MANEJABLE_0_SG_5_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200504_MANEJABLE_0_SG_6_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200505_GRANDE_0_SG_11_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200505_GRANDE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200505_GRANDE_0_SG_22_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200505_GRANDE_0_SG_23_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200505_GRANDE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200505_GRANDE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200505_GRANDE_0_SG_28_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200505_GRANDE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200505_GRANDE_0_SG_33_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200505_GRANDE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200505_GRANDE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200505_GRANDE_0_SG_43_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200505_GRANDE_0_SG_4_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200505_GRANDE_0_SG_5_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200505_GRANDE_0_SG_6_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200505_MANEJABLE_0_SG_11_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200505_MANEJABLE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200505_MANEJABLE_0_SG_22_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200505_MANEJABLE_0_SG_23_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200505_MANEJABLE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200505_MANEJABLE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200505_MANEJABLE_0_SG_28_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200505_MANEJABLE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200505_MANEJABLE_0_SG_33_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200505_MANEJABLE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200505_MANEJABLE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200505_MANEJABLE_0_SG_43_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200505_MANEJABLE_0_SG_4_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200505_MANEJABLE_0_SG_5_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200505_MANEJABLE_0_SG_6_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200506_GRANDE_0_SG_10_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200506_GRANDE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200506_GRANDE_0_SG_24_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200506_GRANDE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200506_GRANDE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200506_GRANDE_0_SG_28_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200506_GRANDE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200506_GRANDE_0_SG_33_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200506_GRANDE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200506_GRANDE_0_SG_4_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200506_GRANDE_0_SG_5_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200506_GRANDE_0_SG_6_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200506_MANEJABLE_0_SG_10_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200506_MANEJABLE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200506_MANEJABLE_0_SG_24_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200506_MANEJABLE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200506_MANEJABLE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200506_MANEJABLE_0_SG_28_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200506_MANEJABLE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200506_MANEJABLE_0_SG_33_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200506_MANEJABLE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200506_MANEJABLE_0_SG_4_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200506_MANEJABLE_0_SG_5_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200506_MANEJABLE_0_SG_6_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200507_GRANDE_0_SG_10_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200507_GRANDE_0_SG_11_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200507_GRANDE_0_SG_14_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200507_GRANDE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200507_GRANDE_0_SG_22_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200507_GRANDE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200507_GRANDE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200507_GRANDE_0_SG_28_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200507_GRANDE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200507_GRANDE_0_SG_33_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200507_GRANDE_0_SG_37_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200507_GRANDE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200507_GRANDE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200507_GRANDE_0_SG_4_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200507_GRANDE_0_SG_5_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200507_GRANDE_0_SG_6_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200507_MANEJABLE_0_SG_10_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200507_MANEJABLE_0_SG_11_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200507_MANEJABLE_0_SG_14_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200507_MANEJABLE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200507_MANEJABLE_0_SG_22_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200507_MANEJABLE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200507_MANEJABLE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200507_MANEJABLE_0_SG_28_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200507_MANEJABLE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200507_MANEJABLE_0_SG_33_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200507_MANEJABLE_0_SG_37_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200507_MANEJABLE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200507_MANEJABLE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200507_MANEJABLE_0_SG_4_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200507_MANEJABLE_0_SG_5_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200507_MANEJABLE_0_SG_6_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200508_GRANDE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200508_GRANDE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200508_GRANDE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200508_GRANDE_0_SG_28_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200508_GRANDE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200508_GRANDE_0_SG_33_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200508_GRANDE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200508_GRANDE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200508_GRANDE_0_SG_4_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200508_GRANDE_0_SG_5_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200508_MANEJABLE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200508_MANEJABLE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200508_MANEJABLE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200508_MANEJABLE_0_SG_28_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200508_MANEJABLE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200508_MANEJABLE_0_SG_33_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200508_MANEJABLE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200508_MANEJABLE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200508_MANEJABLE_0_SG_4_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200508_MANEJABLE_0_SG_5_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200511_GRANDE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200511_GRANDE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200511_GRANDE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200511_GRANDE_0_SG_28_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200511_GRANDE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200511_GRANDE_0_SG_33_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200511_GRANDE_0_SG_37_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200511_GRANDE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200511_GRANDE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200511_GRANDE_0_SG_5_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200511_MANEJABLE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200511_MANEJABLE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200511_MANEJABLE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200511_MANEJABLE_0_SG_28_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200511_MANEJABLE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200511_MANEJABLE_0_SG_33_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200511_MANEJABLE_0_SG_37_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200511_MANEJABLE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200511_MANEJABLE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200511_MANEJABLE_0_SG_5_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200512_GRANDE_0_SG_11_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200512_GRANDE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200512_GRANDE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200512_GRANDE_0_SG_37_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200512_GRANDE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200512_GRANDE_0_SG_43_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200512_GRANDE_0_SG_4_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200512_GRANDE_0_SG_5_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200512_MANEJABLE_0_SG_11_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200512_MANEJABLE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200512_MANEJABLE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200512_MANEJABLE_0_SG_37_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200512_MANEJABLE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200512_MANEJABLE_0_SG_43_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200512_MANEJABLE_0_SG_4_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200512_MANEJABLE_0_SG_5_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200513_GRANDE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200513_GRANDE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200513_GRANDE_0_SG_28_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200513_GRANDE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200513_GRANDE_0_SG_43_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200513_GRANDE_0_SG_5_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200513_GRANDE_0_SG_6_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200513_MANEJABLE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200513_MANEJABLE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200513_MANEJABLE_0_SG_28_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200513_MANEJABLE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200513_MANEJABLE_0_SG_43_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200513_MANEJABLE_0_SG_5_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200513_MANEJABLE_0_SG_6_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200514_GRANDE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200514_GRANDE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200514_GRANDE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200514_GRANDE_0_SG_28_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200514_GRANDE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200514_GRANDE_0_SG_35_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200514_GRANDE_0_SG_37_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200514_GRANDE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200514_GRANDE_0_SG_43_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200514_GRANDE_0_SG_5_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200514_MANEJABLE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200514_MANEJABLE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200514_MANEJABLE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200514_MANEJABLE_0_SG_28_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200514_MANEJABLE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200514_MANEJABLE_0_SG_35_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200514_MANEJABLE_0_SG_37_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200514_MANEJABLE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200514_MANEJABLE_0_SG_43_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200514_MANEJABLE_0_SG_5_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200515_GRANDE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200515_GRANDE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200515_GRANDE_0_SG_28_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200515_GRANDE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200515_GRANDE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200515_GRANDE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200515_GRANDE_0_SG_43_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200515_GRANDE_0_SG_4_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200515_GRANDE_0_SG_5_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200515_MANEJABLE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200515_MANEJABLE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200515_MANEJABLE_0_SG_28_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200515_MANEJABLE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200515_MANEJABLE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200515_MANEJABLE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200515_MANEJABLE_0_SG_43_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200515_MANEJABLE_0_SG_4_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200515_MANEJABLE_0_SG_5_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200518_GRANDE_0_SG_11_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200518_GRANDE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200518_GRANDE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200518_GRANDE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200518_GRANDE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200518_GRANDE_0_SG_35_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200518_GRANDE_0_SG_43_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200518_GRANDE_0_SG_4_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200518_GRANDE_0_SG_5_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200518_MANEJABLE_0_SG_11_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200518_MANEJABLE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200518_MANEJABLE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200518_MANEJABLE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200518_MANEJABLE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200518_MANEJABLE_0_SG_35_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200518_MANEJABLE_0_SG_43_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200518_MANEJABLE_0_SG_4_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200518_MANEJABLE_0_SG_5_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200519_GRANDE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200519_GRANDE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200519_GRANDE_0_SG_28_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200519_GRANDE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200519_GRANDE_0_SG_37_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200519_GRANDE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200519_GRANDE_0_SG_43_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200519_GRANDE_0_SG_4_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200519_MANEJABLE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200519_MANEJABLE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200519_MANEJABLE_0_SG_28_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200519_MANEJABLE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200519_MANEJABLE_0_SG_37_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200519_MANEJABLE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200519_MANEJABLE_0_SG_43_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200519_MANEJABLE_0_SG_4_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200520_GRANDE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200520_GRANDE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200520_GRANDE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200520_MANEJABLE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200520_MANEJABLE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200520_MANEJABLE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200521_GRANDE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200521_GRANDE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200521_GRANDE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200521_GRANDE_0_SG_37_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200521_GRANDE_0_SG_5_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200521_MANEJABLE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200521_MANEJABLE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200521_MANEJABLE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200521_MANEJABLE_0_SG_37_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200521_MANEJABLE_0_SG_5_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200522_GRANDE_0_SG_0_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200522_GRANDE_0_SG_14_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200522_GRANDE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200522_GRANDE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200522_GRANDE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200522_GRANDE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200522_GRANDE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200522_GRANDE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200522_GRANDE_0_SG_43_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200522_GRANDE_0_SG_5_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200522_MANEJABLE_0_SG_0_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200522_MANEJABLE_0_SG_14_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200522_MANEJABLE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200522_MANEJABLE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200522_MANEJABLE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200522_MANEJABLE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200522_MANEJABLE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200522_MANEJABLE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200522_MANEJABLE_0_SG_43_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200522_MANEJABLE_0_SG_5_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200526_GRANDE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200526_GRANDE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200526_GRANDE_0_SG_5_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200526_MANEJABLE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200526_MANEJABLE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200526_MANEJABLE_0_SG_5_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200527_GRANDE_0_SG_11_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200527_GRANDE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200527_GRANDE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200527_GRANDE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200527_GRANDE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200527_GRANDE_0_SG_3_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200527_MANEJABLE_0_SG_11_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200527_MANEJABLE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200527_MANEJABLE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200527_MANEJABLE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200527_MANEJABLE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200527_MANEJABLE_0_SG_3_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200528_GRANDE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200528_GRANDE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200528_MANEJABLE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200528_MANEJABLE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200529_GRANDE_0_SG_0_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200529_GRANDE_0_SG_11_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200529_GRANDE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200529_GRANDE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200529_GRANDE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200529_GRANDE_0_SG_4_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200529_MANEJABLE_0_SG_0_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200529_MANEJABLE_0_SG_11_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200529_MANEJABLE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200529_MANEJABLE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200529_MANEJABLE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200529_MANEJABLE_0_SG_4_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200601_GRANDE_0_SG_0_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200601_GRANDE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200601_GRANDE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200601_MANEJABLE_0_SG_0_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200601_MANEJABLE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200601_MANEJABLE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200602_GRANDE_0_SG_10_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200602_GRANDE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200602_GRANDE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200602_GRANDE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200602_MANEJABLE_0_SG_10_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200602_MANEJABLE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200602_MANEJABLE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200602_MANEJABLE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200603_GRANDE_0_SG_10_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200603_GRANDE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200603_GRANDE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200603_GRANDE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200603_GRANDE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200603_GRANDE_0_SG_39_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200603_MANEJABLE_0_SG_10_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200603_MANEJABLE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200603_MANEJABLE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200603_MANEJABLE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200603_MANEJABLE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200603_MANEJABLE_0_SG_39_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200604_GRANDE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200604_GRANDE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200604_GRANDE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200604_GRANDE_0_SG_39_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200604_GRANDE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200604_MANEJABLE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200604_MANEJABLE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200604_MANEJABLE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200604_MANEJABLE_0_SG_39_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200604_MANEJABLE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200605_GRANDE_0_SG_0_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200605_GRANDE_0_SG_11_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200605_GRANDE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200605_GRANDE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200605_GRANDE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200605_GRANDE_0_SG_33_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200605_GRANDE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200605_MANEJABLE_0_SG_0_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200605_MANEJABLE_0_SG_11_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200605_MANEJABLE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200605_MANEJABLE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200605_MANEJABLE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200605_MANEJABLE_0_SG_33_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200605_MANEJABLE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200608_GRANDE_0_SG_0_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200608_GRANDE_0_SG_11_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200608_GRANDE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200608_GRANDE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200608_GRANDE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200608_GRANDE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200608_MANEJABLE_0_SG_0_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200608_MANEJABLE_0_SG_11_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200608_MANEJABLE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200608_MANEJABLE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200608_MANEJABLE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200608_MANEJABLE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200609_GRANDE_0_SG_0_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200609_GRANDE_0_SG_11_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200609_GRANDE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200609_GRANDE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200609_GRANDE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200609_GRANDE_0_SG_4_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200609_MANEJABLE_0_SG_0_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200609_MANEJABLE_0_SG_11_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200609_MANEJABLE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200609_MANEJABLE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200609_MANEJABLE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200609_MANEJABLE_0_SG_4_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200610_GRANDE_0_SG_0_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200610_GRANDE_0_SG_11_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200610_GRANDE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200610_GRANDE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200610_GRANDE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200610_GRANDE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200610_GRANDE_0_SG_4_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200610_MANEJABLE_0_SG_0_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200610_MANEJABLE_0_SG_11_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200610_MANEJABLE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200610_MANEJABLE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200610_MANEJABLE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200610_MANEJABLE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200610_MANEJABLE_0_SG_4_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200611_GRANDE_0_SG_11_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200611_GRANDE_0_SG_18_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200611_GRANDE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200611_GRANDE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200611_GRANDE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200611_GRANDE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200611_GRANDE_0_SG_33_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200611_MANEJABLE_0_SG_11_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200611_MANEJABLE_0_SG_18_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200611_MANEJABLE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200611_MANEJABLE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200611_MANEJABLE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200611_MANEJABLE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200611_MANEJABLE_0_SG_33_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200612_GRANDE_0_SG_10_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200612_GRANDE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200612_GRANDE_0_SG_22_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200612_GRANDE_0_SG_28_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200612_GRANDE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200612_GRANDE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200612_GRANDE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200612_MANEJABLE_0_SG_10_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200612_MANEJABLE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200612_MANEJABLE_0_SG_22_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200612_MANEJABLE_0_SG_28_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200612_MANEJABLE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200612_MANEJABLE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200612_MANEJABLE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200615_GRANDE_0_SG_10_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200615_GRANDE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200615_GRANDE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200615_GRANDE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200615_GRANDE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200615_GRANDE_0_SG_4_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200615_MANEJABLE_0_SG_10_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200615_MANEJABLE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200615_MANEJABLE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200615_MANEJABLE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200615_MANEJABLE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200615_MANEJABLE_0_SG_4_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200616_GRANDE_0_SG_0_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200616_GRANDE_0_SG_10_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200616_GRANDE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200616_GRANDE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200616_GRANDE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200616_MANEJABLE_0_SG_0_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200616_MANEJABLE_0_SG_10_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200616_MANEJABLE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200616_MANEJABLE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200616_MANEJABLE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200617_GRANDE_0_SG_0_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200617_GRANDE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200617_GRANDE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200617_GRANDE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200617_GRANDE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200617_MANEJABLE_0_SG_0_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200617_MANEJABLE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200617_MANEJABLE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200617_MANEJABLE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200617_MANEJABLE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200618_GRANDE_0_SG_0_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200618_GRANDE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200618_GRANDE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200618_GRANDE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200618_MANEJABLE_0_SG_0_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200618_MANEJABLE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200618_MANEJABLE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200618_MANEJABLE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200619_GRANDE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200619_GRANDE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200619_GRANDE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200619_GRANDE_0_SG_4_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200619_MANEJABLE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200619_MANEJABLE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200619_MANEJABLE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200619_MANEJABLE_0_SG_4_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200622_GRANDE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200622_GRANDE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200622_GRANDE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200622_GRANDE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200622_GRANDE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200622_GRANDE_0_SG_5_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200622_MANEJABLE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200622_MANEJABLE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200622_MANEJABLE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200622_MANEJABLE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200622_MANEJABLE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200622_MANEJABLE_0_SG_5_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200623_GRANDE_0_SG_0_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200623_GRANDE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200623_GRANDE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200623_GRANDE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200623_GRANDE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200623_MANEJABLE_0_SG_0_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200623_MANEJABLE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200623_MANEJABLE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200623_MANEJABLE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200623_MANEJABLE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200624_GRANDE_0_SG_0_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200624_GRANDE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200624_GRANDE_0_SG_28_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200624_GRANDE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200624_GRANDE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200624_GRANDE_0_SG_33_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200624_GRANDE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200624_GRANDE_0_SG_39_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200624_GRANDE_0_SG_5_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200624_MANEJABLE_0_SG_0_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200624_MANEJABLE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200624_MANEJABLE_0_SG_28_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200624_MANEJABLE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200624_MANEJABLE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200624_MANEJABLE_0_SG_33_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200624_MANEJABLE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200624_MANEJABLE_0_SG_39_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200624_MANEJABLE_0_SG_5_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200625_GRANDE_0_SG_0_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200625_GRANDE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200625_GRANDE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200625_GRANDE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200625_MANEJABLE_0_SG_0_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200625_MANEJABLE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200625_MANEJABLE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200625_MANEJABLE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200626_GRANDE_0_SG_0_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200626_GRANDE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200626_GRANDE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200626_GRANDE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200626_GRANDE_0_SG_43_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200626_MANEJABLE_0_SG_0_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200626_MANEJABLE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200626_MANEJABLE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200626_MANEJABLE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200626_MANEJABLE_0_SG_43_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200629_GRANDE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200629_GRANDE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200629_GRANDE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200629_MANEJABLE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200629_MANEJABLE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200629_MANEJABLE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200630_GRANDE_0_SG_0_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200630_GRANDE_0_SG_10_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200630_GRANDE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200630_GRANDE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200630_GRANDE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200630_GRANDE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200630_GRANDE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200630_GRANDE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200630_MANEJABLE_0_SG_0_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200630_MANEJABLE_0_SG_10_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200630_MANEJABLE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200630_MANEJABLE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200630_MANEJABLE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200630_MANEJABLE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200630_MANEJABLE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200630_MANEJABLE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200701_GRANDE_0_SG_22_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200701_GRANDE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200701_GRANDE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200701_GRANDE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200701_GRANDE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200701_GRANDE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200701_MANEJABLE_0_SG_22_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200701_MANEJABLE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200701_MANEJABLE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200701_MANEJABLE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200701_MANEJABLE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200701_MANEJABLE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200702_GRANDE_0_SG_0_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200702_GRANDE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200702_GRANDE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200702_GRANDE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200702_GRANDE_0_SG_33_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200702_GRANDE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200702_MANEJABLE_0_SG_0_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200702_MANEJABLE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200702_MANEJABLE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200702_MANEJABLE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200702_MANEJABLE_0_SG_33_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200702_MANEJABLE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200706_GRANDE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200706_GRANDE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200706_GRANDE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200706_GRANDE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200706_GRANDE_0_SG_33_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200706_GRANDE_0_SG_37_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200706_GRANDE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200706_MANEJABLE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200706_MANEJABLE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200706_MANEJABLE_0_SG_29_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200706_MANEJABLE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200706_MANEJABLE_0_SG_33_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200706_MANEJABLE_0_SG_37_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200706_MANEJABLE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200707_GRANDE_0_SG_0_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200707_GRANDE_0_SG_11_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200707_GRANDE_0_SG_12_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200707_GRANDE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200707_GRANDE_0_SG_23_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200707_GRANDE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200707_GRANDE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200707_GRANDE_0_SG_27_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200707_GRANDE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200707_GRANDE_0_SG_33_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200707_GRANDE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200707_GRANDE_0_SG_39_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200707_GRANDE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200707_GRANDE_0_SG_43_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200707_GRANDE_0_SG_4_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200707_GRANDE_0_SG_5_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200707_GRANDE_0_SG_9_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200707_MANEJABLE_0_SG_0_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200707_MANEJABLE_0_SG_11_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200707_MANEJABLE_0_SG_12_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200707_MANEJABLE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200707_MANEJABLE_0_SG_23_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200707_MANEJABLE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200707_MANEJABLE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200707_MANEJABLE_0_SG_27_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200707_MANEJABLE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200707_MANEJABLE_0_SG_33_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200707_MANEJABLE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200707_MANEJABLE_0_SG_39_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200707_MANEJABLE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200707_MANEJABLE_0_SG_43_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200707_MANEJABLE_0_SG_4_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200707_MANEJABLE_0_SG_5_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200707_MANEJABLE_0_SG_9_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200708_GRANDE_0_SG_0_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200708_GRANDE_0_SG_11_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200708_GRANDE_0_SG_12_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200708_GRANDE_0_SG_14_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200708_GRANDE_0_SG_19_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200708_GRANDE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200708_GRANDE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200708_GRANDE_0_SG_28_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200708_GRANDE_0_SG_33_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200708_GRANDE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200708_GRANDE_0_SG_39_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200708_GRANDE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200708_GRANDE_0_SG_43_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200708_GRANDE_0_SG_4_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200708_GRANDE_0_SG_5_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200708_GRANDE_0_SG_7_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200708_GRANDE_0_SG_9_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200708_MANEJABLE_0_SG_0_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200708_MANEJABLE_0_SG_11_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200708_MANEJABLE_0_SG_12_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200708_MANEJABLE_0_SG_14_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200708_MANEJABLE_0_SG_19_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200708_MANEJABLE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200708_MANEJABLE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200708_MANEJABLE_0_SG_28_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200708_MANEJABLE_0_SG_33_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200708_MANEJABLE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200708_MANEJABLE_0_SG_39_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200708_MANEJABLE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200708_MANEJABLE_0_SG_43_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200708_MANEJABLE_0_SG_4_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200708_MANEJABLE_0_SG_5_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200708_MANEJABLE_0_SG_7_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200708_MANEJABLE_0_SG_9_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200709_GRANDE_0_SG_0_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200709_GRANDE_0_SG_11_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200709_GRANDE_0_SG_14_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200709_GRANDE_0_SG_18_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200709_GRANDE_0_SG_19_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200709_GRANDE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200709_GRANDE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200709_GRANDE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200709_GRANDE_0_SG_27_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200709_GRANDE_0_SG_28_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200709_GRANDE_0_SG_33_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200709_GRANDE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200709_GRANDE_0_SG_39_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200709_GRANDE_0_SG_3_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200709_GRANDE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200709_GRANDE_0_SG_43_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200709_GRANDE_0_SG_4_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200709_GRANDE_0_SG_5_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200709_GRANDE_0_SG_7_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200709_GRANDE_0_SG_9_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200709_MANEJABLE_0_SG_0_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200709_MANEJABLE_0_SG_11_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200709_MANEJABLE_0_SG_14_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200709_MANEJABLE_0_SG_18_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200709_MANEJABLE_0_SG_19_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200709_MANEJABLE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200709_MANEJABLE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200709_MANEJABLE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200709_MANEJABLE_0_SG_27_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200709_MANEJABLE_0_SG_28_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200709_MANEJABLE_0_SG_33_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200709_MANEJABLE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200709_MANEJABLE_0_SG_39_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200709_MANEJABLE_0_SG_3_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200709_MANEJABLE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200709_MANEJABLE_0_SG_43_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200709_MANEJABLE_0_SG_4_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200709_MANEJABLE_0_SG_5_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200709_MANEJABLE_0_SG_7_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200709_MANEJABLE_0_SG_9_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200710_GRANDE_0_SG_11_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200710_GRANDE_0_SG_18_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200710_GRANDE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200710_GRANDE_0_SG_22_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200710_GRANDE_0_SG_23_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200710_GRANDE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200710_GRANDE_0_SG_27_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200710_GRANDE_0_SG_33_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200710_GRANDE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200710_GRANDE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200710_GRANDE_0_SG_43_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200710_GRANDE_0_SG_4_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200710_GRANDE_0_SG_5_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200710_GRANDE_0_SG_9_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200710_MANEJABLE_0_SG_11_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200710_MANEJABLE_0_SG_18_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200710_MANEJABLE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200710_MANEJABLE_0_SG_22_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200710_MANEJABLE_0_SG_23_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200710_MANEJABLE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200710_MANEJABLE_0_SG_27_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200710_MANEJABLE_0_SG_33_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200710_MANEJABLE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200710_MANEJABLE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200710_MANEJABLE_0_SG_43_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200710_MANEJABLE_0_SG_4_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200710_MANEJABLE_0_SG_5_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200710_MANEJABLE_0_SG_9_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200714_GRANDE_0_SG_0_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200714_GRANDE_0_SG_11_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200714_GRANDE_0_SG_12_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200714_GRANDE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200714_GRANDE_0_SG_22_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200714_GRANDE_0_SG_23_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200714_GRANDE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200714_GRANDE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200714_GRANDE_0_SG_27_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200714_GRANDE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200714_GRANDE_0_SG_33_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200714_GRANDE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200714_GRANDE_0_SG_39_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200714_GRANDE_0_SG_3_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200714_GRANDE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200714_GRANDE_0_SG_43_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200714_GRANDE_0_SG_4_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200714_GRANDE_0_SG_5_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200714_MANEJABLE_0_SG_0_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200714_MANEJABLE_0_SG_11_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200714_MANEJABLE_0_SG_12_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200714_MANEJABLE_0_SG_21_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200714_MANEJABLE_0_SG_22_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200714_MANEJABLE_0_SG_23_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200714_MANEJABLE_0_SG_25_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200714_MANEJABLE_0_SG_26_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200714_MANEJABLE_0_SG_27_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200714_MANEJABLE_0_SG_30_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200714_MANEJABLE_0_SG_33_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200714_MANEJABLE_0_SG_38_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200714_MANEJABLE_0_SG_39_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200714_MANEJABLE_0_SG_3_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200714_MANEJABLE_0_SG_42_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200714_MANEJABLE_0_SG_43_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200714_MANEJABLE_0_SG_4_COMPLETO_PREDICCION.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../inversion/20200714_MANEJABLE_0_SG_5_COMPLETO_PREDICCION.csv" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
-  </component>
-  <component name="FavoritesManager">
-    <favorites_list name="BolsaPython" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -33,6 +1197,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/bolsa/InversionUtils.py" />
@@ -48,7 +1213,7 @@
       <recent name="C:\DATOS\GITHUB_REPOS\bolsa\BolsaPython\bolsa" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.InversionUtils">
+  <component name="RunManager" selected="Python.C6CreadorModelosDeSubgrupo">
     <configuration name="C5SeleccionDeVariablesDeSubgrupo" type="PythonConfigurationType" factoryName="Python">
       <module name="BolsaPython" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -83,7 +1248,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/bolsa/C6CreadorModelosDeSubgrupo.py" />
-      <option name="PARAMETERS" value="/bolsa/pasado/subgrupos/SG_3/ pasado 25" />
+      <option name="PARAMETERS" value="/bolsa/pasado/subgrupos/SG_0/ pasado 0" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -119,7 +1284,7 @@
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="$PROJECT_DIR$/../../PROGRAMAS/anaconda3/envs/BolsaPython/bin/python" />
+      <option name="SDK_HOME" value="$USER_HOME$/PROGRAMAS/anaconda3/envs/BolsaPython/bin/python" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/bolsa" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
@@ -184,19 +1349,7 @@
       <item itemvalue="Python.pruebas" />
     </list>
   </component>
-  <component name="ServiceViewManager">
-    <option name="viewStates">
-      <list>
-        <serviceView>
-          <treeState>
-            <expand />
-            <select />
-          </treeState>
-        </serviceView>
-      </list>
-    </option>
-  </component>
-  <component name="SpellCheckerSettings" BundledDictionaries="0" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" Dictionaries="0" CorrectionsLimit="5" DefaultDictionary="application-level" UseSingleDictionary="true" />
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -230,13 +1383,12 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State>
-              <option name="COLUMN_ORDER" />
-            </State>
+            <State />
           </value>
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Hola mundo en python" />
@@ -244,71 +1396,68 @@
     <option name="LAST_COMMIT_MESSAGE" value="Machine Learning - Ejemplo" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="174" y="414" width="1396" height="598" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1602622947055">
-      <screen x="65" y="24" width="1855" height="1056" />
+    <state x="65" y="24" width="1301" height="744" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1603974430974">
+      <screen x="65" y="24" width="1301" height="744" />
     </state>
-    <state x="113" y="481" key="#com.intellij.execution.impl.EditConfigurationsDialog/1920.0.1366.768/0.83.1920.1080@0.83.1920.1080" timestamp="1594678422043" />
     <state x="174" y="414" width="1396" height="598" key="#com.intellij.execution.impl.EditConfigurationsDialog/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1602622947055" />
+    <state x="65" y="24" width="1301" height="744" key="#com.intellij.execution.impl.EditConfigurationsDialog/65.24.1301.744@65.24.1301.744" timestamp="1603974430974" />
     <state x="660" y="472" key="FileChooserDialogImpl" timestamp="1602622904621">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
     <state x="660" y="472" key="FileChooserDialogImpl/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1602622904621" />
-    <state width="1855" height="224" key="GridCell.Tab.0.bottom" timestamp="1602622952824">
-      <screen x="65" y="24" width="1855" height="1056" />
+    <state width="1278" height="159" key="GridCell.Tab.0.bottom" timestamp="1604004290614">
+      <screen x="65" y="24" width="1301" height="744" />
     </state>
-    <state width="1832" height="267" key="GridCell.Tab.0.bottom/1920.0.1366.768/0.83.1920.1080@0.83.1920.1080" timestamp="1594679137160" />
     <state width="1855" height="224" key="GridCell.Tab.0.bottom/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1602622952824" />
-    <state width="1278" height="214" key="GridCell.Tab.0.bottom/65.24.1301.744@65.24.1301.744" timestamp="1595321894607" />
-    <state width="1855" height="224" key="GridCell.Tab.0.center" timestamp="1602622952824">
-      <screen x="65" y="24" width="1855" height="1056" />
+    <state width="1278" height="159" key="GridCell.Tab.0.bottom/65.24.1301.744@65.24.1301.744" timestamp="1604004290614" />
+    <state width="1278" height="159" key="GridCell.Tab.0.center" timestamp="1604004290614">
+      <screen x="65" y="24" width="1301" height="744" />
     </state>
-    <state width="1832" height="267" key="GridCell.Tab.0.center/1920.0.1366.768/0.83.1920.1080@0.83.1920.1080" timestamp="1594679137159" />
     <state width="1855" height="224" key="GridCell.Tab.0.center/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1602622952824" />
-    <state width="1278" height="214" key="GridCell.Tab.0.center/65.24.1301.744@65.24.1301.744" timestamp="1595321894606" />
-    <state width="1855" height="224" key="GridCell.Tab.0.left" timestamp="1602622952824">
-      <screen x="65" y="24" width="1855" height="1056" />
+    <state width="1278" height="159" key="GridCell.Tab.0.center/65.24.1301.744@65.24.1301.744" timestamp="1604004290614" />
+    <state width="1278" height="159" key="GridCell.Tab.0.left" timestamp="1604004290614">
+      <screen x="65" y="24" width="1301" height="744" />
     </state>
-    <state width="1832" height="267" key="GridCell.Tab.0.left/1920.0.1366.768/0.83.1920.1080@0.83.1920.1080" timestamp="1594679137159" />
     <state width="1855" height="224" key="GridCell.Tab.0.left/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1602622952824" />
-    <state width="1278" height="214" key="GridCell.Tab.0.left/65.24.1301.744@65.24.1301.744" timestamp="1595321894605" />
-    <state width="1855" height="224" key="GridCell.Tab.0.right" timestamp="1602622952824">
-      <screen x="65" y="24" width="1855" height="1056" />
+    <state width="1278" height="159" key="GridCell.Tab.0.left/65.24.1301.744@65.24.1301.744" timestamp="1604004290614" />
+    <state width="1278" height="159" key="GridCell.Tab.0.right" timestamp="1604004290614">
+      <screen x="65" y="24" width="1301" height="744" />
     </state>
-    <state width="1832" height="267" key="GridCell.Tab.0.right/1920.0.1366.768/0.83.1920.1080@0.83.1920.1080" timestamp="1594679137159" />
     <state width="1855" height="224" key="GridCell.Tab.0.right/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1602622952824" />
-    <state width="1278" height="214" key="GridCell.Tab.0.right/65.24.1301.744@65.24.1301.744" timestamp="1595321894606" />
-    <state width="927" height="351" key="GridCell.Tab.1.bottom" timestamp="1597698314531">
-      <screen x="65" y="24" width="1855" height="1056" />
+    <state width="1278" height="159" key="GridCell.Tab.0.right/65.24.1301.744@65.24.1301.744" timestamp="1604004290614" />
+    <state width="1278" height="356" key="GridCell.Tab.1.bottom" timestamp="1603375491725">
+      <screen x="65" y="24" width="1301" height="744" />
     </state>
-    <state width="1832" height="327" key="GridCell.Tab.1.bottom/1920.0.1366.768/0.83.1920.1080@0.83.1920.1080" timestamp="1594588307480" />
     <state width="927" height="351" key="GridCell.Tab.1.bottom/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1597698314531" />
-    <state width="1278" height="214" key="GridCell.Tab.1.bottom/65.24.1301.744@65.24.1301.744" timestamp="1595321894611" />
-    <state width="927" height="351" key="GridCell.Tab.1.center" timestamp="1597698314530">
-      <screen x="65" y="24" width="1855" height="1056" />
+    <state width="1278" height="356" key="GridCell.Tab.1.bottom/65.24.1301.744@65.24.1301.744" timestamp="1603375491725" />
+    <state width="1278" height="356" key="GridCell.Tab.1.center" timestamp="1603375491723">
+      <screen x="65" y="24" width="1301" height="744" />
     </state>
-    <state width="1832" height="327" key="GridCell.Tab.1.center/1920.0.1366.768/0.83.1920.1080@0.83.1920.1080" timestamp="1594588307479" />
     <state width="927" height="351" key="GridCell.Tab.1.center/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1597698314530" />
-    <state width="1278" height="214" key="GridCell.Tab.1.center/65.24.1301.744@65.24.1301.744" timestamp="1595321894609" />
-    <state width="927" height="351" key="GridCell.Tab.1.left" timestamp="1597698314530">
-      <screen x="65" y="24" width="1855" height="1056" />
+    <state width="1278" height="356" key="GridCell.Tab.1.center/65.24.1301.744@65.24.1301.744" timestamp="1603375491723" />
+    <state width="1278" height="356" key="GridCell.Tab.1.left" timestamp="1603375491722">
+      <screen x="65" y="24" width="1301" height="744" />
     </state>
-    <state width="1832" height="327" key="GridCell.Tab.1.left/1920.0.1366.768/0.83.1920.1080@0.83.1920.1080" timestamp="1594588307479" />
     <state width="927" height="351" key="GridCell.Tab.1.left/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1597698314530" />
-    <state width="1278" height="214" key="GridCell.Tab.1.left/65.24.1301.744@65.24.1301.744" timestamp="1595321894608" />
-    <state width="927" height="351" key="GridCell.Tab.1.right" timestamp="1597698314531">
-      <screen x="65" y="24" width="1855" height="1056" />
+    <state width="1278" height="356" key="GridCell.Tab.1.left/65.24.1301.744@65.24.1301.744" timestamp="1603375491722" />
+    <state width="1278" height="356" key="GridCell.Tab.1.right" timestamp="1603375491724">
+      <screen x="65" y="24" width="1301" height="744" />
     </state>
-    <state width="1832" height="327" key="GridCell.Tab.1.right/1920.0.1366.768/0.83.1920.1080@0.83.1920.1080" timestamp="1594588307479" />
     <state width="927" height="351" key="GridCell.Tab.1.right/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1597698314531" />
-    <state width="1278" height="214" key="GridCell.Tab.1.right/65.24.1301.744@65.24.1301.744" timestamp="1595321894610" />
+    <state width="1278" height="356" key="GridCell.Tab.1.right/65.24.1301.744@65.24.1301.744" timestamp="1603375491724" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/bolsa/InversionUtilsPosteriori.py</url>
-          <line>501</line>
+          <line>502</line>
           <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/bolsa/InversionUtilsPosteriori.py</url>
+          <line>458</line>
+          <option name="timeStamp" value="7" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

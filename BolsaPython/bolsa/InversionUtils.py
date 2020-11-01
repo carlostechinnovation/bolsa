@@ -53,6 +53,6 @@ else:
     pathSalidaManejable = dirSalida + prefijo + "_MANEJABLE_" + sufijoFicheroSalida
     print("pathSalidaManejable = " + pathSalidaManejable)
     filasFiltradas['NumAccionesPor1000dolares'] = round(1000/filasFiltradas['open'])
-    filasFiltradas.filter(['empresa', 'TARGET_PREDICHO_PROB', 'NumAccionesPor1000dolares']).sort_values(by='TARGET_PREDICHO_PROB', ascending=False) .to_csv(pathSalidaManejable, index=False, sep='|')
+    filasFiltradas.sort_values(by='TARGET_PREDICHO_PROB', ascending=False) .to_csv(pathSalidaManejable, index=False, sep='|')
 
 print("--- InversionUtils: FIN ---")

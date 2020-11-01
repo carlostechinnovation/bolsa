@@ -390,6 +390,8 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
             ARBOLES_max_leaf_nodes = None
             ARBOLES_min_impurity_decrease = 0.001
 
+            seed = 112  # Random seed
+
             # nombreModelo = "gradient_boosting"
             # pathModelo = dir_subgrupo + nombreModelo + ".modelo"
             # modelo = GradientBoostingClassifier(n_estimators=3000, learning_rate=0.05,
@@ -409,30 +411,39 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
             #################### OPTIMIZACION DE PARAMETROS DE XGBOOST ###############################################################
             # # Descomentar para obtener los parámetros con optimización Bayesiana
             # # Se imprimirán en el log, pero debo luego meterlos manualmente en el modelo
+            # # IMPORTANTE: DEBEN RELLENARSE 2 VALORES POR CADA ATRIBUTO DE PBOUND
+            # # https://ayguno.github.io/curious/portfolio/bayesian_optimization.html
             # pbounds = {
-            #     'learning_rate': (0.05, 0.12),
-            #     'n_estimators': (100,200),
-            #     'max_depth': (7, 11),
-            #     'colsample_bylevel': (0.05, 0.15),
-            #     'colsample_bytree': (0.3, 0.5),
-            #     'gamma': (0, 2)}
+            #     'max_depth': (5, 20),
+            #     'learning_rate': (0, 1),
+            #     'n_estimators': (10, 100),
+            #     'reg_alpha': (0, 1),
+            #     'min_child_weight': (1, 20),
+            #     'colsample_bytree': (0.1, 1),
+            #     'gamma': (0, 10)
+            # }
             #
-            # def xgboost_hyper_param(learning_rate, n_estimators, max_depth, colsample_bylevel, colsample_bytree, gamma):
-            #     max_depth = int(max_depth)
-            #     n_estimators = int(n_estimators)
+            # hyperparameter_space = {
+            # }
             #
-            #     clf = XGBClassifier(base_score=0.5, learning_rate=learning_rate, n_estimators=n_estimators,
-            #                            max_depth=max_depth, min_child_weight=1, missing=None, nthread=-1,
-            #                            gamma=gamma, subsample=1, colsample_bylevel=colsample_bylevel,
-            #                            objective='binary:logistic',
-            #                            colsample_bytree=colsample_bytree)
+            # def xgboost_hyper_param(max_depth, learning_rate, n_estimators, reg_alpha, min_child_weight, colsample_bytree, gamma):
             #
-            #     return np.median(cross_val_score(clf, ds_train_f, ds_train_t, cv=5, scoring='average_precision'))
+            #     clf = XGBClassifier(max_depth=int(max_depth), learning_rate=learning_rate, n_estimators=int(n_estimators),
+            #                         reg_alpha=reg_alpha, min_child_weight=int(min_child_weight),
+            #                         colsample_bytree=colsample_bytree, gamma=gamma,
+            #                         nthread=-1, objective='binary:logistic', seed=seed)
             #
+            #     return np.mean(cross_val_score(clf, ds_train_f, ds_train_t, cv=5, scoring='average_precision'))
+            #
+            # # alpha is a parameter for the gaussian process
+            # # Note that this is itself a hyperparameter that can be optimized.
+            # gp_params = {"alpha": 1e-10}
             #
             # from bolsa.bayes_opt import BayesianOptimization
-            # optimizer = BayesianOptimization(f=xgboost_hyper_param, pbounds=pbounds, random_state=1)
-            # optimizer.maximize(init_points=10, n_iter=50)
+            # # IMPORTANTE: se iterará con muchos parámetros en 2 bloques, y no se pintará hasta el segundo bloque
+            # optimizer = BayesianOptimization(f=xgboost_hyper_param, pbounds=pbounds, random_state=1,
+            #                  verbose = 10)
+            # optimizer.maximize(init_points=3,n_iter=10,acq='ucb', kappa= 3, **gp_params)
             # valoresOptimizados=optimizer.max
             # print(valoresOptimizados)
             ###################################################################################
@@ -453,11 +464,32 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
             #                        objective='binary:logistic',
             #                        colsample_bytree=0.43)
             # MODELO CARLOS optimizado 20200901 para SG_9
-            modelo = XGBClassifier(base_score=0.5, learning_rate=0.077, n_estimators=174,
-                                   max_depth=10, min_child_weight=1, missing=None, nthread=-1,
-                                   gamma=0, subsample=1, colsample_bylevel=0.08,
-                                   objective='binary:logistic',
-                                   colsample_bytree=0.4124)
+            # modelo = XGBClassifier(base_score=0.5, learning_rate=0.077, n_estimators=174,
+            #                        max_depth=10, min_child_weight=1, missing=None, nthread=-1,
+            #                        gamma=0, subsample=1, colsample_bylevel=0.08,
+            #                        objective='binary:logistic',
+            #                        colsample_bytree=0.4124)
+            # MODELO Wyckoff optimizado 20201021 para SG_9
+            # modelo = XGBClassifier(base_score=0.5, learning_rate=0.099, n_estimators=999,
+            #                        max_depth=10, min_child_weight=1, missing=None, nthread=-1,
+            #                        gamma=0.38, subsample=1, colsample_bylevel=0.15,
+            #                        objective='binary:logistic',
+            #                        colsample_bytree=0.159)
+            # MODELO LUIS optimizado 20201029 para SG_0, con MUCHOS PARÁMETROS, OPTIMIZADOS EN 2 FASES
+            max_depth=int(19.875739502287676)
+            learning_rate=0.10747964980067382
+            n_estimators=int(87.78327797884377)
+            reg_alpha=0.47008972843185215
+            min_child_weight=int(18.988768331879523)
+            colsample_bytree=0.6642859226619113
+            gamma=0.5553040946637466
+            nthread=-1
+            objective='binary:logistic'
+            seed=seed
+            modelo = XGBClassifier(max_depth=max_depth, learning_rate=learning_rate, n_estimators=n_estimators,
+                                                reg_alpha=reg_alpha, min_child_weight=min_child_weight,
+                                                colsample_bytree=colsample_bytree, gamma=gamma,
+                                                nthread=nthread, objective=objective, seed=seed)
             # MODELO CARLOS optimizado 20200908 para varios grupos
             # modelo = XGBClassifier(base_score=0.5, learning_rate=0.1178, n_estimators=170,
             #                        max_depth=8, min_child_weight=1, missing=None, nthread=-1,
