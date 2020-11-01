@@ -1,3 +1,0 @@
-empresa|antiguedad|mercado|anio|mes|dia|hora|minuto|volumen|high|low|close|open|TARGET|TARGET_PREDICHO|TARGET_PREDICHO_PROB
-ACBI|0|NASDAQ|2020|4|1|22|0|93554|12.19|10.47|10.59|11.55||1.0|0.69
-ADES|0|NASDAQ|2020|4|1|22|0|167805|6.3429|5.64|5.73|6.27||1.0|0.71
