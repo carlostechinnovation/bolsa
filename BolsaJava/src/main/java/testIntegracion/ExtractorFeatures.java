@@ -41,7 +41,6 @@ public class ExtractorFeatures implements Serializable {
 	public static ExtractorFeatures getInstance() {
 		if (instancia == null)
 			instancia = new ExtractorFeatures();
-
 		return instancia;
 	}
 

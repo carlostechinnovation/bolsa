@@ -112,16 +112,17 @@ public class ConstructorElaborados implements Serializable {
 			gestorFicheros = new GestorFicheros();
 			datosEntrada = new HashMap<String, HashMap<Integer, HashMap<String, String>>>();
 			ficheroGestionado = iterator.next();
+			destino = directorioSalida + "/" + ficheroGestionado.getName();
 
 			if (i % 10 == 1) {
-				MY_LOGGER.info("Empresa numero = " + i + " (" + ficheroGestionado.getName() + ")");
+				MY_LOGGER.info("ENTRADA Empresa numero = " + i + "\tFicheros ENTRADA|salida -> \t"
+						+ ficheroGestionado.getAbsolutePath() + " | \t" + destino);
 			}
 			i++;
 
 			datosEntrada = gestorFicheros
 					.leeSoloParametrosNoElaboradosFicheroDeSoloUnaEmpresa(ficheroGestionado.getPath(), Boolean.FALSE);
-			destino = directorioSalida + "/" + ficheroGestionado.getName();
-			MY_LOGGER.debug("Ficheros entrada|salida -> " + ficheroGestionado.getAbsolutePath() + " | " + destino);
+
 			ordenNombresParametros = gestorFicheros.getOrdenNombresParametrosLeidos();
 			anadirParametrosElaboradosDeSoloUnaEmpresa(datosEntrada, ordenNombresParametros, S, X, R, M, F, B,
 					umbralMaximo);
@@ -886,7 +887,7 @@ public class ConstructorElaborados implements Serializable {
 		Double subidaSmenosFPrecioTantoPorUno = (100 + S - F) / 100.0;
 		Double bajadaBPrecioTantoPorUno = (100 - B) / 100.0;
 
-		Boolean mCumplida = Boolean.FALSE;
+		boolean mCumplida = false;
 
 		HashMap<String, String> datosAntiguedad = datosEmpresaEntrada.get(antiguedad); // vela analizada
 		HashMap<String, String> datosAntiguedadX = datosEmpresaEntrada.get(antiguedad - X); // velas siguientes (precio
@@ -981,6 +982,7 @@ public class ConstructorElaborados implements Serializable {
 
 		// Se descartan los targets=1 que no cumplan esta condición
 		if (mCumplida) {
+
 			Estadisticas e = new Estadisticas();
 			for (int i = 1; i <= X; i++) {
 				Integer antiguedadI = antiguedad - i; // Voy hacia el futuro
@@ -988,15 +990,22 @@ public class ConstructorElaborados implements Serializable {
 				e.addValue(closeAntiguedadI);
 				MY_LOGGER.debug(closeAntiguedadI + ", ");
 			}
+
 			MY_LOGGER.debug("ANÁLISIS VARIABILIDAD--> EMPRESA: " + empresa + " -> Antigüedad: " + antiguedad + " (Mes: "
 					+ datosAntiguedad.get("mes") + " Dia: " + datosAntiguedad.get("dia") + " Hora: "
 					+ datosAntiguedad.get("hora") + ". Variabilidad: " + e.getVariacionRelativaMaxima()
 					+ " y umbral máximo: " + umbralMaximo);
+
 			// Ninguna vela puede superar a la media en una cantidad igual a un umbral
-			if (e.getVariacionRelativaMaxima() > umbralMaximo) {
-				mCumplida = Boolean.FALSE;
+			// MAXIMO en [t1,t2]
+			Double variacionRelativaMaxEncontrada = e.getVariacionRelativaMaxima();
+			if (variacionRelativaMaxEncontrada > umbralMaximo) {
+				String cadenaMotivo = "calcularTarget() -> Alguna vela desde " + (antiguedad - 1) + " hasta "
+						+ (antiguedad - X) + " supera el umbral=" + umbralMaximo
+						+ " siendo variacionRelativaMaxEncontrada=" + variacionRelativaMaxEncontrada;
+				mCumplida = false;
 			}
-			// La vela de mayor variación debe oscilar más que un umbral
+			// La vela de mayor variación debe oscilar más que un umbral MINIMO
 //			Double umbralMinimo=3D;
 //			if (e.getVariacionRelativaMaxima() < umbralMinimo) {
 //				mCumplida = Boolean.FALSE;

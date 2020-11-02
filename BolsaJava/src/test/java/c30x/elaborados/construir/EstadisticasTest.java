@@ -34,7 +34,20 @@ public class EstadisticasTest {
 		modelo.addValue(15.0D);
 		double out = modelo.getRatioMax();
 
-		double esperado = 100.0D * (5.5D / 25.0D);
+		double esperado = Estadisticas.NUM1M * (5.5D / 25.0D);
+		assertTrue(out == esperado);
+	}
+
+	@Test
+	public void getVariacionRelativaMaximaTest() {
+		Estadisticas modelo = new Estadisticas();
+		modelo.addValue(1.02D);// Vela 0
+		modelo.addValue(1.04D);
+		modelo.addValue(1.09D);
+		modelo.addValue(1.15D);// Máximo
+		double out = modelo.getVariacionRelativaMaxima();
+
+		double esperado = 0D;
 		assertTrue(out == esperado);
 	}
 

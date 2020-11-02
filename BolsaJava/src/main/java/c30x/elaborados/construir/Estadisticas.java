@@ -549,25 +549,32 @@ public class Estadisticas extends DescriptiveStatistics {
 	}
 
 	/**
+	 * Incremento máximo respecto al incremento medio.
+	 * 
 	 * @return Para un conjunto de valores, se obtienen sus diferencias en
 	 *         porcentaje sin signo y_t=ABS(x_i+1 - x_i). Se devuelve:
 	 *         ABS(max(y_t)/average(y_t))
 	 */
 	public Double getVariacionRelativaMaxima() {
-		ResizableDoubleArray y = new ResizableDoubleArray();
+
+		// INCREMENTOS ABSOLUTOS
+		ResizableDoubleArray incrementos = new ResizableDoubleArray(1);
 		for (int i = 0; i < getN() - 1; i++) {
-			y.addElement(Math.abs(getElement(i + 1) - getElement(i)));
+			incrementos.addElement(Math.abs(getElement(i + 1) - getElement(i))); // INCREMENTO ABSOLUTO
 		}
+
+		// INCREMENTO MAXIMO
 		Double max = 0D, average = 0D;
-		for (int counter = 0; counter < y.getNumElements(); counter++) {
-			if (max < y.getElement(counter)) {
-				max = y.getElement(counter);
+		for (int counter = 0; counter < incrementos.getNumElements(); counter++) {
+			if (max < incrementos.getElement(counter)) {
+				max = incrementos.getElement(counter);
 			}
-			average += y.getElement(counter);
+			average += incrementos.getElement(counter); // acumular, para despues hacer la media
 		}
-		Double n = Double.valueOf(y.getNumElements());
-		average = average / n;
-		return Math.abs(max / average);
+
+		Double n = Double.valueOf(incrementos.getNumElements()); // N elementos
+		average = average / n; // INCREMENTO MEDIO
+		return Math.abs(max / average); // INCREMENTO MAXIMO RESPECTO AL MEDIO
 	}
 
 	/**
