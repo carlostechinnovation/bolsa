@@ -47,7 +47,7 @@ else:
     pathSalidaGrande = dirSalida + prefijo + "_GRANDE_" + sufijoFicheroSalida
     print("pathSalidaGrande = " + pathSalidaGrande)
     if "_SG_0_" in pathFicheroEntrada:
-        datosEntrada.to_csv(pathSalidaGrande, index=False, sep='|') #Solo se guarda el GRANDE del subgrupo 0
+        datosEntrada.to_csv(pathSalidaGrande, index=False, sep='|')  # Solo se guarda el GRANDE del subgrupo 0
 
     #MANEJABLE
     pathSalidaManejable = dirSalida + prefijo + "_MANEJABLE_" + sufijoFicheroSalida

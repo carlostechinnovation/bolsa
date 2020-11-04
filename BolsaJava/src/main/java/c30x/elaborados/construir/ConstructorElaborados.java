@@ -873,7 +873,7 @@ public class ConstructorElaborados implements Serializable {
 	 * @param B            Caida ligera permitida durante [t1,t2], en TODAS esas
 	 *                     velas.
 	 * @param umbralMaximo Porcentaje máximo aceptado para la subida de cada vela
-	 *                     respecto del total de 1 a X.
+	 *                     respecto del incremento medio en las velas de 1 a X.
 	 * 
 	 * @return
 	 */
@@ -1005,11 +1005,7 @@ public class ConstructorElaborados implements Serializable {
 						+ " siendo variacionRelativaMaxEncontrada=" + variacionRelativaMaxEncontrada;
 				mCumplida = false;
 			}
-			// La vela de mayor variación debe oscilar más que un umbral MINIMO
-//			Double umbralMinimo=3D;
-//			if (e.getVariacionRelativaMaxima() < umbralMinimo) {
-//				mCumplida = Boolean.FALSE;
-//			}
+
 		}
 
 		if (mCumplida) {
