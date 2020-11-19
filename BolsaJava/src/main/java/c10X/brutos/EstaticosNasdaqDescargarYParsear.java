@@ -157,18 +157,33 @@ public class EstaticosNasdaqDescargarYParsear implements Serializable {
 
 				} else {
 
-					tempArr = lineaLimpia.split("\\|");
+					tempArr = lineaLimpia.split("\\|", -1); // El -1 indica coger las cadenas vacías!!
 
-					if (desconocidos.contains(tempArr[0])) {
+					// Lista acumulada de desconocidos:
+					boolean empresaEnListaDesconocidos = desconocidos.contains(tempArr[0]);
+					// Si ya la hemos descargado, evitamos volver a traerla:
+					boolean empresaYaDescargada = empresasDescargables.contains(tempArr[0]);
+					// Empresa de la que desconoce su URL de Nasdaq.old:
+					boolean sinURLnasdaqOld = (tempArr[7] == null || tempArr[7].isEmpty());
+
+					if (empresaEnListaDesconocidos) {
 						MY_LOGGER.info("Empresa de la que sabemos que desconocemos datos en alguna de las fuentes: "
 								+ tempArr[0]);
 					} else {
 
-						if (!empresasDescargables.contains(tempArr[0])) { // evitamos que haya empresas duplicadas
+						if (!empresaYaDescargada) { // evitamos que haya empresas duplicadas
 
-							out.add(new EstaticoNasdaqModelo(tempArr[0], tempArr[1], tempArr[2], tempArr[3], tempArr[4],
-									tempArr[5], tempArr[6], tempArr[7]));
-							empresasDescargables.add(tempArr[0]);
+							if (sinURLnasdaqOld) {
+								out.add(new EstaticoNasdaqModelo(tempArr[0], tempArr[1], tempArr[2], tempArr[3],
+										tempArr[4], tempArr[5], tempArr[6], tempArr[7]));
+								empresasDescargables.add(tempArr[0]);
+							} else {
+
+								out.add(new EstaticoNasdaqModelo(tempArr[0], tempArr[1], tempArr[2], tempArr[3],
+										tempArr[4], tempArr[5], tempArr[6], tempArr[7]));
+								empresasDescargables.add(tempArr[0]);
+							}
+
 						}
 
 					}
@@ -278,18 +293,26 @@ public class EstaticosNasdaqDescargarYParsear implements Serializable {
 						+ ".csv";
 
 				MY_LOGGER.info("Descarga OLD-NASDAQ - SUMMARY: " + rutaHtmlBruto1);
-				msegEspera = (long) (BrutosUtils.ESPERA_ALEATORIA_MSEG_MIN
-						+ Math.random() * 1000 * BrutosUtils.ESPERA_ALEATORIA_SEG_MAX);
-				Thread.sleep(msegEspera);
-				descargarPagina(rutaHtmlBruto1, true, modelo.summaryQuote);
-				parsearNasdaqEstatico2(rutaHtmlBruto1, mapaExtraidos);
 
-				MY_LOGGER.info("Descarga OLD-NASDAQ - SUMMARY: " + rutaHtmlBruto1);
-				msegEspera = (long) (BrutosUtils.ESPERA_ALEATORIA_MSEG_MIN
-						+ Math.random() * 1000 * BrutosUtils.ESPERA_ALEATORIA_SEG_MAX);
-				Thread.sleep(msegEspera);
-				descargarPagina(rutaHtmlBruto2, true, mapaExtraidos.get(ID_SRL));
-				parsearNasdaqEstatico3(rutaHtmlBruto2, rutaHtmlBruto3, mapaExtraidos);
+				if (modelo.summaryQuote != null && !modelo.summaryQuote.isEmpty()) {
+
+					msegEspera = (long) (BrutosUtils.ESPERA_ALEATORIA_MSEG_MIN
+							+ Math.random() * 1000 * BrutosUtils.ESPERA_ALEATORIA_SEG_MAX);
+					Thread.sleep(msegEspera);
+					descargarPagina(rutaHtmlBruto1, true, modelo.summaryQuote);
+					parsearNasdaqEstatico2(rutaHtmlBruto1, mapaExtraidos);
+
+					MY_LOGGER.info("Descarga OLD-NASDAQ - SUMMARY: " + rutaHtmlBruto1);
+					msegEspera = (long) (BrutosUtils.ESPERA_ALEATORIA_MSEG_MIN
+							+ Math.random() * 1000 * BrutosUtils.ESPERA_ALEATORIA_SEG_MAX);
+					Thread.sleep(msegEspera);
+					descargarPagina(rutaHtmlBruto2, true, mapaExtraidos.get(ID_SRL));
+					parsearNasdaqEstatico3(rutaHtmlBruto2, rutaHtmlBruto3, mapaExtraidos);
+
+				} else {
+					MY_LOGGER.info("Descarga OLD-NASDAQ - SUMMARY: " + rutaHtmlBruto1 + " --> No sabemos su URL");
+				}
+
 				volcarEnCSV(BrutosUtils.MERCADO_NQ, modelo.symbol, mapaExtraidos, rutaCsvBruto);
 
 			} else {

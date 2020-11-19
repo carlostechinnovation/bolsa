@@ -128,24 +128,27 @@ def ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_tr
     #-------------------URL: https://machinelearningmastery.com/avoid-overfitting-by-early-stopping-with-xgboost-in-python/
     #--- URL: https://xgboost.readthedocs.io/en/latest/parameter.html
 
-    METODO_EVALUACION="map"  # Mean Average Precision
+    METODO_EVALUACION="mae"  # https://xgboost.readthedocs.io/en/latest/parameter.html
 
     # Con PARAMETROS PARA VER EL OVERFITTING
-    modelo.fit(ds_train_f, ds_train_t , eval_metric=[METODO_EVALUACION], early_stopping_rounds=param_parada_iteraciones, eval_set=eval_set, verbose=False)  # ENTRENAMIENTO (TRAIN)
+    modelo.fit(ds_train_f, ds_train_t, eval_metric=[METODO_EVALUACION], early_stopping_rounds=param_parada_iteraciones, eval_set=eval_set, verbose=False)  # ENTRENAMIENTO (TRAIN)
 
     # --------------- Pintar dibujo---------------------------------------------------------------
     y_pred = modelo.predict(ds_test_f)
+    y_pred=y_pred.astype(float)
     predictions = [round(value) for value in y_pred]
     precision_para_medir_overfitting = precision_score(ds_test_t, predictions)
     print("Accuracy (PRECISION) para medir el overfitting: %.2f%%" % (precision_para_medir_overfitting * 100.0))
     # retrieve performance metrics
     results = modelo.evals_result()
+
     epochs = len(results['validation_0'][METODO_EVALUACION])
     x_axis = range(0, epochs)
     fig, ax = pyplot.subplots()
     ax.plot(x_axis, results['validation_0'][METODO_EVALUACION], label='Train')
     ax.plot(x_axis, results['validation_1'][METODO_EVALUACION], label='Test')
     ax.legend()
+    pyplot.ylabel("Numero de epochs")
     pyplot.ylabel(METODO_EVALUACION)
     pyplot.title(METODO_EVALUACION + ': ' + nombreModelo)
     plt.savefig(dir_subgrupo_img + nombreModelo + "_"+METODO_EVALUACION+".png", bbox_inches='tight')
@@ -500,11 +503,11 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
                                                                       ds_train_t, ds_test_f, ds_test_t, feature_names, False, modoDebug, dir_subgrupo_img)
             cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, id_subgrupo, modoDebug)
 
-            test_t_predicho = modelo.predict(ds_test_f);
+            test_t_predicho = modelo.predict(ds_test_f)
             validac_t_predicho = modelo.predict(ds_validac_f)
-            precision_test = precision_score(ds_test_t, test_t_predicho);
+            precision_test = precision_score(ds_test_t, test_t_predicho)
             precision_avg_test = average_precision_score(ds_test_t, test_t_predicho)
-            precision_validation = precision_score(ds_validac_t, validac_t_predicho);
+            precision_validation = precision_score(ds_validac_t, validac_t_predicho)
             precision_avg_validation = average_precision_score(ds_validac_t, validac_t_predicho)
             precision_media = (precision_test + precision_validation) / 2
             precision_avg_media = (precision_avg_test + precision_avg_validation) / 2
@@ -516,6 +519,12 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
                 ganador_nombreModelo = nombreModelo
                 ganador_grid_mejores_parametros = modelo_grid_mejores_parametros
             print("Fin de XGBOOST")
+
+            # #============================================================================
+            #print("Inicio de LSTM")
+            #nombreModelo = "lstm"
+            #pathModelo = dir_subgrupo + nombreModelo + ".modelo"
+            # #============================================================================
 
             # #============================================================================
             # nombreModelo = "extra_trees"
@@ -552,11 +561,11 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
             # modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_train_t, ds_test_f, ds_test_t, feature_names, False, modoDebug, dir_subgrupo_img)
             # cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, id_subgrupo, modoDebug)
             #
-            # test_t_predicho = modelo.predict(ds_test_f);
+            # test_t_predicho = modelo.predict(ds_test_f)
             # validac_t_predicho = modelo.predict(ds_validac_f)
-            # precision_test = precision_score(ds_test_t, test_t_predicho);
+            # precision_test = precision_score(ds_test_t, test_t_predicho)
             # precision_avg_test = average_precision_score(ds_test_t, test_t_predicho)
-            # precision_validation = precision_score(ds_validac_t, validac_t_predicho);
+            # precision_validation = precision_score(ds_validac_t, validac_t_predicho)
             # precision_avg_validation = average_precision_score(ds_validac_t, validac_t_predicho)
             # precision_media = (precision_test + precision_validation) / 2
             # precision_avg_media = (precision_avg_test + precision_avg_validation) / 2
@@ -581,11 +590,11 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
             # # modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelos_grid, pathModelo, ds_train_f, ds_train_t, ds_test_f, ds_test_t, feature_names, True, modoDebug, dir_subgrupo_img)
             # # cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, id_subgrupo, modoDebug)
             # #
-            # # test_t_predicho = modelo.predict(ds_test_f);
+            # # test_t_predicho = modelo.predict(ds_test_f)
             # # validac_t_predicho = modelo.predict(ds_validac_f)
-            # # precision_test = precision_score(ds_test_t, test_t_predicho);
+            # # precision_test = precision_score(ds_test_t, test_t_predicho)
             # # precision_avg_test = average_precision_score(ds_test_t, test_t_predicho)
-            # # precision_validation = precision_score(ds_validac_t, validac_t_predicho);
+            # # precision_validation = precision_score(ds_validac_t, validac_t_predicho)
             # # precision_avg_validation = average_precision_score(ds_validac_t, validac_t_predicho)
             # # precision_media = (precision_test + precision_validation) / 2
             # # precision_avg_media = (precision_avg_test + precision_avg_validation) / 2
@@ -609,11 +618,11 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
             # modelos_grid = GridSearchCV(modelo_base, hiperparametros, scoring='precision', n_jobs=-1, refit=True, cv=cv_todos,pre_dispatch='2*n_jobs', return_train_score=False)
             # modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelos_grid, pathModelo,ds_train_f, ds_train_t, ds_test_f, ds_test_t, feature_names, True, modoDebug, dir_subgrupo_img)
             # cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, id_subgrupo, modoDebug)
-            # test_t_predicho = modelo.predict(ds_test_f);
+            # test_t_predicho = modelo.predict(ds_test_f)
             # validac_t_predicho = modelo.predict(ds_validac_f)
-            # precision_test = precision_score(ds_test_t, test_t_predicho);
+            # precision_test = precision_score(ds_test_t, test_t_predicho)
             # precision_avg_test = average_precision_score(ds_test_t, test_t_predicho)
-            # precision_validation = precision_score(ds_validac_t, validac_t_predicho);
+            # precision_validation = precision_score(ds_validac_t, validac_t_predicho)
             # precision_avg_validation = average_precision_score(ds_validac_t, validac_t_predicho)
             # precision_media = (precision_test + precision_validation) / 2
             # precision_avg_media = (precision_avg_test + precision_avg_validation) / 2
@@ -643,11 +652,11 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
             # logreg_coef = pd.DataFrame(data=logreg_coef, columns=feature_names)
             # print("Pesos en regresion logistica:"); print(logreg_coef.to_string())
             #
-            # test_t_predicho = modelo.predict(ds_test_f);
+            # test_t_predicho = modelo.predict(ds_test_f)
             # validac_t_predicho = modelo.predict(ds_validac_f)
-            # precision_test = precision_score(ds_test_t, test_t_predicho);
+            # precision_test = precision_score(ds_test_t, test_t_predicho)
             # precision_avg_test = average_precision_score(ds_test_t, test_t_predicho)
-            # precision_validation = precision_score(ds_validac_t, validac_t_predicho);
+            # precision_validation = precision_score(ds_validac_t, validac_t_predicho)
             # precision_avg_validation = average_precision_score(ds_validac_t, validac_t_predicho)
             # precision_media = (precision_test + precision_validation) / 2
             # precision_avg_media = (precision_avg_test + precision_avg_validation) / 2
@@ -671,11 +680,11 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
             # modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelos_grid, pathModelo, ds_train_f, ds_train_t, ds_test_f, ds_test_t, feature_names, True, modoDebug, dir_subgrupo_img)
             # cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, id_subgrupo, modoDebug)
             #
-            # test_t_predicho = modelo.predict(ds_test_f);
+            # test_t_predicho = modelo.predict(ds_test_f)
             # validac_t_predicho = modelo.predict(ds_validac_f)
-            # precision_test = precision_score(ds_test_t, test_t_predicho);
+            # precision_test = precision_score(ds_test_t, test_t_predicho)
             # precision_avg_test = average_precision_score(ds_test_t, test_t_predicho)
-            # precision_validation = precision_score(ds_validac_t, validac_t_predicho);
+            # precision_validation = precision_score(ds_validac_t, validac_t_predicho)
             # precision_avg_validation = average_precision_score(ds_validac_t, validac_t_predicho)
             # precision_media = (precision_test + precision_validation) / 2
             # precision_avg_media = (precision_avg_test + precision_avg_validation) / 2
@@ -702,11 +711,11 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
             # modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelos_grid, pathModelo, ds_train_f, ds_train_t, ds_test_f, ds_test_t, feature_names, True, modoDebug, dir_subgrupo_img)
             # cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, id_subgrupo, modoDebug)
             #
-            # test_t_predicho = modelo.predict(ds_test_f);
+            # test_t_predicho = modelo.predict(ds_test_f)
             # validac_t_predicho = modelo.predict(ds_validac_f)
-            # precision_test = precision_score(ds_test_t, test_t_predicho);
+            # precision_test = precision_score(ds_test_t, test_t_predicho)
             # precision_avg_test = average_precision_score(ds_test_t, test_t_predicho)
-            # precision_validation = precision_score(ds_validac_t, validac_t_predicho);
+            # precision_validation = precision_score(ds_validac_t, validac_t_predicho)
             # precision_avg_validation = average_precision_score(ds_validac_t, validac_t_predicho)
             # precision_media = (precision_test + precision_validation) / 2
             # precision_avg_media = (precision_avg_test + precision_avg_validation) / 2

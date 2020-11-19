@@ -18,8 +18,8 @@ public class BrutosUtils implements Serializable {
 
 	public static final String DIR_BRUTOS = "/bolsa/pasado/brutos/";
 	public static final String DIR_BRUTOS_CSV = "/bolsa/pasado/brutos_csv/";
-	public static final String NASDAQ_TICKERS_CSV = "src/main/resources/nasdaq_tickers.csv";
-	public static final String NASDAQ_TICKERS_CSV_INVERTIDOS = "src/main/resources/nasdaq_tickers_invertidos.csv";
+	public static final String NASDAQ_TICKERS_CSV = "src/main/resources/nasdaq_tickers_v2.csv";
+	public static final String NASDAQ_TICKERS_CSV_INVERTIDOS = "src/main/resources/nasdaq_tickers_invertidos_v2.csv";
 	public static final String DESCONOCIDOS_CSV = "src/main/resources/desconocidos.csv";
 
 	public static final String NASDAQOLD = "NQO";

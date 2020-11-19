@@ -16,31 +16,36 @@ print("pathSalida: %s" % pathSalida)
 
 acumuladoDF = pd.DataFrame(columns=['id_subgrupo', 'columnas_seleccionadas'])
 contador=0
-featuresTodas=""
+featuresTodas = list()
 
 for directorio in os.listdir(dir_subgrupos):
     contador = contador + 1
     id_subgrupo = directorio.split("_")[1]
 
-    #Extraer TODAS las features, mirando la cabecera del COMPLETO
-    pathFileCompleto = dir_subgrupos + directorio + "/COMPLETO.csv"
-    if contador == 1:
-        f = open(pathFileCompleto, "r")
-        featuresTodas = f.readline()
-        print(featuresTodas)
+    #Extraer TODAS las features, mirando la cabecera del REDUCIDO
+    pathFileReducido = dir_subgrupos + directorio + "/REDUCIDO.csv"
+    f = open(pathFileReducido, "r")
+    columnas = f.readline().split("|")
+    columnasLimpio=[]
+    for sub in columnas:
+        columnasLimpio.append(sub.replace("\n", ""))
 
+    featuresTodas.extend(filter(lambda x: x, columnasLimpio)) # añade los elementos, habiendo quitado los nulos y limpiado los saltos de carro
+    #print(featuresTodas)
 
     pathFicheroAbsoluto = dir_subgrupos + directorio + "/FEATURES_SELECCIONADAS.csv"
     if os.path.exists(pathFicheroAbsoluto):
         f = open(pathFicheroAbsoluto, "r")
         featuresModelo = f.read()
-        print("id_subgrupo = " + id_subgrupo + " -> features= " + featuresModelo)
+        #print("id_subgrupo = " + id_subgrupo + " -> features= " + featuresModelo)
         subgrupoDF = pd.DataFrame(data=[[id_subgrupo, featuresModelo]], columns=['id_subgrupo', 'columnas_seleccionadas'])
         acumuladoDF = acumuladoDF.append(subgrupoDF)
 
+#Limpiar nombres de columnas duplicados
+featuresTodas = list(set(featuresTodas))
 
 #### MATRIZ ####
-columnas=featuresTodas.split("|")
+columnas=featuresTodas
 columnasConId = columnas.copy()
 columnasConId.insert(0, 'id_subgrupo')
 columnasConId.append('Numero de features usadas')
@@ -79,7 +84,9 @@ def pintarColores(val):
 
     return 'text-align: right; border: 1px solid black; border-collapse: collapse; %s' % color
 
-#Sort by id_subgrupo
+#Sort por nombre de COLUMNAS Alfabeticamente
+
+#Sort FILAS by id_subgrupo
 matrizDF = matrizDF.sort_values(by=['id_subgrupo'])
 
 # IMPORTANCIA DE LAS FEATURES: porcentaje de veces que cada feature es usada por los modelos
@@ -98,6 +105,7 @@ matrizDFtraspuesta.columns = new_header
 print("matrizDFtraspuesta: " + str(matrizDFtraspuesta.shape[0]) + " x " + str(matrizDFtraspuesta.shape[1]))
 # matrizDFtraspuesta.to_csv(pathSalida, index=False, sep='|')
 
+print("Escribiendo en: " + pathSalida)
 datosEnHtml = matrizDFtraspuesta.style.applymap(pintarColores).render()
 text_file = open(pathSalida, "w")
 text_file.write(datosEnHtml)
