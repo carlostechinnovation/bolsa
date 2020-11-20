@@ -70,20 +70,37 @@ crearCarpetaSiNoExiste "${DIR_VALIDACION}"
 rm -f "${DIR_LOGS}log4j.log"
 rm -f "${LOG_VALIDADOR}"
 
-################################################################################################
+############################# PASADO ###################################################################
 
 echo -e "PARAMETROS --> VELAS_RETROCESO|S|X|R|M|F|B|NUM_EMPRESAS|SUBIDA_MAXIMA_POR_VELA|MIN_COBERTURA_CLUSTER}|MIN_EMPRESAS_POR_CLUSTER|MAX_NUM_FEAT_REDUCIDAS|RANGO_YF|VELA_YF --> ${VELAS_RETROCESO}|${S}|${X}|${R}|${M}|${F}|${B}|${NUM_EMPRESAS}|${UMBRAL_SUBIDA_POR_VELA}|${MIN_COBERTURA_CLUSTER}|${MIN_EMPRESAS_POR_CLUSTER}|${MAX_NUM_FEAT_REDUCIDAS}|${RANGO_YF}|${VELA_YF}" >>${LOG_VALIDADOR}
 echo -e "PARAMETROS -->  PASADO_t1 | FUTURO1_t1 | FUTURO2_t1--> ${PASADO_t1}|${FUTURO1_t1}|${FUTURO2_t1}" >>${LOG_VALIDADOR}
+echo -e "PARAMETROS -->  ACTIVAR_DESCARGAS --> ${ACTIVAR_DESCARGAS}" >>${LOG_VALIDADOR}
 
 rm -Rf /bolsa/pasado/ >>${LOG_VALIDADOR}
 mkdir -p /bolsa/logs/ >>${LOG_VALIDADOR}
 echo -e ""  >>${LOG_VALIDADOR}
 
 if [ "${ACTIVAR_DESCARGAS}" = "N" ];  then
-	echo -e "PASADO - Usamos datos LOCALES (sin Internet) de la ruta /bolsa/datos_validacion/" >>${LOG_VALIDADOR}
-	crearCarpetaSiNoExiste "/bolsa/pasado/brutos_csv/"
-	cp -a "/bolsa/validacion_datos/pasado_brutos_csv/." "/bolsa/pasado/brutos_csv/" >>${LOG_VALIDADOR}
-fi;
+	echo -e "PASADO - Usamos datos LOCALES (sin Internet) de la ruta /bolsa/datos_validacion/pasado_brutos_csv/" >>${LOG_VALIDADOR}
+	tamanioorigen=$(du -s "/bolsa/validacion/pasado_brutos_csv/" | cut -f1)
+	echo "${tamanioorigen}"
+	if [ ${tamanioorigen} > 0 ]; then
+		rm -Rf /bolsa/pasado/ >>${LOG_VALIDADOR}
+		mkdir -p /bolsa/logs/ >>${LOG_VALIDADOR}
+		echo -e ""  >>${LOG_VALIDADOR}
+		crearCarpetaSiNoExiste "/bolsa/pasado/brutos_csv/"
+		cp -a "/bolsa/validacion/pasado_brutos_csv/." "/bolsa/pasado/brutos_csv/" >>${LOG_VALIDADOR}
+	else
+		echo "No existe o no hay datos en: /bolsa/validacion/pasado_brutos_csv/   Saliendo..."
+		exit -1
+	fi
+
+else
+	rm -Rf /bolsa/pasado/ >>${LOG_VALIDADOR}
+	mkdir -p /bolsa/logs/ >>${LOG_VALIDADOR}
+	echo "Se borra y se crea TOTALMENTE la carpeta:  /bolsa/pasado/"
+	echo -e ""  >>${LOG_VALIDADOR}
+fi
 
 echo -e $( date '+%Y%m%d_%H%M%S' )" Ejecución del PASADO (para entrenar los modelos a dia de HOY con la lista normal de empresas)..." >>${LOG_VALIDADOR}
 ${PATH_SCRIPTS}master.sh "pasado" "${PASADO_t1}" "0" "${ACTIVAR_DESCARGAS}" "S" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" "${NUM_EMPRESAS}" "${UMBRAL_SUBIDA_POR_VELA}" "${MIN_COBERTURA_CLUSTER}" "${MIN_EMPRESAS_POR_CLUSTER}" "${P_INICIO}" "${P_FIN}" "${MAX_NUM_FEAT_REDUCIDAS}" 2>>${LOG_VALIDADOR} 1>>${LOG_VALIDADOR}
@@ -93,18 +110,31 @@ rm -Rf $dir_val_pasado
 mkdir -p $dir_val_pasado
 cp -R "/bolsa/pasado/" $dir_val_pasado
 
-################################################################################################
+################################ FUTURO 1 ################################################################
 
 #En esta ejecucion, nos situamos unas velas atras y PREDECIMOS el futuro. Guardaremos esa predicción y la comparamos con lo que ha pasado hoy (dato REAL)
-
-rm -Rf /bolsa/futuro/ >>${LOG_VALIDADOR}
-crearCarpetaSiNoExiste "${DIR_FUT_SUBGRUPOS}"
-
 if [ "${ACTIVAR_DESCARGAS}" = "N" ];  then
-	echo -e "FUTURO1 - Usamos datos LOCALES (sin Internet) de la ruta /bolsa/datos_validacion/" >>${LOG_VALIDADOR}
-	crearCarpetaSiNoExiste "/bolsa/futuro/brutos_csv/"
-	cp -a "/bolsa/validacion_datos/futuro1_brutos_csv/." "/bolsa/futuro/brutos_csv/" >>${LOG_VALIDADOR}
-fi;
+	
+	echo -e "FUTURO1 - Usamos datos LOCALES (sin Internet) de la ruta /bolsa/datos_validacion/futuro1_brutos_csv/" >>${LOG_VALIDADOR}
+	tamanioorigen=$(du -s "/bolsa/validacion/futuro1_brutos_csv/" | cut -f1)
+	echo "${tamanioorigen}"
+	
+	if [ ${tamanioorigen} > 0 ]; then
+		rm -Rf /bolsa/futuro/ >>${LOG_VALIDADOR}
+		crearCarpetaSiNoExiste "${DIR_FUT_SUBGRUPOS}"
+		crearCarpetaSiNoExiste "/bolsa/futuro/brutos_csv/"
+		cp -a "/bolsa/validacion/futuro1_brutos_csv/." "/bolsa/futuro/brutos_csv/" >>${LOG_VALIDADOR}
+	else
+		echo "No existe o no hay datos en: /bolsa/validacion/futuro1_brutos_csv/   Saliendo..."
+		exit -1
+	fi
+	
+else
+	echo "Se borra y se crea TOTALMENTE la carpeta:  /bolsa/futuro/"
+	rm -Rf /bolsa/futuro/ >>${LOG_VALIDADOR}
+	crearCarpetaSiNoExiste "${DIR_FUT_SUBGRUPOS}"
+fi
+
 
 echo -e $( date '+%Y%m%d_%H%M%S' )" Ejecución del futuro (para velas de antiguedad=${FUTURO1_t1}) con OTRAS empresas (lista REVERTIDA)..." >>${LOG_VALIDADOR}
 ${PATH_SCRIPTS}master.sh "futuro" "${FUTURO1_t1}" "1" "${ACTIVAR_DESCARGAS}" "S" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" "${NUM_EMPRESAS}" "${UMBRAL_SUBIDA_POR_VELA}" "${MIN_COBERTURA_CLUSTER}" "${MIN_EMPRESAS_POR_CLUSTER}" "20001111" "20991111" "${MAX_NUM_FEAT_REDUCIDAS}" 2>>${LOG_VALIDADOR} 1>>${LOG_VALIDADOR}
@@ -123,19 +153,33 @@ rm -Rf $dir_val_futuro_1
 mkdir -p $dir_val_futuro_1
 cp -R "/bolsa/futuro/" $dir_val_futuro_1
 
-################################################################################################
+
+########################### FUTURO 2 #####################################################################
 
 #En esta ejecucion SOLO NOS INTERESA COGER el tablon analítico de entrada, para extraer el resultado REAL y compararlo con las predicciones que hicimos unas velas atrás.
 #En esta ejecucion, no miramos la predicción. --> Esta NO es la predicción del futuro en el instante de ahora mismo (t1=0) para poner dinero real, sino de del futuro de que hemos predicho en la ejecucion de arriba, es decir, t1= -1* VELAS_RETROCESO + S + M
-
-rm -Rf /bolsa/futuro/ >>${LOG_VALIDADOR}
-crearCarpetaSiNoExiste "${DIR_FUT_SUBGRUPOS}"
-
 if [ "${ACTIVAR_DESCARGAS}" = "N" ];  then
-	echo -e "FUTURO2 - Usamos datos LOCALES (sin Internet) de la ruta /bolsa/datos_validacion/" >>${LOG_VALIDADOR}
-	crearCarpetaSiNoExiste "/bolsa/futuro/brutos_csv/"
-	cp -a "/bolsa/validacion_datos/futuro2_brutos_csv/." "/bolsa/futuro/brutos_csv/" >>${LOG_VALIDADOR}
-fi;
+	
+	echo -e "FUTURO2 - Usamos datos LOCALES (sin Internet) de la ruta /bolsa/datos_validacion/futuro2_brutos_csv/" >>${LOG_VALIDADOR}
+	tamanioorigen=$(du -s "/bolsa/validacion/futuro2_brutos_csv/" | cut -f1)
+	echo "${tamanioorigen}"
+	
+	if [ ${tamanioorigen} > 0 ]; then
+		rm -Rf /bolsa/futuro/ >>${LOG_VALIDADOR}
+		crearCarpetaSiNoExiste "${DIR_FUT_SUBGRUPOS}"
+		crearCarpetaSiNoExiste "/bolsa/futuro/brutos_csv/"
+		cp -a "/bolsa/validacion/futuro2_brutos_csv/." "/bolsa/futuro/brutos_csv/" >>${LOG_VALIDADOR}
+	else
+		echo "No existe o no hay datos en: /bolsa/validacion/futuro2_brutos_csv/   Saliendo..."
+		exit -1
+	fi
+	
+else
+	echo "Se borra y se crea TOTALMENTE la carpeta:  /bolsa/futuro/"
+	rm -Rf /bolsa/futuro/ >>${LOG_VALIDADOR}
+	crearCarpetaSiNoExiste "${DIR_FUT_SUBGRUPOS}"
+fi
+
 
 echo -e $( date '+%Y%m%d_%H%M%S' )" Ejecución del futuro (para velas de antiguedad=${FUTURO2_t1}) con OTRAS empresas (lista REVERTIDA)..." >>${LOG_VALIDADOR}
 ${PATH_SCRIPTS}master.sh "futuro" "${FUTURO2_t1}" "1" "${ACTIVAR_DESCARGAS}" "S" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" "${NUM_EMPRESAS}" "${UMBRAL_SUBIDA_POR_VELA}" "${MIN_COBERTURA_CLUSTER}" "${MIN_EMPRESAS_POR_CLUSTER}" "20001111" "20991111" "${MAX_NUM_FEAT_REDUCIDAS}" 2>>${LOG_VALIDADOR} 1>>${LOG_VALIDADOR}
@@ -154,7 +198,8 @@ rm -Rf $dir_val_futuro_2
 mkdir -p $dir_val_futuro_2
 cp -R "/bolsa/futuro/" $dir_val_futuro_2
 
-################################################################################################
+
+#################### COMPARACION PASADO, FUT1, FUT2 ############################################################################
 echo -e $( date '+%Y%m%d_%H%M%S' )" -------------------------------------------------" >> ${LOG_VALIDADOR}
 echo -e "Validacion de rendimiento: COMPARAR el ATRAS_PREDICHO con HOY_REAL para empresas de la lista REVERTIDA..." >> ${LOG_VALIDADOR}
 
