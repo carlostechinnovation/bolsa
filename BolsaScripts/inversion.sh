@@ -80,7 +80,6 @@ MIN_COBERTURA_CLUSTER=0    # Para predecir, cojo lo que haya, sin minimos. EL mo
 MIN_EMPRESAS_POR_CLUSTER=1   # Para predecir, cojo lo que haya, sin minimos. EL modelo ya lo hemos entrenado
 ${PATH_SCRIPTS}master.sh "futuro" "${FUTURO_INVERSION}" "0" "S" "S" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" "${NUM_EMPRESAS_INVERSION}" "${UMBRAL_SUBIDA_POR_VELA}" "${MIN_COBERTURA_CLUSTER}" "${MIN_EMPRESAS_POR_CLUSTER}" "20001111" "20991111" "${MAX_NUM_FEAT_REDUCIDAS}" 2>>${LOG_INVERSION} 1>>${LOG_INVERSION}
 
-
 echo -e "Guardamos la prediccion del FUTURO de todos los SUBGRUPOS en la carpeta de INVERSION, para apostar dinero REAL..." >>${LOG_INVERSION}
 
 while IFS= read -r -d '' -u 9

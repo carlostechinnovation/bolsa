@@ -46,20 +46,21 @@ print("dir_subgrupo = %s" % dir_subgrupo)
 print("modoTiempo = %s" % modoTiempo)
 print("maxFeatReducidas = %s" % maxFeatReducidas)
 
-varianza=0.87
+varianza=0.87  # Variacion acumulada de las features PCA sobre el target
 compatibleParaMuchasEmpresas = False  # Si hay muchas empresas, debo hacer ya el undersampling (en vez de capa 6)
-global modoDebug; modoDebug=True  # VARIABLE GLOBAL: En modo debug se pintan los dibujos. En otro caso, se evita calculo innecesario
+global modoDebug; modoDebug=False  # VARIABLE GLOBAL: En modo debug se pintan los dibujos. En otro caso, se evita calculo innecesario
 global dibujoBins; dibujoBins=20  #VARIABLE GLOBAL: al pintar los histogramas, define el número de barras posibles en las que se divide el eje X.
 numTramos=7  # Numero de tramos usado para tramificar las features dinámicas
 pathCsvCompleto = dir_subgrupo + "COMPLETO.csv"
 dir_subgrupo_img = dir_subgrupo + "img/"
 pathCsvIntermedio = dir_subgrupo + "intermedio.csv"
 pathCsvReducido = dir_subgrupo + "REDUCIDO.csv"
-pathModeloOutliers = (dir_subgrupo + "DETECTOR_OUTLIERS.tool").replace("futuro", "pasado") # Siempre lo cojo del pasado
-path_modelo_tramificador = (dir_subgrupo + "tramif/" + "TRAMIFICADOR").replace("futuro", "pasado") # Siempre lo cojo del pasado
-path_modelo_normalizador = (dir_subgrupo + "NORMALIZADOR.tool").replace("futuro", "pasado") # Siempre lo cojo del pasado
+pathModeloOutliers = (dir_subgrupo + "DETECTOR_OUTLIERS.tool").replace("futuro", "pasado")  # Siempre lo cojo del pasado
+path_modelo_tramificador = (dir_subgrupo + "tramif/" + "TRAMIFICADOR").replace("futuro", "pasado")  # Siempre lo cojo del pasado
+path_modelo_normalizador = (dir_subgrupo + "NORMALIZADOR.tool").replace("futuro", "pasado")  # Siempre lo cojo del pasado
 path_indices_out_capa5 = (dir_subgrupo + "indices_out_capa5.indices")
-path_modelo_reductor_features = (dir_subgrupo + "REDUCTOR.tool").replace("futuro", "pasado") # Siempre lo cojo del pasado
+path_modelo_reductor_features = (dir_subgrupo + "REDUCTOR.tool").replace("futuro", "pasado")  # Siempre lo cojo del pasado
+path_modelo_pca = (dir_subgrupo + "PCA.tool").replace("futuro", "pasado")  # Siempre lo cojo del pasado
 
 balancear = False  # No usar este balanceo, sino el de Luis (capa 6), que solo actúa en el dataset de train, evitando tocar test y validation
 
@@ -502,9 +503,10 @@ def comprobarSuficientesClasesTarget(featuresFicheroNorm, targetsFichero):
   return y_unicos.size
 
 
-def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, targetsFichero, pathCsvReducido, varianzaAcumuladaDeseada, dir_subgrupo_img, modoTiempo, maxFeatReducidas):
+def reducirFeaturesYGuardar(path_modelo_reductor_features, path_modelo_pca, featuresFicheroNorm, targetsFichero, pathCsvReducido, varianzaAcumuladaDeseada, dir_subgrupo_img, modoTiempo, maxFeatReducidas):
   print("----- reducirFeaturesYGuardar ------")
   print("path_modelo_reductor_features --> " + path_modelo_reductor_features)
+  print("path_modelo_pca --> " + path_modelo_pca)
   print("featuresFicheroNorm: " + str(featuresFicheroNorm.shape[0]) + " x " + str(featuresFicheroNorm.shape[1]))
   print("targetsFichero: " + str(targetsFichero.shape[0]) + " x " + str(targetsFichero.shape[1]))
   print("pathCsvReducido --> " + pathCsvReducido)
@@ -536,8 +538,7 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, 
 
     # accuracy,balanced_accuracy,average_precision,neg_brier_score,f1,f1_micro,f1_macro,f1_weighted,roc_auc,roc_auc_ovr,roc_auc_ovo,roc_auc_ovr_weighted,roc_auc_ovo_weighted
     #Es mejor roc_auc que f1 y que average_precision. El roc_auc_ovo_weighted no mejora, y roc_auc_ovr_weighted es peor.
-    #rfecv_scoring = 'roc_auc'
-    rfecv_scoring = 'average_precision'
+    rfecv_scoring = 'roc_auc'
 
     if probarVariosClasificadores:
         classifiers = [
@@ -608,17 +609,26 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFicheroNorm, 
       featuresFicheroNormElegidas = featuresFicheroNorm[columnasSeleccionadas]
       # featuresFicheroNormElegidas.to_csv(pathCsvReducido + "_TEMP06", index=False, sep='|')  # UTIL ara testIntegracion
 
-      ####################### NO LO USAMOS pero lo dejo aqui ########
+      ########### PCA: base de funciones ortogonales (con combinaciones de features) ########
       if True:
           print("** PCA (Principal Components Algorithm) **")
-          print("Usando PCA, creamos una NUEVA BASE DE FEATURES ORTOGONALES y cogemos las que tengan un impacto agregado sobre el X% de la varianza del target. Descartamos el resto.")
-          modelo_pca_subgrupo = PCA(n_components=varianzaAcumuladaDeseada, svd_solver='full')  # Variaza acumulada sobre el target
-          #modelo_pca_subgrupo = PCA(n_components='mle', svd_solver='full')  # Metodo "MLE de Minka": https://vismod.media.mit.edu/tech-reports/TR-514.pdf
-          print(modelo_pca_subgrupo)
-          featuresFicheroNorm_pca = modelo_pca_subgrupo.fit_transform(featuresFicheroNorm)
-          print(featuresFicheroNorm_pca)
-          print('Dimensiones del dataframe reducido: ' + str(featuresFicheroNorm_pca.shape[0]) + ' x ' + str(featuresFicheroNorm_pca.shape[1]))
-          print("Las features están ya normalizadas y reducidas. DESCRIBIMOS lo que hemos hecho y GUARDAMOS el dataset.")
+
+          if modoTiempo == "pasado":
+              print("Usando PCA, creamos una NUEVA BASE DE FEATURES ORTOGONALES y cogemos las que tengan un impacto agregado sobre el X% de la varianza del target. Descartamos el resto.")
+              modelo_pca_subgrupo = PCA(n_components=varianzaAcumuladaDeseada, svd_solver='full')  # Variaza acumulada sobre el target
+              # modelo_pca_subgrupo = PCA(n_components='mle', svd_solver='full')  # Metodo "MLE de Minka": https://vismod.media.mit.edu/tech-reports/TR-514.pdf
+              print(modelo_pca_subgrupo)
+              featuresFicheroNorm_pca = modelo_pca_subgrupo.fit_transform(featuresFicheroNorm)
+              print("modelo_pca_subgrupo -> dump ...")
+              pickle.dump(modelo_pca_subgrupo, open(path_modelo_pca, 'wb'))
+          else:
+              print("modelo_pca_subgrupo -> load ...")
+              modelo_pca_subgrupo = pickle.load(open(path_modelo_pca, 'rb'))
+              print(modelo_pca_subgrupo)
+              featuresFicheroNorm_pca = modelo_pca_subgrupo.transform(featuresFicheroNorm)
+
+          print('Dimensiones del dataframe tras PCA: ' + str(featuresFicheroNorm_pca.shape[0]) + ' x ' + str(featuresFicheroNorm_pca.shape[1]))
+          print("Las features están ya normalizadas, reducidas y en base ortogonal PCA. DESCRIBIMOS lo que hemos hecho y GUARDAMOS el dataset.")
           num_columnas_pca = featuresFicheroNorm_pca.shape[1]
           columnas_pca = ["pca_" + f"{i:0>2}" for i in range(num_columnas_pca)]  # Hacemos left padding con la funcion f-strings
           featuresFicheroNorm_pca_df = DataFrame(featuresFicheroNorm_pca, columns=columnas_pca, index=featuresFicheroNorm.index)
@@ -666,7 +676,7 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
     if(modoTiempo == "pasado" and numclases <= 1):
         print("El subgrupo solo tiene " + str(numclases) + " clases en el target. Abortamos...")
     else:
-        reducirFeaturesYGuardar(path_modelo_reductor_features, featuresFichero3, targetsFichero, pathCsvReducido, varianza, dir_subgrupo_img, modoTiempo, maxFeatReducidas)
+        reducirFeaturesYGuardar(path_modelo_reductor_features, path_modelo_pca, featuresFichero3, targetsFichero, pathCsvReducido, varianza, dir_subgrupo_img, modoTiempo, maxFeatReducidas)
 
 
 print("------------ FIN de capa 5 ----------------")

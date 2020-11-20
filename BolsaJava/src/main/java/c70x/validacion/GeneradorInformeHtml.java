@@ -71,6 +71,7 @@ public class GeneradorInformeHtml implements Serializable {
 			System.exit(-1);
 		} else {
 			dirTiempo = args[0];
+			MY_LOGGER.info("dirTiempo=" + dirTiempo);
 		}
 
 		generarInformeHtml(dirTiempo);
@@ -79,6 +80,8 @@ public class GeneradorInformeHtml implements Serializable {
 	}
 
 	/**
+	 * Analiza la carpeta pasada como parámetro, genera un informe HTML y lo guarda.
+	 * 
 	 * @param dirTiempo
 	 * @throws IOException
 	 */

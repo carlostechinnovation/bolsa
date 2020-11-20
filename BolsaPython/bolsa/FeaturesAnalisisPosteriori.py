@@ -30,14 +30,14 @@ for directorio in os.listdir(dir_subgrupos):
     for sub in columnas:
         columnasLimpio.append(sub.replace("\n", ""))
 
-    featuresTodas.extend(filter(lambda x: x, columnasLimpio)) # añade los elementos, habiendo quitado los nulos y limpiado los saltos de carro
-    #print(featuresTodas)
+    featuresTodas.extend(filter(lambda x: x, columnasLimpio))  # añade los elementos, habiendo quitado los nulos y limpiado los saltos de carro
+    print(featuresTodas)
 
     pathFicheroAbsoluto = dir_subgrupos + directorio + "/FEATURES_SELECCIONADAS.csv"
     if os.path.exists(pathFicheroAbsoluto):
         f = open(pathFicheroAbsoluto, "r")
         featuresModelo = f.read()
-        #print("id_subgrupo = " + id_subgrupo + " -> features= " + featuresModelo)
+        print("id_subgrupo = " + id_subgrupo + " -> features= " + featuresModelo)
         subgrupoDF = pd.DataFrame(data=[[id_subgrupo, featuresModelo]], columns=['id_subgrupo', 'columnas_seleccionadas'])
         acumuladoDF = acumuladoDF.append(subgrupoDF)
 

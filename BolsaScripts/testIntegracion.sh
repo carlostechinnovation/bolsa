@@ -76,7 +76,7 @@ cp -a "${DIR_CODIGOS}test_integracion_datos/." "/bolsa/validacion_datos/"
 #######################################################################################################
 echo -e "********************************Ejecucion del validador: PASADO + FUTURO1 + FUTURO2 *******************************" >> ${LOG_INTEGRACION}
 echo -e "Ejecutando validador..." >> ${LOG_INTEGRACION}
-${DIR_CODIGOS}BolsaScripts/validacionEuros.sh
+${DIR_CODIGOS}BolsaScripts/entrenarConPasadoValidarConFut1Fut2.sh
 
 
 #######################################################################################################

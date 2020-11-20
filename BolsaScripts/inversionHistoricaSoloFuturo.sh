@@ -81,37 +81,18 @@ DIR_JAVA="${DIR_CODIGOS}BolsaJava/"
 PATH_JAR="${DIR_JAVA}target/bolsajava-1.0-jar-with-dependencies.jar"
 DIR_GITHUB_INVERSION="${DIR_CODIGOS}inversion/"
 
-############### LOGS ########################################################
-rm -f "${DIR_LOGS}log4j.log"
-rm -f "${LOG_INVERSION}"
 
 #################################### CÓDIGO ###########################################################
 
-PATH_BACKUP_BUENO_PASADO="${DIR_BASE}pasado_subgrupos_BUENO"
-echo -e "PASADO - Antes de crear y entrenar nuevos modelos del PASADO, guardamos COPIA DE SEGURIDAD en: ${PATH_BACKUP_BUENO_PASADO}" >>${LOG_INVERSION}
-rm -Rf "${PATH_BACKUP_BUENO_PASADO}" >>${LOG_INVERSION}
-mkdir "${PATH_BACKUP_BUENO_PASADO}" >>${LOG_INVERSION}
-cp -Rf "${DIR_BASE}/pasado/subgrupos/" "${PATH_BACKUP_BUENO_PASADO}" >>${LOG_INVERSION}
-echo -e "Se corta lo que existe en Dropbox hacia una carpeta temporal" >>${LOG_INVERSION}
-rm -Rf "${DIR_DROPBOX}temporal_HISTORICO" >>${LOG_INVERSION}
-mkdir "${DIR_DROPBOX}temporal_HISTORICO/" >>${LOG_INVERSION}
-cp "${DIR_DROPBOX}"* "${DIR_DROPBOX}temporal_HISTORICO/" >>${LOG_INVERSION}
-rm "${DIR_DROPBOX}"* >>${LOG_INVERSION}
-echo -e "Se crea una carpeta para los resultados de ANALISIS_HISTORICO" >>${LOG_INVERSION}
-rm -Rf "${DIR_DROPBOX}ANALISIS_HISTORICO/" >>${LOG_INVERSION}
-mkdir "${DIR_DROPBOX}ANALISIS_HISTORICO/" >>${LOG_INVERSION}
-
-echo -e "Se obtiene el modelo de predicción para la antigüedad máxima. Luego se irá hacia adelante en el tiempo, prediciendo tiempos futuros para el modelo entrenado" >>${LOG_INVERSION}
-echo -e $( date '+%Y%m%d_%H%M%S' )" Ejecución del PASADO (para velas de ANTIGUEDAD_MAXIMA=${ANTIGUEDAD_MAXIMA}): entrenamiento del modelo..." >>${LOG_INVERSION}
-
-${PATH_SCRIPTS}master.sh "pasado" "${ANTIGUEDAD_MAXIMA}" "0" "${ACTIVAR_DESCARGAS}" "S" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" "${NUM_EMPRESAS_TRAIN}" "${UMBRAL_SUBIDA_POR_VELA}" "${MIN_COBERTURA_CLUSTER}" "${MIN_EMPRESAS_POR_CLUSTER}" "${P_INICIO}" "${P_FIN}" "${MAX_NUM_FEAT_REDUCIDAS}" 2>>${LOG_INVERSION} 1>>${LOG_INVERSION}
-
-echo -e "Análisis de inversión histórica. Se recorre cada antigüedad, y se predice su futuro" >>${LOG_INVERSION}
 for (( ANTIGUEDAD=${ANTIGUEDAD_MINIMA}; ANTIGUEDAD<=${ANTIGUEDAD_MAXIMA}; ANTIGUEDAD++ ))
 do  
 
 	rm -Rf ${DIR_BASE}futuro/ >>${LOG_INVERSION}
 	crearCarpetaSiNoExiste "${DIR_FUT_SUBGRUPOS}"
+	crearCarpetaSiNoExiste "${DIR_FUT_SUBGRUPOS}brutos/"
+	crearCarpetaSiNoExiste "${DIR_FUT_SUBGRUPOS}brutos_csv/"
+	crearCarpetaSiNoExiste "${DIR_FUT_SUBGRUPOS}limpios/"
+	crearCarpetaSiNoExiste "${DIR_FUT_SUBGRUPOS}elaborados/"
 	
 	echo -e $( date '+%Y%m%d_%H%M%S' )" Ejecución del futuro (para velas de antiguedad=${ANTIGUEDAD}) con TODAS LAS EMPRESAS (lista DIRECTA ó INVERSA, ya da igual, no estamos mirando overfitting)..." >>${LOG_INVERSION}
 	MIN_COBERTURA_CLUSTER=0    # Para predecir, cojo lo que haya, sin minimos. El modelo ya lo hemos entrenado
@@ -130,38 +111,6 @@ do
 
 done
 
-echo -e "Se añaden también todos los ficheros GRANDE_0 del subgrupo 0 que tenemos de ejecuciones anteriores, que servirán para fijar una base de comparación futura" >>${LOG_INVERSION}
-origen="${DIR_DROPBOX}HISTORICO/"
-patronGrandeAntiguedadCero="_GRANDE_0_SG_0_"
-destino="${DIR_DROPBOX}/"
-
-find "${origen}" -name "*${patronGrandeAntiguedadCero}*" -exec cp {} ${destino} \; -print  >>${LOG_INVERSION}
-
-echo -e "Se añade el análisis de la calidad para ver las gráficas y qué subgrupos son los mejores" >>${LOG_INVERSION}
-${PATH_ANALISIS}
-
-echo -e "Se copia el análisis en ANALISIS_HISTORICO" >>${LOG_INVERSION}
-cp "${DIR_DROPBOX}/ANALISIS/"* "${DIR_DROPBOX}ANALISIS_HISTORICO/" >>${LOG_INVERSION}
-
-
-echo -e "Se RESTABLECEN los modelos del PASADO para cada subgrupo, que eran los BUENOS, como estaban..." >>${LOG_INVERSION}
-rm -Rf "${DIR_BASE}pasado/subgrupos/" >>${LOG_INVERSION}
-mkdir "${DIR_BASE}pasado/subgrupos/" >>${LOG_INVERSION}
-cp -Rf "${PATH_BACKUP_BUENO_PASADO}/subgrupos/" "${DIR_BASE}pasado/" >>${LOG_INVERSION}
-
-echo -e "Se REESTABLECE lo que ya existía en Dropbox" >>${LOG_INVERSION}
-rm -Rf "${DIR_DROPBOX}HISTORICO" >>${LOG_INVERSION}
-mkdir "${DIR_DROPBOX}HISTORICO/" >>${LOG_INVERSION}
-cp "${DIR_DROPBOX}"* "${DIR_DROPBOX}HISTORICO/" >>${LOG_INVERSION}
-rm "${DIR_DROPBOX}"* >>${LOG_INVERSION}
-cp "${DIR_DROPBOX}temporal_HISTORICO/"* "${DIR_DROPBOX}" >>${LOG_INVERSION}
-rm -Rf "${DIR_DROPBOX}temporal_HISTORICO" >>${LOG_INVERSION}
-
-echo -e "Se reejecuta el análisis de la calidad con los datos restaurados" >>${LOG_INVERSION}
-${PATH_ANALISIS}
-
-#echo -e "Arrancando cron..."
-#sudo service cron  start
 
 echo -e "INVERSION - FIN: "$( date "+%Y%m%d%H%M%S" )
 

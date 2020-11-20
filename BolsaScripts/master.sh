@@ -115,7 +115,7 @@ mvn clean compile assembly:single >> ${LOG_MASTER}
 ################################################################################################
 echo -e $( date '+%Y%m%d_%H%M%S' )" -------- DATOS BRUTOS -------------" >> ${LOG_MASTER}
 
-if [ "$ACTIVAR_DESCARGA" = "S" ];  then
+if [ "${ACTIVAR_DESCARGA}" = "S" ];  then
 
 	crearCarpetaSiNoExisteYVaciar "${DIR_BRUTOS}"
 	crearCarpetaSiNoExisteYVaciar "${DIR_BRUTOS_CSV}"
@@ -138,10 +138,10 @@ if [ "$ACTIVAR_DESCARGA" = "S" ];  then
 	echo -e "ESTATICOS + DINAMICOS: limpiando CSVs intermedios brutos..." >> ${LOG_MASTER}
 	java -jar ${PATH_JAR} --class "coordinador.Principal" "c10X.brutos.LimpiarCSVBrutosTemporales" "${DIR_BRUTOS_CSV}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 
-	comprobarQueDirectorioNoEstaVacio "${DIR_BRUTOS}"
-	comprobarQueDirectorioNoEstaVacio "${DIR_BRUTOS_CSV}"
-
 fi;
+
+comprobarQueDirectorioNoEstaVacio "${DIR_BRUTOS}"
+comprobarQueDirectorioNoEstaVacio "${DIR_BRUTOS_CSV}"
 
 NUM_FICHEROS_10x=$(ls -l ${DIR_BRUTOS_CSV} | grep -v 'total' | wc -l)
 echo -e "La capa 10X ha generado $NUM_FICHEROS_10x ficheros" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
