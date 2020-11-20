@@ -13,6 +13,7 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -107,6 +108,9 @@ public class EstaticosFinvizDescargarYParsear {
 		}
 
 		Map<String, String> mapaExtraidos = new HashMap<String, String>();
+		List<String> operacionesInsidersLimpias = new ArrayList<String>();
+		final String cabeceraFicheroOpsInsiders = "fecha|tipooperacion|importe";
+
 		List<EstaticoNasdaqModelo> nasdaqEstaticos1 = EstaticosNasdaqDescargarYParsear
 				.descargarNasdaqEstaticosSoloLocal1(entornoDeValidacion);
 
@@ -116,6 +120,9 @@ public class EstaticosFinvizDescargarYParsear {
 		for (int i = 0; i < Math.min(numMaxEmpresas, nasdaqEstaticos1.size()); i++) {
 
 			mapaExtraidos.clear();
+			operacionesInsidersLimpias.clear();
+
+			operacionesInsidersLimpias.add(cabeceraFicheroOpsInsiders);
 
 			String empresa = nasdaqEstaticos1.get(i).symbol;
 
@@ -133,12 +140,18 @@ public class EstaticosFinvizDescargarYParsear {
 			boolean descargaBien = descargarPaginaFinviz(rutaHtmlBruto, true, urlFinvizEmpresa);
 
 			if (descargaBien) {
-				parsearFinviz1(empresa, rutaHtmlBruto, mapaExtraidos);
+				parsearFinviz1(empresa, rutaHtmlBruto, mapaExtraidos, operacionesInsidersLimpias);
 
 				if (mapaExtraidos.size() > 0) {
 					String rutaCsvBruto = dirBrutoCsv + BrutosUtils.FINVIZ + "_" + BrutosUtils.MERCADO_NQ + "_"
 							+ nasdaqEstaticos1.get(i).symbol + ".csv";
-					volcarEnCSV(BrutosUtils.MERCADO_NQ, nasdaqEstaticos1.get(i).symbol, mapaExtraidos, rutaCsvBruto);
+					volcarDatosEstaticosEnCSV(BrutosUtils.MERCADO_NQ, nasdaqEstaticos1.get(i).symbol, mapaExtraidos,
+							rutaCsvBruto);
+
+					String rutaInsidersCsvBruto = dirBrutoCsv + BrutosUtils.FINVIZ + "_INSIDERS" + "_"
+							+ BrutosUtils.MERCADO_NQ + "_" + nasdaqEstaticos1.get(i).symbol + ".csv";
+					volcarDatosInsidersEnCSV(BrutosUtils.MERCADO_NQ, nasdaqEstaticos1.get(i).symbol,
+							operacionesInsidersLimpias, rutaInsidersCsvBruto);
 
 				} else {
 					MY_LOGGER.warn("main() - Caso raro - 001 - Error al parsear FINVIZ de empresa: " + empresa);
@@ -196,7 +209,7 @@ public class EstaticosFinvizDescargarYParsear {
 
 			// ---------------------------------------------------------------------
 			con.setRequestProperty("Accept", "text/html,application/xhtml+xm…plication/xml;q=0.9,*/*;q=0.8");
-			//con.setRequestProperty("Accept-Encoding", "gzip, deflate, br");
+			// con.setRequestProperty("Accept-Encoding", "gzip, deflate, br");
 			con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
 			con.setRequestProperty("Cache-Control", "no-cache");
 			con.setRequestProperty("Connection", "keep-alive");
@@ -278,8 +291,8 @@ public class EstaticosFinvizDescargarYParsear {
 	 * @return
 	 * @throws IOException
 	 */
-	public static void parsearFinviz1(String idEmpresa, String rutaHtmlBruto, Map<String, String> mapaExtraidos)
-			throws IOException {
+	public static void parsearFinviz1(String idEmpresa, String rutaHtmlBruto, Map<String, String> mapaExtraidos,
+			List<String> operacionesInsidersLimpias) throws IOException {
 
 		MY_LOGGER.debug("parsearNasdaqEstaticos2 --> " + idEmpresa + "|" + rutaHtmlBruto);
 
@@ -298,7 +311,6 @@ public class EstaticosFinvizDescargarYParsear {
 		Elements tablas = doc.getElementsByClass(claseBuscada);
 
 		for (Element t : tablas) {
-
 			extraerInfoDeFila("P/E", t, mapaExtraidos, BrutosUtils.ESCALA_UNO, false);
 			extraerInfoDeFila("Insider Own", t, mapaExtraidos, BrutosUtils.ESCALA_UNO, false);
 			extraerInfoDeFila("Market Cap", t, mapaExtraidos, BrutosUtils.ESCALA_M, false);
@@ -312,7 +324,16 @@ public class EstaticosFinvizDescargarYParsear {
 			extraerInfoDeFila("Debt/Eq", t, mapaExtraidos, BrutosUtils.ESCALA_UNO, false);
 			extraerInfoDeFila("LT Debt/Eq", t, mapaExtraidos, BrutosUtils.ESCALA_UNO, false);
 			extraerInfoDeFila("Earnings", t, mapaExtraidos, BrutosUtils.ESCALA_UNO, true);
+		}
 
+		// ---------- TABLA DE COMPRAS/VENTAS DE INSIDERS --------------
+		Elements tablasInsidersAux = doc.getElementsByClass("body-table");
+		for (int i = 0; i < tablasInsidersAux.size(); i++) {
+
+			Element tabla = tablasInsidersAux.get(i);
+			if (tabla.toString().contains("Insider Trading")) {
+				extraerInfoDeTablaInsiders(tabla, operacionesInsidersLimpias);
+			}
 		}
 
 	}
@@ -377,16 +398,62 @@ public class EstaticosFinvizDescargarYParsear {
 	}
 
 	/**
+	 * Parsea la tabla de compras/ventas de los insiders de FINVIZ.
+	 * 
+	 * @param t                          Tabla con datos de operaciones de los
+	 *                                   insiders
+	 * @param operacionesInsidersLimpias Lista donde se meten los datos encontrados
+	 *                                   (pensado para guardar en formato CSV)
+	 */
+	private static void extraerInfoDeTablaInsiders(Element t, List<String> operacionesInsidersLimpias) {
+
+		Elements operacionesInsiders = t.child(0).children();
+		for (int i = 0; i < operacionesInsiders.size(); i++) {
+			Element fila = operacionesInsiders.get(i);
+
+			if (fila.toString().contains("table-top-w")) {
+				// CABECERA ESPERADA
+				// Insider Trading|Relationship|Date|Transaction|Cost|#Shares|Value ($)
+				// |#Shares Total|SEC Form 4
+				if (operacionesInsiders.get(i).children().size() != 9) {
+					System.err.println(
+							"FINVIZ - PARSEAR - La tabla de operaciones de insiders no tiene los campos esperados. Revisar. Saliendo...");
+					System.exit(-1);
+				}
+
+			} else {
+				Elements datos = fila.children();
+//				Element insiderTrading = datos.get(0);
+//				Element relationship = datos.get(1);
+				String date = datos.get(2).text(); // FECHA (falta reconstruir el año)
+				String transaction = datos.get(3).text(); // Tipo de Operacion
+//				Element cost = datos.get(4);
+//				Element numShares = datos.get(5);
+				String value = datos.get(6).text().replace(",", ""); // DINERO
+//				Element sharesTotal = datos.get(7);
+//				Element urlSecForm4 = datos.get(8);
+
+				// GUARDAR DATO
+				operacionesInsidersLimpias.add(date + "|" + transaction + "|" + value);
+
+			}
+
+		}
+
+	}
+
+	/**
 	 * @param mercado
 	 * @param empresa
 	 * @param mapaExtraidos
 	 * @param rutaCsvBruto
 	 * @throws IOException
 	 */
-	public static void volcarEnCSV(String mercado, String empresa, Map<String, String> mapaExtraidos,
+	public static void volcarDatosEstaticosEnCSV(String mercado, String empresa, Map<String, String> mapaExtraidos,
 			String rutaCsvBruto) throws IOException {
 
-		MY_LOGGER.debug("volcarEnCSV --> " + mercado + "|" + empresa + "|" + mapaExtraidos.size() + "|" + rutaCsvBruto);
+		MY_LOGGER.debug("volcarDatosEstaticosEnCSV --> " + mercado + "|" + empresa + "|" + mapaExtraidos.size() + "|"
+				+ rutaCsvBruto);
 
 		// ---------------------------- ESCRITURA ---------------
 		if (mapaExtraidos.size() > 0) {
@@ -412,10 +479,45 @@ public class EstaticosFinvizDescargarYParsear {
 			bw.newLine();
 
 			bw.close();
+
 		} else {
 			MY_LOGGER.error(
 					"No escribimos FINVIZ de empresa=" + empresa + " porque no se han extraido datos. Saliendo...");
 			System.exit(-1);
+		}
+
+	}
+
+	/**
+	 * @param mercado
+	 * @param empresa
+	 * @param operacionesInsidersLimpias
+	 * @param rutaCsvBruto
+	 * @throws IOException
+	 */
+	public static void volcarDatosInsidersEnCSV(String mercado, String empresa, List<String> operacionesInsidersLimpias,
+			String rutaCsvBruto) throws IOException {
+
+		MY_LOGGER.debug("volcarDatosInsidersEnCSV --> " + mercado + "|" + empresa + "|"
+				+ operacionesInsidersLimpias.size() + "|" + rutaCsvBruto);
+
+		// ---------------------------- ESCRITURA ---------------
+		if (operacionesInsidersLimpias.size() > 0) {
+			MY_LOGGER.debug("Escritura...");
+			File fout = new File(rutaCsvBruto);
+			FileOutputStream fos = new FileOutputStream(fout, false);
+			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
+
+			for (String fila : operacionesInsidersLimpias) {
+				bw.write(fila);
+				bw.newLine();
+			}
+
+			bw.close();
+
+		} else {
+			MY_LOGGER.warn("No escribimos FINVIZ de empresa=" + empresa
+					+ " porque no se han extraido datos de OPERACIONES INSIDERS. No es critico, seguimos.");
 		}
 
 	}

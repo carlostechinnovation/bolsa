@@ -2,9 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="22edbd2f-b3d9-42f0-a7dd-659033ab601a" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/main/java/c10X/brutos/EstaticosFinvizDescargarYParsear.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/main/java/c10X/brutos/EstaticosFinvizDescargarYParsear.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../BolsaJava/src/main/java/c40X/subgrupos/CrearDatasetsSubgrupos.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/main/java/c40X/subgrupos/CrearDatasetsSubgrupos.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaScripts/entrenarConPasadoValidarConFut1Fut2.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/entrenarConPasadoValidarConFut1Fut2.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaScripts/generaModelo.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/generaModelo.sh" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../BolsaScripts/parametros.config" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/parametros.config" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -461,7 +460,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/bolsa/FeaturesAnalisisPosteriori.py</url>
-          <line>108</line>
+          <line>112</line>
           <option name="timeStamp" value="67" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -501,13 +500,8 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/bolsa/FeaturesAnalisisPosteriori.py</url>
-          <line>53</line>
+          <line>57</line>
           <option name="timeStamp" value="82" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/bolsa/FeaturesAnalisisPosteriori.py</url>
-          <line>29</line>
-          <option name="timeStamp" value="84" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/bolsa/C6CreadorModelosDeSubgrupo.py</url>

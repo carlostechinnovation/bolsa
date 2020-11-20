@@ -152,10 +152,10 @@ public class EstaticosNasdaqDescargarYParsear implements Serializable {
 				lineaLimpia = lineaLimpia.replace(",", ""); // limpiar comas
 				lineaLimpia = lineaLimpia.replace("\'", ""); // limpiar comillas simples
 
-				if (primeraLinea) {
+				if (primeraLinea && lineaLimpia != null && !lineaLimpia.isEmpty()) {
 					primeraLinea = false;
 
-				} else {
+				} else if (primeraLinea == false && lineaLimpia != null && !lineaLimpia.isEmpty()) {
 
 					tempArr = lineaLimpia.split("\\|", -1); // El -1 indica coger las cadenas vacías!!
 

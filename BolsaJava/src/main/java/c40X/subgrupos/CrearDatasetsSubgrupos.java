@@ -312,7 +312,6 @@ public class CrearDatasetsSubgrupos implements Serializable {
 
 				} else {
 					MY_LOGGER.warn(ficheroGestionado.getAbsolutePath() + " -> PER desconocido: " + sectorStr);
-
 				}
 
 				// ------ SUBGRUPOS según PER ------------
