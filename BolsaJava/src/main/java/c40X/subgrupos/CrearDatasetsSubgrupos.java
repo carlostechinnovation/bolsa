@@ -525,7 +525,7 @@ public class CrearDatasetsSubgrupos implements Serializable {
 //
 //		empresasPorTipo.put(7, pathEmpresasTipo7);
 //		empresasPorTipo.put(8, pathEmpresasTipo8);
-//		empresasPorTipo.put(9, pathEmpresasTipo9);
+		empresasPorTipo.put(9, pathEmpresasTipo9);
 //		empresasPorTipo.put(10, pathEmpresasTipo10);
 //		empresasPorTipo.put(11, pathEmpresasTipo11);
 //		empresasPorTipo.put(12, pathEmpresasTipo12);

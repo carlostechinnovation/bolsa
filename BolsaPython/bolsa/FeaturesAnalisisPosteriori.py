@@ -24,22 +24,26 @@ for directorio in os.listdir(dir_subgrupos):
 
     #Extraer TODAS las features, mirando la cabecera del REDUCIDO
     pathFileReducido = dir_subgrupos + directorio + "/REDUCIDO.csv"
-    f = open(pathFileReducido, "r")
-    columnas = f.readline().split("|")
-    columnasLimpio=[]
-    for sub in columnas:
-        columnasLimpio.append(sub.replace("\n", ""))
+    if os.path.exists(pathFileReducido):
+        f = open(pathFileReducido, "r")
+        columnas = f.readline().split("|")
+        columnasLimpio = []
+        for sub in columnas:
+            columnasLimpio.append(sub.replace("\n", ""))
 
-    featuresTodas.extend(filter(lambda x: x, columnasLimpio))  # añade los elementos, habiendo quitado los nulos y limpiado los saltos de carro
-    print(featuresTodas)
+        featuresTodas.extend(filter(lambda x: x,
+                                    columnasLimpio))  # añade los elementos, habiendo quitado los nulos y limpiado los saltos de carro
+        print(featuresTodas)
 
-    pathFicheroAbsoluto = dir_subgrupos + directorio + "/FEATURES_SELECCIONADAS.csv"
-    if os.path.exists(pathFicheroAbsoluto):
-        f = open(pathFicheroAbsoluto, "r")
-        featuresModelo = f.read()
-        print("id_subgrupo = " + id_subgrupo + " -> features= " + featuresModelo)
-        subgrupoDF = pd.DataFrame(data=[[id_subgrupo, featuresModelo]], columns=['id_subgrupo', 'columnas_seleccionadas'])
-        acumuladoDF = acumuladoDF.append(subgrupoDF)
+        pathFicheroAbsoluto = dir_subgrupos + directorio + "/FEATURES_SELECCIONADAS.csv"
+        if os.path.exists(pathFicheroAbsoluto):
+            f = open(pathFicheroAbsoluto, "r")
+            featuresModelo = f.read()
+            print("id_subgrupo = " + id_subgrupo + " -> features= " + featuresModelo)
+            subgrupoDF = pd.DataFrame(data=[[id_subgrupo, featuresModelo]],
+                                      columns=['id_subgrupo', 'columnas_seleccionadas'])
+            acumuladoDF = acumuladoDF.append(subgrupoDF)
+
 
 #Limpiar nombres de columnas duplicados
 featuresTodas = list(set(featuresTodas))

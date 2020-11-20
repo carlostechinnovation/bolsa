@@ -3,20 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="22edbd2f-b3d9-42f0-a7dd-659033ab601a" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/../BolsaJava/src/main/java/c40X/subgrupos/CrearDatasetsSubgrupos.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/main/java/c40X/subgrupos/CrearDatasetsSubgrupos.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/main/java/c70x/validacion/GeneradorInformeHtml.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/main/java/c70x/validacion/GeneradorInformeHtml.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bolsa/C5NormalizarYReducirDatasetSubgrupo.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/C5NormalizarYReducirDatasetSubgrupo.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bolsa/C6CreadorModelosDeSubgrupo.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/C6CreadorModelosDeSubgrupo.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bolsa/FeaturesAnalisisPosteriori.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/FeaturesAnalisisPosteriori.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bolsa/prueba.py" beforeDir="false" afterPath="$PROJECT_DIR$/ejemplos/prueba.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bolsa/pruebapropiling.py" beforeDir="false" afterPath="$PROJECT_DIR$/ejemplos/pruebaprofiling.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaScripts/inversion.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/inversion.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaScripts/inversionHistorica.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/inversionHistorica.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaScripts/master.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/master.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BolsaScripts/entrenarConPasadoValidarConFut1Fut2.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/entrenarConPasadoValidarConFut1Fut2.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BolsaScripts/generaModelo.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/generaModelo.sh" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../BolsaScripts/parametros.config" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/parametros.config" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaScripts/testIntegracion.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/testIntegracion.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaScripts/validacionEuros.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/entrenarConPasadoValidarConFut1Fut2.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -378,10 +367,10 @@
     <option name="LAST_COMMIT_MESSAGE" value="Machine Learning - Ejemplo" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="174" y="407" width="1396" height="673" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1605880518548">
+    <state x="174" y="407" width="1396" height="673" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1605882627089">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
-    <state x="174" y="407" width="1396" height="673" key="#com.intellij.execution.impl.EditConfigurationsDialog/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1605880518548" />
+    <state x="174" y="407" width="1396" height="673" key="#com.intellij.execution.impl.EditConfigurationsDialog/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1605882627089" />
     <state x="65" y="24" width="1301" height="744" key="#com.intellij.execution.impl.EditConfigurationsDialog/65.24.1301.744@65.24.1301.744" timestamp="1603974430974" />
     <state width="1428" height="466" key="DebuggerActiveHint" timestamp="1605446300248">
       <screen x="65" y="24" width="1855" height="1056" />
@@ -391,29 +380,29 @@
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
     <state x="660" y="472" key="FileChooserDialogImpl/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1605442259947" />
-    <state width="1632" height="273" key="GridCell.Tab.0.bottom" timestamp="1605881306127">
+    <state width="1632" height="273" key="GridCell.Tab.0.bottom" timestamp="1605882682580">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
     <state width="1855" height="312" key="GridCell.Tab.0.bottom/1920.0.1920.1080/65.24.1855.1056@1920.0.1920.1080" timestamp="1604872854138" />
-    <state width="1632" height="273" key="GridCell.Tab.0.bottom/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1605881306127" />
+    <state width="1632" height="273" key="GridCell.Tab.0.bottom/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1605882682580" />
     <state width="1278" height="159" key="GridCell.Tab.0.bottom/65.24.1301.744@65.24.1301.744" timestamp="1604004290614" />
-    <state width="1632" height="273" key="GridCell.Tab.0.center" timestamp="1605881306127">
+    <state width="1632" height="273" key="GridCell.Tab.0.center" timestamp="1605882682579">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
     <state width="1855" height="312" key="GridCell.Tab.0.center/1920.0.1920.1080/65.24.1855.1056@1920.0.1920.1080" timestamp="1604872854138" />
-    <state width="1632" height="273" key="GridCell.Tab.0.center/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1605881306127" />
+    <state width="1632" height="273" key="GridCell.Tab.0.center/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1605882682579" />
     <state width="1278" height="159" key="GridCell.Tab.0.center/65.24.1301.744@65.24.1301.744" timestamp="1604004290614" />
-    <state width="1632" height="273" key="GridCell.Tab.0.left" timestamp="1605881306127">
+    <state width="1632" height="273" key="GridCell.Tab.0.left" timestamp="1605882682579">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
     <state width="1855" height="312" key="GridCell.Tab.0.left/1920.0.1920.1080/65.24.1855.1056@1920.0.1920.1080" timestamp="1604872854138" />
-    <state width="1632" height="273" key="GridCell.Tab.0.left/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1605881306127" />
+    <state width="1632" height="273" key="GridCell.Tab.0.left/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1605882682579" />
     <state width="1278" height="159" key="GridCell.Tab.0.left/65.24.1301.744@65.24.1301.744" timestamp="1604004290614" />
-    <state width="1632" height="273" key="GridCell.Tab.0.right" timestamp="1605881306127">
+    <state width="1632" height="273" key="GridCell.Tab.0.right" timestamp="1605882682579">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
     <state width="1855" height="312" key="GridCell.Tab.0.right/1920.0.1920.1080/65.24.1855.1056@1920.0.1920.1080" timestamp="1604872854138" />
-    <state width="1632" height="273" key="GridCell.Tab.0.right/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1605881306127" />
+    <state width="1632" height="273" key="GridCell.Tab.0.right/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1605882682579" />
     <state width="1278" height="159" key="GridCell.Tab.0.right/65.24.1301.744@65.24.1301.744" timestamp="1604004290614" />
     <state width="1361" height="308" key="GridCell.Tab.1.bottom" timestamp="1605880778721">
       <screen x="65" y="24" width="1855" height="1056" />
