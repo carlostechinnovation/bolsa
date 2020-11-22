@@ -99,7 +99,7 @@ public class JuntarEstaticosYDinamicosCSVunico {
 
 		for (EstaticoNasdaqModelo enm : nasdaqEstaticos1) {
 
-			String finvizEstaticos = dirBrutoCsv + BrutosUtils.FINVIZ + "_" + BrutosUtils.MERCADO_NQ + "_" + enm.symbol
+			String finvizEstaticos = dirBrutoCsv + BrutosUtils.FINVIZ_ESTATICOS + "_" + BrutosUtils.MERCADO_NQ + "_" + enm.symbol
 					+ ".csv";
 			File fileEstat = new File(finvizEstaticos);
 

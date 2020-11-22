@@ -13,7 +13,9 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,13 +57,17 @@ public class EstaticosFinvizDescargarYParsear {
 
 	private static EstaticosFinvizDescargarYParsear instancia = null;
 
+	public static final Map<String, String> mapaFechasInsiders = new HashMap<String, String>();
+	public static final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+
 	private EstaticosFinvizDescargarYParsear() {
 		super();
 	}
 
 	public static EstaticosFinvizDescargarYParsear getInstance() {
-		if (instancia == null)
+		if (instancia == null) {
 			instancia = new EstaticosFinvizDescargarYParsear();
+		}
 
 		return instancia;
 	}
@@ -84,6 +90,20 @@ public class EstaticosFinvizDescargarYParsear {
 		String dirBruto = BrutosUtils.DIR_BRUTOS; // DEFAULT
 		String dirBrutoCsv = BrutosUtils.DIR_BRUTOS_CSV; // DEFAULT
 		Integer entornoDeValidacion = BrutosUtils.ES_ENTORNO_VALIDACION;// DEFAULT
+
+		// Poblar mapa
+		mapaFechasInsiders.put("Jan", "01");
+		mapaFechasInsiders.put("Feb", "02");
+		mapaFechasInsiders.put("Mar", "03");
+		mapaFechasInsiders.put("Apr", "04");
+		mapaFechasInsiders.put("May", "05");
+		mapaFechasInsiders.put("Jun", "06");
+		mapaFechasInsiders.put("Jul", "07");
+		mapaFechasInsiders.put("Aug", "08");
+		mapaFechasInsiders.put("Sep", "09");
+		mapaFechasInsiders.put("Oct", "10");
+		mapaFechasInsiders.put("Nov", "11");
+		mapaFechasInsiders.put("Dec", "12");
 
 		if (args.length == 0) {
 			MY_LOGGER.info("Sin parametros de entrada. Rellenamos los DEFAULT...");
@@ -119,10 +139,9 @@ public class EstaticosFinvizDescargarYParsear {
 
 		for (int i = 0; i < Math.min(numMaxEmpresas, nasdaqEstaticos1.size()); i++) {
 
-			mapaExtraidos.clear();
-			operacionesInsidersLimpias.clear();
-
-			operacionesInsidersLimpias.add(cabeceraFicheroOpsInsiders);
+			mapaExtraidos.clear();// limpiar mapa
+			operacionesInsidersLimpias.clear(); // limpiar lista
+			operacionesInsidersLimpias.add(cabeceraFicheroOpsInsiders); // CABECERA
 
 			String empresa = nasdaqEstaticos1.get(i).symbol;
 
@@ -131,7 +150,8 @@ public class EstaticosFinvizDescargarYParsear {
 			}
 
 			String urlFinvizEmpresa = "https://finviz.com/quote.ashx?t=" + empresa;
-			rutaHtmlBruto = dirBruto + BrutosUtils.FINVIZ + "_" + BrutosUtils.MERCADO_NQ + "_" + empresa + ".html";
+			rutaHtmlBruto = dirBruto + BrutosUtils.FINVIZ_ESTATICOS + "_" + BrutosUtils.MERCADO_NQ + "_" + empresa
+					+ ".html";
 
 			MY_LOGGER.debug("URL | destino --> " + urlFinvizEmpresa + " | " + rutaHtmlBruto);
 			msegEspera = (long) (BrutosUtils.ESPERA_ALEATORIA_MSEG_MIN
@@ -143,12 +163,12 @@ public class EstaticosFinvizDescargarYParsear {
 				parsearFinviz1(empresa, rutaHtmlBruto, mapaExtraidos, operacionesInsidersLimpias);
 
 				if (mapaExtraidos.size() > 0) {
-					String rutaCsvBruto = dirBrutoCsv + BrutosUtils.FINVIZ + "_" + BrutosUtils.MERCADO_NQ + "_"
-							+ nasdaqEstaticos1.get(i).symbol + ".csv";
+					String rutaCsvBruto = dirBrutoCsv + BrutosUtils.FINVIZ_ESTATICOS + "_" + BrutosUtils.MERCADO_NQ
+							+ "_" + nasdaqEstaticos1.get(i).symbol + ".csv";
 					volcarDatosEstaticosEnCSV(BrutosUtils.MERCADO_NQ, nasdaqEstaticos1.get(i).symbol, mapaExtraidos,
 							rutaCsvBruto);
 
-					String rutaInsidersCsvBruto = dirBrutoCsv + BrutosUtils.FINVIZ + "_INSIDERS" + "_"
+					String rutaInsidersCsvBruto = dirBrutoCsv + BrutosUtils.FINVIZ_INSIDERS + "_"
 							+ BrutosUtils.MERCADO_NQ + "_" + nasdaqEstaticos1.get(i).symbol + ".csv";
 					volcarDatosInsidersEnCSV(BrutosUtils.MERCADO_NQ, nasdaqEstaticos1.get(i).symbol,
 							operacionesInsidersLimpias, rutaInsidersCsvBruto);
@@ -425,7 +445,7 @@ public class EstaticosFinvizDescargarYParsear {
 				Elements datos = fila.children();
 //				Element insiderTrading = datos.get(0);
 //				Element relationship = datos.get(1);
-				String date = datos.get(2).text(); // FECHA (falta reconstruir el año)
+				String date = interpretarFechaInsider(datos.get(2).text()); // FECHA (reconstruyendo el año)
 				String transaction = datos.get(3).text(); // Tipo de Operacion
 //				Element cost = datos.get(4);
 //				Element numShares = datos.get(5);
@@ -498,11 +518,11 @@ public class EstaticosFinvizDescargarYParsear {
 	public static void volcarDatosInsidersEnCSV(String mercado, String empresa, List<String> operacionesInsidersLimpias,
 			String rutaCsvBruto) throws IOException {
 
-		MY_LOGGER.debug("volcarDatosInsidersEnCSV --> " + mercado + "|" + empresa + "|"
+		MY_LOGGER.info("volcarDatosInsidersEnCSV --> " + mercado + "|" + empresa + "|"
 				+ operacionesInsidersLimpias.size() + "|" + rutaCsvBruto);
 
 		// ---------------------------- ESCRITURA ---------------
-		if (operacionesInsidersLimpias.size() > 0) {
+		if (operacionesInsidersLimpias.size() >= 2) { // La primera fila es la cabecera
 			MY_LOGGER.debug("Escritura...");
 			File fout = new File(rutaCsvBruto);
 			FileOutputStream fos = new FileOutputStream(fout, false);
@@ -520,6 +540,37 @@ public class EstaticosFinvizDescargarYParsear {
 					+ " porque no se han extraido datos de OPERACIONES INSIDERS. No es critico, seguimos.");
 		}
 
+	}
+
+	/**
+	 * Parsea la fecha de una operacion de un insider de la pagina de Finviz.
+	 * 
+	 * @param in Cadena con la fecha (SIN año)
+	 * @return Fecha AAAAMMDD
+	 */
+	public static String interpretarFechaInsider(String in) {
+		String out = "";
+
+		if (in != null && !in.isEmpty()) {
+			String[] partes = in.split("\\s+");
+			String mesIn = mapaFechasInsiders.get(partes[0]);
+
+			int anioHoy = Calendar.getInstance().get(Calendar.YEAR);
+			String hoyStr = sdf.format(Calendar.getInstance().getTime());
+
+			// YYYYMMDD con el año de hoy:
+			String fechaCandidataAnioHoy = String.valueOf(anioHoy) + mesIn + partes[1];
+			// YYYYMMDD con el año anterior al de hoy:
+			String fechaCandidataAnioAnteriorAHoy = String.valueOf(anioHoy - 1) + mesIn + partes[1];
+
+			if (Integer.valueOf(fechaCandidataAnioHoy) < Integer.valueOf(hoyStr)) {
+				out = fechaCandidataAnioHoy;
+			} else {
+				out = fechaCandidataAnioAnteriorAHoy;
+			}
+		}
+
+		return out;
 	}
 
 }

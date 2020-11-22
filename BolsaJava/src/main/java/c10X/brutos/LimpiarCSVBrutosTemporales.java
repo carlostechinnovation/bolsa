@@ -84,7 +84,7 @@ public class LimpiarCSVBrutosTemporales {
 
 				boolean temporalNasdaqOld = name.startsWith(BrutosUtils.NASDAQOLD + "_") && name.endsWith(".csv");
 				boolean temporalYahoo = name.startsWith(BrutosUtils.YAHOOFINANCE + "_") && name.endsWith(".csv");
-				boolean temporalFinviz = name.startsWith(BrutosUtils.FINVIZ + "_") && name.endsWith(".csv");
+				boolean temporalFinviz = name.startsWith(BrutosUtils.FINVIZ_ESTATICOS + "_") && name.endsWith(".csv");
 
 				if (temporalNasdaqOld || temporalYahoo || temporalFinviz) {
 					return true;
