@@ -2,8 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="22edbd2f-b3d9-42f0-a7dd-659033ab601a" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/main/java/c10X/brutos/EstaticosFinvizDescargarYParsear.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/main/java/c10X/brutos/EstaticosFinvizDescargarYParsear.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/main/java/c40X/subgrupos/CrearDatasetsSubgrupos.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/main/java/c40X/subgrupos/CrearDatasetsSubgrupos.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bolsa/C5NormalizarYReducirDatasetSubgrupo.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/C5NormalizarYReducirDatasetSubgrupo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bolsa/C6CreadorModelosDeSubgrupo.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/C6CreadorModelosDeSubgrupo.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../BolsaScripts/parametros.config" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/parametros.config" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -50,7 +51,7 @@
       <recent name="C:\DATOS\GITHUB_REPOS\bolsa\BolsaPython\bolsa" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.FeaturesAnalisisPosteriori">
+  <component name="RunManager" selected="Python.C6CreadorModelosDeSubgrupo">
     <configuration name="05_redneuronal_lstm_1" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="BolsaPython" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -148,7 +149,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/bolsa/C5NormalizarYReducirDatasetSubgrupo.py" />
-      <option name="PARAMETERS" value="/bolsa/futuro/subgrupos/SG_16/ futuro 30" />
+      <option name="PARAMETERS" value="/bolsa/pasado/subgrupos/SG_18/ pasado 30" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -169,7 +170,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/bolsa/C6CreadorModelosDeSubgrupo.py" />
-      <option name="PARAMETERS" value="/bolsa/pasado/subgrupos/SG_0/ pasado 0" />
+      <option name="PARAMETERS" value="/bolsa/pasado/subgrupos/SG_18// pasado 0" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -366,10 +367,10 @@
     <option name="LAST_COMMIT_MESSAGE" value="Machine Learning - Ejemplo" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="174" y="407" width="1396" height="673" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1605882627089">
+    <state x="174" y="407" width="1396" height="673" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1605950208847">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
-    <state x="174" y="407" width="1396" height="673" key="#com.intellij.execution.impl.EditConfigurationsDialog/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1605882627089" />
+    <state x="174" y="407" width="1396" height="673" key="#com.intellij.execution.impl.EditConfigurationsDialog/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1605950208847" />
     <state x="65" y="24" width="1301" height="744" key="#com.intellij.execution.impl.EditConfigurationsDialog/65.24.1301.744@65.24.1301.744" timestamp="1603974430974" />
     <state width="1428" height="466" key="DebuggerActiveHint" timestamp="1605446300248">
       <screen x="65" y="24" width="1855" height="1056" />
@@ -379,53 +380,53 @@
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
     <state x="660" y="472" key="FileChooserDialogImpl/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1605442259947" />
-    <state width="1632" height="273" key="GridCell.Tab.0.bottom" timestamp="1605882682580">
+    <state width="1631" height="352" key="GridCell.Tab.0.bottom" timestamp="1605972775561">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
     <state width="1855" height="312" key="GridCell.Tab.0.bottom/1920.0.1920.1080/65.24.1855.1056@1920.0.1920.1080" timestamp="1604872854138" />
-    <state width="1632" height="273" key="GridCell.Tab.0.bottom/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1605882682580" />
+    <state width="1631" height="352" key="GridCell.Tab.0.bottom/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1605972775561" />
     <state width="1278" height="159" key="GridCell.Tab.0.bottom/65.24.1301.744@65.24.1301.744" timestamp="1604004290614" />
-    <state width="1632" height="273" key="GridCell.Tab.0.center" timestamp="1605882682579">
+    <state width="1631" height="352" key="GridCell.Tab.0.center" timestamp="1605972775561">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
     <state width="1855" height="312" key="GridCell.Tab.0.center/1920.0.1920.1080/65.24.1855.1056@1920.0.1920.1080" timestamp="1604872854138" />
-    <state width="1632" height="273" key="GridCell.Tab.0.center/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1605882682579" />
+    <state width="1631" height="352" key="GridCell.Tab.0.center/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1605972775561" />
     <state width="1278" height="159" key="GridCell.Tab.0.center/65.24.1301.744@65.24.1301.744" timestamp="1604004290614" />
-    <state width="1632" height="273" key="GridCell.Tab.0.left" timestamp="1605882682579">
+    <state width="1631" height="352" key="GridCell.Tab.0.left" timestamp="1605972775561">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
     <state width="1855" height="312" key="GridCell.Tab.0.left/1920.0.1920.1080/65.24.1855.1056@1920.0.1920.1080" timestamp="1604872854138" />
-    <state width="1632" height="273" key="GridCell.Tab.0.left/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1605882682579" />
+    <state width="1631" height="352" key="GridCell.Tab.0.left/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1605972775561" />
     <state width="1278" height="159" key="GridCell.Tab.0.left/65.24.1301.744@65.24.1301.744" timestamp="1604004290614" />
-    <state width="1632" height="273" key="GridCell.Tab.0.right" timestamp="1605882682579">
+    <state width="1631" height="352" key="GridCell.Tab.0.right" timestamp="1605972775561">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
     <state width="1855" height="312" key="GridCell.Tab.0.right/1920.0.1920.1080/65.24.1855.1056@1920.0.1920.1080" timestamp="1604872854138" />
-    <state width="1632" height="273" key="GridCell.Tab.0.right/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1605882682579" />
+    <state width="1631" height="352" key="GridCell.Tab.0.right/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1605972775561" />
     <state width="1278" height="159" key="GridCell.Tab.0.right/65.24.1301.744@65.24.1301.744" timestamp="1604004290614" />
-    <state width="1361" height="308" key="GridCell.Tab.1.bottom" timestamp="1605880778721">
+    <state width="1361" height="308" key="GridCell.Tab.1.bottom" timestamp="1605913994847">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
     <state width="1855" height="312" key="GridCell.Tab.1.bottom/1920.0.1920.1080/65.24.1855.1056@1920.0.1920.1080" timestamp="1604872858385" />
-    <state width="1361" height="308" key="GridCell.Tab.1.bottom/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1605880778721" />
+    <state width="1361" height="308" key="GridCell.Tab.1.bottom/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1605913994847" />
     <state width="1278" height="356" key="GridCell.Tab.1.bottom/65.24.1301.744@65.24.1301.744" timestamp="1603375491725" />
-    <state width="1361" height="308" key="GridCell.Tab.1.center" timestamp="1605880778721">
+    <state width="1361" height="308" key="GridCell.Tab.1.center" timestamp="1605913994847">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
     <state width="1855" height="312" key="GridCell.Tab.1.center/1920.0.1920.1080/65.24.1855.1056@1920.0.1920.1080" timestamp="1604872858385" />
-    <state width="1361" height="308" key="GridCell.Tab.1.center/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1605880778721" />
+    <state width="1361" height="308" key="GridCell.Tab.1.center/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1605913994847" />
     <state width="1278" height="356" key="GridCell.Tab.1.center/65.24.1301.744@65.24.1301.744" timestamp="1603375491723" />
-    <state width="1361" height="308" key="GridCell.Tab.1.left" timestamp="1605880778721">
+    <state width="1361" height="308" key="GridCell.Tab.1.left" timestamp="1605913994847">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
     <state width="1855" height="312" key="GridCell.Tab.1.left/1920.0.1920.1080/65.24.1855.1056@1920.0.1920.1080" timestamp="1604872858385" />
-    <state width="1361" height="308" key="GridCell.Tab.1.left/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1605880778721" />
+    <state width="1361" height="308" key="GridCell.Tab.1.left/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1605913994847" />
     <state width="1278" height="356" key="GridCell.Tab.1.left/65.24.1301.744@65.24.1301.744" timestamp="1603375491722" />
-    <state width="1361" height="308" key="GridCell.Tab.1.right" timestamp="1605880778721">
+    <state width="1361" height="308" key="GridCell.Tab.1.right" timestamp="1605913994847">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
     <state width="1855" height="312" key="GridCell.Tab.1.right/1920.0.1920.1080/65.24.1855.1056@1920.0.1920.1080" timestamp="1604872858385" />
-    <state width="1361" height="308" key="GridCell.Tab.1.right/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1605880778721" />
+    <state width="1361" height="308" key="GridCell.Tab.1.right/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1605913994847" />
     <state width="1278" height="356" key="GridCell.Tab.1.right/65.24.1301.744@65.24.1301.744" timestamp="1603375491724" />
     <state x="809" y="208" width="900" height="728" key="SettingsEditor" timestamp="1605878108058">
       <screen x="65" y="24" width="1855" height="1056" />
@@ -455,7 +456,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/bolsa/C6CreadorModelosDeSubgrupo.py</url>
-          <line>912</line>
+          <line>418</line>
           <option name="timeStamp" value="31" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -465,37 +466,17 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/bolsa/C5NormalizarYReducirDatasetSubgrupo.py</url>
-          <line>386</line>
+          <line>389</line>
           <option name="timeStamp" value="69" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/bolsa/C6CreadorModelosDeSubgrupo.py</url>
-          <line>973</line>
+          <line>989</line>
           <option name="timeStamp" value="72" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/bolsa/C6CreadorModelosDeSubgrupo.py</url>
-          <line>404</line>
-          <option name="timeStamp" value="74" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/bolsa/C6CreadorModelosDeSubgrupo.py</url>
-          <line>397</line>
-          <option name="timeStamp" value="75" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/bolsa/C6CreadorModelosDeSubgrupo.py</url>
-          <line>399</line>
-          <option name="timeStamp" value="76" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/bolsa/C6CreadorModelosDeSubgrupo.py</url>
-          <line>398</line>
-          <option name="timeStamp" value="77" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/bolsa/C6CreadorModelosDeSubgrupo.py</url>
-          <line>139</line>
+          <line>142</line>
           <option name="timeStamp" value="79" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -505,22 +486,22 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/bolsa/C6CreadorModelosDeSubgrupo.py</url>
-          <line>308</line>
+          <line>315</line>
           <option name="timeStamp" value="85" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/bolsa/C6CreadorModelosDeSubgrupo.py</url>
-          <line>246</line>
+          <line>250</line>
           <option name="timeStamp" value="89" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/bolsa/C6CreadorModelosDeSubgrupo.py</url>
-          <line>249</line>
+          <line>255</line>
           <option name="timeStamp" value="90" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/bolsa/C6CreadorModelosDeSubgrupo.py</url>
-          <line>279</line>
+          <line>285</line>
           <option name="timeStamp" value="91" />
         </line-breakpoint>
       </breakpoints>

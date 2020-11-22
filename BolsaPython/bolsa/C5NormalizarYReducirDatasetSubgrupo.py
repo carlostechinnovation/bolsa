@@ -32,8 +32,10 @@ from sklearn.utils import resample
 import pickle
 from sklearn.impute import SimpleImputer
 import warnings
+import datetime
 
-print("**** CAPA 5  --> Selección de variables/ Reducción de dimensiones (para cada subgrupo) ****")
+
+print((datetime.datetime.now()).strftime("%Y%m%d_%H%M%S") + " **** CAPA 5  --> Selección de variables/ Reducción de dimensiones (para cada subgrupo) ****")
 print("URL PCA: https://scikit-learn.org/stable/modules/unsupervised_reduction.html")
 print("URL Feature Selection: https://scikit-learn.org/stable/modules/feature_selection.html")
 
@@ -49,6 +51,7 @@ print("maxFeatReducidas = %s" % maxFeatReducidas)
 varianza=0.87  # Variacion acumulada de las features PCA sobre el target
 compatibleParaMuchasEmpresas = False  # Si hay muchas empresas, debo hacer ya el undersampling (en vez de capa 6)
 global modoDebug; modoDebug=False  # VARIABLE GLOBAL: En modo debug se pintan los dibujos. En otro caso, se evita calculo innecesario
+global cv_todos; cv_todos = 5  # CROSS_VALIDATION: número de iteraciones. Sirve para evitar el overfitting
 global dibujoBins; dibujoBins=20  #VARIABLE GLOBAL: al pintar los histogramas, define el número de barras posibles en las que se divide el eje X.
 numTramos=7  # Numero de tramos usado para tramificar las features dinámicas
 pathCsvCompleto = dir_subgrupo + "COMPLETO.csv"
@@ -81,7 +84,7 @@ with warnings.catch_warnings():
 
 
 def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmpresas, pathModeloOutliers, modoTiempo):
-  print("----- leerFeaturesyTarget ------")
+  print((datetime.datetime.now()).strftime("%Y%m%d_%H%M%S") + " ----- leerFeaturesyTarget ------")
   print("PARAMS --> " + path_csv_completo + "|" + path_dir_img + "|" + str(compatibleParaMuchasEmpresas) + "|" + pathModeloOutliers + "|" + modoTiempo + "|" + str(modoDebug))
 
   print("Cargar datos (CSV)...")
@@ -326,7 +329,7 @@ def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmp
 
 
 def tramificarFeatures(numTramos, featuresFichero, targetsFichero, path_modelo_tramificador, path_dir_img, modoTiempo):
-    print("-------- TRAMIFICAR FEATURES: análisis UNIVARIANTE (estudia CADA feature) ------")
+    print((datetime.datetime.now()).strftime("%Y%m%d_%H%M%S") + " -------- TRAMIFICAR FEATURES: análisis UNIVARIANTE (estudia CADA feature) ------")
     print("Info sobre discretizar: http://exponentis.es/discretizacion-de-datos-en-python-manteniendo-el-nombre-de-las-columnas")
     print("PASADO: para cada feature dinámica, tramificar, viendo en qué tramos caen los target=1 para que todos los tramos tengan ceros y unos, sin demasiado desbalanceo. Despues, guardar el discretizador para usarlo en el futuro")
     print("FUTURO: aplicar el discretizador de columnas que se haya usado en el pasado")
@@ -435,7 +438,7 @@ def tramificarFeatures(numTramos, featuresFichero, targetsFichero, path_modelo_t
 
 
 def normalizarFeatures(featuresFichero, path_modelo_normalizador, dir_subgrupo_img, modoTiempo, path_indices_out_capa5, pathCsvIntermedio):
-  print("----- normalizarFeatures ------")
+  print((datetime.datetime.now()).strftime("%Y%m%d_%H%M%S") + " ----- normalizarFeatures ------")
   print("NORMALIZACION: hacemos que todas las features tengan distribución gaussiana media 0 y varianza 1. El target no se toca.")
   print("PARAMS --> " + path_modelo_normalizador + "|" + modoTiempo + "|" + str(modoDebug))
   print("featuresFichero: " + str(featuresFichero.shape[0]) + " x " + str(featuresFichero.shape[1]))
@@ -494,7 +497,7 @@ def normalizarFeatures(featuresFichero, path_modelo_normalizador, dir_subgrupo_i
 
 
 def comprobarSuficientesClasesTarget(featuresFicheroNorm, targetsFichero):
-  print("----- comprobarSuficientesClasesTarget ------")
+  print((datetime.datetime.now()).strftime("%Y%m%d_%H%M%S") + " ----- comprobarSuficientesClasesTarget ------")
   print("featuresFicheroNorm: " + str(featuresFicheroNorm.shape[0]) + " x " + str(featuresFicheroNorm.shape[1]) +"  Y  " + "targetsFichero: " + str(targetsFichero.shape[0]) + " x " + str(targetsFichero.shape[1]))
 
   y_unicos = np.unique(targetsFichero)
@@ -504,7 +507,7 @@ def comprobarSuficientesClasesTarget(featuresFicheroNorm, targetsFichero):
 
 
 def reducirFeaturesYGuardar(path_modelo_reductor_features, path_modelo_pca, featuresFicheroNorm, targetsFichero, pathCsvReducido, varianzaAcumuladaDeseada, dir_subgrupo_img, modoTiempo, maxFeatReducidas):
-  print("----- reducirFeaturesYGuardar ------")
+  print((datetime.datetime.now()).strftime("%Y%m%d_%H%M%S") + " ----- reducirFeaturesYGuardar ------")
   print("path_modelo_reductor_features --> " + path_modelo_reductor_features)
   print("path_modelo_pca --> " + path_modelo_pca)
   print("featuresFicheroNorm: " + str(featuresFicheroNorm.shape[0]) + " x " + str(featuresFicheroNorm.shape[1]))
@@ -552,7 +555,7 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, path_modelo_pca, feat
         scoreAnterior = 0
         numFeaturesAnterior = 9999
         for clasificadorActual in classifiers:
-            rfecv = RFECV(estimator=clasificadorActual, step=1, min_features_to_select=10, cv=StratifiedKFold(n_splits=8, shuffle=True), scoring=rfecv_scoring, verbose=0, n_jobs=-1)
+            rfecv = RFECV(estimator=clasificadorActual, step=1, min_features_to_select=7, cv=StratifiedKFold(n_splits=cv_todos, shuffle=True), scoring=rfecv_scoring, verbose=0, n_jobs=-1)
             rfecv.fit(featuresFicheroNorm, targetsFichero)
             print('Accuracy del clasificadorActual: {:.2f}'.format(rfecv.score(featuresFicheroNorm, targetsFichero)))
             print("Optimal number of features : %d" % rfecv.n_features_)
@@ -565,7 +568,7 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, path_modelo_pca, feat
                     numFeaturesAnterior = rfecv.n_features_
 
     # The "accuracy" scoring is proportional to the number of correct classifications
-    rfecv_modelo = RFECV(estimator=estimador_interno, step=3, min_features_to_select=4, cv=StratifiedKFold(n_splits=8, shuffle=True), scoring=rfecv_scoring, verbose=0, n_jobs=-1)
+    rfecv_modelo = RFECV(estimator=estimador_interno, step=3, min_features_to_select=4, cv=StratifiedKFold(n_splits=cv_todos, shuffle=True), scoring=rfecv_scoring, verbose=0, n_jobs=-1)
     print("rfecv_modelo -> fit ...")
     targetsLista = targetsFichero["TARGET"].tolist()
     rfecv_modelo.fit(featuresFicheroNorm, targetsLista)
@@ -679,5 +682,5 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
         reducirFeaturesYGuardar(path_modelo_reductor_features, path_modelo_pca, featuresFichero3, targetsFichero, pathCsvReducido, varianza, dir_subgrupo_img, modoTiempo, maxFeatReducidas)
 
 
-print("------------ FIN de capa 5 ----------------")
+print((datetime.datetime.now()).strftime("%Y%m%d_%H%M%S") +" ------------ FIN de capa 5 ----------------")
 

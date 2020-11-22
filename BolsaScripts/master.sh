@@ -113,7 +113,7 @@ rm -Rf "${DIR_JAVA}target/" >> ${LOG_MASTER}
 mvn clean compile assembly:single >> ${LOG_MASTER}
 
 ################################################################################################
-echo -e $( date '+%Y%m%d_%H%M%S' )" -------- DATOS BRUTOS -------------" >> ${LOG_MASTER}
+echo -e $( date '+%Y%m%d_%H%M%S' )" -------- Capa 1: DATOS BRUTOS -------------" >> ${LOG_MASTER}
 
 if [ "${ACTIVAR_DESCARGA}" = "S" ];  then
 
@@ -151,7 +151,7 @@ if [ "$NUM_FICHEROS_10x" -lt 1 ]; then
 fi
 
 ################################################################################################
-echo -e $( date '+%Y%m%d_%H%M%S' )" -------- DATOS LIMPIOS -------------" >> ${LOG_MASTER}
+echo -e $( date '+%Y%m%d_%H%M%S' )" -------- Capa 2: DATOS LIMPIOS -------------" >> ${LOG_MASTER}
 
 crearCarpetaSiNoExisteYVaciar "${DIR_LIMPIOS}"
 
@@ -170,7 +170,7 @@ fi
 comprobarQueDirectorioNoEstaVacio "${DIR_LIMPIOS}"
 
 ################################################################################################
-echo -e $( date '+%Y%m%d_%H%M%S' )" -------- VARIABLES ELABORADAS -------------" >> ${LOG_MASTER}
+echo -e $( date '+%Y%m%d_%H%M%S' )" -------- Capa 3: VARIABLES ELABORADAS -------------" >> ${LOG_MASTER}
 
 crearCarpetaSiNoExisteYVaciar "${DIR_ELABORADOS}"
 
@@ -192,7 +192,7 @@ comprobarQueDirectorioNoEstaVacio "${DIR_ELABORADOS}"
 
 if [ "$ACTIVAR_SG_Y_PREDICCION" = "S" ];  then
 	
-	echo -e $( date '+%Y%m%d_%H%M%S' )" -------- SUBGRUPOS -------------" >> ${LOG_MASTER}
+	echo -e $( date '+%Y%m%d_%H%M%S' )" -------- Capa 4: SUBGRUPOS -------------" >> ${LOG_MASTER}
 	crearCarpetaSiNoExisteYVaciarRecursivo "${DIR_SUBGRUPOS}"
 	java -jar ${PATH_JAR} --class "coordinador.Principal" "c40X.subgrupos.CrearDatasetsSubgrupos" "${DIR_ELABORADOS}" "${DIR_SUBGRUPOS}" "${MIN_COBERTURA_CLUSTER}" "${MIN_EMPRESAS_POR_CLUSTER}" "${DIR_TIEMPO}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 
