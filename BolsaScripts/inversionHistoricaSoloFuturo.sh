@@ -97,7 +97,7 @@ do
 	echo -e $( date '+%Y%m%d_%H%M%S' )" Ejecución del futuro (para velas de antiguedad=${ANTIGUEDAD}) con TODAS LAS EMPRESAS (lista DIRECTA ó INVERSA, ya da igual, no estamos mirando overfitting)..." >>${LOG_INVERSION}
 	MIN_COBERTURA_CLUSTER=0    # Para predecir, cojo lo que haya, sin minimos. El modelo ya lo hemos entrenado
 	MIN_EMPRESAS_POR_CLUSTER=1   # Para predecir, cojo lo que haya, sin minimos. El modelo ya lo hemos entrenado
-	${PATH_SCRIPTS}master.sh "futuro" "${ANTIGUEDAD}" "0" "${ACTIVAR_DESCARGAS}" "S" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" "${NUM_EMPRESAS_INVERSION}" "${UMBRAL_SUBIDA_POR_VELA}" "${MIN_COBERTURA_CLUSTER}" "${MIN_EMPRESAS_POR_CLUSTER}" "20001111" "20991111" "${MAX_NUM_FEAT_REDUCIDAS}" 2>>${LOG_INVERSION} 1>>${LOG_INVERSION}
+	${PATH_SCRIPTS}master.sh "futuro" "${ANTIGUEDAD}" "0" "${ACTIVAR_DESCARGAS}" "S" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" "${NUM_EMPRESAS_INVERSION}" "${UMBRAL_SUBIDA_POR_VELA}" "${MIN_COBERTURA_CLUSTER}" "${MIN_EMPRESAS_POR_CLUSTER}" "20001111" "20991111" "${MAX_NUM_FEAT_REDUCIDAS}" "${CAPA5_MAX_FILAS_ENTRADA}" 2>>${LOG_INVERSION} 1>>${LOG_INVERSION}
 	
 	while IFS= read -r -d '' -u 9
 	do

@@ -44,9 +44,11 @@ print("PARAMETROS: ")
 dir_subgrupo = sys.argv[1]
 modoTiempo = sys.argv[2]
 maxFeatReducidas = sys.argv[3]
+maxFilasEntrada = sys.argv[4]
 print("dir_subgrupo = %s" % dir_subgrupo)
 print("modoTiempo = %s" % modoTiempo)
 print("maxFeatReducidas = %s" % maxFeatReducidas)
+print("maxFilasEntrada = %s" % maxFilasEntrada)
 
 varianza=0.87  # Variacion acumulada de las features PCA sobre el target
 compatibleParaMuchasEmpresas = False  # Si hay muchas empresas, debo hacer ya el undersampling (en vez de capa 6)
@@ -83,14 +85,20 @@ with warnings.catch_warnings():
     warnings.filterwarnings(action="ignore", message="Bins whose width are too small.*")  # Ignorar los warnings del tramificador (KBinsDiscretizer)
 
 
-def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmpresas, pathModeloOutliers, modoTiempo):
+def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmpresas, pathModeloOutliers, modoTiempo, maxFilasEntrada):
   print((datetime.datetime.now()).strftime("%Y%m%d_%H%M%S") + " ----- leerFeaturesyTarget ------")
-  print("PARAMS --> " + path_csv_completo + "|" + path_dir_img + "|" + str(compatibleParaMuchasEmpresas) + "|" + pathModeloOutliers + "|" + modoTiempo + "|" + str(modoDebug))
+  print("PARAMS --> " + path_csv_completo + "|" + path_dir_img + "|" + str(compatibleParaMuchasEmpresas) + "|" + pathModeloOutliers + "|" + modoTiempo + "|" + str(modoDebug)
+        +"|" + str(maxFilasEntrada))
 
   print("Cargar datos (CSV)...")
   entradaFeaturesYTarget = pd.read_csv(filepath_or_buffer=path_csv_completo, sep='|')
+  print("entradaFeaturesYTarget (LEIDO): " + str(entradaFeaturesYTarget.shape[0]) + " x " + str(entradaFeaturesYTarget.shape[1]))
+  if int(maxFilasEntrada) < entradaFeaturesYTarget.shape[0]:
+      entradaFeaturesYTarget = entradaFeaturesYTarget.sample(int(maxFilasEntrada), replace=False)
+
+  print("entradaFeaturesYTarget (APLICANDO MAXIMO): " + str(entradaFeaturesYTarget.shape[0]) + " x " + str(entradaFeaturesYTarget.shape[1]))
+
   num_nulos_por_fila_1 = np.logical_not(entradaFeaturesYTarget.isnull()).sum()
-  print("entradaFeaturesYTarget: " + str(entradaFeaturesYTarget.shape[0]) + " x " + str(entradaFeaturesYTarget.shape[1]))
   indiceFilasFuturasTransformadas1 = entradaFeaturesYTarget.index.values  # DEFAULT
   indiceFilasFuturasTransformadas2 = entradaFeaturesYTarget.index.values  # DEFAULT
 
@@ -659,7 +667,7 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, path_modelo_pca, feat
 
 if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.stat(pathCsvCompleto).st_size > 0:
 
-    featuresFichero1, targetsFichero = leerFeaturesyTarget(pathCsvCompleto, dir_subgrupo_img, compatibleParaMuchasEmpresas, pathModeloOutliers, modoTiempo)
+    featuresFichero1, targetsFichero = leerFeaturesyTarget(pathCsvCompleto, dir_subgrupo_img, compatibleParaMuchasEmpresas, pathModeloOutliers, modoTiempo, maxFilasEntrada)
 
     # NORMALIZAR Y TRAMIFICAR
     # featuresFichero2 = normalizarFeatures(featuresFichero1, path_modelo_normalizador, dir_subgrupo_img, modoTiempo, path_indices_out_capa5, pathCsvIntermedio)
