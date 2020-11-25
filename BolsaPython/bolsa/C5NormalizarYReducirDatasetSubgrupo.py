@@ -179,13 +179,13 @@ def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmp
   # Pasado y futuro:
   print("Cargando modelo detector de outliers: " + pathModeloOutliers)
   detector_outliers = pickle.load(open(pathModeloOutliers, 'rb'))
-  flagAnomaliasDf = pd.DataFrame({'marca_anomalia':detector_outliers.predict(df3aux)}) #vale -1 es un outlier; si es un 1, no lo es
+  flagAnomaliasDf = pd.DataFrame({'marca_anomalia': detector_outliers.predict(df3aux)})  # vale -1 es un outlier; si es un 1, no lo es
 
-  indice3=entradaFeaturesYTarget3.index #lo guardo para pegarlo luego
+  indice3=entradaFeaturesYTarget3.index  # lo guardo para pegarlo luego
   entradaFeaturesYTarget3.reset_index(drop=True, inplace=True)
   flagAnomaliasDf.reset_index(drop=True, inplace=True)
-  entradaFeaturesYTarget4 = pd.concat([entradaFeaturesYTarget3, flagAnomaliasDf], axis=1)  #Column Bind, manteniendo el índice del DF izquierdo
-  entradaFeaturesYTarget4.set_index(indice3, inplace=True) #ponemos el indice que tenia el DF de la izquierda
+  entradaFeaturesYTarget4 = pd.concat([entradaFeaturesYTarget3, flagAnomaliasDf], axis=1)  # Column Bind, manteniendo el índice del DF izquierdo
+  entradaFeaturesYTarget4.set_index(indice3, inplace=True)  # ponemos el indice que tenia el DF de la izquierda
 
   entradaFeaturesYTarget4 = entradaFeaturesYTarget4.loc[entradaFeaturesYTarget4['marca_anomalia'] == 1] #Cogemos solo las que no son anomalias
   entradaFeaturesYTarget4 = entradaFeaturesYTarget4.drop('marca_anomalia', axis=1)  #Quitamos la columna auxiliar
@@ -670,12 +670,12 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
     featuresFichero1, targetsFichero = leerFeaturesyTarget(pathCsvCompleto, dir_subgrupo_img, compatibleParaMuchasEmpresas, pathModeloOutliers, modoTiempo, maxFilasEntrada)
 
     # NORMALIZAR Y TRAMIFICAR
-    # featuresFichero2 = normalizarFeatures(featuresFichero1, path_modelo_normalizador, dir_subgrupo_img, modoTiempo, path_indices_out_capa5, pathCsvIntermedio)
-    # featuresFichero3 = tramificarFeatures(numTramos, featuresFichero2, targetsFichero, path_modelo_tramificador, dir_subgrupo_img, modoTiempo)
+    featuresFichero2 = normalizarFeatures(featuresFichero1, path_modelo_normalizador, dir_subgrupo_img, modoTiempo, path_indices_out_capa5, pathCsvIntermedio)
+    featuresFichero3 = tramificarFeatures(numTramos, featuresFichero2, targetsFichero, path_modelo_tramificador, dir_subgrupo_img, modoTiempo)
 
     # NORMALIZAR, PERO SIN TRAMIFICAR: leer apartado 4.3 de https://eprints.ucm.es/56355/1/TFM_MPP_Jul19%20%281%29Palau.pdf
-    featuresFichero2 = normalizarFeatures(featuresFichero1, path_modelo_normalizador, dir_subgrupo_img, modoTiempo, path_indices_out_capa5, pathCsvIntermedio)
-    featuresFichero3 = featuresFichero2
+    # featuresFichero2 = normalizarFeatures(featuresFichero1, path_modelo_normalizador, dir_subgrupo_img, modoTiempo, path_indices_out_capa5, pathCsvIntermedio)
+    # featuresFichero3 = featuresFichero2
 
     # NO NORMALIZAR y NO TRAMIFICAR
     # featuresFichero2 = featuresFichero1
