@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -76,6 +77,14 @@ public class LimpiarCSVBrutosTemporales {
 	 */
 	public static void nucleo(String dirBrutoCsv) throws IOException {
 
+		String dirBorrables = dirBrutoCsv.endsWith("/") ? (dirBrutoCsv.substring(0, dirBrutoCsv.length() - 1) + "_OLD")
+				: (dirBrutoCsv + "_OLD");
+		if (Files.exists(Paths.get(dirBorrables))) {
+			FileUtils.cleanDirectory(new File(dirBorrables)); // borra posible contenido previo
+			Files.deleteIfExists(Paths.get(dirBorrables)); // borra directorio
+		}
+		Files.createDirectory(Paths.get(dirBorrables));// crea directorio vacio
+
 		File dirBrutoCsvFile = new File(dirBrutoCsv);
 		String[] listaBorrables = dirBrutoCsvFile.list(new FilenameFilter() {
 
@@ -85,8 +94,10 @@ public class LimpiarCSVBrutosTemporales {
 				boolean temporalNasdaqOld = name.startsWith(BrutosUtils.NASDAQOLD + "_") && name.endsWith(".csv");
 				boolean temporalYahoo = name.startsWith(BrutosUtils.YAHOOFINANCE + "_") && name.endsWith(".csv");
 				boolean temporalFinviz = name.startsWith(BrutosUtils.FINVIZ_ESTATICOS + "_") && name.endsWith(".csv");
+				boolean temporalFinvizInsiders = name.startsWith(BrutosUtils.FINVIZ_INSIDERS + "_")
+						&& name.endsWith(".csv");
 
-				if (temporalNasdaqOld || temporalYahoo || temporalFinviz) {
+				if (temporalNasdaqOld || temporalYahoo || temporalFinviz || temporalFinvizInsiders) {
 					return true;
 				}
 				return false;
@@ -94,13 +105,11 @@ public class LimpiarCSVBrutosTemporales {
 		});
 
 		for (String pathBorrable : listaBorrables) {
-			MY_LOGGER.debug("Borrando temporal: " + dirBrutoCsv + pathBorrable);
-			Files.deleteIfExists(Paths.get(dirBrutoCsv + pathBorrable));
+			MY_LOGGER.info("Moviendo fichero temporal desde: " + dirBrutoCsv + pathBorrable + "  hasta " + dirBorrables
+					+ "/" + pathBorrable);
+			Files.move(Paths.get(dirBrutoCsv + pathBorrable), Paths.get(dirBorrables + "/" + pathBorrable));
 		}
 
-		// VELAS DE NASDAQ
-		String velasNasdaq = dirBrutoCsv + "VELAS_" + BrutosUtils.MERCADO_NQ + ".csv";
-		Files.deleteIfExists(Paths.get(velasNasdaq));
 	}
 
 }

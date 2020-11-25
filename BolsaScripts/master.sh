@@ -144,6 +144,10 @@ fi;
 comprobarQueDirectorioNoEstaVacio "${DIR_BRUTOS}"
 comprobarQueDirectorioNoEstaVacio "${DIR_BRUTOS_CSV}"
 
+#Borramos fichero auxiliar de velas
+echo "Borrando: ${DIR_BRUTOS_CSV}/VELAS*" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
+rm ${DIR_BRUTOS_CSV}/VELAS* 2>>${LOG_MASTER} 1>>${LOG_MASTER}
+
 NUM_FICHEROS_10x=$(ls -l ${DIR_BRUTOS_CSV} | grep -v 'total' | wc -l)
 echo -e "La capa 10X ha generado $NUM_FICHEROS_10x ficheros" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 if [ "$NUM_FICHEROS_10x" -lt 1 ]; then

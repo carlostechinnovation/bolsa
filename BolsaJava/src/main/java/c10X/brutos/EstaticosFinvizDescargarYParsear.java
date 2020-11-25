@@ -163,15 +163,18 @@ public class EstaticosFinvizDescargarYParsear {
 				parsearFinviz1(empresa, rutaHtmlBruto, mapaExtraidos, operacionesInsidersLimpias);
 
 				if (mapaExtraidos.size() > 0) {
-					String rutaCsvBruto = dirBrutoCsv + BrutosUtils.FINVIZ_ESTATICOS + "_" + BrutosUtils.MERCADO_NQ
-							+ "_" + nasdaqEstaticos1.get(i).symbol + ".csv";
-					volcarDatosEstaticosEnCSV(BrutosUtils.MERCADO_NQ, nasdaqEstaticos1.get(i).symbol, mapaExtraidos,
-							rutaCsvBruto);
 
+					// INSIDERS (BRUTO)
 					String rutaInsidersCsvBruto = dirBrutoCsv + BrutosUtils.FINVIZ_INSIDERS + "_"
 							+ BrutosUtils.MERCADO_NQ + "_" + nasdaqEstaticos1.get(i).symbol + ".csv";
 					volcarDatosInsidersEnCSV(BrutosUtils.MERCADO_NQ, nasdaqEstaticos1.get(i).symbol,
 							operacionesInsidersLimpias, rutaInsidersCsvBruto);
+
+					// BRUTOS CSV: vuelca a CSV lo que haya en mapaExtraidos para cada empresa
+					String rutaCsvBruto = dirBrutoCsv + BrutosUtils.FINVIZ_ESTATICOS + "_" + BrutosUtils.MERCADO_NQ
+							+ "_" + nasdaqEstaticos1.get(i).symbol + ".csv";
+					volcarDatosEstaticosEnCSV(BrutosUtils.MERCADO_NQ, nasdaqEstaticos1.get(i).symbol, mapaExtraidos,
+							rutaCsvBruto);
 
 				} else {
 					MY_LOGGER.warn("main() - Caso raro - 001 - Error al parsear FINVIZ de empresa: " + empresa);
@@ -518,12 +521,11 @@ public class EstaticosFinvizDescargarYParsear {
 	public static void volcarDatosInsidersEnCSV(String mercado, String empresa, List<String> operacionesInsidersLimpias,
 			String rutaCsvBruto) throws IOException {
 
-		MY_LOGGER.info("volcarDatosInsidersEnCSV --> " + mercado + "|" + empresa + "|"
+		MY_LOGGER.debug("volcarDatosInsidersEnCSV --> " + mercado + "|" + empresa + "|"
 				+ operacionesInsidersLimpias.size() + "|" + rutaCsvBruto);
 
 		// ---------------------------- ESCRITURA ---------------
 		if (operacionesInsidersLimpias.size() >= 2) { // La primera fila es la cabecera
-			MY_LOGGER.debug("Escritura...");
 			File fout = new File(rutaCsvBruto);
 			FileOutputStream fos = new FileOutputStream(fout, false);
 			BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
@@ -536,8 +538,8 @@ public class EstaticosFinvizDescargarYParsear {
 			bw.close();
 
 		} else {
-			MY_LOGGER.warn("No escribimos FINVIZ de empresa=" + empresa
-					+ " porque no se han extraido datos de OPERACIONES INSIDERS. No es critico, seguimos.");
+			MY_LOGGER.debug("No escribimos fichero FINVIZ_INSIDERS de empresa=" + empresa
+					+ " porque no se han extraido datos de OPERACIONES INSIDERS. Es normal, seguimos.");
 		}
 
 	}

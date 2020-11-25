@@ -151,7 +151,8 @@ public class GestorFicheros {
 					for (int i = 0; i < Math.min(data.length, ordenNombresParametrosLeidos.size()); i++) {
 						if (ordenNombresParametrosLeidos.get(i).compareTo(data[i]) != 0)
 							throw new Exception(
-									"El orden de los parametros leidos (sólo se tratan los NO ELABORADOS) en el fichero no es el que espera el gestor de ficheros");
+									"El orden de los parametros leidos (sólo se tratan los NO ELABORADOS) en el fichero no es el que espera el gestor de ficheros. Fichero: "
+											+ pathFichero);
 					}
 					esPrimeraLinea = Boolean.FALSE;
 

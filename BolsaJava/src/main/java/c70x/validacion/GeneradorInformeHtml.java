@@ -13,6 +13,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
@@ -141,13 +142,21 @@ public class GeneradorInformeHtml implements Serializable {
 		StringBuilder outSB = new StringBuilder();
 
 		List<String> brutosFinviz = Files.walk(Paths.get(dirTiempo + "brutos")).map(x -> x.toString())
-				.filter(f -> f.contains("/" + BrutosUtils.FINVIZ_ESTATICOS) && f.endsWith(".html")).collect(Collectors.toList());
-		outSB.append("Ficheros de FINVIZ: " + brutosFinviz.size() + "<br>");
+				.filter(f -> f.contains("/" + BrutosUtils.FINVIZ_ESTATICOS) && f.endsWith(".html"))
+				.collect(Collectors.toList());
+		outSB.append("Ficheros de FINVIZ (datos estaticos): " + brutosFinviz.size() + "<br>");
 //		brutosFinviz.forEach(outSB::append);
+
+		List<String> brutosFinvizInsiders = Files.walk(Paths.get(dirTiempo + "brutos")).map(x -> x.toString())
+				.filter(f -> f.contains("/" + BrutosUtils.FINVIZ_INSIDERS) && f.endsWith(".html"))
+				.collect(Collectors.toList());
+		outSB.append("Ficheros de FINVIZ (datos dinamicos de operaciones de insiders): " + brutosFinvizInsiders.size()
+				+ "<br>");
+//		brutosFinvizInsiders.forEach(outSB::append);
 
 		List<String> brutosYF = Files.walk(Paths.get(dirTiempo + "brutos")).map(x -> x.toString())
 				.filter(f -> f.contains("/" + BrutosUtils.YAHOOFINANCE)).collect(Collectors.toList());
-		outSB.append("Ficheros de YAHOO FINANCE: " + brutosYF.size() + "<br>");
+		outSB.append("Ficheros de YAHOO FINANCE (datos dinamicos): " + brutosYF.size() + "<br>");
 //		brutosYF.forEach(outSB::append);
 
 		return outSB.toString();
@@ -159,10 +168,13 @@ public class GeneradorInformeHtml implements Serializable {
 	 * @throws IOException
 	 */
 	public static String generarCuerpoBrutosCsvHtml(String dirTiempo) throws IOException {
+
 		StringBuilder outSB = new StringBuilder();
-		List<String> lista = Files.walk(Paths.get(dirTiempo + "brutos_csv")).map(x -> x.toString())
+
+		List<String> csvFZ = Files.walk(Paths.get(dirTiempo + "brutos_csv")).map(x -> x.toString())
 				.filter(f -> f.endsWith(".csv")).collect(Collectors.toList());
-		outSB.append("Ficheros CSV: " + lista.size() + "<br>");
+		outSB.append("Ficheros CSV: " + csvFZ.size() + "<br>");
+
 		return outSB.toString();
 	}
 
@@ -267,10 +279,20 @@ public class GeneradorInformeHtml implements Serializable {
 		File f = new File(pathCsv);
 		if (pathCsv != null && !pathCsv.isEmpty() && f.exists()) {
 			long numLineas = Files.lines(Paths.get(pathCsv)).count();
-			String[] primeraLinea = Files.lines(Paths.get(pathCsv)).map(s -> s.split(",")).findFirst().get();
-			String cabecera = primeraLinea[0];
-			String[] campos = cabecera.split("\\|");
-			out = numLineas + " x " + campos.length;
+
+			Object o1 = Files.lines(Paths.get(pathCsv)).map(s -> s.split(","));
+			if (o1 != null) {
+				Optional<String[]> o2 = Files.lines(Paths.get(pathCsv)).map(s -> s.split(",")).findFirst();
+				if (o2 != null && o2.get() != null) {
+
+					String[] primeraLinea = o2.get();
+					String cabecera = primeraLinea[0];
+					String[] campos = cabecera.split("\\|");
+
+					out = numLineas + " x " + campos.length;
+				}
+			}
+
 		} else {
 			out += " --";
 		}

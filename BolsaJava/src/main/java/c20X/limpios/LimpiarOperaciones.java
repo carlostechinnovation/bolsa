@@ -3,6 +3,8 @@ package c20X.limpios;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -84,7 +86,13 @@ public class LimpiarOperaciones implements Serializable {
 		BrutosUtils.encontrarFicherosEnCarpeta(".*csv", new File(directorioIn), ficherosEntrada);
 
 		for (String pathFichero : ficherosEntrada) {
-			operacionesLimpiezaFicheroYGuardar(pathFichero, directorioOut, p_inicio, p_fin);
+
+			if (pathFichero.contains("VELAS")) {
+				MY_LOGGER.info("Borrando fichero de velas:" + pathFichero);
+				Files.deleteIfExists(Paths.get(pathFichero));
+			} else {
+				operacionesLimpiezaFicheroYGuardar(pathFichero, directorioOut, p_inicio, p_fin);
+			}
 		}
 
 	}

@@ -112,10 +112,11 @@ public class ConstructorElaborados implements Serializable {
 			gestorFicheros = new GestorFicheros();
 			datosEntrada = new HashMap<String, HashMap<Integer, HashMap<String, String>>>();
 			ficheroGestionado = iterator.next();
+
 			destino = directorioSalida + "/" + ficheroGestionado.getName();
 
 			if (i % 10 == 1) {
-				MY_LOGGER.info("ENTRADA Empresa numero = " + i + "\tFicheros ENTRADA|salida -> \t"
+				MY_LOGGER.info("ENTRADA Empresa numero = " + i + " Ficheros ENTRADA|salida -> "
 						+ ficheroGestionado.getAbsolutePath() + " | \t" + destino);
 			}
 			i++;

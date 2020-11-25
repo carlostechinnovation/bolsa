@@ -97,43 +97,76 @@ public class JuntarEstaticosYDinamicosCSVunico {
 		List<EstaticoNasdaqModelo> nasdaqEstaticos1 = EstaticosNasdaqDescargarYParsear
 				.descargarNasdaqEstaticosSoloLocal1(entornoDeValidacion);
 
+		int numCasosSinNingunFichero = 0;
+
 		for (EstaticoNasdaqModelo enm : nasdaqEstaticos1) {
 
-			String finvizEstaticos = dirBrutoCsv + BrutosUtils.FINVIZ_ESTATICOS + "_" + BrutosUtils.MERCADO_NQ + "_" + enm.symbol
-					+ ".csv";
+			// OBLIGATORIOS (deben haberse descargado)
+			String finvizEstaticos = dirBrutoCsv + BrutosUtils.FINVIZ_ESTATICOS + "_" + BrutosUtils.MERCADO_NQ + "_"
+					+ enm.symbol + ".csv";
 			File fileEstat = new File(finvizEstaticos);
 
 			String yahooFinanceDinamicos = dirBrutoCsv + BrutosUtils.YAHOOFINANCE + "_" + BrutosUtils.MERCADO_NQ + "_"
 					+ enm.symbol + ".csv";
 			File fileDin = new File(yahooFinanceDinamicos);
 
-			if (fileEstat.exists() && fileDin.exists()) {
-				nucleoEmpresa(dirBrutoCsv, enm, fileEstat, fileDin, desplazamientoAntiguedad);
+			// OPCIONAL: se conocen pocas operaciones de insiders
+			String finvizInsiders = dirBrutoCsv + BrutosUtils.FINVIZ_INSIDERS + "_" + BrutosUtils.MERCADO_NQ + "_"
+					+ enm.symbol + ".csv";
+			File fileInsiders = new File(finvizInsiders); // OPCIONAL
 
-			} else if (!fileEstat.exists() || fileDin.exists()) {
-				MY_LOGGER.error("nucleo() - existe_csv_estatico= " + fileEstat.exists() + "   y existe_csv_dinamico="
-						+ fileDin.exists() + "  Deberían estar los 2!!! Empresa: " + enm.symbol + "   Saliendo...");
-				MY_LOGGER.error(
-						"finvizEstaticos=" + finvizEstaticos + " | yahooFinanceDinamicos=" + yahooFinanceDinamicos);
-				System.exit(-1);
+			boolean hay0FicherosObligatorios = !fileEstat.exists() && !fileDin.exists();
+			boolean hay1FicherosObligatorio = fileEstat.exists() || fileDin.exists();
+			boolean hay2FicherosObligatorioSinElOpcional = fileEstat.exists() && fileDin.exists()
+					&& !fileInsiders.exists();
+			boolean hay2FicherosObligatorioYElOpcional = fileEstat.exists() && fileDin.exists()
+					&& fileInsiders.exists();
+
+			if (hay0FicherosObligatorios) {
+				// SOLO LO PINTAMOS EN MODO DEBUG, por no ensuciar el log. Aun asi, lo
+				// contabilizamos para abortar al final si todos entran en este caso
+				MY_LOGGER.debug("Empresa: " + enm.symbol
+						+ " --> No conocemos ningun CSV: FZ (estatico) ni YF (dinamico). No procesamos la empresa, pero seguimos.");
+				numCasosSinNingunFichero++;
+			}
+			if (hay1FicherosObligatorio) {
+				MY_LOGGER.warn("Empresa: " + enm.symbol
+						+ " --> Solo conocemos uno de estos dos CSV: FZ (estatico) ni YF (dinamico). No procesamos la empresa, pero seguimos.");
+			}
+			if (hay2FicherosObligatorioSinElOpcional) {
+				MY_LOGGER.warn("Empresa: " + enm.symbol
+						+ " --> Conocemos ambos CSV: FZ (estatico) ni YF (dinamico). Sin operaciones de insiders conocidas");
+			}
+			if (hay2FicherosObligatorioYElOpcional) {
+				MY_LOGGER.warn("Empresa: " + enm.symbol
+						+ " --> Conocemos ambos CSV: FZ (estatico) ni YF (dinamico). Con operaciones de insiders conocidas");
+			}
+
+			if (hay2FicherosObligatorioSinElOpcional || hay2FicherosObligatorioYElOpcional) {
+				nucleoEmpresa(dirBrutoCsv, enm, fileEstat, fileDin, fileInsiders, desplazamientoAntiguedad);
 
 			}
-//			else {
-//				MY_LOGGER.warn("nucleo() - existe_csv_estatico= " + fileEstat.exists() + "   y existe_csv_dinamico="
-//						+ fileDin.exists() + "  Deberían estar los 2!!! No procesamos esa empresa: " + enm.symbol);
-//			}
 
+		}
+
+		if (nasdaqEstaticos1.size() == numCasosSinNingunFichero) {
+			MY_LOGGER.debug(
+					"No hay ficheros CSV (estaticos ni dinamicos) para ninguna empresa. Hay algun error previo. Saliendo...");
+			System.exit(-1);
 		}
 	}
 
 	/**
+	 * @param dirBrutoCsv
 	 * @param enm
 	 * @param fileEstat
 	 * @param fileDin
+	 * @param fileDinInsiders
+	 * @param desplazamientoAntiguedad
 	 * @throws IOException
 	 */
 	public static void nucleoEmpresa(String dirBrutoCsv, EstaticoNasdaqModelo enm, File fileEstat, File fileDin,
-			Integer desplazamientoAntiguedad) throws IOException {
+			File fileDinInsiders, Integer desplazamientoAntiguedad) throws IOException {
 
 		// --------- Variables ESTATICAS -------------
 		FileReader fr = new FileReader(fileEstat);
@@ -222,6 +255,10 @@ public class JuntarEstaticosYDinamicosCSVunico {
 			primeraLinea = false;
 		}
 		br.close();
+
+		// ---------- OPERACIONES DE INSIDERS -----------------------
+		// TODO PENDIENTE fileDinInsiders
+		MY_LOGGER.warn("PENDIENTE Procesar datos de: " + fileDinInsiders.getAbsolutePath());
 
 		// ---------- JUNTOS -----------------------
 		String juntos = dirBrutoCsv + BrutosUtils.MERCADO_NQ + "_" + enm.symbol + ".csv";
