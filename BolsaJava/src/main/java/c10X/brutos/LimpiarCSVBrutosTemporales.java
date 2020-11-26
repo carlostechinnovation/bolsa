@@ -104,8 +104,10 @@ public class LimpiarCSVBrutosTemporales {
 			}
 		});
 
+		MY_LOGGER.info("Borrado lógico de ficheros CSV temporales. Movemos todos desde: " + dirBrutoCsv + "  hasta "
+				+ dirBorrables + "/");
 		for (String pathBorrable : listaBorrables) {
-			MY_LOGGER.info("Moviendo fichero temporal desde: " + dirBrutoCsv + pathBorrable + "  hasta " + dirBorrables
+			MY_LOGGER.debug("Moviendo fichero temporal desde: " + dirBrutoCsv + pathBorrable + "  hasta " + dirBorrables
 					+ "/" + pathBorrable);
 			Files.move(Paths.get(dirBrutoCsv + pathBorrable), Paths.get(dirBorrables + "/" + pathBorrable));
 		}

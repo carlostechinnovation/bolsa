@@ -116,7 +116,8 @@ public class JuntarEstaticosYDinamicosCSVunico {
 			File fileInsiders = new File(finvizInsiders); // OPCIONAL
 
 			boolean hay0FicherosObligatorios = !fileEstat.exists() && !fileDin.exists();
-			boolean hay1FicherosObligatorio = fileEstat.exists() || fileDin.exists();
+			boolean hay1FicherosObligatorio = (fileEstat.exists() && !fileDin.exists())
+					|| (!fileEstat.exists() && fileDin.exists());
 			boolean hay2FicherosObligatorioSinElOpcional = fileEstat.exists() && fileDin.exists()
 					&& !fileInsiders.exists();
 			boolean hay2FicherosObligatorioYElOpcional = fileEstat.exists() && fileDin.exists()
@@ -134,17 +135,18 @@ public class JuntarEstaticosYDinamicosCSVunico {
 						+ " --> Solo conocemos uno de estos dos CSV: FZ (estatico) ni YF (dinamico). No procesamos la empresa, pero seguimos.");
 			}
 			if (hay2FicherosObligatorioSinElOpcional) {
-				MY_LOGGER.warn("Empresa: " + enm.symbol
+				// Muy habitual
+				MY_LOGGER.debug("Empresa: " + enm.symbol
 						+ " --> Conocemos ambos CSV: FZ (estatico) ni YF (dinamico). Sin operaciones de insiders conocidas");
 			}
 			if (hay2FicherosObligatorioYElOpcional) {
-				MY_LOGGER.warn("Empresa: " + enm.symbol
+				// Habitual
+				MY_LOGGER.debug("Empresa: " + enm.symbol
 						+ " --> Conocemos ambos CSV: FZ (estatico) ni YF (dinamico). Con operaciones de insiders conocidas");
 			}
 
 			if (hay2FicherosObligatorioSinElOpcional || hay2FicherosObligatorioYElOpcional) {
 				nucleoEmpresa(dirBrutoCsv, enm, fileEstat, fileDin, fileInsiders, desplazamientoAntiguedad);
-
 			}
 
 		}
@@ -258,7 +260,9 @@ public class JuntarEstaticosYDinamicosCSVunico {
 
 		// ---------- OPERACIONES DE INSIDERS -----------------------
 		// TODO PENDIENTE fileDinInsiders
-		MY_LOGGER.warn("PENDIENTE Procesar datos de: " + fileDinInsiders.getAbsolutePath());
+		MY_LOGGER.warn(
+				"PENDIENTE Utilizar los datos de operaciones de insiders para crear nuevas elaboradas o subgrupos: "
+						+ fileDinInsiders.getAbsolutePath());
 
 		// ---------- JUNTOS -----------------------
 		String juntos = dirBrutoCsv + BrutosUtils.MERCADO_NQ + "_" + enm.symbol + ".csv";
