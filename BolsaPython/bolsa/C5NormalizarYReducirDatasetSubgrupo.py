@@ -52,7 +52,7 @@ print("maxFilasEntrada = %s" % maxFilasEntrada)
 
 varianza=0.87  # Variacion acumulada de las features PCA sobre el target
 compatibleParaMuchasEmpresas = False  # Si hay muchas empresas, debo hacer ya el undersampling (en vez de capa 6)
-global modoDebug; modoDebug=False  # VARIABLE GLOBAL: En modo debug se pintan los dibujos. En otro caso, se evita calculo innecesario
+global modoDebug; modoDebug = False  # VARIABLE GLOBAL: En modo debug se pintan los dibujos. En otro caso, se evita calculo innecesario
 global cv_todos; cv_todos = 5  # CROSS_VALIDATION: número de iteraciones. Sirve para evitar el overfitting
 global dibujoBins; dibujoBins=20  #VARIABLE GLOBAL: al pintar los histogramas, define el número de barras posibles en las que se divide el eje X.
 numTramos=7  # Numero de tramos usado para tramificar las features dinámicas
@@ -670,12 +670,12 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
     featuresFichero1, targetsFichero = leerFeaturesyTarget(pathCsvCompleto, dir_subgrupo_img, compatibleParaMuchasEmpresas, pathModeloOutliers, modoTiempo, maxFilasEntrada)
 
     # NORMALIZAR Y TRAMIFICAR
-    featuresFichero2 = normalizarFeatures(featuresFichero1, path_modelo_normalizador, dir_subgrupo_img, modoTiempo, path_indices_out_capa5, pathCsvIntermedio)
-    featuresFichero3 = tramificarFeatures(numTramos, featuresFichero2, targetsFichero, path_modelo_tramificador, dir_subgrupo_img, modoTiempo)
+    # featuresFichero2 = normalizarFeatures(featuresFichero1, path_modelo_normalizador, dir_subgrupo_img, modoTiempo, path_indices_out_capa5, pathCsvIntermedio)
+    #featuresFichero3 = tramificarFeatures(numTramos, featuresFichero2, targetsFichero, path_modelo_tramificador, dir_subgrupo_img, modoTiempo)
 
     # NORMALIZAR, PERO SIN TRAMIFICAR: leer apartado 4.3 de https://eprints.ucm.es/56355/1/TFM_MPP_Jul19%20%281%29Palau.pdf
-    # featuresFichero2 = normalizarFeatures(featuresFichero1, path_modelo_normalizador, dir_subgrupo_img, modoTiempo, path_indices_out_capa5, pathCsvIntermedio)
-    # featuresFichero3 = featuresFichero2
+    featuresFichero2 = normalizarFeatures(featuresFichero1, path_modelo_normalizador, dir_subgrupo_img, modoTiempo, path_indices_out_capa5, pathCsvIntermedio)
+    featuresFichero3 = featuresFichero2
 
     # NO NORMALIZAR y NO TRAMIFICAR
     # featuresFichero2 = featuresFichero1
