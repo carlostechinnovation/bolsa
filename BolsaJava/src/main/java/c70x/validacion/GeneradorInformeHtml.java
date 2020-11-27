@@ -147,8 +147,8 @@ public class GeneradorInformeHtml implements Serializable {
 		outSB.append("Ficheros de FINVIZ (datos estaticos): " + brutosFinviz.size() + "<br>");
 //		brutosFinviz.forEach(outSB::append);
 
-		List<String> brutosFinvizInsiders = Files.walk(Paths.get(dirTiempo + "brutos")).map(x -> x.toString())
-				.filter(f -> f.contains("/" + BrutosUtils.FINVIZ_INSIDERS) && f.endsWith(".html"))
+		List<String> brutosFinvizInsiders = Files.walk(Paths.get(dirTiempo + "brutos_csv")).map(x -> x.toString())
+				.filter(f -> f.contains("/" + BrutosUtils.FINVIZ_INSIDERS) && f.endsWith(".csv"))
 				.collect(Collectors.toList());
 		outSB.append("Ficheros de FINVIZ (datos dinamicos de operaciones de insiders): " + brutosFinvizInsiders.size()
 				+ "<br>");
