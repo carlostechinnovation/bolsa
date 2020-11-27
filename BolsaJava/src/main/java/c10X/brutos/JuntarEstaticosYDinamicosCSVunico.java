@@ -163,7 +163,9 @@ public class JuntarEstaticosYDinamicosCSVunico {
 	 * @param enm
 	 * @param fileEstat
 	 * @param fileDin
-	 * @param fileDinInsiders
+	 * @param fileDinInsiders          Fichero de OPERACIONES DE INSIDERS (datos
+	 *                                 dinámicos, pero la vela más reciente no es de
+	 *                                 hoy, sino de hace 2-3 dias como pronto)
 	 * @param desplazamientoAntiguedad
 	 * @throws IOException
 	 */
@@ -252,17 +254,43 @@ public class JuntarEstaticosYDinamicosCSVunico {
 
 					dinamicosDatos.add(dinamicosFilaExtraida);
 				}
-
 			}
 			primeraLinea = false;
 		}
 		br.close();
 
 		// ---------- OPERACIONES DE INSIDERS -----------------------
-		// TODO PENDIENTE fileDinInsiders
-		MY_LOGGER.warn(
-				"PENDIENTE Utilizar los datos de operaciones de insiders para crear nuevas elaboradas o subgrupos: "
-						+ fileDinInsiders.getAbsolutePath());
+//		MY_LOGGER.warn(
+//				"PENDIENTE Utilizar los datos de operaciones de insiders para crear nuevas elaboradas o subgrupos: "
+//						+ fileDinInsiders.getAbsolutePath());
+//		List<OperacionInsiderFinvizModelo> insidersDatos = new ArrayList<OperacionInsiderFinvizModelo>();
+//		dinamicosCabecera += "|fecha|tipooperacion|importe"; // cabecera del fichero FI
+//		if (fileDinInsiders.exists()) {
+//			int x = 0;
+//
+//			FileReader fri = new FileReader(fileDinInsiders);
+//			BufferedReader bri = new BufferedReader(fri);
+//			String actuali;
+//			boolean primeraLineai = true;
+//
+//			while ((actuali = bri.readLine()) != null) {
+//				if (primeraLineai == false) {
+//					String[] partes = actuali.split("\\|");
+//					insidersDatos.add(new OperacionInsiderFinvizModelo(partes[0], partes[1], partes[2]));
+//				}
+//				primeraLinea = false;
+//			}
+//			bri.close();
+//
+//			// Para cada día (VELA), metemos NUEVAS FEATURES interpretando la lista de
+//			// operaciones de insiders de la empresa estudiada
+//
+//			// TODO PENDIENTE
+//
+//		} else {
+//			// Si no hay fichero FI, añadimos columnas vacías a CADA DIA (fila)
+//			// TODO PENDIENTE
+//		}
 
 		// ---------- JUNTOS -----------------------
 		String juntos = dirBrutoCsv + BrutosUtils.MERCADO_NQ + "_" + enm.symbol + ".csv";

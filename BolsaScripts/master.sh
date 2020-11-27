@@ -44,7 +44,8 @@ MIN_COBERTURA_CLUSTER="${14}"  #Porcentaje de empresas con al menos una vela pos
 MIN_EMPRESAS_POR_CLUSTER="${15}"
 P_INICIO="${16}" #Periodo de entrenamiento (inicio)
 P_FIN="${17}" #Periodo de entrenamiento (fin)
-CAPA5_MAX_FILAS_ENTRADA="${18}"  # Maximo numero de filas permitido en entrada a capa 5 (por rendimiento)
+MAX_NUM_FEAT_REDUCIDAS="${18}"
+CAPA5_MAX_FILAS_ENTRADA="${19}"  # Maximo numero de filas permitido en entrada a capa 5 (por rendimiento)
 
 
 ################## FUNCIONES #############################################################
