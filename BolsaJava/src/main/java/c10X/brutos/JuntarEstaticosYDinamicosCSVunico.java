@@ -8,11 +8,15 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
@@ -28,7 +32,10 @@ public class JuntarEstaticosYDinamicosCSVunico {
 
 	static Logger MY_LOGGER = Logger.getLogger(JuntarEstaticosYDinamicosCSVunico.class);
 
+	final static String CABECERA_OPS_INSIDERS = "sumaOperacionesInsiderUltimos90dias|sumaOperacionesInsiderUltimos30dias|sumaOperacionesInsiderUltimos15dias|sumaOperacionesInsiderUltimos5dias";
+
 	private static JuntarEstaticosYDinamicosCSVunico instancia = null;
+	public static final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 
 	private JuntarEstaticosYDinamicosCSVunico() {
 		super();
@@ -44,8 +51,9 @@ public class JuntarEstaticosYDinamicosCSVunico {
 	/**
 	 * @param args
 	 * @throws IOException
+	 * @throws ParseException
 	 */
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, ParseException {
 
 		Object appendersAcumulados = Logger.getRootLogger().getAllAppenders();
 		if (appendersAcumulados instanceof NullEnumeration) {
@@ -90,9 +98,10 @@ public class JuntarEstaticosYDinamicosCSVunico {
 	 * @param desplazamientoAntiguedad
 	 * @param entornoDeValidacion
 	 * @throws IOException
+	 * @throws ParseException
 	 */
 	public static void nucleo(String dirBrutoCsv, Integer desplazamientoAntiguedad, final Integer entornoDeValidacion)
-			throws IOException {
+			throws IOException, ParseException {
 
 		List<EstaticoNasdaqModelo> nasdaqEstaticos1 = EstaticosNasdaqDescargarYParsear
 				.descargarNasdaqEstaticosSoloLocal1(entornoDeValidacion);
@@ -168,9 +177,10 @@ public class JuntarEstaticosYDinamicosCSVunico {
 	 *                                 hoy, sino de hace 2-3 dias como pronto)
 	 * @param desplazamientoAntiguedad
 	 * @throws IOException
+	 * @throws ParseException
 	 */
 	public static void nucleoEmpresa(String dirBrutoCsv, EstaticoNasdaqModelo enm, File fileEstat, File fileDin,
-			File fileDinInsiders, Integer desplazamientoAntiguedad) throws IOException {
+			File fileDinInsiders, Integer desplazamientoAntiguedad) throws IOException, ParseException {
 
 		// --------- Variables ESTATICAS -------------
 		FileReader fr = new FileReader(fileEstat);
@@ -260,37 +270,39 @@ public class JuntarEstaticosYDinamicosCSVunico {
 		br.close();
 
 		// ---------- OPERACIONES DE INSIDERS -----------------------
-//		MY_LOGGER.warn(
-//				"PENDIENTE Utilizar los datos de operaciones de insiders para crear nuevas elaboradas o subgrupos: "
-//						+ fileDinInsiders.getAbsolutePath());
-//		List<OperacionInsiderFinvizModelo> insidersDatos = new ArrayList<OperacionInsiderFinvizModelo>();
-//		dinamicosCabecera += "|fecha|tipooperacion|importe"; // cabecera del fichero FI
-//		if (fileDinInsiders.exists()) {
-//			int x = 0;
-//
-//			FileReader fri = new FileReader(fileDinInsiders);
-//			BufferedReader bri = new BufferedReader(fri);
-//			String actuali;
-//			boolean primeraLineai = true;
-//
-//			while ((actuali = bri.readLine()) != null) {
-//				if (primeraLineai == false) {
-//					String[] partes = actuali.split("\\|");
-//					insidersDatos.add(new OperacionInsiderFinvizModelo(partes[0], partes[1], partes[2]));
-//				}
-//				primeraLinea = false;
-//			}
-//			bri.close();
-//
-//			// Para cada día (VELA), metemos NUEVAS FEATURES interpretando la lista de
-//			// operaciones de insiders de la empresa estudiada
-//
-//			// TODO PENDIENTE
-//
-//		} else {
-//			// Si no hay fichero FI, añadimos columnas vacías a CADA DIA (fila)
-//			// TODO PENDIENTE
-//		}
+		List<OperacionInsiderFinvizModelo> insidersDatos = new ArrayList<OperacionInsiderFinvizModelo>();
+		if (fileDinInsiders.exists()) {
+
+			FileReader fri = new FileReader(fileDinInsiders);
+			BufferedReader bri = new BufferedReader(fri);
+			String actuali;
+			boolean primeraLineai = true;
+
+			while ((actuali = bri.readLine()) != null) {
+				if (primeraLineai == false) {
+					String[] partes = actuali.split("\\|");
+
+					// TODO NO consideramos otros tipos de operaciones (Option Exercise) porque
+					// habría que descargar la URL de la SEC, que seguramente interprete las
+					// descargas masivas como un ataque:
+					if (partes[1].equalsIgnoreCase(OperacionInsiderFinvizModelo.COMPRA)
+							|| partes[1].equalsIgnoreCase(OperacionInsiderFinvizModelo.VENTA)) {
+						insidersDatos.add(new OperacionInsiderFinvizModelo(partes[0], partes[1], partes[2]));
+					}
+
+				}
+				primeraLineai = false;
+			}
+			bri.close();
+
+			// Para cada día (VELA), metemos NUEVAS FEATURES interpretando la lista de
+			// operaciones de insiders de la empresa estudiada
+			dinamicosDatos = anhadirOperacionesInsidersEnDinamicos(dinamicosDatos, dinamicosCabecera, insidersDatos);
+
+		} else {
+			// Si no hay fichero FI, añadimos columnas vacías a CADA DIA (fila)
+			dinamicosDatos = anhadirOperacionesInsidersEnDinamicos(dinamicosDatos, dinamicosCabecera, null);
+		}
 
 		// ---------- JUNTOS -----------------------
 		String juntos = dirBrutoCsv + BrutosUtils.MERCADO_NQ + "_" + enm.symbol + ".csv";
@@ -312,7 +324,7 @@ public class JuntarEstaticosYDinamicosCSVunico {
 		FileOutputStream fos = new FileOutputStream(fjuntos, false);
 		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
 
-		bw.write(dinamicosCabecera + "|" + estaticosCabecera);
+		bw.write(dinamicosCabecera + "|" + CABECERA_OPS_INSIDERS + "|" + estaticosCabecera);
 		bw.newLine();
 		for (String cad : dinamicosDatos) {
 			bw.write(cad + "|" + estaticosDatos);
@@ -346,7 +358,121 @@ public class JuntarEstaticosYDinamicosCSVunico {
 		}
 
 		return out;
+	}
 
+	/**
+	 * Genera NUEVAS FEATURES "ELABORADAS" a la lista de datos dinamicos, basandose
+	 * en la info de insiders que tengamos
+	 * 
+	 * @param dinamicosDatos    Matriz de datos dinamicos de ENTRADA
+	 * @param dinamicosCabecera cabecera de la matriz de datos de ENTRADA
+	 * @param insidersDatos     Datos de INSIDERS
+	 * @return Lista de dinamicos con el contenido de "dinamicosDatos" y habiendo
+	 *         añadido las nuevas columnas.
+	 * @throws ParseException
+	 */
+	public static List<String> anhadirOperacionesInsidersEnDinamicos(List<String> dinamicosDatos,
+			String dinamicosCabecera, List<OperacionInsiderFinvizModelo> insidersDatos) throws ParseException {
+
+		List<String> out = new ArrayList<String>();
+
+		int posicionAnio = calcularPosicion(dinamicosCabecera, "anio");
+		int posicionMes = calcularPosicion(dinamicosCabecera, "mes");
+		int posicionDia = calcularPosicion(dinamicosCabecera, "dia");
+
+		List<OperacionInsiderFinvizModelo> operacionesUltimos90dias = new ArrayList<OperacionInsiderFinvizModelo>();
+		List<OperacionInsiderFinvizModelo> operacionesUltimos30dias = new ArrayList<OperacionInsiderFinvizModelo>();
+		List<OperacionInsiderFinvizModelo> operacionesUltimos15dias = new ArrayList<OperacionInsiderFinvizModelo>();
+		List<OperacionInsiderFinvizModelo> operacionesUltimos5dias = new ArrayList<OperacionInsiderFinvizModelo>();
+		String sumaOperacionesInsiderUltimos90dias = "";
+		String sumaOperacionesInsiderUltimos30dias = "";
+		String sumaOperacionesInsiderUltimos15dias = "";
+		String sumaOperacionesInsiderUltimos5dias = "";
+
+		for (String din : dinamicosDatos) {
+
+			operacionesUltimos90dias.clear();
+			operacionesUltimos30dias.clear();
+			operacionesUltimos15dias.clear();
+			operacionesUltimos5dias.clear();
+
+			String[] dinPartes = din.split("\\|");
+			Calendar calDatoDinamico = Calendar.getInstance();
+			calDatoDinamico
+					.setTime(sdf.parse(dinPartes[posicionAnio] + dinPartes[posicionMes] + dinPartes[posicionDia]));
+
+			if (insidersDatos != null && !insidersDatos.isEmpty()) {
+
+				for (OperacionInsiderFinvizModelo op : insidersDatos) {
+
+					long diffInMillies = Math.abs(calDatoDinamico.getTimeInMillis() - op.fecha.getTimeInMillis());
+					long diasDiferencia = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+
+					if (diasDiferencia >= 0 && diasDiferencia <= 90) {
+						operacionesUltimos90dias.add(op);
+					}
+					if (diasDiferencia >= 0 && diasDiferencia <= 30) {
+						operacionesUltimos30dias.add(op);
+					}
+					if (diasDiferencia >= 0 && diasDiferencia <= 15) {
+						operacionesUltimos15dias.add(op);
+					}
+					if (diasDiferencia >= 0 && diasDiferencia <= 5) {
+//						MY_LOGGER.debug("Operacion_insider=" + sdf.format(op.fecha.getTime()) + " Dato_dinamico="
+//								+ sdf.format(calDatoDinamico.getTime()) + " -->diasDiferencia=" + diasDiferencia);
+						operacionesUltimos5dias.add(op);
+					}
+				}
+
+				sumaOperacionesInsiderUltimos90dias = sumarItems(operacionesUltimos90dias);
+				sumaOperacionesInsiderUltimos30dias = sumarItems(operacionesUltimos30dias);
+				sumaOperacionesInsiderUltimos15dias = sumarItems(operacionesUltimos15dias);
+				sumaOperacionesInsiderUltimos5dias = sumarItems(operacionesUltimos15dias);
+			}
+
+			// Haya datos de insiders o no, añadimos las columnas dinamicas, rellenas o
+			// vacías
+			out.add(din + "|" + sumaOperacionesInsiderUltimos90dias + "|" + sumaOperacionesInsiderUltimos30dias + "|"
+					+ sumaOperacionesInsiderUltimos15dias + "|" + sumaOperacionesInsiderUltimos5dias);
+		}
+
+		return out;
+	}
+
+	/**
+	 * @param cabecera
+	 * @param nombreColumnaBuscado
+	 * @return
+	 */
+	public static int calcularPosicion(String cabecera, String nombreColumnaBuscado) {
+
+		String[] partes = cabecera.split("\\|");
+		int out = -1;
+		int num = 0;
+		for (String cad : partes) {
+			if (cad.equalsIgnoreCase(nombreColumnaBuscado)) {
+				out = num;
+				break;
+			}
+			num++;
+		}
+		return out;
+	}
+
+	/**
+	 * @param lista
+	 * @return
+	 */
+	public static String sumarItems(List<OperacionInsiderFinvizModelo> lista) {
+		Long suma = 0L;
+		String out = "";
+		for (OperacionInsiderFinvizModelo op : lista) {
+			suma += op.importe;
+		}
+		if (suma != 0L) {
+			out = suma.toString();
+		}
+		return out;
 	}
 
 }

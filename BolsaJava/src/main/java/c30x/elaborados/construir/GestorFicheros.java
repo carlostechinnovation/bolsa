@@ -64,9 +64,13 @@ public class GestorFicheros {
 	public GestorFicheros() {
 
 		ordenNombresParametrosLeidos = new HashMap<Integer, String>();
+
+		// IDENTIFICADORES
 		ordenNombresParametrosLeidos.put(0, "empresa");
 		ordenNombresParametrosLeidos.put(1, "antiguedad");
 		ordenNombresParametrosLeidos.put(2, "mercado");
+
+		// DINAMICOS
 		ordenNombresParametrosLeidos.put(3, "anio");
 		ordenNombresParametrosLeidos.put(4, "mes");
 		ordenNombresParametrosLeidos.put(5, "dia");
@@ -77,21 +81,30 @@ public class GestorFicheros {
 		ordenNombresParametrosLeidos.put(10, "low");
 		ordenNombresParametrosLeidos.put(11, "close");
 		ordenNombresParametrosLeidos.put(12, "open");
-		ordenNombresParametrosLeidos.put(13, "industria");
-		ordenNombresParametrosLeidos.put(14, "Insider Own");
-		ordenNombresParametrosLeidos.put(15, "Quick Ratio");
-		ordenNombresParametrosLeidos.put(16, "Current Ratio");
-		ordenNombresParametrosLeidos.put(17, "P/E");
-		ordenNombresParametrosLeidos.put(18, "Dividend %");
-		ordenNombresParametrosLeidos.put(19, "Employees");
-		ordenNombresParametrosLeidos.put(20, "geo");
-		ordenNombresParametrosLeidos.put(21, "Debt/Eq");
-		ordenNombresParametrosLeidos.put(22, "LT Debt/Eq");
-		ordenNombresParametrosLeidos.put(23, "EPS next Y");
-		ordenNombresParametrosLeidos.put(24, "Earnings");
-		ordenNombresParametrosLeidos.put(25, "sector");
-		ordenNombresParametrosLeidos.put(26, "Inst Own");
-		ordenNombresParametrosLeidos.put(27, "Market Cap");
+
+		// SEMI-DINAMICOS (operaciones de insiders)
+		ordenNombresParametrosLeidos.put(13, "sumaOperacionesInsiderUltimos90dias");
+		ordenNombresParametrosLeidos.put(14, "sumaOperacionesInsiderUltimos30dias");
+		ordenNombresParametrosLeidos.put(15, "sumaOperacionesInsiderUltimos15dias");
+		ordenNombresParametrosLeidos.put(16, "sumaOperacionesInsiderUltimos5dias");
+
+		// ESTATICOS
+		ordenNombresParametrosLeidos.put(17, "industria");
+		ordenNombresParametrosLeidos.put(18, "Insider Own");
+		ordenNombresParametrosLeidos.put(19, "Quick Ratio");
+		ordenNombresParametrosLeidos.put(20, "Current Ratio");
+		ordenNombresParametrosLeidos.put(21, "P/E");
+		ordenNombresParametrosLeidos.put(22, "Dividend %");
+		ordenNombresParametrosLeidos.put(23, "Employees");
+		ordenNombresParametrosLeidos.put(24, "geo");
+		ordenNombresParametrosLeidos.put(25, "Debt/Eq");
+		ordenNombresParametrosLeidos.put(26, "LT Debt/Eq");
+		ordenNombresParametrosLeidos.put(27, "EPS next Y");
+		ordenNombresParametrosLeidos.put(28, "Earnings");
+		ordenNombresParametrosLeidos.put(29, "sector");
+		ordenNombresParametrosLeidos.put(30, "Inst Own");
+		ordenNombresParametrosLeidos.put(31, "Market Cap");
+
 	}
 
 	/**

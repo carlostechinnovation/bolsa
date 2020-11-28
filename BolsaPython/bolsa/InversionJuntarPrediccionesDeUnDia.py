@@ -78,8 +78,9 @@ print("Numero de filas en fichero juntos: " + str(juntos.shape[0]))
 print("Aplicando umbral en target_prob para coger solo las altas probabilidades...")
 juntos = juntos[juntos['TARGET_PREDICHO_PROB'] >= targetPredichoProbUmbral]
 print("Numero de filas en fichero juntos con alta probabilidad: " + str(juntos.shape[0]))
-# print(juntos)
+print("Reordenando columnas...")
 
+juntos=juntos.reindex(['subgrupo', 'calidad', 'calidadMediana', 'calidadMediaStd', 'empresa', 'mercado', 'TARGET_PREDICHO_PROB', 'NumAccionesPor1000dolares'],axis=1)
 pathSalida = entradaPathDirDropbox + str(fecha) + ".html"
 print("Escribiendo en: " + pathSalida)
 datosEnHtml = HTML(juntos.to_html(index=False, classes='table table-striped table-bordered table-hover table-condensed'))

@@ -209,6 +209,12 @@ public class CrearDatasetsSubgrupos implements Serializable {
 		ArrayList<String> pathEmpresasTipo44 = new ArrayList<String>(); // 3 días: Pico en Volumen y precio
 		ArrayList<String> pathEmpresasTipo45 = new ArrayList<String>(); // 7 días: Pico en Volumen y precio
 
+		// Si tiene operaciones de INSIDERS
+		ArrayList<String> pathEmpresasTipo46 = new ArrayList<String>();
+		ArrayList<String> pathEmpresasTipo47 = new ArrayList<String>();
+		ArrayList<String> pathEmpresasTipo48 = new ArrayList<String>();
+		ArrayList<String> pathEmpresasTipo49 = new ArrayList<String>();
+
 		// Para cada EMPRESA
 		while (iterator.hasNext()) {
 
@@ -504,6 +510,26 @@ public class CrearDatasetsSubgrupos implements Serializable {
 					}
 
 				}
+
+				// ------ SUBGRUPOS según OPERACIONES DE INSIDERS ------------
+				String insiders90dias = parametros.get("sumaOperacionesInsiderUltimos90dias");
+				String insiders30dias = parametros.get("sumaOperacionesInsiderUltimos30dias");
+				String insiders15dias = parametros.get("sumaOperacionesInsiderUltimos15dias");
+				String insiders5dias = parametros.get("sumaOperacionesInsiderUltimos5dias");
+
+				if (insiders90dias != null && !insiders90dias.isEmpty()) {
+					pathEmpresasTipo46.add(ficheroGestionado.getAbsolutePath());
+				}
+				if (insiders30dias != null && !insiders30dias.isEmpty()) {
+					pathEmpresasTipo47.add(ficheroGestionado.getAbsolutePath());
+				}
+				if (insiders15dias != null && !insiders15dias.isEmpty()) {
+					pathEmpresasTipo48.add(ficheroGestionado.getAbsolutePath());
+				}
+				if (insiders5dias != null && !insiders5dias.isEmpty()) {
+					pathEmpresasTipo49.add(ficheroGestionado.getAbsolutePath());
+				}
+
 				// ---------------------------------------------------------------------------------------
 			}
 		}
