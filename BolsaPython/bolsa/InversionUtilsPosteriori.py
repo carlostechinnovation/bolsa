@@ -169,14 +169,14 @@ def analizar(datosGrandes, datosManejables, X, dfSP500):
     # Se aplicará el mismo formato donde se necesite.
     fechasAcumuladas = 10000 * datosGrandes['anio'] + 100 * datosGrandes['mes'] + \
                                    datosGrandes['dia']
-    fechasPorAntiguedad=fechasAcumuladas.unique()
-    listaFechasPorAntiguedad=np.flip(np.sort(fechasPorAntiguedad)).tolist()
+    fechasPorAntiguedad = fechasAcumuladas.unique()
+    listaFechasPorAntiguedad = np.flip(np.sort(fechasPorAntiguedad)).tolist()
 
     # OBTENCIÓN DEL CLOSE PARA LAS FILAS PREDICHAS TRAS X DÍAS POSTERIORES
     datosMergeados = pd.merge(datosGrandes, datosManejables, how='right',
                               on=['empresa', 'anio', 'mes', 'dia', 'close'])
     #Se busca qué valor en fecha es la antigüedad desplazada
-    datosMergeados['aniomesdia']= 10000 * datosMergeados['anio'] + 100 * datosMergeados['mes'] + \
+    datosMergeados['aniomesdia'] = 10000 * datosMergeados['anio'] + 100 * datosMergeados['mes'] + \
       datosMergeados['dia']
     datosGrandes['aniomesdia'] = 10000 * datosGrandes['anio'] + 100 * datosGrandes['mes'] + \
                                  datosGrandes['dia']
@@ -383,15 +383,15 @@ def calidadSubgrupos(resultadoAnalisis, subgrupos):
 
 #Descarga del histórico del SP500
 today = date.today()
-fechaInicio="2019-01-01"
-fechaFin=today.strftime("%Y-%m-%d")
-url="https://fred.stlouisfed.org/graph/fredgraph.csv?bgcolor=%23e1e9f0&chart_type=line&drp=0&fo=open%20sans&" \
+fechaInicio = "2019-01-01"
+fechaFin = today.strftime("%Y-%m-%d")
+url = "https://fred.stlouisfed.org/graph/fredgraph.csv?bgcolor=%23e1e9f0&chart_type=line&drp=0&fo=open%20sans&" \
     "graph_bgcolor=%23ffffff&height=450&mode=fred&recession_bars=on&txtcolor=%23444444&ts=12&tts=12&width=1168&" \
     "nt=0&thu=0&trc=0&show_legend=yes&show_axis_titles=yes&show_tooltip=yes&id=SP500&scale=left&cosd="+fechaInicio\
     +"&coed=fechaFin&line_color=%234572a7&link_values=false&line_style=solid&mark_type=none&mw=3&lw=2&ost=-99999&" \
      "oet=99999&mma=0&fml=a&fq=Daily%2C%20Close&fam=avg&fgst=lin&fgsnd=2010-04-12&line_index=1&transformation=lin&" \
      "vintage_date="+fechaFin+"&revision_date=2020-04-10&nd=2010-04-12"
-destino=dirAnalisis+"SP500.csv"
+destino = dirAnalisis+"SP500.csv"
 myfile = requests.get(url, allow_redirects=True)
 open(destino, 'wb').write(myfile.content)
 
@@ -405,8 +405,8 @@ datosSP500 = datosSP500.loc[~(datosSP500['SP500'] == '.')]
 datosSP500.reset_index(inplace = True)
 
 #La fecha se convierte a dato de fecha
-dfSP500=pd.DataFrame(columns=["fecha", "close", "rentaSP500"])
-closeXDiasFuturos=0
+dfSP500 = pd.DataFrame(columns=["fecha", "close", "rentaSP500"])
+closeXDiasFuturos = 0
 tamaniodfSP500=len(datosSP500)
 for index, fila in datosSP500.iterrows():
     fecha = datetime.strptime(fila['DATE'], '%Y-%m-%d')
@@ -509,27 +509,27 @@ datosGrandes=datosGrandes.append(datosFicheroInteresantes)
 
 #------------------------------ANÁLISIS BÁSICO -----------------------------
 
-resultadoAnalisis, subgrupos=analizar(datosGrandes, datosManejables, X, dfSP500)
+resultadoAnalisis, subgrupos = analizar(datosGrandes, datosManejables, X, dfSP500)
 pintar(resultadoAnalisis, subgrupos, X)
 
 #------------------------------DÓNDE SE DEBE INVERTIR---------------------------
-subgruposPorCalidad=calidadSubgrupos(resultadoAnalisis, subgrupos)
+subgruposPorCalidad = calidadSubgrupos(resultadoAnalisis, subgrupos)
 
 #------------------------------ANÁLISIS AVANZADO -----------------------------
-resultadoAnalisisMenosDos, subgruposMenosDos=analizar(datosGrandes, datosManejables, int(X)-2, dfSP500)
+resultadoAnalisisMenosDos, subgruposMenosDos = analizar(datosGrandes, datosManejables, int(X)-2, dfSP500)
 pintar(resultadoAnalisisMenosDos, subgruposMenosDos, int(X)-2)
 
-resultadoAnalisisMasDos, subgruposMasDos=analizar(datosGrandes, datosManejables, int(X)+2, dfSP500)
+resultadoAnalisisMasDos, subgruposMasDos = analizar(datosGrandes, datosManejables, int(X)+2, dfSP500)
 pintar(resultadoAnalisisMasDos, subgruposMasDos, int(X)+2)
-resultadoAnalisisMasCuatro, subgruposMasCuatro=analizar(datosGrandes, datosManejables, int(X)+4, dfSP500)
+resultadoAnalisisMasCuatro, subgruposMasCuatro = analizar(datosGrandes, datosManejables, int(X)+4, dfSP500)
 pintar(resultadoAnalisisMasCuatro, subgruposMasCuatro, int(X)+4)
-resultadoAnalisisMasSeis, subgruposMasSeis=analizar(datosGrandes, datosManejables, int(X)+6, dfSP500)
+resultadoAnalisisMasSeis, subgruposMasSeis = analizar(datosGrandes, datosManejables, int(X)+6, dfSP500)
 pintar(resultadoAnalisisMasSeis, subgruposMasSeis, int(X)+6)
-resultadoAnalisisMasOcho, subgruposMasOcho=analizar(datosGrandes, datosManejables, int(X)+8, dfSP500)
+resultadoAnalisisMasOcho, subgruposMasOcho = analizar(datosGrandes, datosManejables, int(X)+8, dfSP500)
 pintar(resultadoAnalisisMasOcho, subgruposMasOcho, int(X)+8)
-resultadoAnalisisMasDiez, subgruposMasDiez=analizar(datosGrandes, datosManejables, int(X)+10, dfSP500)
+resultadoAnalisisMasDiez, subgruposMasDiez = analizar(datosGrandes, datosManejables, int(X)+10, dfSP500)
 pintar(resultadoAnalisisMasDiez, subgruposMasDiez, int(X)+10)
-resultadoAnalisisMasDoce, subgruposMasDoce=analizar(datosGrandes, datosManejables, int(X)+12, dfSP500)
+resultadoAnalisisMasDoce, subgruposMasDoce = analizar(datosGrandes, datosManejables, int(X)+12, dfSP500)
 pintar(resultadoAnalisisMasDoce, subgruposMasDoce, int(X)+12)
 
 
