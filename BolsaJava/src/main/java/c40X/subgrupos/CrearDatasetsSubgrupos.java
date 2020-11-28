@@ -595,6 +595,11 @@ public class CrearDatasetsSubgrupos implements Serializable {
 		empresasPorTipo.put(44, pathEmpresasTipo44);
 		empresasPorTipo.put(45, pathEmpresasTipo45);
 
+		empresasPorTipo.put(46, pathEmpresasTipo46);
+		empresasPorTipo.put(47, pathEmpresasTipo47);
+		empresasPorTipo.put(48, pathEmpresasTipo48);
+		empresasPorTipo.put(49, pathEmpresasTipo49);
+
 		// Se crea un CSV para cada subgrupo
 		Set<Integer> tipos = empresasPorTipo.keySet();
 		List<Integer> tiposLista = new ArrayList<Integer>();
