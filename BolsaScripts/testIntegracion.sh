@@ -2,6 +2,7 @@
 #set -e
 echo -e "TEST INTEGRACION - INICIO: "$( date "+%Y%m%d%H%M%S" )
 INFORME_OUT="/bolsa/logs/integracion.html"
+echo -e  "Fichero de salida del test de integracion: ${INFORME_OUT}"
 echo -e "<!DOCTYPE html><html><head><meta charset=\"UTF-8\"></head><body>"  > ${INFORME_OUT}
 
 #################### DIRECTORIOS ###############################################################
@@ -58,7 +59,7 @@ echo -e "Damos por hecho que tenemos una ejecucion completa de PASADO+FUT1-FUT2<
 echo -e "Cogemos una empresa y vemos su evolucion en cada capa.<br>"  >> ${INFORME_OUT}
 
 #######################################################################################################
-echo -e "<h2>******************************** COMPROBACIONES del PASADO *******************************</h2>" >> ${INFORME_OUT}
+echo -e "<h2>******* COMPROBACIONES del PASADO ********</h2>" >> ${INFORME_OUT}
 echo -e "Elegimos un subgrupo y empresa al azar para el que tengamos datos hasta la última capa...<br>" >> ${INFORME_OUT}
 SG_ANALIZADO=$(find "/bolsa/pasado/subgrupos/" | grep "REDUCIDO" | shuf -n 1 | cut -d'/' -f5)
 echo -e "<b>Subgrupo analizado: ${SG_ANALIZADO}</b>" >> ${INFORME_OUT}
@@ -73,18 +74,18 @@ echo -e "<br>Bruto - Finviz - Datos estáticos: ${BRUTO_FZ} --> Tamanio (bytes) 
 #####
 echo -e "<br><h3>Capa 1.2 (brutos estructurados)</h3>" >> ${INFORME_OUT}
 BRUTO_CSV="/bolsa/pasado/brutos_csv/NASDAQ_${empresa}.csv"
-echo -e "Bruto CSV: ${BRUTO_CSV} --> Tamanio (bytes) = "$(stat -c%s "$BRUTO_CSV")" con "$(wc -l $BRUTO_CSV | cut -d\  -f 1)" filas<br>" >> ${INFORME_OUT}
-head -n 10 ${BRUTO_CSV}>> ${INFORME_OUT}
+echo -e "Bruto CSV: ${BRUTO_CSV} --> Tamanio (bytes) = "$(stat -c%s "$BRUTO_CSV")" con "$(wc -l $BRUTO_CSV | cut -d\  -f 1)" filas<br><br>" >> ${INFORME_OUT}
+head -n 10 ${BRUTO_CSV}  | sed -z 's/|/| /g'  | sed -z 's/\n/<br>\n/g' >> ${INFORME_OUT}
 #####
 echo -e "<br><h3>Capa 2 (limpios)</h3>" >> ${INFORME_OUT}
 LIMPIO="/bolsa/pasado/limpios/NASDAQ_${empresa}.csv"
-echo -e "Limpio: ${LIMPIO} --> Tamanio (bytes) = "$(stat -c%s "$LIMPIO")" con "$(wc -l $LIMPIO | cut -d\  -f 1)" filas<br>" >> ${INFORME_OUT}
-head -n 5 ${LIMPIO}>> ${INFORME_OUT}
+echo -e "Limpio: ${LIMPIO} --> Tamanio (bytes) = "$(stat -c%s "$LIMPIO")" con "$(wc -l $LIMPIO | cut -d\  -f 1)" filas<br><br>" >> ${INFORME_OUT}
+head -n 5 ${LIMPIO}  | sed -z 's/|/| /g'  | sed -z 's/\n/<br>\n/g' >> ${INFORME_OUT}
 #####
 echo -e "<br><h3>Capa 3 (elaboradas)</h3>" >> ${INFORME_OUT}
 ELABORADO="/bolsa/pasado/elaborados/NASDAQ_${empresa}.csv"
-echo -e "Elaborado: ${ELABORADO} --> Tamanio (bytes) = "$(stat -c%s "$ELABORADO")" con "$(wc -l $ELABORADO | cut -d\  -f 1)" filas<br>" >> ${INFORME_OUT}
-head -n 5 ${ELABORADO}>> ${INFORME_OUT}
+echo -e "Elaborado: ${ELABORADO} --> Tamanio (bytes) = "$(stat -c%s "$ELABORADO")" con "$(wc -l $ELABORADO | cut -d\  -f 1)" filas<br><br>" >> ${INFORME_OUT}
+head -n 5 ${ELABORADO}  | sed -z 's/|/| /g'  | sed -z 's/\n/<br><br>\n/g' >> ${INFORME_OUT}
 #####
 echo -e "<br><h3>Capa 4 (subgrupos)</h3>" >> ${INFORME_OUT}
 DIR_SUBGRUPOS="/bolsa/pasado/subgrupos/"
@@ -95,18 +96,22 @@ echo -e "<br>El subgrupo analizado (elegido al azar) es: ${SG_ANALIZADO} --> La 
 echo -e "<br><h3>Capa 5 (reducir CSV y entrenar modelo)</h3><br>" >> ${INFORME_OUT}
 echo -e "Flujo de datos en capa 5:     COMPLETO.csv --> Transformaciones......  --> REDUCIDO.csv<br>" >> ${INFORME_OUT}
 SG_ENTRADA="${DIR_SUBGRUPOS}${SG_ANALIZADO}/COMPLETO.csv"
-echo -e "Subgrupo ${SG_ANALIZADO} - Datos entrada: ${SG_ENTRADA} --> Tamanio (bytes) = "$(stat -c%s "$SG_ENTRADA")" con "$(wc -l $SG_ENTRADA | cut -d\  -f 1)" filas<br>" >> ${INFORME_OUT}
-echo -e "<br>Ejemplo de filas de la empresa dentro de COMPLETO.csv:" >> ${INFORME_OUT}
-head -n 1 ${SG_ENTRADA}   >> ${INFORME_OUT}  # Cabecera
-cat ${SG_ENTRADA} | grep "${empresa}" | head -n 4 >> ${INFORME_OUT}
+echo -e "Subgrupo ${SG_ANALIZADO} - Datos entrada: ${SG_ENTRADA} --> Tamanio (bytes) = "$(stat -c%s "$SG_ENTRADA")" con "$(wc -l $SG_ENTRADA | cut -d\  -f 1)" filas de las que "$(cat ${SG_ENTRADA} | grep '^${empresa}|' | wc -l)" filas son de la empresa analizada ${empresa}.<br><br>" >> ${INFORME_OUT}
+
+
+
+
+echo -e "<br>Ejemplo de filas de la empresa dentro de COMPLETO.csv:<br><br>" >> ${INFORME_OUT}
+head -n 2 ${SG_ENTRADA}   | sed -z 's/|/| /g'  | sed -z 's/\n/<br><br>\n/g'   >> ${INFORME_OUT}  # Cabecera
+cat ${SG_ENTRADA} | grep "${empresa}" | head -n 4   | sed -z 's/|/| /g' | sed -z 's/\n/<br><br>\n/g'  >> ${INFORME_OUT} #Datos
 #####
 echo -e "<br><br>Para analizar el CSV reducido (normalizado, sin nulos y solo con features dinámicas elegidas), veamos las primeras filas del fichero de entrada (COMPLETO.csv) y las primeras filas del fichero reducido (serán esas mismas filas, salvo si tenían nulos, que habrán sido eliminadas y veríamos las siguientes)<br>" >> ${INFORME_OUT}
-echo -e "<br>Las primeras filas de COMPLETO (de la primera empresa que aparece):<br>" >> ${INFORME_OUT}
-head -n 4 "${SG_ENTRADA}" >> ${INFORME_OUT}
+echo -e "<br>Las primeras filas de COMPLETO (de la primera empresa que aparece):<br><br>" >> ${INFORME_OUT}
+head -n 4 "${SG_ENTRADA}"  | sed -z 's/|/| /g'  | sed -z 's/\n/<br><br>\n/g' >> ${INFORME_OUT}
 
 SG_REDUCIDO="${DIR_SUBGRUPOS}${SG_ANALIZADO}/REDUCIDO.csv"
 echo -e "<br><br>Las features elegidas han sido:<br>" >> ${INFORME_OUT}
-FEATURES_ELEGIDAS=$(head -n 1 ${SG_REDUCIDO})
+FEATURES_ELEGIDAS=$(head -n 1 ${SG_REDUCIDO}  | sed -z 's/|/| /g' )
 echo -e "${FEATURES_ELEGIDAS}" >> ${INFORME_OUT}
 
 echo -e "<br><br>Entonces, nos fijamos solo en esas features elegidas de COMPLETO:<br>" >> ${INFORME_OUT}
@@ -128,19 +133,16 @@ echo -e "<br>Capa 5 - Intermedio TEMP06:<br>" >> ${INFORME_OUT}
 head -n 10 "${SG_REDUCIDO}_TEMP06">> ${INFORME_OUT}
 
 
-
-
 echo -e "<br>Subgrupo ${SG_ANALIZADO} - Datos reducidos (normalizar + seleccion de columnas): ${SG_REDUCIDO} --> Tamanio (bytes) = "$(stat -c%s "$SG_REDUCIDO")" con "$(wc -l $SG_REDUCIDO | cut -d\  -f 1)" filas<br>" >> ${INFORME_OUT}
 
 echo -e "<br><br>Y vemos la transformacion de esas filas en REDUCIDO (fijarse en si la normalización de las columnas tiene sentido!!! ) <br><b>La primera columna es el indice del dataframe. Sirve para poder identificar a que fila del COMPLETO.csv corresponde esta fila con predicciones del REDUCIDO.csv ¿Es correcto?:</b><br><br>" >> ${INFORME_OUT}
-head -n 5 ${SG_REDUCIDO} | sed -z 's/\n/<br><br>\n/g' >> ${INFORME_OUT}
+head -n 5 ${SG_REDUCIDO}  | sed -z 's/|/| /g'  | sed -z 's/\n/<br><br>\n/g' >> ${INFORME_OUT}
 
 echo -e "<br>Subgrupo ${SG_ANALIZADO} - Modelo ganador --> "$(ls ${DIR_SUBGRUPOS}${SG_ANALIZADO}/ | grep 'ganador')"<br>" >> ${INFORME_OUT}
 
 
 #######################################################################################################
-echo -e "<h2>******************************** COMPROBACIONES del FUTURO2 *******************************</h2>" >> ${INFORME_OUT}
-
+echo -e "<h2>******* COMPROBACIONES del FUTURO2 ********</h2>" >> ${INFORME_OUT}
 
 
 echo -e "</body></html>"  >> ${INFORME_OUT}

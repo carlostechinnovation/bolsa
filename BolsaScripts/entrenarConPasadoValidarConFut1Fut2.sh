@@ -242,6 +242,10 @@ java -jar ${PATH_JAR} --class "coordinador.Principal" "c70X.validacion.Validador
 echo -e "----------------------------------------------------------------------------------------------" >> ${LOG_VALIDADOR}
 ################################################################################################
 
+echo -e "---------------- Test de integracion ------------" >> ${LOG_VALIDADOR}
+echo -e "Ejecutando el test de integracion..." >> ${LOG_VALIDADOR}
+${PATH_SCRIPTS}testIntegracion.sh >> ${LOG_VALIDADOR}
+
 echo -e "VALIDACION - FIN: "$( date "+%Y%m%d%H%M%S" )
 
 
