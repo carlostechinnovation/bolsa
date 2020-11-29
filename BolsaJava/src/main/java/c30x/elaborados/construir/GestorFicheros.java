@@ -83,10 +83,10 @@ public class GestorFicheros {
 		ordenNombresParametrosLeidos.put(12, "open");
 
 		// SEMI-DINAMICOS (operaciones de insiders)
-		ordenNombresParametrosLeidos.put(13, "sumaOperacionesInsiderUltimos90dias");
-		ordenNombresParametrosLeidos.put(14, "sumaOperacionesInsiderUltimos30dias");
-		ordenNombresParametrosLeidos.put(15, "sumaOperacionesInsiderUltimos15dias");
-		ordenNombresParametrosLeidos.put(16, "sumaOperacionesInsiderUltimos5dias");
+		ordenNombresParametrosLeidos.put(13, "flagOperacionesInsiderUltimos90dias");
+		ordenNombresParametrosLeidos.put(14, "flagOperacionesInsiderUltimos30dias");
+		ordenNombresParametrosLeidos.put(15, "flagOperacionesInsiderUltimos15dias");
+		ordenNombresParametrosLeidos.put(16, "flagOperacionesInsiderUltimos5dias");
 
 		// ESTATICOS
 		ordenNombresParametrosLeidos.put(17, "industria");

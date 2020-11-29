@@ -512,10 +512,10 @@ public class CrearDatasetsSubgrupos implements Serializable {
 				}
 
 				// ------ SUBGRUPOS según OPERACIONES DE INSIDERS ------------
-				String insiders90dias = parametros.get("sumaOperacionesInsiderUltimos90dias");
-				String insiders30dias = parametros.get("sumaOperacionesInsiderUltimos30dias");
-				String insiders15dias = parametros.get("sumaOperacionesInsiderUltimos15dias");
-				String insiders5dias = parametros.get("sumaOperacionesInsiderUltimos5dias");
+				String insiders90dias = parametros.get("flagOperacionesInsiderUltimos90dias");
+				String insiders30dias = parametros.get("flagOperacionesInsiderUltimos30dias");
+				String insiders15dias = parametros.get("flagOperacionesInsiderUltimos15dias");
+				String insiders5dias = parametros.get("flagOperacionesInsiderUltimos5dias");
 
 				if (insiders90dias != null && !insiders90dias.isEmpty()) {
 					pathEmpresasTipo46.add(ficheroGestionado.getAbsolutePath());

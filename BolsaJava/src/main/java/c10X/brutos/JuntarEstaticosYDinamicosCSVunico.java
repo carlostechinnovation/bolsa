@@ -32,7 +32,7 @@ public class JuntarEstaticosYDinamicosCSVunico {
 
 	static Logger MY_LOGGER = Logger.getLogger(JuntarEstaticosYDinamicosCSVunico.class);
 
-	final static String CABECERA_OPS_INSIDERS = "sumaOperacionesInsiderUltimos90dias|sumaOperacionesInsiderUltimos30dias|sumaOperacionesInsiderUltimos15dias|sumaOperacionesInsiderUltimos5dias";
+	final static String CABECERA_OPS_INSIDERS = "flagOperacionesInsiderUltimos90dias|flagOperacionesInsiderUltimos30dias|flagOperacionesInsiderUltimos15dias|flagOperacionesInsiderUltimos5dias";
 
 	private static JuntarEstaticosYDinamicosCSVunico instancia = null;
 	public static final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
@@ -384,10 +384,10 @@ public class JuntarEstaticosYDinamicosCSVunico {
 		List<OperacionInsiderFinvizModelo> operacionesUltimos30dias = new ArrayList<OperacionInsiderFinvizModelo>();
 		List<OperacionInsiderFinvizModelo> operacionesUltimos15dias = new ArrayList<OperacionInsiderFinvizModelo>();
 		List<OperacionInsiderFinvizModelo> operacionesUltimos5dias = new ArrayList<OperacionInsiderFinvizModelo>();
-		String sumaOperacionesInsiderUltimos90dias = "";
-		String sumaOperacionesInsiderUltimos30dias = "";
-		String sumaOperacionesInsiderUltimos15dias = "";
-		String sumaOperacionesInsiderUltimos5dias = "";
+		String flagOperacionesInsiderUltimos90dias = "";
+		String flagOperacionesInsiderUltimos30dias = "";
+		String flagOperacionesInsiderUltimos15dias = "";
+		String flagOperacionesInsiderUltimos5dias = "";
 
 		for (String din : dinamicosDatos) {
 
@@ -424,16 +424,16 @@ public class JuntarEstaticosYDinamicosCSVunico {
 					}
 				}
 
-				sumaOperacionesInsiderUltimos90dias = sumarItems(operacionesUltimos90dias);
-				sumaOperacionesInsiderUltimos30dias = sumarItems(operacionesUltimos30dias);
-				sumaOperacionesInsiderUltimos15dias = sumarItems(operacionesUltimos15dias);
-				sumaOperacionesInsiderUltimos5dias = sumarItems(operacionesUltimos15dias);
+				flagOperacionesInsiderUltimos90dias = sumarItemsYcalcularFlag(operacionesUltimos90dias);
+				flagOperacionesInsiderUltimos30dias = sumarItemsYcalcularFlag(operacionesUltimos30dias);
+				flagOperacionesInsiderUltimos15dias = sumarItemsYcalcularFlag(operacionesUltimos15dias);
+				flagOperacionesInsiderUltimos5dias = sumarItemsYcalcularFlag(operacionesUltimos15dias);
 			}
 
 			// Haya datos de insiders o no, añadimos las columnas dinamicas, rellenas o
 			// vacías
-			out.add(din + "|" + sumaOperacionesInsiderUltimos90dias + "|" + sumaOperacionesInsiderUltimos30dias + "|"
-					+ sumaOperacionesInsiderUltimos15dias + "|" + sumaOperacionesInsiderUltimos5dias);
+			out.add(din + "|" + flagOperacionesInsiderUltimos90dias + "|" + flagOperacionesInsiderUltimos30dias + "|"
+					+ flagOperacionesInsiderUltimos15dias + "|" + flagOperacionesInsiderUltimos5dias);
 		}
 
 		return out;
@@ -460,17 +460,24 @@ public class JuntarEstaticosYDinamicosCSVunico {
 	}
 
 	/**
+	 * Suma los importes de todos los elementos de la lista. Con ello decide el flag
+	 * de salida, indicando si la suma son ventas o compras.
+	 * 
 	 * @param lista
-	 * @return
+	 * @return Numero que indica "-1"=ventas, "1"=compras. En caso de que sumen 0 o
+	 *         que sea desconocido, devuelve cadena vacía.
 	 */
-	public static String sumarItems(List<OperacionInsiderFinvizModelo> lista) {
+	public static String sumarItemsYcalcularFlag(List<OperacionInsiderFinvizModelo> lista) {
 		Long suma = 0L;
 		String out = "";
 		for (OperacionInsiderFinvizModelo op : lista) {
 			suma += op.importe;
 		}
-		if (suma != 0L) {
-			out = suma.toString();
+
+		if (suma > 0L) {
+			out = "1";
+		} else if (suma < 0L) {
+			out = "-1";
 		}
 		return out;
 	}
