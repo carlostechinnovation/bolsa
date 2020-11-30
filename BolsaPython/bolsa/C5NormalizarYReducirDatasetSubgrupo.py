@@ -60,6 +60,7 @@ pathCsvCompleto = dir_subgrupo + "COMPLETO.csv"
 dir_subgrupo_img = dir_subgrupo + "img/"
 pathCsvIntermedio = dir_subgrupo + "intermedio.csv"
 pathCsvReducido = dir_subgrupo + "REDUCIDO.csv"
+pathCsvFeaturesElegidas = dir_subgrupo + "FEATURES_ELEGIDAS.csv"
 pathModeloOutliers = (dir_subgrupo + "DETECTOR_OUTLIERS.tool").replace("futuro", "pasado")  # Siempre lo cojo del pasado
 path_modelo_tramificador = (dir_subgrupo + "tramif/" + "TRAMIFICADOR").replace("futuro", "pasado")  # Siempre lo cojo del pasado
 path_modelo_normalizador = (dir_subgrupo + "NORMALIZADOR.tool").replace("futuro", "pasado")  # Siempre lo cojo del pasado
@@ -142,7 +143,9 @@ def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmp
   indiceFilasFuturasTransformadas1 = entradaFeaturesYTarget2.index.values
 
   print("Borrar columnas especiales (idenficadoras de fila): empresa | antiguedad | mercado | anio | mes | dia | hora | minuto...")
-  entradaFeaturesYTarget2 = entradaFeaturesYTarget2.drop('empresa', axis=1).drop('antiguedad', axis=1).drop('mercado', axis=1).drop('anio', axis=1).drop('mes', axis=1).drop('dia', axis=1).drop('hora', axis=1).drop('minuto', axis=1)
+  entradaFeaturesYTarget2 = entradaFeaturesYTarget2\
+      .drop('empresa', axis=1).drop('antiguedad', axis=1).drop('mercado', axis=1)\
+      .drop('anio', axis=1).drop('mes', axis=1).drop('dia', axis=1).drop('hora', axis=1).drop('minuto', axis=1)
   # entradaFeaturesYTarget2.to_csv(path_csv_completo + "_TEMP02", index=True, sep='|')  # UTIL para testIntegracion
 
   print("entradaFeaturesYTarget2: " + str(entradaFeaturesYTarget2.shape[0]) + " x " + str(entradaFeaturesYTarget2.shape[1]))
@@ -514,13 +517,14 @@ def comprobarSuficientesClasesTarget(featuresFicheroNorm, targetsFichero):
   return y_unicos.size
 
 
-def reducirFeaturesYGuardar(path_modelo_reductor_features, path_modelo_pca, featuresFicheroNorm, targetsFichero, pathCsvReducido, varianzaAcumuladaDeseada, dir_subgrupo_img, modoTiempo, maxFeatReducidas):
+def reducirFeaturesYGuardar(path_modelo_reductor_features, path_modelo_pca, featuresFicheroNorm, targetsFichero, pathCsvReducido, pathCsvFeaturesElegidas, varianzaAcumuladaDeseada, dir_subgrupo_img, modoTiempo, maxFeatReducidas):
   print((datetime.datetime.now()).strftime("%Y%m%d_%H%M%S") + " ----- reducirFeaturesYGuardar ------")
   print("path_modelo_reductor_features --> " + path_modelo_reductor_features)
   print("path_modelo_pca --> " + path_modelo_pca)
   print("featuresFicheroNorm: " + str(featuresFicheroNorm.shape[0]) + " x " + str(featuresFicheroNorm.shape[1]))
   print("targetsFichero: " + str(targetsFichero.shape[0]) + " x " + str(targetsFichero.shape[1]))
   print("pathCsvReducido --> " + pathCsvReducido)
+  print("pathCsvFeaturesElegidas --> " + pathCsvFeaturesElegidas)
   print("varianzaAcumuladaDeseada (PCA) --> " + str(varianzaAcumuladaDeseada))
   print("dir_subgrupo_img --> " + dir_subgrupo_img)
   print("modoTiempo: " + modoTiempo)
@@ -618,7 +622,8 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, path_modelo_pca, feat
       # print(rfecv_modelo.ranking_)
 
       featuresFicheroNormElegidas = featuresFicheroNorm[columnasSeleccionadas]
-      # featuresFicheroNormElegidas.to_csv(pathCsvReducido + "_TEMP06", index=False, sep='|')  # UTIL ara testIntegracion
+      print("Features seleccionadas escritas en: " + pathCsvFeaturesElegidas)
+      featuresFicheroNormElegidas.to_csv(pathCsvFeaturesElegidas, index=False, sep='|')
 
       ########### PCA: base de funciones ortogonales (con combinaciones de features) ########
       if True:
@@ -687,7 +692,7 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
     if(modoTiempo == "pasado" and numclases <= 1):
         print("El subgrupo solo tiene " + str(numclases) + " clases en el target. Abortamos...")
     else:
-        reducirFeaturesYGuardar(path_modelo_reductor_features, path_modelo_pca, featuresFichero3, targetsFichero, pathCsvReducido, varianza, dir_subgrupo_img, modoTiempo, maxFeatReducidas)
+        reducirFeaturesYGuardar(path_modelo_reductor_features, path_modelo_pca, featuresFichero3, targetsFichero, pathCsvReducido, pathCsvFeaturesElegidas, varianza, dir_subgrupo_img, modoTiempo, maxFeatReducidas)
 
 
 print((datetime.datetime.now()).strftime("%Y%m%d_%H%M%S") +" ------------ FIN de capa 5 ----------------")

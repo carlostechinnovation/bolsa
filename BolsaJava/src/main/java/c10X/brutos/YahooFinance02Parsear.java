@@ -398,8 +398,11 @@ public class YahooFinance02Parsear implements Serializable {
 		List<String> result = new ArrayList<String>();
 		BrutosUtils.encontrarFicherosEnCarpeta("YF.*\\.csv", folder, result);
 
+		int i = 0;
 		for (String pathFichero : result) {
-			MY_LOGGER.info(pathFichero);
+			if (i % 10 == 1) {
+				MY_LOGGER.info(pathFichero);
+			}
 			rellenarVelasDiariasHuecoyAntiguedadPorFichero03(pathFichero, velas);
 		}
 	}

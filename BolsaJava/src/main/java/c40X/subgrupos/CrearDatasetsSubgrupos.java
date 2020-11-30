@@ -615,13 +615,12 @@ public class CrearDatasetsSubgrupos implements Serializable {
 		// En el Gestor de Ficheros aparecen los nombres de los parámetros estáticos a
 		// eliminar. Sólo se cuentan. Habrá tantos pipes como parámetros
 		Integer numeroParametrosEstaticos = gestorFicheros.getOrdenNombresParametrosLeidos().size();
-		String pipe = "|";
-		Character characterPipe = pipe.charAt(0);
+
 		String ficheroOut, ficheroListadoOut;
 		ArrayList<String> pathFicheros;
 		FileWriter csvWriter;
 		FileWriter writerListadoEmpresas;
-		String infoParaValidacionFutura;
+
 		Double coberturaEmpresasPorCluster;
 		Estadisticas estadisticas;
 		String pathEmpresa;
@@ -726,17 +725,8 @@ public class CrearDatasetsSubgrupos implements Serializable {
 					try {
 
 						while ((row = csvReader.readLine()) != null) {
-							MY_LOGGER.debug("Fila leída: " + row);
-							// Se eliminan los parámetros estáticos de la fila, EXCEPTO los datos para la
-							// validación futura
-							// Para cada fila de datos o de cabecera, de longitud variable, se eliminan los
-							// datos estáticos
-							// También se añaden precios y volumen, para la validación económica en c7
-							Integer indice = SubgruposUtils.indiceDeAparicion(characterPipe, 13, row);
-							infoParaValidacionFutura = row.substring(0, indice);
-							rowTratada = infoParaValidacionFutura + characterPipe + SubgruposUtils
-									.recortaPrimeraParteDeString(characterPipe, numeroParametrosEstaticos, row);
-							MY_LOGGER.debug("Fila escrita: " + rowTratada);
+
+							rowTratada = procesarFilaQuitandoColumnasEstaticasYAlgunasColumnasEspeciales(row, tipo); // IMPORTANTE
 
 							// La cabecera se toma de la primera línea del primer fichero
 							if (i == 0 && esPrimeraLinea) {
@@ -767,6 +757,56 @@ public class CrearDatasetsSubgrupos implements Serializable {
 
 		}
 
+	}
+
+	/**
+	 * Trata cada fila, incluida la cabecera. Quita las columnas ESTATICAS. Y quita
+	 * algunas columnas especiales solo en ciertos casos en que estarían muy vacias
+	 * (y en la capa 5 provocaría eliminar muchas filas).
+	 * 
+	 * @param row        Fila de entrada
+	 * @param idSubgrupo
+	 * @return Fila de salida
+	 */
+	public static String procesarFilaQuitandoColumnasEstaticasYAlgunasColumnasEspeciales(String row,
+			Integer idSubgrupo) {
+
+		MY_LOGGER.debug("Fila leída: " + row);
+
+		String identificadoresYdinamicos;
+		Character characterPipe = "|".charAt(0);
+
+		// Cada fila leida tiene estas partes:
+		// - identificadores de fila
+		// - campos estáticos (usados sólo para crear subgrupos)
+		// - campos dinámicos (datos diarios)
+		//
+		// Aquí se ELIMINAN los ESTÁTICOS, porque ya no hacen falta
+		// También se añaden precios y volumen, para la validación económica en c7
+
+		Integer indiceInicioInsiders = SubgruposUtils.indiceDeAparicion(characterPipe,
+				GestorFicheros.INDICE_PRIMER_CAMPO_INSIDERS, row);
+		Integer indiceInicioEstaticos = SubgruposUtils.indiceDeAparicion(characterPipe,
+				GestorFicheros.INDICE_PRIMER_CAMPO_ESTATICO, row);
+
+		boolean subgrupoDeOperacionesDeInsiders = idSubgrupo.intValue() == 46 || idSubgrupo.intValue() == 47
+				|| idSubgrupo.intValue() == 48 || idSubgrupo.intValue() == 49;
+
+		if (subgrupoDeOperacionesDeInsiders) {
+			identificadoresYdinamicos = row.substring(0, indiceInicioEstaticos);
+		} else {
+			// Quitamos las columnas semi-dinamicas (operaciones de insiders) porque
+			// mayoritariamente estan vacías (solo conocemos las operaciones de insiders de
+			// muy pocas empresas)
+			identificadoresYdinamicos = row.substring(0, indiceInicioInsiders);
+		}
+
+		String rowTratada = identificadoresYdinamicos + characterPipe + SubgruposUtils
+				.recortaPrimeraParteDeString(characterPipe, GestorFicheros.INDICE_ULTIMO_CAMPO_ESTATICO + 1, row);
+
+		MY_LOGGER.debug("Fila escrita: " + rowTratada);
+
+		return rowTratada;
 	}
 
 }
