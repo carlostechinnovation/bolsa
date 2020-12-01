@@ -146,6 +146,7 @@ def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmp
   entradaFeaturesYTarget2 = entradaFeaturesYTarget2\
       .drop('empresa', axis=1).drop('antiguedad', axis=1).drop('mercado', axis=1)\
       .drop('anio', axis=1).drop('mes', axis=1).drop('dia', axis=1).drop('hora', axis=1).drop('minuto', axis=1)
+  
   # entradaFeaturesYTarget2.to_csv(path_csv_completo + "_TEMP02", index=True, sep='|')  # UTIL para testIntegracion
 
   print("entradaFeaturesYTarget2: " + str(entradaFeaturesYTarget2.shape[0]) + " x " + str(entradaFeaturesYTarget2.shape[1]))
@@ -634,14 +635,14 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, path_modelo_pca, feat
               modelo_pca_subgrupo = PCA(n_components=varianzaAcumuladaDeseada, svd_solver='full')  # Variaza acumulada sobre el target
               # modelo_pca_subgrupo = PCA(n_components='mle', svd_solver='full')  # Metodo "MLE de Minka": https://vismod.media.mit.edu/tech-reports/TR-514.pdf
               print(modelo_pca_subgrupo)
-              featuresFicheroNorm_pca = modelo_pca_subgrupo.fit_transform(featuresFicheroNorm)
+              featuresFicheroNorm_pca = modelo_pca_subgrupo.fit_transform(featuresFicheroNormElegidas)
               print("modelo_pca_subgrupo -> dump ...")
               pickle.dump(modelo_pca_subgrupo, open(path_modelo_pca, 'wb'))
           else:
               print("modelo_pca_subgrupo -> load ...")
               modelo_pca_subgrupo = pickle.load(open(path_modelo_pca, 'rb'))
               print(modelo_pca_subgrupo)
-              featuresFicheroNorm_pca = modelo_pca_subgrupo.transform(featuresFicheroNorm)
+              featuresFicheroNorm_pca = modelo_pca_subgrupo.transform(featuresFicheroNormElegidas)
 
           print('Dimensiones del dataframe tras PCA: ' + str(featuresFicheroNorm_pca.shape[0]) + ' x ' + str(featuresFicheroNorm_pca.shape[1]))
           print("Las features están ya normalizadas, reducidas y en base ortogonal PCA. DESCRIBIMOS lo que hemos hecho y GUARDAMOS el dataset.")
