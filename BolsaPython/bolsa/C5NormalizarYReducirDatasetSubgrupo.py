@@ -50,10 +50,10 @@ print("modoTiempo = %s" % modoTiempo)
 print("maxFeatReducidas = %s" % maxFeatReducidas)
 print("maxFilasEntrada = %s" % maxFilasEntrada)
 
-varianza=0.87  # Variacion acumulada de las features PCA sobre el target
+varianza=0.88  # Variacion acumulada de las features PCA sobre el target
 compatibleParaMuchasEmpresas = False  # Si hay muchas empresas, debo hacer ya el undersampling (en vez de capa 6)
 global modoDebug; modoDebug = False  # VARIABLE GLOBAL: En modo debug se pintan los dibujos. En otro caso, se evita calculo innecesario
-global cv_todos; cv_todos = 5  # CROSS_VALIDATION: número de iteraciones. Sirve para evitar el overfitting
+global cv_todos; cv_todos = 10  # CROSS_VALIDATION: número de iteraciones. Sirve para evitar el overfitting
 global dibujoBins; dibujoBins=20  #VARIABLE GLOBAL: al pintar los histogramas, define el número de barras posibles en las que se divide el eje X.
 numTramos=7  # Numero de tramos usado para tramificar las features dinámicas
 pathCsvCompleto = dir_subgrupo + "COMPLETO.csv"
