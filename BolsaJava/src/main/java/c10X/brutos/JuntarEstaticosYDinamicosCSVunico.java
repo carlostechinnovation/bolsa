@@ -306,7 +306,7 @@ public class JuntarEstaticosYDinamicosCSVunico {
 
 		// ---------- JUNTOS -----------------------
 		String juntos = dirBrutoCsv + BrutosUtils.MERCADO_NQ + "_" + enm.symbol + ".csv";
-		MY_LOGGER.info("Escribiendo CSV juntos en: " + juntos);
+		MY_LOGGER.debug("Escribiendo CSV juntos en: " + juntos);
 		File fjuntos = new File(juntos);
 		if (fjuntos.exists()) {
 			PrintWriter writer = new PrintWriter(fjuntos);
