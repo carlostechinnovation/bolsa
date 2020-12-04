@@ -33,7 +33,7 @@ for directorio in os.listdir(dir_subgrupos):
 
         featuresTodas.extend(filter(lambda x: x,
                                     columnasLimpio))  # añade los elementos, habiendo quitado los nulos y limpiado los saltos de carro
-        print(featuresTodas)
+        # print(featuresTodas)
 
         pathFicheroAbsoluto = dir_subgrupos + directorio + "/FEATURES_SELECCIONADAS.csv"
         if os.path.exists(pathFicheroAbsoluto):
