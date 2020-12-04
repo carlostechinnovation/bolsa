@@ -23,6 +23,7 @@ import c40X.subgrupos.CrearDatasetsSubgruposKMeans;
 import c70x.validacion.GeneradorInformeHtml;
 import c70x.validacion.Validador;
 import testIntegracion.ExtractorFeatures;
+import testIntegracion.ParserCsvEnTablaHtml;
 
 /**
  * Clase PRINCIPAL
@@ -125,6 +126,9 @@ public class Principal implements Serializable {
 			} else if (programa.equals("testIntegracion.ExtractorFeatures")) {
 				ExtractorFeatures.getInstance();
 				ExtractorFeatures.main(params);
+			} else if (programa.equals("testIntegracion.ParserCsvEnTablaHtml")) {
+				ParserCsvEnTablaHtml.getInstance();
+				testIntegracion.ParserCsvEnTablaHtml.main(params);
 			} else {
 				MY_LOGGER.error("PROGRAMA NO ESPERADO: " + programa);
 				System.exit(-1);
