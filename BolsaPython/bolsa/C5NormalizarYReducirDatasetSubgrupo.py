@@ -33,6 +33,8 @@ import pickle
 from sklearn.impute import SimpleImputer
 import warnings
 import datetime
+from sklearn.pipeline import make_pipeline
+from sklearn.manifold import TSNE
 
 
 print((datetime.datetime.now()).strftime("%Y%m%d_%H%M%S") + " **** CAPA 5  --> Selección de variables/ Reducción de dimensiones (para cada subgrupo) ****")
@@ -67,6 +69,8 @@ path_modelo_normalizador = (dir_subgrupo + "NORMALIZADOR.tool").replace("futuro"
 path_indices_out_capa5 = (dir_subgrupo + "indices_out_capa5.indices")
 path_modelo_reductor_features = (dir_subgrupo + "REDUCTOR.tool").replace("futuro", "pasado")  # Siempre lo cojo del pasado
 path_modelo_pca = (dir_subgrupo + "PCA.tool").replace("futuro", "pasado")  # Siempre lo cojo del pasado
+path_pesos_pca = (dir_subgrupo + "PCA_matriz.csv")
+
 
 balancear = False  # No usar este balanceo, sino el de Luis (capa 6), que solo actúa en el dataset de train, evitando tocar test y validation
 
@@ -145,7 +149,12 @@ def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmp
   print("Borrar columnas especiales (idenficadoras de fila): empresa | antiguedad | mercado | anio | mes | dia | hora | minuto...")
   entradaFeaturesYTarget2 = entradaFeaturesYTarget2\
       .drop('empresa', axis=1).drop('antiguedad', axis=1).drop('mercado', axis=1)\
-      .drop('anio', axis=1).drop('mes', axis=1).drop('dia', axis=1).drop('hora', axis=1).drop('minuto', axis=1)
+      .drop('anio', axis=1).drop('mes', axis=1).drop('dia', axis=1).drop('hora', axis=1).drop('minuto', axis=1)\
+
+  print(
+      "Borrar columnas dinamicas que no aportan nada: volumen | high | low | close | open ...")
+  entradaFeaturesYTarget2 = entradaFeaturesYTarget2 \
+      .drop('volumen', axis=1).drop('high', axis=1).drop('low', axis=1).drop('close', axis=1).drop('open', axis=1)
   
   # entradaFeaturesYTarget2.to_csv(path_csv_completo + "_TEMP02", index=True, sep='|')  # UTIL para testIntegracion
 
@@ -477,11 +486,14 @@ def normalizarFeatures(featuresFichero, path_modelo_normalizador, dir_subgrupo_i
   #######################################################################################
 
   ################################### NORMALIZACIÓN YEO-JOHNSON ####################################################
+  print("Normalizando cada feature...")
   # Vamos a normalizar z-score (media 0, std_dvt=1), pero yeo-johnson tiene un bug (https://github.com/scipy/scipy/issues/10821) que se soluciona sumando una constante a toda la matriz, lo cual no afecta a la matriz normalizada
   featuresFichero = featuresFichero + 1.015815
 
   if modoTiempo == "pasado":
-      modelo_normalizador = PowerTransformer(method='yeo-johnson', standardize=True, copy=True).fit(featuresFichero)
+      # Con el "normalizador COMPLEJO" solucionamos este bug: https://github.com/scikit-learn/scikit-learn/issues/14959
+      modelo_normalizador = make_pipeline(StandardScaler(with_std=False), PowerTransformer(method='yeo-johnson', standardize=True, copy=True), ).fit(featuresFichero) #COMPLEJO
+      #modelo_normalizador = PowerTransformer(method='yeo-johnson', standardize=True, copy=True).fit(featuresFichero)
       pickle.dump(modelo_normalizador, open(path_modelo_normalizador, 'wb'))
 
 
@@ -518,10 +530,11 @@ def comprobarSuficientesClasesTarget(featuresFicheroNorm, targetsFichero):
   return y_unicos.size
 
 
-def reducirFeaturesYGuardar(path_modelo_reductor_features, path_modelo_pca, featuresFicheroNorm, targetsFichero, pathCsvReducido, pathCsvFeaturesElegidas, varianzaAcumuladaDeseada, dir_subgrupo_img, modoTiempo, maxFeatReducidas):
+def reducirFeaturesYGuardar(path_modelo_reductor_features, path_modelo_pca, path_pesos_pca, featuresFicheroNorm, targetsFichero, pathCsvReducido, pathCsvFeaturesElegidas, varianzaAcumuladaDeseada, dir_subgrupo_img, modoTiempo, maxFeatReducidas):
   print((datetime.datetime.now()).strftime("%Y%m%d_%H%M%S") + " ----- reducirFeaturesYGuardar ------")
   print("path_modelo_reductor_features --> " + path_modelo_reductor_features)
   print("path_modelo_pca --> " + path_modelo_pca)
+  print("path_pesos_pca --> " + path_pesos_pca)
   print("featuresFicheroNorm: " + str(featuresFicheroNorm.shape[0]) + " x " + str(featuresFicheroNorm.shape[1]))
   print("targetsFichero: " + str(targetsFichero.shape[0]) + " x " + str(targetsFichero.shape[1]))
   print("pathCsvReducido --> " + pathCsvReducido)
@@ -632,8 +645,13 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, path_modelo_pca, feat
 
           if modoTiempo == "pasado":
               print("Usando PCA, creamos una NUEVA BASE DE FEATURES ORTOGONALES y cogemos las que tengan un impacto agregado sobre el X% de la varianza del target. Descartamos el resto.")
-              modelo_pca_subgrupo = PCA(n_components=varianzaAcumuladaDeseada, svd_solver='full')  # Variaza acumulada sobre el target
-              # modelo_pca_subgrupo = PCA(n_components='mle', svd_solver='full')  # Metodo "MLE de Minka": https://vismod.media.mit.edu/tech-reports/TR-514.pdf
+              # modelo_pca_subgrupo = PCA(n_components=varianzaAcumuladaDeseada, svd_solver='full')  # Variaza acumulada sobre el target
+              modelo_pca_subgrupo = PCA(n_components='mle', svd_solver='full')  # Metodo "MLE de Minka": https://vismod.media.mit.edu/tech-reports/TR-514.pdf
+              # modelo_pca_subgrupo = TSNE(n_components=2, perplexity=30.0, early_exaggeration=12.0, learning_rate=200.0,
+              #                            n_iter=1000, n_iter_without_progress=300, min_grad_norm=1e-07,
+              #                            metric='euclidean', init='random', verbose=0, random_state=None,
+              #                            method='barnes_hut', angle=0.5,
+              #                            n_jobs=-1)  # https://scikit-learn.org/stable/modules/generated/sklearn.manifold.TSNE.html
               print(modelo_pca_subgrupo)
               featuresFicheroNorm_pca = modelo_pca_subgrupo.fit_transform(featuresFicheroNormElegidas)
               print("modelo_pca_subgrupo -> dump ...")
@@ -644,13 +662,21 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, path_modelo_pca, feat
               print(modelo_pca_subgrupo)
               featuresFicheroNorm_pca = modelo_pca_subgrupo.transform(featuresFicheroNormElegidas)
 
-          print('Dimensiones del dataframe tras PCA: ' + str(featuresFicheroNorm_pca.shape[0]) + ' x ' + str(featuresFicheroNorm_pca.shape[1]))
+          print("Dimensiones del dataframe tras PCA: " + str(featuresFicheroNorm_pca.shape[0]) + " x " + str(featuresFicheroNorm_pca.shape[1]))
+
           print("Las features están ya normalizadas, reducidas y en base ortogonal PCA. DESCRIBIMOS lo que hemos hecho y GUARDAMOS el dataset.")
           num_columnas_pca = featuresFicheroNorm_pca.shape[1]
           columnas_pca = ["pca_" + f"{i:0>2}" for i in range(num_columnas_pca)]  # Hacemos left padding con la funcion f-strings
           featuresFicheroNorm_pca_df = DataFrame(featuresFicheroNorm_pca, columns=columnas_pca, index=featuresFicheroNorm.index)
           print(featuresFicheroNorm_pca_df.head())
           featuresFicheroNormElegidas = featuresFicheroNorm_pca_df
+
+          print("Matriz de pesos de las features en la base de funciones PCA: " + path_pesos_pca)
+          pcaMatriz = pd.DataFrame(modelo_pca_subgrupo.components_)
+          pcaMatriz.columns = columnasSeleccionadas
+          columnas_pca_df = pd.DataFrame(columnas_pca)
+          pcaMatriz = pd.concat([columnas_pca_df, pcaMatriz], axis=1)
+          pcaMatriz.to_csv(path_pesos_pca, index=False, sep='|')
 
 
       ### Guardar a fichero
@@ -693,8 +719,8 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
     if(modoTiempo == "pasado" and numclases <= 1):
         print("El subgrupo solo tiene " + str(numclases) + " clases en el target. Abortamos...")
     else:
-        reducirFeaturesYGuardar(path_modelo_reductor_features, path_modelo_pca, featuresFichero3, targetsFichero, pathCsvReducido, pathCsvFeaturesElegidas, varianza, dir_subgrupo_img, modoTiempo, maxFeatReducidas)
+        reducirFeaturesYGuardar(path_modelo_reductor_features, path_modelo_pca, path_pesos_pca, featuresFichero3, targetsFichero, pathCsvReducido, pathCsvFeaturesElegidas, varianza, dir_subgrupo_img, modoTiempo, maxFeatReducidas)
 
 
-print((datetime.datetime.now()).strftime("%Y%m%d_%H%M%S") +" ------------ FIN de capa 5 ----------------")
+print((datetime.datetime.now()).strftime("%Y%m%d_%H%M%S") + " ------------ FIN de capa 5 ----------------")
 

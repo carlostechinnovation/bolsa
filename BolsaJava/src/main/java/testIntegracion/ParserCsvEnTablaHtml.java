@@ -92,7 +92,7 @@ public class ParserCsvEnTablaHtml {
 	 */
 	public static String nucleo(String pathEntrada, String separadorCsv, String modo) throws IOException {
 
-		String tabla = "<table>";
+		String tabla = "<div style=\"overflow-x:auto;\"><table>";
 
 		List<String> lineas = Files.readAllLines(Paths.get(pathEntrada));
 		int contador = 0;
@@ -105,7 +105,7 @@ public class ParserCsvEnTablaHtml {
 			contador++;
 		}
 
-		tabla += "</table>";
+		tabla += "</table></div>";
 		return tabla;
 	}
 
