@@ -1,12 +1,34 @@
 #!/bin/bash
 #set -e
 echo -e "TEST INTEGRACION - INICIO: "$( date "+%Y%m%d%H%M%S" )
+
 INFORME_OUT="/bolsa/logs/integracion.html"
 echo -e  "Fichero de salida del test de integracion: ${INFORME_OUT}"
 echo -e "<!DOCTYPE html><html><head><meta charset=\"UTF-8\">"  > ${INFORME_OUT}
 echo -e "<style>table, th, td {  border: 1px solid black; border-collapse: collapse;}table.center {  margin-left: auto;  margin-right: auto;}</style>"  >> ${INFORME_OUT}
 echo -e "</head><body>"  >> ${INFORME_OUT}
 echo -e "<h2 style=\"text-align: center;\">Test de integración</h2>" >> ${INFORME_OUT}
+
+############# parametros de entrada ########
+if [ $# -eq 0 ];  then
+    echo "Hay 0 parametros de entrada. Se elegiran subgrupo+empresa al azar."
+	#Elegimos un subgrupo y empresa al azar para el que tengamos datos hasta la última capa...
+	SG_ANALIZADO=$(find "/bolsa/pasado/subgrupos/" | grep "REDUCIDO" | shuf -n 1 | cut -d'/' -f5)
+	empresa=$(cat /bolsa/pasado/subgrupos/${SG_ANALIZADO}/EMPRESAS.txt | shuf -n 1 | tr -d '\n' | cut -d'/' -f5 | cut -d'.' -f1 | cut -d'_' -f2)
+	
+elif [ $# -eq 2 ];  then
+	echo "Hay 2 parametros de entrada: SUBGRUPO + EMPRESA del pasado."
+	SG_ANALIZADO="${1}"
+	empresa="${2}"
+else
+    echo "INSTRUCCIONES:   RUTA/script.sh  subgrupo empresa"
+	echo "EJEMPLO:    /home/carloslinux/Desktop/GIT_BOLSA/BolsaScripts/testIntegracion.sh  SG_49 AAPL"
+	echo "El número de parametros de entrada no es el esperado. Saliendo..."
+	exit -1
+fi
+
+echo "PASADO - Subgrupo: ${SG_ANALIZADO}"
+echo "PASADO - Empresa: ${empresa}"
 
 #################### DIRECTORIOS ###############################################################
 DIR_CODIGOS_CARLOS="/home/carloslinux/Desktop/GIT_BOLSA/"
@@ -44,14 +66,9 @@ echo -e "Cogemos una empresa y vemos su evolucion en cada capa.<br>"  >> ${INFOR
 
 #######################################################################################################
 echo -e "<h2>******* COMPROBACIONES del PASADO ********</h2>" >> ${INFORME_OUT}
-echo -e "Elegimos un subgrupo y empresa al azar para el que tengamos datos hasta la última capa...<br>" >> ${INFORME_OUT}
-SG_ANALIZADO=$(find "/bolsa/pasado/subgrupos/" | grep "REDUCIDO" | shuf -n 1 | cut -d'/' -f5)
 echo -e "<b>Subgrupo analizado: ${SG_ANALIZADO}</b>" >> ${INFORME_OUT}
-empresa=$(cat /bolsa/pasado/subgrupos/${SG_ANALIZADO}/EMPRESAS.txt | shuf -n 1 | tr -d '\n' | cut -d'/' -f5 | cut -d'.' -f1 | cut -d'_' -f2)
 echo -e "<br><b>Empresa analizada: ${empresa}</b>" >> ${INFORME_OUT}
-
 echo -e "<br><b>FINVIZ: <a href=\"https://finviz.com/quote.ashx?t=${empresa}\">${empresa}</a></b>" >> ${INFORME_OUT}
-
 
 #####
 echo -e "<br><h3>Capa 1.1 (brutos desestructurados)</h3>" >> ${INFORME_OUT}
@@ -117,7 +134,7 @@ echo "<b>">> ${INFORME_OUT}
 head -n 1 "${DIR_SUBGRUPOS}${SG_ANALIZADO}/FEATURES_ELEGIDAS.csv"  | sed -e "s/|/| /g" >> ${INFORME_OUT}
 echo "</b>">> ${INFORME_OUT}
 
-echo -e "<br><br>Capa 5 - Intermedio PCA. Se crea una base de funciones ortogonales como combinaciones lineales de las features de entrada. La matriz de pesos/fórmulas: <br>" >> ${INFORME_OUT}
+echo -e "<br><br>Capa 5 - Intermedio PCA. Se crea una base de funciones ortogonales como combinaciones lineales de las features de entrada. La matriz de pesos/fórmulas: <br><br>" >> ${INFORME_OUT}
 PCA_MATRIZ="${DIR_SUBGRUPOS}${SG_ANALIZADO}/PCA_matriz.csv"
 cat ${PCA_MATRIZ}  > "/tmp/entrada.csv"
 java -jar ${PATH_JAR} --class "coordinador.Principal" "testIntegracion.ParserCsvEnTablaHtml" "/tmp/entrada.csv" "${INFORME_OUT}" "\\|" "append"
@@ -126,7 +143,7 @@ SG_REDUCIDO="${DIR_SUBGRUPOS}${SG_ANALIZADO}/REDUCIDO.csv"
 echo -e "<br>Subgrupo ${SG_ANALIZADO} - Datos reducidos (normalizar + seleccion de columnas): <a href=\"${SG_REDUCIDO}\">${SG_REDUCIDO}</a> --> Tamanio (bytes) = "$(stat -c%s "$SG_REDUCIDO")" con "$(wc -l $SG_REDUCIDO | cut -d\  -f 1)" filas<br>" >> ${INFORME_OUT}
 echo -e "<br>Y vemos la transformacion de esas filas en REDUCIDO (fijarse en si la normalización de las columnas tiene sentido!!! )<br>" >> ${INFORME_OUT}
 echo -e "<b>La primera columna es el indice del dataframe. Sirve para poder identificar a que fila del COMPLETO.csv corresponde esta fila con predicciones del REDUCIDO.csv ¿Es correcto?:</b><br><br>" >> ${INFORME_OUT}
-head -n 5 ${SG_REDUCIDO}  > "/tmp/entrada.csv"
+head -n 10 ${SG_REDUCIDO}  > "/tmp/entrada.csv"
 java -jar ${PATH_JAR} --class "coordinador.Principal" "testIntegracion.ParserCsvEnTablaHtml" "/tmp/entrada.csv" "${INFORME_OUT}" "\\|" "append"
 
 
@@ -141,3 +158,4 @@ echo -e "<br><br><br><br><br>" >> ${INFORME_OUT}
 
 echo -e "</body></html>"  >> ${INFORME_OUT}
 echo -e "TEST INTEGRACION - FIN: "$( date "+%Y%m%d%H%M%S" )
+
