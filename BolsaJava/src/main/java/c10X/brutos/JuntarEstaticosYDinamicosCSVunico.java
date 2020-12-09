@@ -236,7 +236,7 @@ public class JuntarEstaticosYDinamicosCSVunico {
 				String[] partes = actual.split("\\|");
 
 				if ("null".equals(partes[2])) {
-					MY_LOGGER.warn("CASO NULO -> " + actual);
+					MY_LOGGER.debug("CASO NULO -> " + actual);
 					antiguedadDesplazada = Integer.valueOf(0) - desplazamientoAntiguedad;
 				} else {
 					antiguedadDesplazada = Integer.valueOf(partes[2]) - desplazamientoAntiguedad;

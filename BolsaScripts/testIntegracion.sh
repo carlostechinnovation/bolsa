@@ -107,27 +107,31 @@ SG_EMPRESAS="${DIR_SUBGRUPOS}${SG_ANALIZADO}/EMPRESAS.txt"
 #####
 echo -e "<br><h3>Capa 5 (reducir CSV)</h3><br>" >> ${INFORME_OUT}
 echo -e "Flujo de datos en capa 5:     COMPLETO.csv --> Transformaciones......  --> REDUCIDO.csv<br>" >> ${INFORME_OUT}
-SG_ENTRADA="${DIR_SUBGRUPOS}${SG_ANALIZADO}/COMPLETO.csv"
-echo -e "Subgrupo ${SG_ANALIZADO} - Datos entrada: <a href=\"${SG_ENTRADA}\">${SG_ENTRADA}</a> --> Tamanio (bytes) = "$(stat -c%s "$SG_ENTRADA")" con "$(wc -l $SG_ENTRADA | cut -d\  -f 1)" filas de las que "$(cat ${SG_ENTRADA} | grep '^${empresa}|' | wc -l)" filas son de la empresa analizada ${empresa}.<br><br>" >> ${INFORME_OUT}
+SG_ENTRADA="${DIR_SUBGRUPOS}${SG_ANALIZADO}/intermedio.csv.entrada"
+num_filas_empresa_en_completo=$(grep '^${empresa}|' '${SG_ENTRADA}'  | wc -l)
+echo -e "Subgrupo ${SG_ANALIZADO} - Datos entrada: <a href=\"${SG_ENTRADA}\">${SG_ENTRADA}</a> --> Tamanio (bytes) = "$(stat -c%s "$SG_ENTRADA")" con "$(wc -l $SG_ENTRADA | cut -d\  -f 1)" filas de las que "${num_filas_empresa_en_completo}" filas son de la empresa analizada "${empresa}".<br><br>" >> ${INFORME_OUT}
 
-echo -e "<br>Ejemplo de filas de la empresa dentro de COMPLETO.csv:<br><br>" >> ${INFORME_OUT}
+echo -e "<br>Ejemplo de filas de la empresa dentro de COMPLETO.csv  ( intermedio.csv.entrada ) :<br><br>" >> ${INFORME_OUT}
 head -n 1 ${SG_ENTRADA} > "/tmp/entrada.csv"  # Solo cabecera
 cat ${SG_ENTRADA} | grep "${empresa}|"  | head -n 10 >> "/tmp/entrada.csv"
 java -jar ${PATH_JAR} --class "coordinador.Principal" "testIntegracion.ParserCsvEnTablaHtml" "/tmp/entrada.csv" "${INFORME_OUT}" "\\|" "append"
 
 #####
-echo -e "<br><br>Para analizar el CSV reducido (normalizado, sin nulos y solo con features dinámicas elegidas), veamos las primeras filas del fichero de entrada (COMPLETO.csv) y las primeras filas del fichero reducido (serán esas mismas filas, salvo si tenían nulos, que habrán sido eliminadas y veríamos las siguientes)<br>" >> ${INFORME_OUT}
-echo -e "<br>Las primeras filas de COMPLETO (de la primera empresa que aparece):<br><br>" >> ${INFORME_OUT}
-head -n 10 ${SG_ENTRADA}  > "/tmp/entrada.csv"
+SG_ENTRADA_UMBRAL="${DIR_SUBGRUPOS}${SG_ANALIZADO}/intermedio.csv.entrada_tras_maximo"
+num_filas_empresa_en_completo=$(grep '^${empresa}|' '${SG_ENTRADA_UMBRAL}'  | wc -l)
+echo -e "Subgrupo ${SG_ANALIZADO} - Datos entrada: <a href=\"${SG_ENTRADA_UMBRAL}\">${SG_ENTRADA_UMBRAL}</a> --> Tamanio (bytes) = "$(stat -c%s "$SG_ENTRADA_UMBRAL")" con "$(wc -l $SG_ENTRADA_UMBRAL | cut -d\  -f 1)" filas de las que "${num_filas_empresa_en_completo}" filas son de la empresa analizada "${empresa}".<br><br>" >> ${INFORME_OUT}
+
+echo -e "<br>Ejemplo de filas de la empresa dentro de COMPLETO.csv <b>(tras umbral maximo de filas)</b>:<br><br>" >> ${INFORME_OUT}
+head -n 1 ${SG_ENTRADA_UMBRAL} > "/tmp/entrada.csv"  # Solo cabecera
+cat ${SG_ENTRADA_UMBRAL} | grep "${empresa}|"  | head -n 10 >> "/tmp/entrada.csv"
 java -jar ${PATH_JAR} --class "coordinador.Principal" "testIntegracion.ParserCsvEnTablaHtml" "/tmp/entrada.csv" "${INFORME_OUT}" "\\|" "append"
 
-echo -e "<br><br>Entonces, nos fijamos solo en esas features elegidas de COMPLETO:<br>" >> ${INFORME_OUT}
-TMP_ENTRADA_COLUMNAS_ELEGIDAS="/tmp/temp_bolsa_testintegracion_completosoloseleccionadas.csv"
-java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s %2$s %5$s%6$s%n" -jar ${PATH_JAR} --class "coordinador.Principal" "testIntegracion.ExtractorFeatures" "${FEATURES_ELEGIDAS}" "${SG_ENTRADA}" "${TMP_ENTRADA_COLUMNAS_ELEGIDAS}" "10"  1>>/dev/null  2>>${INFORME_OUT}
-head -n 10 "${TMP_ENTRADA_COLUMNAS_ELEGIDAS}" >> ${INFORME_OUT}
-
-echo -e "<br>Capa 5 - Intermedio NORMALIZADO:<br>" >> ${INFORME_OUT}
-echo "<b>[PENDIENTE]</b>" >> ${INFORME_OUT}
+#####
+echo -e "<br>Capa 5 - Intermedio <b>NORMALIZADO (y se han quitado las filas con al menos un campo nulo)</b>:<br>" >> ${INFORME_OUT}
+SG_NORMALIZADO="${DIR_SUBGRUPOS}${SG_ANALIZADO}/intermedio.csv.normalizado"
+echo -e "Limpio: <a href=\"${SG_NORMALIZADO}\">${SG_NORMALIZADO}</a> --> Tamanio (bytes) = "$(stat -c%s "$SG_NORMALIZADO")" con "$(wc -l $SG_NORMALIZADO | cut -d\  -f 1)" filas<br><br>" >> ${INFORME_OUT}
+head -n 10 ${SG_NORMALIZADO}  > "/tmp/entrada.csv"
+java -jar ${PATH_JAR} --class "coordinador.Principal" "testIntegracion.ParserCsvEnTablaHtml" "/tmp/entrada.csv" "${INFORME_OUT}" "\\|" "append"
 
 echo -e "<br><br>Capa 5 - Intermedio FEATURE SELECTION (RFE). Columnas elegidas: <br>" >> ${INFORME_OUT}
 echo "<b>">> ${INFORME_OUT}
