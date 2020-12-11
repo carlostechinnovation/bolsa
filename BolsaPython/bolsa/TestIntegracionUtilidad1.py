@@ -26,6 +26,8 @@ if os.path.exists(pathFicheroIzdo) and os.path.exists(pathFicheroDrcho):
     # En el lado derecho quitamos todas las columnas que no haya en el lazo izquierdo, para evitar que se creen columnas con sufijos "_x" y "_y"
     cruce=pd.merge(fileIzdo, fileDcho[fileDcho.columns.difference(fileIzdo.columns)], left_index=True, right_index=True)
 
+    cruce = cruce[cruce.columns.intersection(fileIzdo.columns)]
+
     # Guardar
     cruce.to_csv(pathSalida, index=True, sep='|')
 
