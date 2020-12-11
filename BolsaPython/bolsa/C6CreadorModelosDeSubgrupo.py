@@ -57,7 +57,7 @@ modoDebug = False  # En modo debug se pintan los dibujos. En otro caso, se evita
 umbralCasosSuficientesClasePositiva = 50
 granProbTargetUno = 50  # De todos los target=1, nos quedaremos con los granProbTargetUno (en tanto por cien) MAS probables. Un valor de 100 o mayor anula este parámetro
 balancearConSmoteSoloTrain = True
-umbralFeaturesCorrelacionadas = 0.90  # Umbral aplicado para descartar features cuya correlacion sea mayor que él
+umbralFeaturesCorrelacionadas = 0.96  # Umbral aplicado para descartar features cuya correlacion sea mayor que él
 umbralNecesarioCompensarDesbalanceo = 9  # Umbral de desbalanceo clase positiva/negativa. Si se supera, es necesario hacer oversampling de minoritaria (SMOTE) o undersampling de mayoritaria (borrar filas)
 cv_todos = 10  # CROSS_VALIDATION: número de iteraciones. Sirve para evitar el overfitting
 fraccion_train = 0.75  # Fracción de datos usada para entrenar

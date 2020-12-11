@@ -50,6 +50,7 @@ else
 	s1 -e
 fi
 
+PYTHON_SCRIPTS="${DIR_CODIGOS}BolsaPython/"
 ################## FUNCIONES #############################################################
 
 ############### COMPILAR JAR ########################################################
@@ -109,7 +110,7 @@ echo -e "<br><h3>Capa 5 (reducir CSV)</h3><br>" >> ${INFORME_OUT}
 echo -e "Flujo de datos en capa 5:     COMPLETO.csv --> Transformaciones......  --> REDUCIDO.csv<br>" >> ${INFORME_OUT}
 SG_ENTRADA="${DIR_SUBGRUPOS}${SG_ANALIZADO}/intermedio.csv.entrada"
 num_filas_empresa_en_completo=$(grep '^${empresa}|' '${SG_ENTRADA}'  | wc -l)
-echo -e "Subgrupo ${SG_ANALIZADO} - Datos entrada: <a href=\"${SG_ENTRADA}\">${SG_ENTRADA}</a> --> Tamanio (bytes) = "$(stat -c%s "$SG_ENTRADA")" con "$(wc -l $SG_ENTRADA | cut -d\  -f 1)" filas de las que "${num_filas_empresa_en_completo}" filas son de la empresa analizada "${empresa}".<br><br>" >> ${INFORME_OUT}
+echo -e "Subgrupo ${SG_ANALIZADO} - Datos entrada: <a href=\"${SG_ENTRADA}\">${SG_ENTRADA}</a> --> Tamanio (bytes) = "$(stat -c%s "$SG_ENTRADA")" con "$(wc -l $SG_ENTRADA | cut -d\  -f 1)" filas de las que "${num_filas_empresa_en_completo}" filas son de la empresa analizada "${empresa}".<br>" >> ${INFORME_OUT}
 
 echo -e "<br>Ejemplo de filas de la empresa dentro de COMPLETO.csv  ( intermedio.csv.entrada ) :<br><br>" >> ${INFORME_OUT}
 head -n 1 ${SG_ENTRADA} > "/tmp/entrada.csv"  # Solo cabecera
@@ -117,9 +118,10 @@ cat ${SG_ENTRADA} | grep "${empresa}|"  | head -n 10 >> "/tmp/entrada.csv"
 java -jar ${PATH_JAR} --class "coordinador.Principal" "testIntegracion.ParserCsvEnTablaHtml" "/tmp/entrada.csv" "${INFORME_OUT}" "\\|" "append"
 
 #####
-SG_ENTRADA_UMBRAL="${DIR_SUBGRUPOS}${SG_ANALIZADO}/intermedio.csv.entrada_tras_maximo"
+SG_ENTRADA_UMBRAL="${DIR_SUBGRUPOS}${SG_ANALIZADO}/intermedio.csv.entrada_tras_maximo.csv"
+SG_ENTRADA_UMBRAL_INDICES="${DIR_SUBGRUPOS}${SG_ANALIZADO}/intermedio.csv.entrada_tras_maximo_INDICES.csv"
 num_filas_empresa_en_completo=$(grep '^${empresa}|' '${SG_ENTRADA_UMBRAL}'  | wc -l)
-echo -e "Subgrupo ${SG_ANALIZADO} - Datos entrada: <a href=\"${SG_ENTRADA_UMBRAL}\">${SG_ENTRADA_UMBRAL}</a> --> Tamanio (bytes) = "$(stat -c%s "$SG_ENTRADA_UMBRAL")" con "$(wc -l $SG_ENTRADA_UMBRAL | cut -d\  -f 1)" filas de las que "${num_filas_empresa_en_completo}" filas son de la empresa analizada "${empresa}".<br><br>" >> ${INFORME_OUT}
+echo -e "<br>Subgrupo ${SG_ANALIZADO} - Datos entrada: <a href=\"${SG_ENTRADA_UMBRAL}\">${SG_ENTRADA_UMBRAL}</a> --> Tamanio (bytes) = "$(stat -c%s "$SG_ENTRADA_UMBRAL")" con "$(wc -l $SG_ENTRADA_UMBRAL | cut -d\  -f 1)" filas de las que "${num_filas_empresa_en_completo}" filas son de la empresa analizada "${empresa}".<br>" >> ${INFORME_OUT}
 
 echo -e "<br>Ejemplo de filas de la empresa dentro de COMPLETO.csv <b>(tras umbral maximo de filas)</b>:<br><br>" >> ${INFORME_OUT}
 head -n 1 ${SG_ENTRADA_UMBRAL} > "/tmp/entrada.csv"  # Solo cabecera
@@ -127,10 +129,13 @@ cat ${SG_ENTRADA_UMBRAL} | grep "${empresa}|"  | head -n 10 >> "/tmp/entrada.csv
 java -jar ${PATH_JAR} --class "coordinador.Principal" "testIntegracion.ParserCsvEnTablaHtml" "/tmp/entrada.csv" "${INFORME_OUT}" "\\|" "append"
 
 #####
-echo -e "<br>Capa 5 - Intermedio <b>NORMALIZADO (y se han quitado las filas con al menos un campo nulo)</b>:<br>" >> ${INFORME_OUT}
-SG_NORMALIZADO="${DIR_SUBGRUPOS}${SG_ANALIZADO}/intermedio.csv.normalizado"
+echo -e "<br>Capa 5 - Intermedio <b>NORMALIZADO ( ¡¡¡¡¡¡ Y se han quitado las filas con al menos un campo NULO !!!!  )</b>:<br>" >> ${INFORME_OUT}
+SG_NORMALIZADO="${DIR_SUBGRUPOS}${SG_ANALIZADO}/intermedio.csv.normalizado.csv"
 echo -e "Limpio: <a href=\"${SG_NORMALIZADO}\">${SG_NORMALIZADO}</a> --> Tamanio (bytes) = "$(stat -c%s "$SG_NORMALIZADO")" con "$(wc -l $SG_NORMALIZADO | cut -d\  -f 1)" filas<br><br>" >> ${INFORME_OUT}
-head -n 10 ${SG_NORMALIZADO}  > "/tmp/entrada.csv"
+echo -e "Hacemos el cruce con Python para coger solo los indices de la empresa analizada..." >> ${INFORME_OUT}
+SG_NORMALIZADO_CRUZADO="${SG_NORMALIZADO}.cruzado.csv"
+$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/TestIntegracionUtilidad1.py" "${SG_NORMALIZADO}" "${SG_ENTRADA_UMBRAL}" "${empresa}" "${SG_NORMALIZADO_CRUZADO}"
+head -n 10 ${SG_NORMALIZADO_CRUZADO}  > "/tmp/entrada.csv"
 java -jar ${PATH_JAR} --class "coordinador.Principal" "testIntegracion.ParserCsvEnTablaHtml" "/tmp/entrada.csv" "${INFORME_OUT}" "\\|" "append"
 
 echo -e "<br><br>Capa 5 - Intermedio FEATURE SELECTION (RFE). Columnas elegidas: <br>" >> ${INFORME_OUT}
@@ -146,8 +151,11 @@ java -jar ${PATH_JAR} --class "coordinador.Principal" "testIntegracion.ParserCsv
 SG_REDUCIDO="${DIR_SUBGRUPOS}${SG_ANALIZADO}/REDUCIDO.csv"
 echo -e "<br>Subgrupo ${SG_ANALIZADO} - Datos reducidos (normalizar + seleccion de columnas): <a href=\"${SG_REDUCIDO}\">${SG_REDUCIDO}</a> --> Tamanio (bytes) = "$(stat -c%s "$SG_REDUCIDO")" con "$(wc -l $SG_REDUCIDO | cut -d\  -f 1)" filas<br>" >> ${INFORME_OUT}
 echo -e "<br>Y vemos la transformacion de esas filas en REDUCIDO (fijarse en si la normalización de las columnas tiene sentido!!! )<br>" >> ${INFORME_OUT}
+echo -e "Hacemos el cruce con Python para coger solo los indices de la empresa analizada..." >> ${INFORME_OUT}
+SG_REDUCIDO_CRUZADO="${SG_REDUCIDO}.cruzado.csv"
+$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/TestIntegracionUtilidad1.py" "${SG_REDUCIDO}" "${SG_ENTRADA_UMBRAL}" "${empresa}" "${SG_REDUCIDO_CRUZADO}"
 echo -e "<b>La primera columna es el indice del dataframe. Sirve para poder identificar a que fila del COMPLETO.csv corresponde esta fila con predicciones del REDUCIDO.csv ¿Es correcto?:</b><br><br>" >> ${INFORME_OUT}
-head -n 10 ${SG_REDUCIDO}  > "/tmp/entrada.csv"
+head -n 10 ${SG_REDUCIDO_CRUZADO}  > "/tmp/entrada.csv"
 java -jar ${PATH_JAR} --class "coordinador.Principal" "testIntegracion.ParserCsvEnTablaHtml" "/tmp/entrada.csv" "${INFORME_OUT}" "\\|" "append"
 
 

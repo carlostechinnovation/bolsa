@@ -14,9 +14,11 @@ from IPython.display import HTML
 print("--- InversionJuntarPrediccionesDeUnDia: INICIO ---")
 entradaPathDirDropbox = sys.argv[1]
 entradaPathCalidad = sys.argv[2]
+entradaPathDescripcionSubgrupos = sys.argv[3]
 targetPredichoProbUmbral = float(0.80)
 print("entradaPathDirDropbox = " + entradaPathDirDropbox)
 print("entradaPathCalidad = " + entradaPathCalidad)
+print("entradaPathDescripcionSubgrupos = " + entradaPathDescripcionSubgrupos)
 print("targetPredichoProbUmbral = " + str(targetPredichoProbUmbral))
 
 manejablesCsv = []
@@ -39,13 +41,20 @@ print("Numero de ficheros CSV de prediccion encontrados para el dia " + str(fech
 
 print("Leyendo fichero de CALIDAD de los subgrupos...")
 calidadDatos = []
-numFilasLeidas=0
 if os.path.exists(entradaPathCalidad):
     calidadDatos = pd.read_csv(entradaPathCalidad, sep="|")
-    numFilasLeidas = numFilasLeidas + calidadDatos.shape[0]
+    calidadDatos = calidadDatos.drop("calidad", axis=1).drop("calidadMediaStd", axis=1)
     calidadDatos.sort_values(by="calidadMediana", ascending=False, inplace=True)
 
-print("Numero de filas leidas en CALIDAD.csv: " + str(numFilasLeidas))
+print("Numero de filas leidas en CALIDAD.csv: " + str(calidadDatos.shape[0]))
+
+
+descripcionSubgrupos = []
+if os.path.exists(entradaPathDescripcionSubgrupos):
+    descripcionSubgrupos = pd.read_csv(entradaPathDescripcionSubgrupos, sep="|")
+
+print("Numero de filas leidas en DESCRIPCION DE SUBGRUPOS: " + str(descripcionSubgrupos.shape[0]))
+
 
 numFilasLeidas = 0
 juntos = pd.DataFrame()
@@ -59,18 +68,23 @@ for file in manejablesCsv:
 
     # Dentro del DF de calidad, seleccionamos la de este subgrupo (si la hay)
     calidadDelSubgrupo = calidadDatos[calidadDatos['subgrupo'] == float(idSubgrupo)]
-    if calidadDelSubgrupo.empty == False:
+    descripcionDelSubgrupo = descripcionSubgrupos[descripcionSubgrupos['subgrupo'] == float(idSubgrupo)]
+    if calidadDelSubgrupo.empty == False and descripcionDelSubgrupo.empty == False:
+
+        #columnas de calidad del subgrupo
         calidadDelSubgrupoNfilas = calidadDelSubgrupo
         #Crear un dataframe de N filas (las mismas que predicciones) y con los mismos valores (los de calidad del subgrupo)
         calidadDelSubgrupoNfilas=calidadDelSubgrupoNfilas.loc[calidadDelSubgrupoNfilas.index.repeat(prediccionesDeUnSubgrupo.shape[0])].reset_index(drop=True)
-        juntos=juntos.append(prediccionesDeUnSubgrupo.join(calidadDelSubgrupoNfilas))
+        datosDeSubgrupo = prediccionesDeUnSubgrupo.join(calidadDelSubgrupoNfilas)
+
+        # Columna "Descripcion de subgrupo"
+        datosDeSubgrupo = pd.merge(datosDeSubgrupo, descripcionDelSubgrupo, how='outer', on='subgrupo')
+        juntos=juntos.append(datosDeSubgrupo)
     else:
-        print("No tenemos datos de calidad para el idSubgrupo=" + idSubgrupo + ". Por tanto, dejamos vacias las columnas que describen la calidad de ese subgrupo.")
+        print("No tenemos datos de CALIDAD o DESCRIPCION para el idSubgrupo=" + idSubgrupo + ". Por tanto, dejamos vacias las columnas que lo describen.")
         prediccionesDeUnSubgrupo["subgrupo"] = idSubgrupo
-        prediccionesDeUnSubgrupo["calidad"] = ""
         prediccionesDeUnSubgrupo["calidadMediana"] = ""
-        prediccionesDeUnSubgrupo["calidadMediaStd"] = ""
-        juntos=juntos.append(prediccionesDeUnSubgrupo)
+        prediccionesDeUnSubgrupo["descripcion"] = ""
 
 juntos = juntos.sort_values(by=['calidadMediana', 'TARGET_PREDICHO_PROB'], ascending=False).reset_index(drop=True)
 
@@ -80,12 +94,14 @@ juntos = juntos[juntos['TARGET_PREDICHO_PROB'] >= targetPredichoProbUmbral]
 print("Numero de filas en fichero juntos con alta probabilidad: " + str(juntos.shape[0]))
 print("Reordenando columnas...")
 
-juntos=juntos.reindex(['subgrupo', 'calidad', 'calidadMediana', 'calidadMediaStd', 'empresa', 'mercado', 'TARGET_PREDICHO_PROB', 'NumAccionesPor1000dolares'],axis=1)
+juntos=juntos.reindex(['subgrupo', 'descripcion', 'calidadMediana', 'empresa', 'mercado', 'TARGET_PREDICHO_PROB', 'NumAccionesPor1000dolares'],axis=1)
 pathSalida = entradaPathDirDropbox + str(fecha) + ".html"
 print("Escribiendo en: " + pathSalida)
 datosEnHtml = HTML(juntos.to_html(index=False, classes='table table-striped table-bordered table-hover table-condensed'))
-text_file = open(pathSalida, "w")
+text_file = open(pathSalida, "w", encoding="utf-8")
+text_file.writelines('<meta charset="UTF-8">\n')
 text_file.write(datosEnHtml.data)
 text_file.close()
 
 print("--- InversionJuntarPrediccionesDeUnDia: FIN ---")
+

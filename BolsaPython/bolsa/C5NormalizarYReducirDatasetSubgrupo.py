@@ -52,10 +52,11 @@ print("modoTiempo = %s" % modoTiempo)
 print("maxFeatReducidas = %s" % maxFeatReducidas)
 print("maxFilasEntrada = %s" % maxFilasEntrada)
 
-varianza=0.88  # Variacion acumulada de las features PCA sobre el target
+varianza=0.92  # Variacion acumulada de las features PCA sobre el target
 compatibleParaMuchasEmpresas = False  # Si hay muchas empresas, debo hacer ya el undersampling (en vez de capa 6)
 global modoDebug; modoDebug = False  # VARIABLE GLOBAL: En modo debug se pintan los dibujos. En otro caso, se evita calculo innecesario
-global cv_todos; cv_todos = 10  # CROSS_VALIDATION: número de iteraciones. Sirve para evitar el overfitting
+global cv_todos; cv_todos = 12  # CROSS_VALIDATION: número de iteraciones. Sirve para evitar el overfitting
+global rfecv_step; rfecv_step=3  # Numero de features que va reduciendo en cada iteracion de RFE hasta encontrar el numero deseado
 global dibujoBins; dibujoBins=20  #VARIABLE GLOBAL: al pintar los histogramas, define el número de barras posibles en las que se divide el eje X.
 numTramos=7  # Numero de tramos usado para tramificar las features dinámicas
 pathCsvCompleto = dir_subgrupo + "COMPLETO.csv"
@@ -98,10 +99,17 @@ def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmp
   print("Cargar datos (CSV)...")
   entradaFeaturesYTarget = pd.read_csv(filepath_or_buffer=path_csv_completo, sep='|')
   print("entradaFeaturesYTarget (LEIDO): " + str(entradaFeaturesYTarget.shape[0]) + " x " + str(entradaFeaturesYTarget.shape[1]))
+  entradaFeaturesYTarget.sort_index(inplace=True)  # Reordenando segun el indice (para facilitar el testIntegracion)
+  entradaFeaturesYTarget.to_csv(pathCsvIntermedio + ".entrada", index=True, sep='|')  # NO BORRAR: UTIL para testIntegracion
+
   if int(maxFilasEntrada) < entradaFeaturesYTarget.shape[0]:
+      print("entradaFeaturesYTarget (APLICANDO MAXIMO): " + str(entradaFeaturesYTarget.shape[0]) + " x " + str(
+          entradaFeaturesYTarget.shape[1]))
       entradaFeaturesYTarget = entradaFeaturesYTarget.sample(int(maxFilasEntrada), replace=False)
 
-  print("entradaFeaturesYTarget (APLICANDO MAXIMO): " + str(entradaFeaturesYTarget.shape[0]) + " x " + str(entradaFeaturesYTarget.shape[1]))
+  entradaFeaturesYTarget.sort_index(inplace=True)  # Reordenando segun el indice (para facilitar el testIntegracion)
+  entradaFeaturesYTarget.to_csv(pathCsvIntermedio + ".entrada_tras_maximo.csv", index=True, sep='|')  # NO BORRAR: UTIL para testIntegracion
+  entradaFeaturesYTarget.to_csv(pathCsvIntermedio + ".entrada_tras_maximo_INDICES.csv", columns=[])  # NO BORRAR: UTIL para testIntegracion
 
   num_nulos_por_fila_1 = np.logical_not(entradaFeaturesYTarget.isnull()).sum()
   indiceFilasFuturasTransformadas1 = entradaFeaturesYTarget.index.values  # DEFAULT
@@ -136,11 +144,11 @@ def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmp
       print("entradaFeaturesYTarget2:" + str(entradaFeaturesYTarget2.shape[0]) + " x " + str(entradaFeaturesYTarget2.shape[1]))
       #print(entradaFeaturesYTarget2.head())
 
-  print("Porcentaje de MISSING VALUES en cada columna del dataframe de entrada:")
+  print("Porcentaje de MISSING VALUES en cada columna del dataframe de entrada (mostramos las que superen 20%):")
   missing = pd.DataFrame(entradaFeaturesYTarget2.isnull().sum()).rename(columns={0: 'total'})
   missing['percent'] = missing['total'] / len(entradaFeaturesYTarget2)  # Create a percentage missing
   missing_df = missing.sort_values('percent', ascending=False)
-  missing_df = missing_df[missing_df['percent'] > 0]
+  missing_df = missing_df[missing_df['percent'] > 0.20]
   print(missing_df.to_string())  # .drop('TARGET')
 
   # print("Pasado o Futuro: Transformacion en la que borro filas. Por tanto, guardo el indice...")
@@ -491,7 +499,7 @@ def normalizarFeatures(featuresFichero, path_modelo_normalizador, dir_subgrupo_i
   featuresFichero = featuresFichero + 1.015815
 
   if modoTiempo == "pasado":
-      # Con el "normalizador COMPLEJO" solucionamos este bug: https://github.com/scikit-learn/scikit-learn/issues/14959
+      # Con el "normalizador COMPLEJO" solucionamos este bug: https://github.com/scikit-learn/scikit-learn/issues/14959  --> Aplicar los cambios indicados a:_/home/carloslinux/Desktop/PROGRAMAS/anaconda3/envs/BolsaPython/lib/python3.7/site-packages/sklearn/preprocessing/_data.py
       modelo_normalizador = make_pipeline(StandardScaler(with_std=False), PowerTransformer(method='yeo-johnson', standardize=True, copy=True), ).fit(featuresFichero) #COMPLEJO
       #modelo_normalizador = PowerTransformer(method='yeo-johnson', standardize=True, copy=True).fit(featuresFichero)
       pickle.dump(modelo_normalizador, open(path_modelo_normalizador, 'wb'))
@@ -504,7 +512,7 @@ def normalizarFeatures(featuresFichero, path_modelo_normalizador, dir_subgrupo_i
   featuresFicheroNorm = pd.DataFrame(data=modelo_normalizador.transform(featuresFichero), index=featuresFichero.index, columns=featuresFichero.columns)
 
   print("featuresFicheroNorm:" + str(featuresFicheroNorm.shape[0]) + " x " + str(featuresFicheroNorm.shape[1]))
-  # featuresFicheroNorm.to_csv(pathCsvIntermedio + "_TEMP_NORM01", index=True, sep='|')  # UTIL para testIntegracion
+  featuresFicheroNorm.to_csv(pathCsvIntermedio + ".normalizado.csv", index=True, sep='|')  # UTIL para testIntegracion
 
   if modoDebug and modoTiempo == "pasado":
     print("FUNCIONES DE DENSIDAD (normalizadas):")
@@ -594,7 +602,7 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, path_modelo_pca, path
                     numFeaturesAnterior = rfecv.n_features_
 
     # The "accuracy" scoring is proportional to the number of correct classifications
-    rfecv_modelo = RFECV(estimator=estimador_interno, step=3, min_features_to_select=4, cv=StratifiedKFold(n_splits=cv_todos, shuffle=True), scoring=rfecv_scoring, verbose=0, n_jobs=-1)
+    rfecv_modelo = RFECV(estimator=estimador_interno, step=rfecv_step, min_features_to_select=4, cv=StratifiedKFold(n_splits=cv_todos, shuffle=True), scoring=rfecv_scoring, verbose=0, n_jobs=-1)
     print("rfecv_modelo -> fit ...")
     targetsLista = targetsFichero["TARGET"].tolist()
     rfecv_modelo.fit(featuresFicheroNorm, targetsLista)
@@ -630,6 +638,7 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, path_modelo_pca, path
           if(rfecv_modelo.support_[i] == True):
               columnasSeleccionadas.append(columnas[i])
 
+
       # print("Mascara de features seleccionadas (rfecv_modelo.support_):")
       # print(rfecv_modelo.support_)
       # print("El ranking de importancia de las features (rfecv_modelo.ranking_) no distingue las features mas importantes dentro de las seleccionadas:")
@@ -637,7 +646,7 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, path_modelo_pca, path
 
       featuresFicheroNormElegidas = featuresFicheroNorm[columnasSeleccionadas]
       print("Features seleccionadas escritas en: " + pathCsvFeaturesElegidas)
-      featuresFicheroNormElegidas.to_csv(pathCsvFeaturesElegidas, index=False, sep='|')
+      featuresFicheroNormElegidas.head(1).to_csv(pathCsvFeaturesElegidas, index=False, sep='|')
 
       ########### PCA: base de funciones ortogonales (con combinaciones de features) ########
       if True:
@@ -645,7 +654,7 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, path_modelo_pca, path
 
           if modoTiempo == "pasado":
               print("Usando PCA, creamos una NUEVA BASE DE FEATURES ORTOGONALES y cogemos las que tengan un impacto agregado sobre el X% de la varianza del target. Descartamos el resto.")
-              # modelo_pca_subgrupo = PCA(n_components=varianzaAcumuladaDeseada, svd_solver='full')  # Variaza acumulada sobre el target
+              #modelo_pca_subgrupo = PCA(n_components=varianzaAcumuladaDeseada, svd_solver='full')  # Variaza acumulada sobre el target
               modelo_pca_subgrupo = PCA(n_components='mle', svd_solver='full')  # Metodo "MLE de Minka": https://vismod.media.mit.edu/tech-reports/TR-514.pdf
               # modelo_pca_subgrupo = TSNE(n_components=2, perplexity=30.0, early_exaggeration=12.0, learning_rate=200.0,
               #                            n_iter=1000, n_iter_without_progress=300, min_grad_norm=1e-07,

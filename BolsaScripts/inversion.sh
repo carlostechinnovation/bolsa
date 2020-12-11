@@ -94,7 +94,7 @@ do
 done 9< <( find ${DIR_FUT_SUBGRUPOS} -type f -exec printf '%s\0' {} + )
 
 # En la carpeta DROPBOX, coge el CSV más reciente de predicciones (su nombre es 202XMMDD) y crea un fichero llamado 202XMMDD.html con toda la info que encuentre de ese dia. Ademas, le añade la info de CALIDAD.csv que esta aparte
-$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/InversionJuntarPrediccionesDeUnDia.py" "${DIR_DROPBOX}" "${DIR_DROPBOX}/ANALISIS/CALIDAD.csv" >> ${LOG_INVERSION}
+$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/InversionJuntarPrediccionesDeUnDia.py" "${DIR_DROPBOX}" "${DIR_DROPBOX}/ANALISIS/CALIDAD.csv" "${DIR_CODIGOS_CARLOS}BolsaJava/src/main/resources/Bolsa_Subgrupos_Descripcion.txt" >> ${LOG_INVERSION}
 
 
 ################################## GITHUB: commit and push##############################################################

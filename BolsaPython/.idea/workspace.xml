@@ -2,10 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="22edbd2f-b3d9-42f0-a7dd-659033ab601a" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/main/java/c40X/subgrupos/CrearDatasetsSubgrupos.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/main/java/c40X/subgrupos/CrearDatasetsSubgrupos.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/main/java/c10X/brutos/YahooFinance02Parsear.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/main/java/c10X/brutos/YahooFinance02Parsear.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/main/resources/desconocidos.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/main/resources/desconocidos.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bolsa/C5NormalizarYReducirDatasetSubgrupo.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/C5NormalizarYReducirDatasetSubgrupo.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaScripts/parametros.config" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/parametros.config" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bolsa/C6CreadorModelosDeSubgrupo.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/C6CreadorModelosDeSubgrupo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bolsa/InversionJuntarPrediccionesDeUnDia.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/InversionJuntarPrediccionesDeUnDia.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bolsa/prueba.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/TestIntegracionUtilidad1.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BolsaScripts/inversion.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/inversion.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BolsaScripts/testIntegracion.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/testIntegracion.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,7 +56,7 @@
       <recent name="C:\DATOS\GITHUB_REPOS\bolsa\BolsaPython\bolsa" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.C5SeleccionDeVariablesDeSubgrupo">
+  <component name="RunManager" selected="Python.TestIntegracionUtilidad1">
     <configuration name="06_redneuronal_lstm_2" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="BolsaPython" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -65,27 +70,6 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/ejemplos/06_redneuronal_lstm_2.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="06_redneuronal_lstm_3" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="BolsaPython" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/ejemplos" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/ejemplos/06_redneuronal_lstm_3.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -128,7 +112,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/bolsa/C5NormalizarYReducirDatasetSubgrupo.py" />
-      <option name="PARAMETERS" value="/bolsa/pasado/subgrupos/SG_48/ pasado 40 10000" />
+      <option name="PARAMETERS" value="/bolsa/pasado/subgrupos/SG_46/ pasado 40 8000" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -149,7 +133,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/bolsa/C6CreadorModelosDeSubgrupo.py" />
-      <option name="PARAMETERS" value="/bolsa/futuro/subgrupos/SG_9/ futuro 0" />
+      <option name="PARAMETERS" value="/bolsa/pasado/subgrupos/SG_49/ pasado 0" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -191,7 +175,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/bolsa/InversionJuntarPrediccionesDeUnDia.py" />
-      <option name="PARAMETERS" value="$USER_HOME$/Dropbox/BOLSA_PREDICTOR/ $USER_HOME$/Dropbox/BOLSA_PREDICTOR/ANALISIS/CALIDAD.csv" />
+      <option name="PARAMETERS" value="$USER_HOME$/Dropbox/BOLSA_PREDICTOR/ $USER_HOME$/Dropbox/BOLSA_PREDICTOR/ANALISIS/CALIDAD.csv $PROJECT_DIR$/../BolsaJava/src/main/resources/Bolsa_Subgrupos_Descripcion.txt" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -234,6 +218,48 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/bolsa/InversionUtilsPosteriori.py" />
       <option name="PARAMETERS" value="$USER_HOME$/Dropbox/BOLSA_PREDICTOR/ $USER_HOME$/Dropbox/BOLSA_PREDICTOR/ANALISIS/ 13 4 5 1 5 5" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TestIntegracionUtilidad1" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="BolsaPython" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/bolsa" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/bolsa/TestIntegracionUtilidad1.py" />
+      <option name="PARAMETERS" value="&quot;/bolsa/pasado/subgrupos/SG_46/intermedio.csv.normalizado.csv&quot; &quot;/bolsa/pasado/subgrupos/SG_46/intermedio.csv.entrada_tras_maximo.csv&quot; &quot;ACAM&quot; &quot;/bolsa/pasado/subgrupos/SG_46/intermedio.csv.normalizado.csv.cruzado.csv&quot;" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="prueba" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="BolsaPython" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/bolsa" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/bolsa/prueba.py" />
+      <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -291,17 +317,19 @@
       <item itemvalue="Python.InversionUtilsPosteriori" />
       <item itemvalue="Python.InversionUtils" />
       <item itemvalue="Python.pruebas" />
-      <item itemvalue="Python.06_redneuronal_lstm_3" />
       <item itemvalue="Python.07_timeseries_weather_forecasting" />
       <item itemvalue="Python.InversionJuntarPrediccionesDeUnDia" />
       <item itemvalue="Python.pruebaprofiling" />
+      <item itemvalue="Python.prueba" />
+      <item itemvalue="Python.TestIntegracionUtilidad1" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.TestIntegracionUtilidad1" />
         <item itemvalue="Python.InversionJuntarPrediccionesDeUnDia" />
+        <item itemvalue="Python.prueba" />
         <item itemvalue="Python.pruebaprofiling" />
         <item itemvalue="Python.07_timeseries_weather_forecasting" />
-        <item itemvalue="Python.06_redneuronal_lstm_3" />
       </list>
     </recent_temporary>
   </component>
@@ -366,10 +394,10 @@
     <option name="LAST_COMMIT_MESSAGE" value="Machine Learning - Ejemplo" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="177" y="407" width="1396" height="673" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1606769225679">
+    <state x="177" y="407" width="1396" height="673" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1607725850593">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
-    <state x="177" y="407" width="1396" height="673" key="#com.intellij.execution.impl.EditConfigurationsDialog/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1606769225679" />
+    <state x="177" y="407" width="1396" height="673" key="#com.intellij.execution.impl.EditConfigurationsDialog/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1607725850593" />
     <state x="65" y="24" width="1301" height="744" key="#com.intellij.execution.impl.EditConfigurationsDialog/65.24.1301.744@65.24.1301.744" timestamp="1603974430974" />
     <state width="1428" height="466" key="DebuggerActiveHint" timestamp="1606555353929">
       <screen x="65" y="24" width="1855" height="1056" />
@@ -379,144 +407,91 @@
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
     <state x="660" y="472" key="FileChooserDialogImpl/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1605442259947" />
-    <state width="1611" height="461" key="GridCell.Tab.0.bottom" timestamp="1606769230324">
+    <state width="1330" height="310" key="GridCell.Tab.0.bottom" timestamp="1607726990297">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
     <state width="1855" height="312" key="GridCell.Tab.0.bottom/1920.0.1920.1080/65.24.1855.1056@1920.0.1920.1080" timestamp="1604872854138" />
-    <state width="1611" height="461" key="GridCell.Tab.0.bottom/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1606769230324" />
+    <state width="1330" height="310" key="GridCell.Tab.0.bottom/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1607726990297" />
     <state width="1278" height="159" key="GridCell.Tab.0.bottom/65.24.1301.744@65.24.1301.744" timestamp="1604004290614" />
-    <state width="1611" height="461" key="GridCell.Tab.0.center" timestamp="1606769230323">
+    <state width="1330" height="310" key="GridCell.Tab.0.center" timestamp="1607726990297">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
     <state width="1855" height="312" key="GridCell.Tab.0.center/1920.0.1920.1080/65.24.1855.1056@1920.0.1920.1080" timestamp="1604872854138" />
-    <state width="1611" height="461" key="GridCell.Tab.0.center/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1606769230323" />
+    <state width="1330" height="310" key="GridCell.Tab.0.center/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1607726990297" />
     <state width="1278" height="159" key="GridCell.Tab.0.center/65.24.1301.744@65.24.1301.744" timestamp="1604004290614" />
-    <state width="1611" height="461" key="GridCell.Tab.0.left" timestamp="1606769230323">
+    <state width="1330" height="310" key="GridCell.Tab.0.left" timestamp="1607726990297">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
     <state width="1855" height="312" key="GridCell.Tab.0.left/1920.0.1920.1080/65.24.1855.1056@1920.0.1920.1080" timestamp="1604872854138" />
-    <state width="1611" height="461" key="GridCell.Tab.0.left/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1606769230323" />
+    <state width="1330" height="310" key="GridCell.Tab.0.left/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1607726990297" />
     <state width="1278" height="159" key="GridCell.Tab.0.left/65.24.1301.744@65.24.1301.744" timestamp="1604004290614" />
-    <state width="1611" height="461" key="GridCell.Tab.0.right" timestamp="1606769230324">
+    <state width="1330" height="310" key="GridCell.Tab.0.right" timestamp="1607726990297">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
     <state width="1855" height="312" key="GridCell.Tab.0.right/1920.0.1920.1080/65.24.1855.1056@1920.0.1920.1080" timestamp="1604872854138" />
-    <state width="1611" height="461" key="GridCell.Tab.0.right/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1606769230324" />
+    <state width="1330" height="310" key="GridCell.Tab.0.right/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1607726990297" />
     <state width="1278" height="159" key="GridCell.Tab.0.right/65.24.1301.744@65.24.1301.744" timestamp="1604004290614" />
-    <state width="1344" height="216" key="GridCell.Tab.1.bottom" timestamp="1606769132881">
+    <state width="1330" height="310" key="GridCell.Tab.1.bottom" timestamp="1607726990297">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
     <state width="1855" height="312" key="GridCell.Tab.1.bottom/1920.0.1920.1080/65.24.1855.1056@1920.0.1920.1080" timestamp="1604872858385" />
-    <state width="1344" height="216" key="GridCell.Tab.1.bottom/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1606769132881" />
+    <state width="1330" height="310" key="GridCell.Tab.1.bottom/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1607726990297" />
     <state width="1278" height="356" key="GridCell.Tab.1.bottom/65.24.1301.744@65.24.1301.744" timestamp="1603375491725" />
-    <state width="1344" height="216" key="GridCell.Tab.1.center" timestamp="1606769132881">
+    <state width="1330" height="310" key="GridCell.Tab.1.center" timestamp="1607726990297">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
     <state width="1855" height="312" key="GridCell.Tab.1.center/1920.0.1920.1080/65.24.1855.1056@1920.0.1920.1080" timestamp="1604872858385" />
-    <state width="1344" height="216" key="GridCell.Tab.1.center/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1606769132881" />
+    <state width="1330" height="310" key="GridCell.Tab.1.center/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1607726990297" />
     <state width="1278" height="356" key="GridCell.Tab.1.center/65.24.1301.744@65.24.1301.744" timestamp="1603375491723" />
-    <state width="1344" height="216" key="GridCell.Tab.1.left" timestamp="1606769132881">
+    <state width="1330" height="310" key="GridCell.Tab.1.left" timestamp="1607726990297">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
     <state width="1855" height="312" key="GridCell.Tab.1.left/1920.0.1920.1080/65.24.1855.1056@1920.0.1920.1080" timestamp="1604872858385" />
-    <state width="1344" height="216" key="GridCell.Tab.1.left/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1606769132881" />
+    <state width="1330" height="310" key="GridCell.Tab.1.left/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1607726990297" />
     <state width="1278" height="356" key="GridCell.Tab.1.left/65.24.1301.744@65.24.1301.744" timestamp="1603375491722" />
-    <state width="1344" height="216" key="GridCell.Tab.1.right" timestamp="1606769132881">
+    <state width="1330" height="310" key="GridCell.Tab.1.right" timestamp="1607726990297">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
     <state width="1855" height="312" key="GridCell.Tab.1.right/1920.0.1920.1080/65.24.1855.1056@1920.0.1920.1080" timestamp="1604872858385" />
-    <state width="1344" height="216" key="GridCell.Tab.1.right/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1606769132881" />
+    <state width="1330" height="310" key="GridCell.Tab.1.right/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1607726990297" />
     <state width="1278" height="356" key="GridCell.Tab.1.right/65.24.1301.744@65.24.1301.744" timestamp="1603375491724" />
     <state x="809" y="208" width="900" height="728" key="SettingsEditor" timestamp="1605878108058">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
     <state x="809" y="208" width="900" height="728" key="SettingsEditor/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1605878108058" />
-    <state width="927" height="542" key="XDebugger.FullValuePopup" timestamp="1606557985087">
+    <state width="927" height="542" key="XDebugger.FullValuePopup" timestamp="1607344005885">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
-    <state width="927" height="542" key="XDebugger.FullValuePopup/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1606557985087" />
+    <state width="927" height="542" key="XDebugger.FullValuePopup/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1607344005885" />
+    <state x="509" y="279" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2" timestamp="1607542529637">
+      <screen x="65" y="24" width="1855" height="1056" />
+    </state>
+    <state x="509" y="279" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1607542529636" />
+    <state x="685" y="298" width="615" height="480" key="find.popup" timestamp="1607337861351">
+      <screen x="65" y="24" width="1855" height="1056" />
+    </state>
+    <state x="685" y="298" width="615" height="480" key="find.popup/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1607337861351" />
     <state x="655" y="185" width="670" height="676" key="search.everywhere.popup" timestamp="1605309106353">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
     <state x="655" y="185" width="670" height="676" key="search.everywhere.popup/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1605309106353" />
+    <state x="553" y="496" width="982" height="168" key="vcs.readOnlyHandler.ReadOnlyStatusDialog" timestamp="1607530358577">
+      <screen x="65" y="24" width="1855" height="1056" />
+    </state>
+    <state x="553" y="496" width="982" height="168" key="vcs.readOnlyHandler.ReadOnlyStatusDialog/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1607530358577" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/bolsa/InversionUtilsPosteriori.py</url>
-          <line>458</line>
-          <option name="timeStamp" value="7" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/bolsa/C6CreadorModelosDeSubgrupo.py</url>
-          <line>418</line>
-          <option name="timeStamp" value="31" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/bolsa/FeaturesAnalisisPosteriori.py</url>
-          <line>112</line>
-          <option name="timeStamp" value="67" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/bolsa/C5NormalizarYReducirDatasetSubgrupo.py</url>
-          <line>400</line>
-          <option name="timeStamp" value="69" />
+          <line>636</line>
+          <option name="timeStamp" value="165" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/bolsa/C6CreadorModelosDeSubgrupo.py</url>
-          <line>142</line>
-          <option name="timeStamp" value="79" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/bolsa/FeaturesAnalisisPosteriori.py</url>
-          <line>57</line>
-          <option name="timeStamp" value="82" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/bolsa/C6CreadorModelosDeSubgrupo.py</url>
-          <line>315</line>
-          <option name="timeStamp" value="85" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/bolsa/C6CreadorModelosDeSubgrupo.py</url>
-          <line>285</line>
-          <option name="timeStamp" value="91" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/bolsa/C6CreadorModelosDeSubgrupo.py</url>
-          <line>938</line>
-          <option name="timeStamp" value="94" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/bolsa/C6CreadorModelosDeSubgrupo.py</url>
-          <line>935</line>
-          <option name="timeStamp" value="95" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/bolsa/InversionJuntarPrediccionesDeUnDia.py</url>
-          <line>83</line>
-          <option name="timeStamp" value="136" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/bolsa/C5NormalizarYReducirDatasetSubgrupo.py</url>
-          <line>628</line>
-          <option name="timeStamp" value="140" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/bolsa/C5NormalizarYReducirDatasetSubgrupo.py</url>
-          <line>667</line>
-          <option name="timeStamp" value="142" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/bolsa/C5NormalizarYReducirDatasetSubgrupo.py</url>
-          <line>99</line>
-          <option name="timeStamp" value="146" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/bolsa/C5NormalizarYReducirDatasetSubgrupo.py</url>
-          <line>96</line>
-          <option name="timeStamp" value="147" />
+          <url>file://$PROJECT_DIR$/bolsa/TestIntegracionUtilidad1.py</url>
+          <line>29</line>
+          <option name="timeStamp" value="172" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
