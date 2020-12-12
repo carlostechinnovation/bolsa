@@ -235,7 +235,7 @@ cat "${DIR_LOGS}"$(ls ${DIR_LOGS} | grep "pasado") | grep "base_estimator"    >>
 echo -e "---- PASADO (test, lista directa) ---"    >> ${LOG_VALIDADOR}
 cat "${DIR_LOGS}"$(ls ${DIR_LOGS} | grep "pasado") | grep "Modelo ganador"  | grep 'METRICA'   >> ${LOG_VALIDADOR}
 echo -e "---- FUTURO (fut1-fut2, lista inversa) ---"    >> ${LOG_VALIDADOR}
-cat "${LOG_VALIDADOR}" | grep "Porcentaje aciertos"   >> ${LOG_VALIDADOR}
+cat "${LOG_VALIDADOR}" | grep "Porcentaje aciertos"  | sed -e "s/INFO c70x.validacion.Validador  - FUTURO -> PRECISION //g"  | sed -e "s/ de elementos PREDICHOS con TARGET=1//g" | sed -e "s/_COMPLETO_PREDICCION.csv//g"  | sed -e "s/Porcentaje aciertos subgrupo //g"  | sed -e "s/.*\[main\] - .*_//g" >> ${LOG_VALIDADOR}
 
 echo -e "--------- SOBREENTRENAMIENTO OBTENIDO (overfitting): -------------" >> ${LOG_VALIDADOR}
 java -jar ${PATH_JAR} --class "coordinador.Principal" "c70X.validacion.Validador" "${VELAS_RETROCESO}" "${DIR_VALIDACION}" "${S}" "${X}" "${R}" "${M}" "MEDIR_OVERFITTING" "${LOG_VALIDADOR}" 2>>${LOG_VALIDADOR} 1>>${LOG_VALIDADOR}
