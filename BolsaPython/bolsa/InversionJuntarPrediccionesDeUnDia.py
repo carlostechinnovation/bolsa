@@ -2,6 +2,7 @@ import sys
 import os
 import pandas as pd
 from IPython.display import HTML
+import html, urllib3
 
 ##################### EXPLICACION #####################
 # Entradas:
@@ -92,9 +93,14 @@ print("Numero de filas en fichero juntos: " + str(juntos.shape[0]))
 print("Aplicando umbral en target_prob para coger solo las altas probabilidades...")
 juntos = juntos[juntos['TARGET_PREDICHO_PROB'] >= targetPredichoProbUmbral]
 print("Numero de filas en fichero juntos con alta probabilidad: " + str(juntos.shape[0]))
-print("Reordenando columnas...")
 
-juntos=juntos.reindex(['subgrupo', 'descripcion', 'calidadMediana', 'empresa', 'mercado', 'TARGET_PREDICHO_PROB', 'NumAccionesPor1000dolares'],axis=1)
+# Ponemos link de FINVIZ en el nombre de la empresa, para poder hacer click
+#meterLinkFinviz = lambda x: html.escape("""'<a href="www.google.es">" + x["empresa"]+"</a>'""")
+#juntos["empresa"] = meterLinkFinviz(juntos)
+
+
+print("Reordenando columnas...")
+juntos = juntos.reindex(['subgrupo', 'descripcion', 'calidadMediana', 'empresa', 'mercado', 'TARGET_PREDICHO_PROB', 'NumAccionesPor1000dolares'],axis=1)
 pathSalida = entradaPathDirDropbox + str(fecha) + ".html"
 print("Escribiendo en: " + pathSalida)
 datosEnHtml = HTML(juntos.to_html(index=False, classes='table table-striped table-bordered table-hover table-condensed'))

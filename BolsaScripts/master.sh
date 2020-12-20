@@ -244,7 +244,7 @@ java -jar ${PATH_JAR} --class "coordinador.Principal" "c70X.validacion.Generador
 
 echo -e "Actualizando informe HTML de uso de FEATURES (mirando el pasado)..." >> ${LOG_MASTER}
 DIR_SUBGRUPOS_PASADO=$(echo ${DIR_SUBGRUPOS} | sed -e "s/futuro/pasado/g")
-$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/FeaturesAnalisisPosteriori.py" "${DIR_SUBGRUPOS_PASADO}" "/bolsa/pasado/matriz_features.html" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
+$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/FeaturesAnalisisPosteriori.py" "${DIR_SUBGRUPOS_PASADO}" "/bolsa/pasado/matriz_features_antes_de_pca.html" "/bolsa/pasado/matriz_features.html" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 
 
 echo -e "MASTER - FIN: "$( date "+%Y%m%d%H%M%S" )

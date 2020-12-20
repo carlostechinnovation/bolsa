@@ -63,7 +63,7 @@ public class GeneradorInformeHtml implements Serializable {
 		MY_LOGGER.setLevel(Level.INFO);
 		MY_LOGGER.info("INICIO");
 
-		String dirTiempo = DIR_PASADO; // DEFAULT
+		String dirTiempo = DIR_FUTURO; // DEFAULT
 
 		if (args.length == 0) {
 			MY_LOGGER.info("Sin parametros de entrada. Rellenamos los DEFAULT...");
@@ -96,9 +96,10 @@ public class GeneradorInformeHtml implements Serializable {
 
 		htmlString = htmlString.replace("$title", title);
 		htmlString = htmlString.replace("$body", body);
-		File newHtmlFile = new File(dirTiempo + "informe_datos" + ".html");
+		String pathSalida = dirTiempo + "informe_datos" + ".html";
+		MY_LOGGER.info("Escribiendo: " + pathSalida);
+		File newHtmlFile = new File(pathSalida);
 		FileUtils.writeStringToFile(newHtmlFile, htmlString, "UTF-8", false);
-
 	}
 
 	/**
@@ -276,8 +277,11 @@ public class GeneradorInformeHtml implements Serializable {
 	public static String analizarCsv(String pathCsv) throws IOException {
 
 		String out = "";
+
+		MY_LOGGER.debug("Analizando: " + pathCsv);
+
 		File f = new File(pathCsv);
-		if (pathCsv != null && !pathCsv.isEmpty() && f.exists()) {
+		if (pathCsv != null && !pathCsv.isEmpty() && f.exists() && f.length() > 0) {
 			long numLineas = Files.lines(Paths.get(pathCsv)).count();
 
 			Object o1 = Files.lines(Paths.get(pathCsv)).map(s -> s.split(","));

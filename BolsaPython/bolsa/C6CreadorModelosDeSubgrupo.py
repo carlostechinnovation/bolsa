@@ -406,7 +406,7 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
             print((datetime.datetime.now()).strftime("%Y%m%d_%H%M%S") + " ---------------- RESAMPLING con SMOTE (porque supera umbral = " + str(umbralNecesarioCompensarDesbalanceo) + ") --------")
             print(
                 "Resampling con SMOTE del vector de TRAINING (pero no a TEST ni a VALIDATION) según: " + "https://machinelearningmastery.com/combine-oversampling-and-undersampling-for-imbalanced-classification/")
-            resample = SMOTEENN(sampling_strategy='not majority',  # A que clase se hara el undersampling
+            resample = SMOTEENN(sampling_strategy='minority',  # A que clase se hara el undersampling
                                 random_state=0, smote=None, enn=None, n_jobs=-1)
             print("SMOTE antes (mayoritaria + minoritaria): %d" % ds_train_f.shape[0])
             ds_train_f, ds_train_t = resample.fit_resample(ds_train_f, ds_train_t)

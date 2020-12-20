@@ -140,7 +140,7 @@ java -jar ${PATH_JAR} --class "coordinador.Principal" "testIntegracion.ParserCsv
 
 echo -e "<br><br>Capa 5 - Intermedio FEATURE SELECTION (RFE). Columnas elegidas: <br>" >> ${INFORME_OUT}
 echo "<b>">> ${INFORME_OUT}
-head -n 1 "${DIR_SUBGRUPOS}${SG_ANALIZADO}/FEATURES_ELEGIDAS.csv"  | sed -e "s/|/| /g" >> ${INFORME_OUT}
+head -n 1 "${DIR_SUBGRUPOS}${SG_ANALIZADO}/FEATURES_ELEGIDAS_RFECV.csv"  | sed -e "s/|/| /g" >> ${INFORME_OUT}
 echo "</b>">> ${INFORME_OUT}
 
 echo -e "<br><br>Capa 5 - Intermedio PCA. Se crea una base de funciones ortogonales como combinaciones lineales de las features de entrada. La matriz de pesos/fórmulas: <br><br>" >> ${INFORME_OUT}
