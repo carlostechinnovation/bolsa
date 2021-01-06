@@ -46,6 +46,8 @@ P_INICIO="${16}" #Periodo de entrenamiento (inicio)
 P_FIN="${17}" #Periodo de entrenamiento (fin)
 MAX_NUM_FEAT_REDUCIDAS="${18}"
 CAPA5_MAX_FILAS_ENTRADA="${19}"  # Maximo numero de filas permitido en entrada a capa 5 (por rendimiento)
+DINAMICA1="${20}" # Default = 1
+DINAMICA2="${21}" # Default = 1
 
 
 ################## FUNCIONES #############################################################
@@ -181,7 +183,7 @@ echo -e $( date '+%Y%m%d_%H%M%S' )" -------- Capa 3: VARIABLES ELABORADAS ------
 crearCarpetaSiNoExisteYVaciar "${DIR_ELABORADOS}"
 
 echo -e "Calculando elaborados y target..." >> ${LOG_MASTER}
-java -jar ${PATH_JAR} --class "coordinador.Principal" "c30X.elaborados.ConstructorElaborados" "${DIR_LIMPIOS}" "${DIR_ELABORADOS}" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" "${UMBRAL_SUBIDA_POR_VELA}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
+java -jar ${PATH_JAR} --class "coordinador.Principal" "c30X.elaborados.ConstructorElaborados" "${DIR_LIMPIOS}" "${DIR_ELABORADOS}" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" "${UMBRAL_SUBIDA_POR_VELA}" "${DINAMICA1}" "${DINAMICA2}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 
 echo -e "Elaborados (incluye la variable elaborada TARGET) ya calculados" >> ${LOG_MASTER}
 
@@ -200,7 +202,7 @@ if [ "$ACTIVAR_SG_Y_PREDICCION" = "S" ];  then
 	
 	echo -e $( date '+%Y%m%d_%H%M%S' )" -------- Capa 4: SUBGRUPOS -------------" >> ${LOG_MASTER}
 	crearCarpetaSiNoExisteYVaciarRecursivo "${DIR_SUBGRUPOS}"
-	java -jar ${PATH_JAR} --class "coordinador.Principal" "c40X.subgrupos.CrearDatasetsSubgrupos" "${DIR_ELABORADOS}" "${DIR_SUBGRUPOS}" "${MIN_COBERTURA_CLUSTER}" "${MIN_EMPRESAS_POR_CLUSTER}" "${DIR_TIEMPO}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
+	java -jar ${PATH_JAR} --class "coordinador.Principal" "c40X.subgrupos.CrearDatasetsSubgrupos" "${DIR_ELABORADOS}" "${DIR_SUBGRUPOS}" "${MIN_COBERTURA_CLUSTER}" "${MIN_EMPRESAS_POR_CLUSTER}" "${DIR_TIEMPO}" "${DINAMICA1}" "${DINAMICA2}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 
 	############  PARA CADA SUBGRUPO ###############################################################
 	

@@ -58,7 +58,7 @@ umbralCasosSuficientesClasePositiva = 50
 granProbTargetUno = 50  # De todos los target=1, nos quedaremos con los granProbTargetUno (en tanto por cien) MAS probables. Un valor de 100 o mayor anula este parámetro
 balancearConSmoteSoloTrain = True
 umbralFeaturesCorrelacionadas = 0.96  # Umbral aplicado para descartar features cuya correlacion sea mayor que él
-umbralNecesarioCompensarDesbalanceo = 9  # Umbral de desbalanceo clase positiva/negativa. Si se supera, es necesario hacer oversampling de minoritaria (SMOTE) o undersampling de mayoritaria (borrar filas)
+umbralNecesarioCompensarDesbalanceo = 1  # Umbral de desbalanceo clase positiva/negativa. Si se supera, es necesario hacer oversampling de minoritaria (SMOTE) o undersampling de mayoritaria (borrar filas)
 cv_todos = 10  # CROSS_VALIDATION: número de iteraciones. Sirve para evitar el overfitting
 fraccion_train = 0.75  # Fracción de datos usada para entrenar
 fraccion_test = 0.15  # Fracción de datos usada para testear (no es validación)
@@ -270,7 +270,7 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
     print("ift_minoritaria:" + str(ift_minoritaria.shape[0]) + " x " + str(ift_minoritaria.shape[1]))
 
     tasaDesbalanceoAntes = ift_mayoritaria.shape[0] / ift_minoritaria.shape[0]
-    print("Tasa de desbalanceo entre clases (antes de balancear) = " + str(ift_mayoritaria.shape[0]) + "/" + str(ift_minoritaria.shape[0]) + " = " + str(tasaDesbalanceoAntes))
+    print("Tasa de desbalanceo entre clases (antes de balancear INICIO) = " + str(ift_mayoritaria.shape[0]) + "/" + str(ift_minoritaria.shape[0]) + " = " + str(tasaDesbalanceoAntes))
     num_muestras_minoria = ift_minoritaria.shape[0]
 
     casosInsuficientes = (num_muestras_minoria < umbralCasosSuficientesClasePositiva)
@@ -392,14 +392,14 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         #         ds_train[nombreColumna] = np.power(ds_train[nombreColumna], 2)
         # ################################################################################################################
 
-        ########################### SMOTE-ENN (Oversamplig con SMOTE y undersampling con Edited Nearest Neighbours) ##################
+        ########################### SMOTE-ENN (Oversampling con SMOTE y undersampling con Edited Nearest Neighbours) ##################
 
         df_mayoritaria = ds_train_t[ds_train_t == False]  # En este caso los mayoritarios son los False
         df_minoritaria = ds_train_t[ds_train_t == True]
         print("df_mayoritaria:" + str(len(df_mayoritaria)))
         print("df_minoritaria:" + str(len(df_minoritaria)))
         tasaDesbalanceoAntes = len(df_mayoritaria) / len(df_minoritaria)
-        print("Tasa de desbalanceo entre clases (antes de balancear) = " + str(len(df_mayoritaria)) + " / " + str(len(df_minoritaria)) + " = " + str(tasaDesbalanceoAntes))
+        print("Tasa de desbalanceo entre clases (antes de balancear con SMOTE) = " + str(len(df_mayoritaria)) + " / " + str(len(df_minoritaria)) + " = " + str(tasaDesbalanceoAntes))
 
         balancearConSmoteSoloTrain = (tasaDesbalanceoAntes > umbralNecesarioCompensarDesbalanceo)  # Condicion para decidir si hacer SMOTE
         if balancearConSmoteSoloTrain == True:

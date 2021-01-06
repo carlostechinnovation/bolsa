@@ -95,11 +95,17 @@ public class CrearDatasetsSubgrupos implements Serializable {
 		String coberturaMinima = SubgruposUtils.MIN_COBERTURA_CLUSTER; // DEFAULT
 		String minEmpresasPorCluster = SubgruposUtils.MIN_EMPRESAS_POR_CLUSTER; // DEFAULT
 		String modoTiempo = BrutosUtils.PASADO; // DEFAULT
+		Integer filtroDinamico1 = ElaboradosUtils.DINAMICA1; // DEFAULT
+		Integer filtroDinamico2 = ElaboradosUtils.DINAMICA2; // DEFAULT
 
 		if (args.length == 0) {
 			MY_LOGGER.info("Sin parametros de entrada. Rellenamos los DEFAULT...");
-		} else if (args.length != 5) {
+		} else if (args.length != 7) {
+			MY_LOGGER.error("Total Parametros de entrada: " + args.length);
 			MY_LOGGER.error("Parametros de entrada incorrectos!!");
+			for (String param : args) {
+				MY_LOGGER.info("Param: " + param);
+			}
 			System.exit(-1);
 		} else {
 			directorioIn = args[0];
@@ -107,9 +113,12 @@ public class CrearDatasetsSubgrupos implements Serializable {
 			coberturaMinima = args[2];
 			minEmpresasPorCluster = args[3];
 			modoTiempo = args[4];
+			filtroDinamico1 = Integer.valueOf(args[5]);
+			filtroDinamico2 = Integer.valueOf(args[6]);
 		}
 
-		crearSubgruposYNormalizar(directorioIn, directorioOut, coberturaMinima, minEmpresasPorCluster, modoTiempo);
+		crearSubgruposYNormalizar(directorioIn, directorioOut, coberturaMinima, minEmpresasPorCluster, modoTiempo,
+				filtroDinamico1, filtroDinamico2);
 
 		MY_LOGGER.info("FIN");
 	}
@@ -125,7 +134,8 @@ public class CrearDatasetsSubgrupos implements Serializable {
 	 * @throws Exception
 	 */
 	public static void crearSubgruposYNormalizar(String directorioIn, String directorioOut, String coberturaMinima,
-			String minEmpresasPorCluster, String modoTiempo) throws Exception {
+			String minEmpresasPorCluster, String modoTiempo, Integer filtroDinamico1, Integer filtroDinamico2)
+			throws Exception {
 
 		// Debo leer el parámetro que me interese: de momento el market cap. En el
 		// futuro sería conveniente separar por sector y liquidez (volumen medio de 6
@@ -258,278 +268,311 @@ public class CrearDatasetsSubgrupos implements Serializable {
 				// QUE CONTIENE TODO
 				pathEmpresasTipo0.add(ficheroGestionado.getAbsolutePath());
 
-				// ------ SUBGRUPOS según MARKET CAP ------------
-				String mcStr = parametros.get("Market Cap");
-				Float marketCapValor = null;
-
-				if (mcStr != null && !mcStr.isEmpty() && !"-".equals(mcStr)) {
-
-					marketCapValor = Float.valueOf(mcStr);
-
-					// CLASIFICACIÓN DEL TIPO DE EMPRESA
-					if (marketCapValor < marketCap_nano_max)
-						pathEmpresasTipo6.add(ficheroGestionado.getAbsolutePath());
-					else if (marketCapValor < marketCap_micro_max)
-						pathEmpresasTipo5.add(ficheroGestionado.getAbsolutePath());
-					else if (marketCapValor < marketCap_small_max)
-						pathEmpresasTipo4.add(ficheroGestionado.getAbsolutePath());
-					else if (marketCapValor < marketCap_mid_max)
-						pathEmpresasTipo3.add(ficheroGestionado.getAbsolutePath());
-					else if (marketCapValor < marketCap_large_max)
-						pathEmpresasTipo2.add(ficheroGestionado.getAbsolutePath());
-					else
-						pathEmpresasTipo1.add(ficheroGestionado.getAbsolutePath());
-
-				} else {
-					MY_LOGGER.debug(ficheroGestionado.getAbsolutePath() + " -> Market Cap: " + mcStr);
+				String dinamica1Str = parametros.get("DINAMICA1");
+				String dinamica2Str = parametros.get("DINAMICA2");
+				Integer dinamica1 = 0;
+				if (dinamica1Str != null && !dinamica1Str.isEmpty()) {
+					dinamica1 = Integer.valueOf(dinamica1Str);
 				}
 
-				// ------ SUBGRUPOS según SECTOR ------------
-				String sectorStr = parametros.get("sector");
+				Integer dinamica2 = 0;
+				if (isNumeric(dinamica2Str)) {
+//					System.out.println("dinamica2Str: " + dinamica2Str);
+					dinamica2 = Integer.valueOf(dinamica2Str);
+				}
 
-				if (sectorStr != null && !sectorStr.isEmpty() && !"-".equals(sectorStr)) {
+				// FILTRO DINÁMICO 1 (para reducir el uso de SMOTEENN):
+				// Se aplica el filtro dinámico a todos los subgrupos excepto al grupo 0 (porque
+				// es la base donde estarán todas las empresas con las que comparar
+				// Se añade la empresa sólo si el filtro dinámico está desactivado, o si el
+				// filtro dinámico está activado + el parámetro calculado llamado dinamica1=1 en
+				// la fila 0 de la empresa
 
-					if (sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_BM)
-							|| sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_UTIL)
-							|| sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_ENERGY)) {
-						pathEmpresasTipo7.add(ficheroGestionado.getAbsolutePath());
-					} else if (sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_CONG)) {
-						pathEmpresasTipo8.add(ficheroGestionado.getAbsolutePath());
-					} else if (sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_CONSGO)
-							|| sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_CONSCY)
-							|| sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_CONSDEF)) {
-						pathEmpresasTipo9.add(ficheroGestionado.getAbsolutePath());
-					} else if (sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_FIN)) {
-						pathEmpresasTipo10.add(ficheroGestionado.getAbsolutePath());
-					} else if (sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_HC)) {
-						pathEmpresasTipo11.add(ficheroGestionado.getAbsolutePath());
-					} else if (sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_IG)) {
-						pathEmpresasTipo12.add(ficheroGestionado.getAbsolutePath());
-					} else if (sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_SERV)) {
-						pathEmpresasTipo13.add(ficheroGestionado.getAbsolutePath());
-					} else if (sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_TECH)
-							|| sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_COMM)) {
-						pathEmpresasTipo14.add(ficheroGestionado.getAbsolutePath());
-					} else if (sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_RE)) {
-						pathEmpresasTipo16.add(ficheroGestionado.getAbsolutePath());
-					} else {
-						MY_LOGGER.warn(ficheroGestionado.getAbsolutePath() + " -> Sector raro: " + sectorStr);
+				// FILTRO DINÁMICO 2 (para reducir el uso de SMOTEENN):
+				// Se aplica el filtro dinámico a todos los subgrupos excepto al grupo 0 (porque
+				// es la base donde estarán todas las empresas con las que comparar
+				// Se añade la empresa sólo si el filtro dinámico está desactivado, o si el
+				// filtro dinámico está activado + el parámetro calculado llamado dinamica2=1 en
+				// la fila 0 de la empresa
+				if (filtroDinamico1 == 0 || (filtroDinamico1 == 1 && dinamica1 == 1)) {
+					if (filtroDinamico2 == 0 || (filtroDinamico2 == 1 && dinamica2 == 1)) {
+
+						// ------ SUBGRUPOS según MARKET CAP ------------
+						String mcStr = parametros.get("Market Cap");
+						Float marketCapValor = null;
+
+						if (mcStr != null && !mcStr.isEmpty() && !"-".equals(mcStr)) {
+
+							marketCapValor = Float.valueOf(mcStr);
+
+							// CLASIFICACIÓN DEL TIPO DE EMPRESA
+							if (marketCapValor < marketCap_nano_max)
+								pathEmpresasTipo6.add(ficheroGestionado.getAbsolutePath());
+							else if (marketCapValor < marketCap_micro_max)
+								pathEmpresasTipo5.add(ficheroGestionado.getAbsolutePath());
+							else if (marketCapValor < marketCap_small_max)
+								pathEmpresasTipo4.add(ficheroGestionado.getAbsolutePath());
+							else if (marketCapValor < marketCap_mid_max)
+								pathEmpresasTipo3.add(ficheroGestionado.getAbsolutePath());
+							else if (marketCapValor < marketCap_large_max)
+								pathEmpresasTipo2.add(ficheroGestionado.getAbsolutePath());
+							else
+								pathEmpresasTipo1.add(ficheroGestionado.getAbsolutePath());
+
+						} else {
+							MY_LOGGER.debug(ficheroGestionado.getAbsolutePath() + " -> Market Cap: " + mcStr);
+						}
+
+						// ------ SUBGRUPOS según SECTOR ------------
+						String sectorStr = parametros.get("sector");
+
+						if (sectorStr != null && !sectorStr.isEmpty() && !"-".equals(sectorStr)) {
+
+							if (sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_BM)
+									|| sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_UTIL)
+									|| sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_ENERGY)) {
+								pathEmpresasTipo7.add(ficheroGestionado.getAbsolutePath());
+							} else if (sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_CONG)) {
+								pathEmpresasTipo8.add(ficheroGestionado.getAbsolutePath());
+							} else if (sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_CONSGO)
+									|| sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_CONSCY)
+									|| sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_CONSDEF)) {
+								pathEmpresasTipo9.add(ficheroGestionado.getAbsolutePath());
+							} else if (sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_FIN)) {
+								pathEmpresasTipo10.add(ficheroGestionado.getAbsolutePath());
+							} else if (sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_HC)) {
+								pathEmpresasTipo11.add(ficheroGestionado.getAbsolutePath());
+							} else if (sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_IG)) {
+								pathEmpresasTipo12.add(ficheroGestionado.getAbsolutePath());
+							} else if (sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_SERV)) {
+								pathEmpresasTipo13.add(ficheroGestionado.getAbsolutePath());
+							} else if (sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_TECH)
+									|| sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_COMM)) {
+								pathEmpresasTipo14.add(ficheroGestionado.getAbsolutePath());
+							} else if (sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_RE)) {
+								pathEmpresasTipo16.add(ficheroGestionado.getAbsolutePath());
+							} else {
+								MY_LOGGER.warn(ficheroGestionado.getAbsolutePath() + " -> Sector raro: " + sectorStr);
+							}
+
+						} else {
+							MY_LOGGER.warn(ficheroGestionado.getAbsolutePath() + " -> PER desconocido: " + sectorStr);
+						}
+
+						// ------ SUBGRUPOS según PER ------------
+						String perStr = parametros.get("P/E");
+						Float per = null;
+
+						if (perStr != null && !perStr.isEmpty() && !"-".equals(perStr)) {
+							per = Float.valueOf(perStr);
+
+							if (per > 0 && per < PER_umbral1) {
+								pathEmpresasTipo17.add(ficheroGestionado.getAbsolutePath());
+							} else if (per >= PER_umbral1 && per < PER_umbral2) {
+								pathEmpresasTipo18.add(ficheroGestionado.getAbsolutePath());
+							} else if (per >= PER_umbral2 && per < PER_umbral3) {
+								pathEmpresasTipo19.add(ficheroGestionado.getAbsolutePath());
+							} else {
+								pathEmpresasTipo20.add(ficheroGestionado.getAbsolutePath());
+							}
+
+						} else {
+							pathEmpresasTipo21.add(ficheroGestionado.getAbsolutePath());
+						}
+
+						// ------ SUBGRUPOS según Debt/Eq ------------
+						String debtEqStr = parametros.get("Debt/Eq");
+						Float debtEq = null;
+
+						if (debtEqStr != null && !debtEqStr.isEmpty() && !"-".equals(debtEqStr)) {
+							debtEq = Float.valueOf(debtEqStr);
+
+							if (debtEq > 0 && debtEq < DE_umbral1) {
+								pathEmpresasTipo22.add(ficheroGestionado.getAbsolutePath());
+							} else if (debtEq >= DE_umbral1 && debtEq < DE_umbral2) {
+								pathEmpresasTipo23.add(ficheroGestionado.getAbsolutePath());
+							} else if (debtEq >= DE_umbral2 && debtEq < DE_umbral3) {
+								pathEmpresasTipo24.add(ficheroGestionado.getAbsolutePath());
+							} else {
+								pathEmpresasTipo25.add(ficheroGestionado.getAbsolutePath());
+								// MY_LOGGER.warn("Empresa = " + empresa + " con Debt/Eq = " + debtEqStr);
+							}
+
+						} else {
+							pathEmpresasTipo26.add(ficheroGestionado.getAbsolutePath());
+							// MY_LOGGER.warn("Empresa = " + empresa + " con Debt/Eq = " + debtEqStr);
+						}
+
+						// ------ SUBGRUPOS según ratio de SMA50 de precio ------------
+						String ratioSMA50PrecioStr = parametros.get("RATIO_SMA_50_PRECIO");
+						Integer ratioSMA50Precio = null;
+
+						if (ratioSMA50PrecioStr != null && !ratioSMA50PrecioStr.contains("null")
+								&& !ratioSMA50PrecioStr.isEmpty() && !"-".equals(ratioSMA50PrecioStr)) {
+							ratioSMA50Precio = Integer.valueOf(ratioSMA50PrecioStr);
+
+							if (ratioSMA50Precio > 0 && ratioSMA50Precio < SMA50RATIOPRECIO_umbral1) {
+								pathEmpresasTipo27.add(ficheroGestionado.getAbsolutePath());
+							} else if (ratioSMA50Precio >= SMA50RATIOPRECIO_umbral1
+									&& ratioSMA50Precio < SMA50RATIOPRECIO_umbral2) {
+								pathEmpresasTipo28.add(ficheroGestionado.getAbsolutePath());
+							} else if (ratioSMA50Precio >= SMA50RATIOPRECIO_umbral2
+									&& ratioSMA50Precio < SMA50RATIOPRECIO_umbral3) {
+								pathEmpresasTipo29.add(ficheroGestionado.getAbsolutePath());
+							} else {
+								pathEmpresasTipo30.add(ficheroGestionado.getAbsolutePath());
+								// MY_LOGGER.warn("Empresa = " + empresa + " con RATIO_SMA_50_PRECIO = " +
+								// ratioSMA50PrecioStr);
+							}
+
+						} else {
+							pathEmpresasTipo31.add(ficheroGestionado.getAbsolutePath());
+							// MY_LOGGER.warn("Empresa = " + empresa + " con RATIO_SMA_50_PRECIO = " +
+							// ratioSMA50PrecioStr);
+						}
+
+						// ------ SUBGRUPOS según GEOGRAFIA ------------
+						String geoStr = parametros.get("geo");
+
+						if (geoStr != null && !geoStr.isEmpty() && !"-".equals(geoStr)) {
+
+							if (geoStr.equalsIgnoreCase("china")) {
+								pathEmpresasTipo32.add(ficheroGestionado.getAbsolutePath());
+							} else if (geoStr.equalsIgnoreCase("USA")) {
+								pathEmpresasTipo33.add(ficheroGestionado.getAbsolutePath());
+							} else if (geoStr.equalsIgnoreCase("India")) {
+								pathEmpresasTipo34.add(ficheroGestionado.getAbsolutePath());
+							} else {
+								pathEmpresasTipo35.add(ficheroGestionado.getAbsolutePath());
+							}
+
+						} else {
+							pathEmpresasTipo36.add(ficheroGestionado.getAbsolutePath());
+						}
+
+						// ------ SUBGRUPOS según INSTITUTIONAL OWN ------------
+						String instOwnStr = parametros.get("Inst Own");
+						Float instOwn = null;
+
+						if (instOwnStr != null && !instOwnStr.isEmpty() && !"-".equals(instOwnStr)) {
+							instOwn = Float.valueOf(instOwnStr);
+
+							if (instOwn > 0 && instOwn < IO_umbral1) {
+								pathEmpresasTipo37.add(ficheroGestionado.getAbsolutePath());
+							} else if (instOwn >= IO_umbral1 && instOwn < IO_umbral2) {
+								pathEmpresasTipo38.add(ficheroGestionado.getAbsolutePath());
+							} else if (instOwn >= IO_umbral2 && instOwn <= 100) {
+								pathEmpresasTipo39.add(ficheroGestionado.getAbsolutePath());
+							} else {
+								pathEmpresasTipo40.add(ficheroGestionado.getAbsolutePath());
+							}
+
+						} else {
+							pathEmpresasTipo40.add(ficheroGestionado.getAbsolutePath());
+						}
+
+						// ------ SUBGRUPOS según %Dividendo ------------
+						String pctDividendoStr = parametros.get("Dividend %");
+						Float pctDividendo = null;
+
+						if (pctDividendoStr != null && !pctDividendoStr.isEmpty()
+								&& !"-".equals(pctDividendoStr.replace("%", "").trim())) {
+							pctDividendo = Float.valueOf(pctDividendoStr.replace("%", "").trim());
+
+							if (pctDividendo > 0) {
+								pathEmpresasTipo41.add(ficheroGestionado.getAbsolutePath());
+							} else {
+								pathEmpresasTipo42.add(ficheroGestionado.getAbsolutePath());
+							}
+
+						} else {
+							pathEmpresasTipo42.add(ficheroGestionado.getAbsolutePath());
+						}
+
+						// HEALTHCARE y SIN DIVIDENDO
+						if (sectorStr != null && !sectorStr.isEmpty() && !"-".equals(sectorStr)
+								&& sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_HC)
+								&& pctDividendo == null) {
+							pathEmpresasTipo43.add(ficheroGestionado.getAbsolutePath());
+						}
+
+						// --------------------------------------------
+						// Casos en los que recientemente ha habido un pico en volumen y precio,
+						// respecto de la media de muchos dias antes
+
+						// PICO en VOLUMEN
+						String max3Volumen = parametros.get("MAXIMO_3_VOLUMEN"); // el pico se dio en las ultimas 3
+																					// velas
+						String max7Volumen = parametros.get("MAXIMO_7_VOLUMEN"); // el pico se dio en las ultimas 7
+																					// velas
+						String mediaSma20Volumen = parametros.get("MEDIA_SMA_20_VOLUMEN");
+
+						// Pico en PRECIO
+						String max3Precio = parametros.get("MAXIMO_3_PRECIO");// el pico se dio en las ultimas 3 velas
+						String max7Precio = parametros.get("MAXIMO_7_PRECIO");// el pico se dio en las ultimas 7 velas
+						String mediaSma20Precio = parametros.get("MEDIA_SMA_20_PRECIO");
+
+						if (max3Volumen != null && !max3Volumen.isEmpty() && !"-".equals(max3Volumen)
+								&& !"null".equals(max3Volumen)
+
+								&& max7Volumen != null && !max7Volumen.isEmpty() && !"-".equals(max7Volumen)
+								&& !"null".equals(max7Volumen)
+
+								&& mediaSma20Volumen != null && !mediaSma20Volumen.isEmpty()
+								&& !"-".equals(mediaSma20Volumen) && !"null".equals(mediaSma20Volumen)
+
+								&& max3Precio != null && !max3Precio.isEmpty() && !"-".equals(max3Precio)
+								&& !"null".equals(max3Precio)
+
+								&& max7Precio != null && !max7Precio.isEmpty() && !"-".equals(max7Precio)
+								&& !"null".equals(max7Precio)
+
+								&& mediaSma20Precio != null && !mediaSma20Precio.isEmpty()
+								&& !"-".equals(mediaSma20Precio) && !"null".equals(mediaSma20Precio)) {
+
+							Float max3Volumenf = Float.valueOf(max3Volumen);
+							Float max7Volumenf = Float.valueOf(max7Volumen);
+							Float mediaSma20Volumenf = Float.valueOf(mediaSma20Volumen);
+							Float max3Preciof = Float.valueOf(max3Precio);
+							Float max7Preciof = Float.valueOf(max7Precio);
+							Float mediaSma20Preciof = Float.valueOf(mediaSma20Precio);
+
+							// En las ultimas 3 ó 7 velas ha habido un pico en volumen y precio, respecto de
+							// la media de 20 dias. Ha caido el precio, pero puede que se repita el pico...
+							boolean hayPicoEnVolumen3 = max3Volumenf > factorPicoVolumen * mediaSma20Volumenf;
+							boolean hayPicoEnVolumen7 = max7Volumenf > factorPicoVolumen * mediaSma20Volumenf;
+							boolean hayPicoEnPrecio3 = max3Preciof > factorPicoPrecio * mediaSma20Preciof;
+							boolean hayPicoEnPrecio7 = max7Preciof > factorPicoPrecio * mediaSma20Preciof;
+
+							if (hayPicoEnVolumen3 && hayPicoEnPrecio3) {
+								pathEmpresasTipo44.add(ficheroGestionado.getAbsolutePath());
+							}
+							if (hayPicoEnVolumen7 && hayPicoEnPrecio7) {
+								pathEmpresasTipo45.add(ficheroGestionado.getAbsolutePath());
+							}
+
+						}
+
+						// ------ SUBGRUPOS según OPERACIONES DE INSIDERS ------------
+						String insiders90dias = parametros.get("flagOperacionesInsiderUltimos90dias");
+						String insiders30dias = parametros.get("flagOperacionesInsiderUltimos30dias");
+						String insiders15dias = parametros.get("flagOperacionesInsiderUltimos15dias");
+						String insiders5dias = parametros.get("flagOperacionesInsiderUltimos5dias");
+
+						if (insiders90dias != null && !insiders90dias.isEmpty()) {
+							pathEmpresasTipo46.add(ficheroGestionado.getAbsolutePath());
+						}
+						if (insiders30dias != null && !insiders30dias.isEmpty()) {
+							pathEmpresasTipo47.add(ficheroGestionado.getAbsolutePath());
+						}
+						if (insiders15dias != null && !insiders15dias.isEmpty()) {
+							pathEmpresasTipo48.add(ficheroGestionado.getAbsolutePath());
+						}
+						if (insiders5dias != null && !insiders5dias.isEmpty()) {
+							pathEmpresasTipo49.add(ficheroGestionado.getAbsolutePath());
+						}
 					}
-
-				} else {
-					MY_LOGGER.warn(ficheroGestionado.getAbsolutePath() + " -> PER desconocido: " + sectorStr);
 				}
-
-				// ------ SUBGRUPOS según PER ------------
-				String perStr = parametros.get("P/E");
-				Float per = null;
-
-				if (perStr != null && !perStr.isEmpty() && !"-".equals(perStr)) {
-					per = Float.valueOf(perStr);
-
-					if (per > 0 && per < PER_umbral1) {
-						pathEmpresasTipo17.add(ficheroGestionado.getAbsolutePath());
-					} else if (per >= PER_umbral1 && per < PER_umbral2) {
-						pathEmpresasTipo18.add(ficheroGestionado.getAbsolutePath());
-					} else if (per >= PER_umbral2 && per < PER_umbral3) {
-						pathEmpresasTipo19.add(ficheroGestionado.getAbsolutePath());
-					} else {
-						pathEmpresasTipo20.add(ficheroGestionado.getAbsolutePath());
-					}
-
-				} else {
-					pathEmpresasTipo21.add(ficheroGestionado.getAbsolutePath());
-				}
-
-				// ------ SUBGRUPOS según Debt/Eq ------------
-				String debtEqStr = parametros.get("Debt/Eq");
-				Float debtEq = null;
-
-				if (debtEqStr != null && !debtEqStr.isEmpty() && !"-".equals(debtEqStr)) {
-					debtEq = Float.valueOf(debtEqStr);
-
-					if (debtEq > 0 && debtEq < DE_umbral1) {
-						pathEmpresasTipo22.add(ficheroGestionado.getAbsolutePath());
-					} else if (debtEq >= DE_umbral1 && debtEq < DE_umbral2) {
-						pathEmpresasTipo23.add(ficheroGestionado.getAbsolutePath());
-					} else if (debtEq >= DE_umbral2 && debtEq < DE_umbral3) {
-						pathEmpresasTipo24.add(ficheroGestionado.getAbsolutePath());
-					} else {
-						pathEmpresasTipo25.add(ficheroGestionado.getAbsolutePath());
-						// MY_LOGGER.warn("Empresa = " + empresa + " con Debt/Eq = " + debtEqStr);
-					}
-
-				} else {
-					pathEmpresasTipo26.add(ficheroGestionado.getAbsolutePath());
-					// MY_LOGGER.warn("Empresa = " + empresa + " con Debt/Eq = " + debtEqStr);
-				}
-
-				// ------ SUBGRUPOS según ratio de SMA50 de precio ------------
-				String ratioSMA50PrecioStr = parametros.get("RATIO_SMA_50_PRECIO");
-				Integer ratioSMA50Precio = null;
-
-				if (ratioSMA50PrecioStr != null && !ratioSMA50PrecioStr.contains("null")
-						&& !ratioSMA50PrecioStr.isEmpty() && !"-".equals(ratioSMA50PrecioStr)) {
-					ratioSMA50Precio = Integer.valueOf(ratioSMA50PrecioStr);
-
-					if (ratioSMA50Precio > 0 && ratioSMA50Precio < SMA50RATIOPRECIO_umbral1) {
-						pathEmpresasTipo27.add(ficheroGestionado.getAbsolutePath());
-					} else if (ratioSMA50Precio >= SMA50RATIOPRECIO_umbral1
-							&& ratioSMA50Precio < SMA50RATIOPRECIO_umbral2) {
-						pathEmpresasTipo28.add(ficheroGestionado.getAbsolutePath());
-					} else if (ratioSMA50Precio >= SMA50RATIOPRECIO_umbral2
-							&& ratioSMA50Precio < SMA50RATIOPRECIO_umbral3) {
-						pathEmpresasTipo29.add(ficheroGestionado.getAbsolutePath());
-					} else {
-						pathEmpresasTipo30.add(ficheroGestionado.getAbsolutePath());
-						// MY_LOGGER.warn("Empresa = " + empresa + " con RATIO_SMA_50_PRECIO = " +
-						// ratioSMA50PrecioStr);
-					}
-
-				} else {
-					pathEmpresasTipo31.add(ficheroGestionado.getAbsolutePath());
-					// MY_LOGGER.warn("Empresa = " + empresa + " con RATIO_SMA_50_PRECIO = " +
-					// ratioSMA50PrecioStr);
-				}
-
-				// ------ SUBGRUPOS según GEOGRAFIA ------------
-				String geoStr = parametros.get("geo");
-
-				if (geoStr != null && !geoStr.isEmpty() && !"-".equals(geoStr)) {
-
-					if (geoStr.equalsIgnoreCase("china")) {
-						pathEmpresasTipo32.add(ficheroGestionado.getAbsolutePath());
-					} else if (geoStr.equalsIgnoreCase("USA")) {
-						pathEmpresasTipo33.add(ficheroGestionado.getAbsolutePath());
-					} else if (geoStr.equalsIgnoreCase("India")) {
-						pathEmpresasTipo34.add(ficheroGestionado.getAbsolutePath());
-					} else {
-						pathEmpresasTipo35.add(ficheroGestionado.getAbsolutePath());
-					}
-
-				} else {
-					pathEmpresasTipo36.add(ficheroGestionado.getAbsolutePath());
-				}
-
-				// ------ SUBGRUPOS según INSTITUTIONAL OWN ------------
-				String instOwnStr = parametros.get("Inst Own");
-				Float instOwn = null;
-
-				if (instOwnStr != null && !instOwnStr.isEmpty() && !"-".equals(instOwnStr)) {
-					instOwn = Float.valueOf(instOwnStr);
-
-					if (instOwn > 0 && instOwn < IO_umbral1) {
-						pathEmpresasTipo37.add(ficheroGestionado.getAbsolutePath());
-					} else if (instOwn >= IO_umbral1 && instOwn < IO_umbral2) {
-						pathEmpresasTipo38.add(ficheroGestionado.getAbsolutePath());
-					} else if (instOwn >= IO_umbral2 && instOwn <= 100) {
-						pathEmpresasTipo39.add(ficheroGestionado.getAbsolutePath());
-					} else {
-						pathEmpresasTipo40.add(ficheroGestionado.getAbsolutePath());
-					}
-
-				} else {
-					pathEmpresasTipo40.add(ficheroGestionado.getAbsolutePath());
-				}
-
-				// ------ SUBGRUPOS según %Dividendo ------------
-				String pctDividendoStr = parametros.get("Dividend %");
-				Float pctDividendo = null;
-
-				if (pctDividendoStr != null && !pctDividendoStr.isEmpty()
-						&& !"-".equals(pctDividendoStr.replace("%", "").trim())) {
-					pctDividendo = Float.valueOf(pctDividendoStr.replace("%", "").trim());
-
-					if (pctDividendo > 0) {
-						pathEmpresasTipo41.add(ficheroGestionado.getAbsolutePath());
-					} else {
-						pathEmpresasTipo42.add(ficheroGestionado.getAbsolutePath());
-					}
-
-				} else {
-					pathEmpresasTipo42.add(ficheroGestionado.getAbsolutePath());
-				}
-
-				// HEALTHCARE y SIN DIVIDENDO
-				if (sectorStr != null && !sectorStr.isEmpty() && !"-".equals(sectorStr)
-						&& sectorStr.equals(EstaticosFinvizDescargarYParsear.SECTOR_HC) && pctDividendo == null) {
-					pathEmpresasTipo43.add(ficheroGestionado.getAbsolutePath());
-				}
-
-				// --------------------------------------------
-				// Casos en los que recientemente ha habido un pico en volumen y precio,
-				// respecto de la media de muchos dias antes
-
-				// PICO en VOLUMEN
-				String max3Volumen = parametros.get("MAXIMO_3_VOLUMEN"); // el pico se dio en las ultimas 3 velas
-				String max7Volumen = parametros.get("MAXIMO_7_VOLUMEN"); // el pico se dio en las ultimas 7 velas
-				String mediaSma20Volumen = parametros.get("MEDIA_SMA_20_VOLUMEN");
-
-				// Pico en PRECIO
-				String max3Precio = parametros.get("MAXIMO_3_PRECIO");// el pico se dio en las ultimas 3 velas
-				String max7Precio = parametros.get("MAXIMO_7_PRECIO");// el pico se dio en las ultimas 7 velas
-				String mediaSma20Precio = parametros.get("MEDIA_SMA_20_PRECIO");
-
-				if (max3Volumen != null && !max3Volumen.isEmpty() && !"-".equals(max3Volumen)
-						&& !"null".equals(max3Volumen)
-
-						&& max7Volumen != null && !max7Volumen.isEmpty() && !"-".equals(max7Volumen)
-						&& !"null".equals(max7Volumen)
-
-						&& mediaSma20Volumen != null && !mediaSma20Volumen.isEmpty() && !"-".equals(mediaSma20Volumen)
-						&& !"null".equals(mediaSma20Volumen)
-
-						&& max3Precio != null && !max3Precio.isEmpty() && !"-".equals(max3Precio)
-						&& !"null".equals(max3Precio)
-
-						&& max7Precio != null && !max7Precio.isEmpty() && !"-".equals(max7Precio)
-						&& !"null".equals(max7Precio)
-
-						&& mediaSma20Precio != null && !mediaSma20Precio.isEmpty() && !"-".equals(mediaSma20Precio)
-						&& !"null".equals(mediaSma20Precio)) {
-
-					Float max3Volumenf = Float.valueOf(max3Volumen);
-					Float max7Volumenf = Float.valueOf(max7Volumen);
-					Float mediaSma20Volumenf = Float.valueOf(mediaSma20Volumen);
-					Float max3Preciof = Float.valueOf(max3Precio);
-					Float max7Preciof = Float.valueOf(max7Precio);
-					Float mediaSma20Preciof = Float.valueOf(mediaSma20Precio);
-
-					// En las ultimas 3 ó 7 velas ha habido un pico en volumen y precio, respecto de
-					// la media de 20 dias. Ha caido el precio, pero puede que se repita el pico...
-					boolean hayPicoEnVolumen3 = max3Volumenf > factorPicoVolumen * mediaSma20Volumenf;
-					boolean hayPicoEnVolumen7 = max7Volumenf > factorPicoVolumen * mediaSma20Volumenf;
-					boolean hayPicoEnPrecio3 = max3Preciof > factorPicoPrecio * mediaSma20Preciof;
-					boolean hayPicoEnPrecio7 = max7Preciof > factorPicoPrecio * mediaSma20Preciof;
-
-					if (hayPicoEnVolumen3 && hayPicoEnPrecio3) {
-						pathEmpresasTipo44.add(ficheroGestionado.getAbsolutePath());
-					}
-					if (hayPicoEnVolumen7 && hayPicoEnPrecio7) {
-						pathEmpresasTipo45.add(ficheroGestionado.getAbsolutePath());
-					}
-
-				}
-
-				// ------ SUBGRUPOS según OPERACIONES DE INSIDERS ------------
-				String insiders90dias = parametros.get("flagOperacionesInsiderUltimos90dias");
-				String insiders30dias = parametros.get("flagOperacionesInsiderUltimos30dias");
-				String insiders15dias = parametros.get("flagOperacionesInsiderUltimos15dias");
-				String insiders5dias = parametros.get("flagOperacionesInsiderUltimos5dias");
-
-				if (insiders90dias != null && !insiders90dias.isEmpty()) {
-					pathEmpresasTipo46.add(ficheroGestionado.getAbsolutePath());
-				}
-				if (insiders30dias != null && !insiders30dias.isEmpty()) {
-					pathEmpresasTipo47.add(ficheroGestionado.getAbsolutePath());
-				}
-				if (insiders15dias != null && !insiders15dias.isEmpty()) {
-					pathEmpresasTipo48.add(ficheroGestionado.getAbsolutePath());
-				}
-				if (insiders5dias != null && !insiders5dias.isEmpty()) {
-					pathEmpresasTipo49.add(ficheroGestionado.getAbsolutePath());
-				}
-
 				// ---------------------------------------------------------------------------------------
 			}
 		}
@@ -809,4 +852,16 @@ public class CrearDatasetsSubgrupos implements Serializable {
 		return rowTratada;
 	}
 
+	public static boolean isNumeric(String strNum) {
+	    if (strNum == null) {
+	        return false;
+	    }
+	    try {
+	        double d = Double.parseDouble(strNum);
+	    } catch (NumberFormatException nfe) {
+	        return false;
+	    }
+	    return true;
+	}
+	
 }

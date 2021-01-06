@@ -17,6 +17,7 @@ import org.apache.log4j.PatternLayout;
 import org.apache.log4j.helpers.NullEnumeration;
 
 import c20X.limpios.LimpiosUtils;
+import c30x.elaborados.construir.Estadisticas.COMIENZO_NOMBRES_PARAMETROS_ELABORADOS;
 import c30x.elaborados.construir.Estadisticas.FINAL_NOMBRES_PARAMETROS_ELABORADOS;
 import c30x.elaborados.construir.Estadisticas.OTROS_PARAMS_ELAB;
 
@@ -74,11 +75,17 @@ public class ConstructorElaborados implements Serializable {
 		Integer F = ElaboradosUtils.F; // DEFAULT
 		Integer B = ElaboradosUtils.B; // DEFAULT
 		Double umbralMaximo = ElaboradosUtils.SUBIDA_MAXIMA_POR_VELA; // DEFAULT
+		Integer filtroDinamico1 = ElaboradosUtils.DINAMICA1; // DEFAULT
+		Integer filtroDinamico2 = ElaboradosUtils.DINAMICA2; // DEFAULT
 
 		if (args.length == 0) {
 			MY_LOGGER.info("Sin parametros de entrada. Rellenamos los DEFAULT...");
-		} else if (args.length != 9) {
+		} else if (args.length != 11) {
+			MY_LOGGER.error("Total Parametros de entrada: " + args.length);
 			MY_LOGGER.error("Parametros de entrada incorrectos!!");
+			for (String param : args) {
+				MY_LOGGER.info("Param: " + param);
+			}
 			System.exit(-1);
 		} else {
 			directorioIn = args[0];
@@ -90,6 +97,8 @@ public class ConstructorElaborados implements Serializable {
 			F = Integer.valueOf(args[6]);
 			B = Integer.valueOf(args[7]);
 			umbralMaximo = Double.valueOf(args[8]);
+			filtroDinamico1 = Integer.valueOf(args[9]);
+			filtroDinamico2 = Integer.valueOf(args[10]);
 		}
 
 		File directorioEntrada = new File(directorioIn);
@@ -126,7 +135,7 @@ public class ConstructorElaborados implements Serializable {
 
 			ordenNombresParametros = gestorFicheros.getOrdenNombresParametrosLeidos();
 			anadirParametrosElaboradosDeSoloUnaEmpresa(datosEntrada, ordenNombresParametros, S, X, R, M, F, B,
-					umbralMaximo);
+					umbralMaximo, filtroDinamico1, filtroDinamico2);
 			gestorFicheros.creaFicheroDeSoloUnaEmpresa(datosEntrada, ordenNombresParametros, destino);
 		}
 
@@ -147,12 +156,14 @@ public class ConstructorElaborados implements Serializable {
 	 * @param M
 	 * @param B
 	 * @param umbralMaximo
+	 * @param filtroDinamico1
+	 * @param filtroDinamico2
 	 * @throws Exception
 	 */
 	public static void anadirParametrosElaboradosDeSoloUnaEmpresa(
 			HashMap<String, HashMap<Integer, HashMap<String, String>>> datos,
 			HashMap<Integer, String> ordenNombresParametros, Integer S, Integer X, Integer R, Integer M, Integer F,
-			Integer B, Double umbralMaximo) throws Exception {
+			Integer B, Double umbralMaximo, Integer filtroDinamico1, Integer filtroDinamico2) throws Exception {
 
 		HashMap<String, HashMap<Integer, HashMap<String, String>>> datosSalida = new HashMap<String, HashMap<Integer, HashMap<String, String>>>();
 		HashMap<Integer, HashMap<String, String>> datosEmpresaEntrada = new HashMap<Integer, HashMap<String, String>>();
@@ -618,6 +629,20 @@ public class ConstructorElaborados implements Serializable {
 //		ordenNombresParametrosSalida.put(ordenNombresParametrosSalida.size(), "HYPE4");
 //		parametrosAcumulados++;
 
+		// Se añade una variable elaborada que servirá para eliminar directamente todas
+		// las empresas que no cumplan
+		if (filtroDinamico1 == 1) {
+			ordenNombresParametrosSalida.put(ordenNombresParametrosSalida.size(), "DINAMICA1");
+			parametrosAcumulados++;
+		}
+
+		// Se añade una variable elaborada que servirá para eliminar directamente todas
+		// las empresas que no cumplan
+		if (filtroDinamico2 == 1) {
+			ordenNombresParametrosSalida.put(ordenNombresParametrosSalida.size(), "DINAMICA2");
+			parametrosAcumulados++;
+		}
+
 		// Aniado el TARGET
 		// Target=0 es que no se cumple. 1 es que sí. TARGET_INVALIDO es que no se puede
 		// calcular
@@ -659,6 +684,8 @@ public class ConstructorElaborados implements Serializable {
 //			Float precio, volumen, sma20Precio, sma50Precio, sma7Precio, sma4Precio, sma20Volumen, sma7Volumen,
 //					sma4Volumen, maximo4Precio, maximo7Precio, stdsma4Precio, stdsma20Precio;
 //			String HYPE1 = "0", HYPE2 = "0", HYPE3 = "0", HYPE4 = "0";
+			String DINAMICA1 = "0";
+			String DINAMICA2 = "0";
 
 			// Se rellena el target en los datos de entrada tras el analisis, al final de
 			// todos los parametros
@@ -801,6 +828,91 @@ public class ConstructorElaborados implements Serializable {
 //					HYPE4 = "null";
 //				}
 //
+//
+
+				if (filtroDinamico1 == 1) {
+					// PARÁMETRO DINAMICA1:
+					// Valores: Será 0 siempre, salvo si cumple un screener (en ese caso será 1).
+					// El screener será basado en un filtro amplio de finviz, que cumpla los
+					// parámetros objetivo, pero amplios. Es como estar realimentando el sistema
+					// manualmente.
+					// Condiciones del screener (AND):
+					// Price Change hoy positivo: (close - open): > 0%
+					// (MEDIA_SMA_3_VOLUMEN - MEDIA_SMA_50_VOLUMEN) > 0 (similar a Relative volume >
+					// 1)
+					// Precio por encima de la media de SMA20: (close - MEDIA_SMA_20_CLOSE) > 0
+					// Precio por encima de la media de SMA50: (close - MEDIA_SMA_50_CLOSE) > 0
+					//
+
+					String Sclose = parametros.get("close");
+					String Sopen = parametros.get("open");
+					String Ssma3Volumen = parametros
+							.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_ + "3_VOLUMEN");
+					String Ssma50Volumen = parametros
+							.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_ + "50_VOLUMEN");
+					String Ssma20Close = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_ + "20_CLOSE");
+					String Ssma50Close = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_ + "50_CLOSE");
+					Float close, open, sma3Volumen, sma50Volumen, sma20Close, sma50Close;
+
+					if (Sclose != null && Sopen != null && Ssma3Volumen != null && Ssma50Volumen != null
+							&& Ssma20Close != null && Ssma50Close != null) {
+						close = Float.valueOf(Sclose);
+						open = Float.valueOf(Sopen);
+						sma3Volumen = Float.valueOf(Ssma3Volumen);
+						sma50Volumen = Float.valueOf(Ssma50Volumen);
+						sma20Close = Float.valueOf(Ssma20Close);
+						sma50Close = Float.valueOf(Ssma50Close);
+						if (close > open && sma3Volumen > sma50Volumen && close > sma20Close && close > sma50Close) {
+							DINAMICA1 = "1";
+						} else {
+							DINAMICA1 = "0";
+						}
+					} else {
+						DINAMICA1 = "0";
+					}
+				}
+
+				if (filtroDinamico2 == 1) {
+					// PARÁMETRO DINAMICA2:
+					// Valores: Será 0 siempre, y sólo será 1 si cumple todo lo siguiente:
+					// - Su tasa de desbalanceo (mayoritarios/minoritarios) < 10 (se asume que los
+					// mayoritarios son los target == 0)
+					// - Al menos hay 20 valores de los que tomar información (realmente 
+					// se coge todo el rango disponible, que será común para todas las filas).
+					//
+					// El valor analizado (mayoritarios y minoritarios) es el target.
+					// Hay que tener en cuenta que el target sólo estará relleno si es 
+					// calculable (las fechas más recientes y las más antiguas no son calculables. En
+					// esas filas, siempre fijaremos: DINAMICA2=0 o null).
+
+					itAntiguedadTarget = antiguedadYTarget.keySet().iterator();
+
+					Integer targetCero = 0, targetUno = 0;
+					Integer antiguedadTemp = -1;
+					String targetTemp;
+
+					while (itAntiguedadTarget.hasNext()) {
+
+						antiguedadTemp = itAntiguedadTarget.next();
+						targetTemp = antiguedadYTarget.get(antiguedadTemp);
+
+						if (targetTemp == "1") {
+							targetUno++;
+						} else if (targetTemp == "0") {
+							targetCero++;
+						}
+					}
+					DINAMICA2 = "0";
+//					System.out.println("targetCero: " + targetCero);
+//					System.out.println("targetCero: " + targetCero);
+//					System.out.println("targetUno: " + targetUno);
+
+					if ((targetCero / (Float.valueOf(targetUno)) < 10) && (targetCero + targetUno) > 20) {
+						DINAMICA2 = "1";
+					}
+//					System.out.println("DINAMICA2: " + DINAMICA2);
+				}
+
 //				// AÑADO PARÁMETROS. TAMBIÉN HAY QUE AÑADIRLO EN LA LÍNEA 358 (VER OTROS
 //				// EJEMPLOS)
 //				// Se añade HYPE1
@@ -815,6 +927,15 @@ public class ConstructorElaborados implements Serializable {
 //				// Se añade HYPE4
 //				parametros.put("HYPE4", HYPE4);
 
+				if (filtroDinamico1 == 1) {
+					// Se añade DINAMICA1
+					parametros.put("DINAMICA1", DINAMICA1);
+				}
+
+				if (filtroDinamico2 == 1) {
+					// Se añade DINAMICA2
+					parametros.put("DINAMICA2", DINAMICA2);
+				}
 				// SE AÑADE EL TARGET
 				parametros.put("TARGET", String.valueOf(antiguedadYTarget.get(antiguedad)));
 				datosEmpresaFinales.replace(antiguedad, parametros);

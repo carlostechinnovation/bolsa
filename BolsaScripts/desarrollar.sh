@@ -19,3 +19,6 @@ ${DIR_PROGRAMAS}smartgit/bin/smartgit.sh &
 
 echo -e "Abriendo terminal Linux..." >> ${LOG_DESA}
 gnome-terminal
+
+echo -e "Abriendo GitExtensions..." >> ${LOG_DESA}
+${DIR_PROGRAMAS}GitExtensions/GitExtensions.exe &
