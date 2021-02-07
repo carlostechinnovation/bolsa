@@ -109,5 +109,33 @@ text_file.writelines('<meta charset="UTF-8">\n')
 text_file.write(datosEnHtml.data)
 text_file.close()
 
+
+#################################### FICHERO DE TODAS LAS EMPRESAS, SIN FILTRAR ###########################3
+todasEmpresasYProbabsDF = pd.DataFrame(columns=["empresa"])
+manejablesCsv.sort()
+for file in manejablesCsv:
+    print("Procesando: " + file + " ...")
+    prediccionesDeUnSubgrupo = pd.read_csv(entradaPathDirDropbox + file, sep="|")
+    prediccionesDeUnSubgrupo = prediccionesDeUnSubgrupo[["empresa", "TARGET_PREDICHO_PROB"]]
+    idSubgrupo = file.split("_")[4]
+    print("idSubgrupo=" + idSubgrupo)
+    prediccionesDeUnSubgrupo.rename(columns={"TARGET_PREDICHO_PROB": "SG_"+idSubgrupo}, inplace=True)
+    todasEmpresasYProbabsDF = pd.merge(todasEmpresasYProbabsDF, prediccionesDeUnSubgrupo, how='outer', left_on=['empresa'], right_on=['empresa'])
+
+
+todasEmpresasYProbabsDF = todasEmpresasYProbabsDF.sort_values(by=['empresa'], ascending=True).reset_index(drop=True)  # Ordenar filas
+todasEmpresasYProbabsDF = todasEmpresasYProbabsDF.fillna("")  # Sustituir NaN por cadena vacia para que quede bonito
+pathSalida = entradaPathDirDropbox + str(fecha) + "_todas_las_empresas.html"
+print("Escribiendo en: " + pathSalida)
+datosEnHtml = HTML(todasEmpresasYProbabsDF.to_html(index=False, classes='table table-striped table-bordered table-hover table-condensed'))
+text_file = open(pathSalida, "w", encoding="utf-8")
+text_file.writelines('<meta charset="UTF-8">\n')
+text_file.write(datosEnHtml.data)
+text_file.close()
+############################################################
+
+
+
+
 print("--- InversionJuntarPrediccionesDeUnDia: FIN ---")
 
