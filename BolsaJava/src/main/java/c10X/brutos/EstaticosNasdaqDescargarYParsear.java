@@ -39,6 +39,11 @@ public class EstaticosNasdaqDescargarYParsear implements Serializable {
 
 	private static EstaticosNasdaqDescargarYParsear instancia = null;
 
+	// En la lista DIRECTA de empresas, saltamos todas las empresas cuyo ticker
+	// empiece por una letra anterior a la indicada (orden alfabético).
+	// Ej: si letra=N, saltamos todas las empresas cuyo ticker empieza por A-N
+	private static String LETRA_INICIO_LISTA_DIRECTA = "A"; // Default= A
+
 	private EstaticosNasdaqDescargarYParsear() {
 		super();
 	}
@@ -131,6 +136,8 @@ public class EstaticosNasdaqDescargarYParsear implements Serializable {
 			pathTickers = BrutosUtils.NASDAQ_TICKERS_CSV;
 		}
 
+		char[] ALFABETO = "abcdefghijklmnopqrstuvwxyz".toCharArray();
+
 		MY_LOGGER.info("Cargando NASDAQ-TICKERS de: " + pathTickers);
 		List<String> empresasDescargables = new ArrayList<String>();
 		List<EstaticoNasdaqModelo> out = new ArrayList<EstaticoNasdaqModelo>();
@@ -161,6 +168,8 @@ public class EstaticosNasdaqDescargarYParsear implements Serializable {
 
 					// Lista acumulada de desconocidos:
 					boolean empresaEnListaDesconocidos = desconocidos.contains(tempArr[0]);
+					boolean empresaEnRangoDeLetrasPermitido = letraEstaPermitida(ALFABETO, tempArr[0],
+							LETRA_INICIO_LISTA_DIRECTA);
 					// Si ya la hemos descargado, evitamos volver a traerla:
 					boolean empresaYaDescargada = empresasDescargables.contains(tempArr[0]);
 					// Empresa de la que desconoce su URL de Nasdaq.old:
@@ -169,21 +178,19 @@ public class EstaticosNasdaqDescargarYParsear implements Serializable {
 					if (empresaEnListaDesconocidos) {
 						MY_LOGGER.info("Empresa de la que sabemos que desconocemos datos en alguna de las fuentes: "
 								+ tempArr[0]);
-					} else {
 
-						if (!empresaYaDescargada) { // evitamos que haya empresas duplicadas
+					} else if (!empresaYaDescargada && empresaEnRangoDeLetrasPermitido) {
 
-							if (sinURLnasdaqOld) {
-								out.add(new EstaticoNasdaqModelo(tempArr[0], tempArr[1], tempArr[2], tempArr[3],
-										tempArr[4], tempArr[5], tempArr[6], tempArr[7]));
-								empresasDescargables.add(tempArr[0]);
-							} else {
+						if (sinURLnasdaqOld) {
+							out.add(new EstaticoNasdaqModelo(tempArr[0], tempArr[1], tempArr[2], tempArr[3], tempArr[4],
+									tempArr[5], tempArr[6], tempArr[7]));
+							empresasDescargables.add(tempArr[0]);
 
-								out.add(new EstaticoNasdaqModelo(tempArr[0], tempArr[1], tempArr[2], tempArr[3],
-										tempArr[4], tempArr[5], tempArr[6], tempArr[7]));
-								empresasDescargables.add(tempArr[0]);
-							}
+						} else {
 
+							out.add(new EstaticoNasdaqModelo(tempArr[0], tempArr[1], tempArr[2], tempArr[3], tempArr[4],
+									tempArr[5], tempArr[6], tempArr[7]));
+							empresasDescargables.add(tempArr[0]);
 						}
 
 					}
@@ -565,6 +572,11 @@ public class EstaticosNasdaqDescargarYParsear implements Serializable {
 
 	}
 
+	/**
+	 * @param t
+	 * @param datoBuscado
+	 * @param mapaExtraidos
+	 */
 	private static void procesarNasdaqEstatico4Tabla(Element t, String datoBuscado, Map<String, String> mapaExtraidos) {
 
 		if (t.toString().contains(">" + datoBuscado + "<")) {
@@ -579,6 +591,12 @@ public class EstaticosNasdaqDescargarYParsear implements Serializable {
 
 	}
 
+	/**
+	 * @param mercado
+	 * @param empresa
+	 * @param mapaExtraidos
+	 * @param rutaCsvBruto
+	 */
 	public static void volcarEnCSV(String mercado, String empresa, Map<String, String> mapaExtraidos,
 			String rutaCsvBruto) {
 
@@ -586,6 +604,40 @@ public class EstaticosNasdaqDescargarYParsear implements Serializable {
 
 		// TODO pendiente
 		int x = 0;
+	}
+
+	/**
+	 * @param alfabeto
+	 * @param ticker
+	 * @param letraInicio
+	 * @return
+	 */
+	public static boolean letraEstaPermitida(char[] alfabeto, String ticker, String letraInicio) {
+
+		char letraTickerAnalizada = ticker.charAt(0);
+
+		boolean letraInicioEncontrada = false, letraTickerAnalizadaEncontrada = false, permitida = false;
+
+		for (char c : alfabeto) {
+			if (letraInicio.equalsIgnoreCase(String.valueOf(c))) {
+				letraInicioEncontrada = true;
+			}
+
+			// Si encuentro la letra de inicio, miramos si esa letra o las restantes del
+			// alfabeto son la primera letra del ticker analizada
+			if (letraInicioEncontrada && String.valueOf(letraTickerAnalizada).equalsIgnoreCase(String.valueOf(c))) {
+				permitida = true;
+			}
+		}
+
+		if (ticker.equals(BrutosUtils.NASDAQ_REFERENCIA)) {
+			permitida = true; // La excepcion
+		}
+
+		MY_LOGGER.info("letraEstaPermitida --> Letra_inicial=" + letraInicio + " --> ticker=" + ticker
+				+ " --> Permitida=" + permitida);
+
+		return permitida;
 	}
 
 }

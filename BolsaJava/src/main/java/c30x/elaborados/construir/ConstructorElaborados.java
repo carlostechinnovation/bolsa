@@ -33,6 +33,9 @@ public class ConstructorElaborados implements Serializable {
 	// en el sistema. Así evitamos que la matriz de datos se muy grande
 	private static String LISTA_PARAMETROS_AUTORIZADOS = "MEDIA_SMA_1_VOLUMEN,RATIO_MINRELATIVO_4_HIGH,RATIO_MAXRELATIVO_4_LOW,RATIO_U_MAXRELATIVO_20_HIGH,RATIO_U_MINRELATIVO_20_LOW,SKEWNESS_20_LOW,SKEWNESS_20_OPEN,RATIO_SMA_20_VOLUMEN,PENDIENTE_2M_SMA_50_HIGH,RATIO_U_MINRELATIVO_50_HIGH,PENDIENTE_SMA_50_OPEN,CURTOSIS_50_CLOSEOPEN,RATIO_MINRELATIVO_50_HIGHLOW,RATIO_U_SMA_50_HIGHLOW,SG_HIGH_PENDIENTE7D,MEDIA_SMA_1_LOW,CURTOSIS_1_OPEN,MEDIA_SMA_1_HIGHLOW,RATIO_U_MAXRELATIVO_1_VOLUMEN,RATIO_U_MINRELATIVO_1_VOLUMEN,CURTOSIS_1_VOLUMEN,MEDIA_SMA_4_CLOSE,RATIO_SMA_4_CLOSE,RATIO_MAXRELATIVO_4_CLOSE,RATIO_MINRELATIVO_SEGUNDO_4_HIGH,RATIO_U_MINRELATIVO_4_HIGH,PENDIENTE_SMA_4_LOW,RATIO_MINRELATIVO_SEGUNDO_4_LOW,RATIO_U_MAXRELATIVO_4_LOW,RATIO_MAXRELATIVO_4_OPEN,SKEWNESS_4_VOLUMEN,RATIO_MINRELATIVO_20_CLOSE,RATIO_U_MINRELATIVO_20_CLOSE,RATIO_MAXRELATIVO_20_HIGH,RATIO_U_MINRELATIVO_20_HIGH,MEDIA_SMA_20_LOW,RATIO_MINRELATIVO_20_LOW,RATIO_U_MAXRELATIVO_20_LOW,SKEWNESS_20_CLOSEOPEN,RATIO_MINRELATIVO_20_HIGHLOW,RATIO_MINRELATIVO_SEGUNDO_20_HIGHLOW,PENDIENTE_SMA_20_VOLUMEN,RATIO_MAXRELATIVO_20_VOLUMEN,RATIO_MINRELATIVO_SEGUNDO_20_VOLUMEN,RATIO_U_MAXRELATIVO_20_VOLUMEN,CURTOSIS_20_VOLUMEN,SKEWNESS_20_VOLUMEN,RATIO_MINRELATIVO_SEGUNDO_50_CLOSE,RATIO_U_SMA_50_CLOSE,RATIO_U_MAXRELATIVO_50_HIGH,CURTOSIS_50_HIGH,SKEWNESS_50_HIGH,PENDIENTE_SMA_50_LOW,RATIO_MINRELATIVO_50_LOW,RATIO_U_SMA_50_LOW,PENDIENTE_2M_SMA_50_OPEN,RATIO_U_SMA_50_OPEN,SKEWNESS_50_CLOSEOPEN,MEDIA_SMA_50_OPENHIGH,RATIO_U_SMA_50_OPENHIGH,PENDIENTE_2M_SMA_50_HIGHLOW,RATIO_MINRELATIVO_SEGUNDO_50_HIGHLOW,RATIO_MINRELATIVO_50_VOLUMEN,RATIO_MINRELATIVO_SEGUNDO_50_VOLUMEN,CURTOSIS_50_VOLUMEN,SKEWNESS_50_VOLUMEN,SG_LOW_PENDIENTE3D,RATIO_MAXRELATIVO_20_CLOSE,RATIO_MAXRELATIVO_50_HIGH,SG_HIGH_PENDIENTE3D";
 
+	private static final Float MAXIMO_DESBALANCEO = 7.0F; // MAXIMO DESBALANCEO NATURAL PERMITIDO (mayoritaria vs
+															// minoritaria)
+
 	private ConstructorElaborados() {
 		super();
 	}
@@ -877,12 +880,13 @@ public class ConstructorElaborados implements Serializable {
 					// Valores: Será 0 siempre, y sólo será 1 si cumple todo lo siguiente:
 					// - Su tasa de desbalanceo (mayoritarios/minoritarios) < 10 (se asume que los
 					// mayoritarios son los target == 0)
-					// - Al menos hay 20 valores de los que tomar información (realmente 
+					// - Al menos hay 20 valores de los que tomar información (realmente
 					// se coge todo el rango disponible, que será común para todas las filas).
 					//
 					// El valor analizado (mayoritarios y minoritarios) es el target.
-					// Hay que tener en cuenta que el target sólo estará relleno si es 
-					// calculable (las fechas más recientes y las más antiguas no son calculables. En
+					// Hay que tener en cuenta que el target sólo estará relleno si es
+					// calculable (las fechas más recientes y las más antiguas no son calculables.
+					// En
 					// esas filas, siempre fijaremos: DINAMICA2=0 o null).
 
 					itAntiguedadTarget = antiguedadYTarget.keySet().iterator();
@@ -907,7 +911,8 @@ public class ConstructorElaborados implements Serializable {
 //					System.out.println("targetCero: " + targetCero);
 //					System.out.println("targetUno: " + targetUno);
 
-					if ((targetCero / (Float.valueOf(targetUno)) < 10) && (targetCero + targetUno) > 20) {
+					if ((targetCero / (Float.valueOf(targetUno)) < MAXIMO_DESBALANCEO)
+							&& (targetCero + targetUno) > 20) {
 						DINAMICA2 = "1";
 					}
 //					System.out.println("DINAMICA2: " + DINAMICA2);

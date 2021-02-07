@@ -54,12 +54,11 @@ modoTiempo = sys.argv[2]
 desplazamientoAntiguedad = sys.argv[3]
 pathFeaturesSeleccionadas = dir_subgrupo + "FEATURES_SELECCIONADAS.csv"
 modoDebug = False  # En modo debug se pintan los dibujos. En otro caso, se evita calculo innecesario
-umbralCasosSuficientesClasePositiva = 50
+umbralCasosSuficientesClasePositiva = 40  # Numero de casos en la clase minoritaria (target=1). Si hay menos, son demasiado pocos, abortamos.
 granProbTargetUno = 50  # De todos los target=1, nos quedaremos con los granProbTargetUno (en tanto por cien) MAS probables. Un valor de 100 o mayor anula este parámetro
-balancearConSmoteSoloTrain = True
 umbralFeaturesCorrelacionadas = 0.96  # Umbral aplicado para descartar features cuya correlacion sea mayor que él
-umbralNecesarioCompensarDesbalanceo = 1  # Umbral de desbalanceo clase positiva/negativa. Si se supera, es necesario hacer oversampling de minoritaria (SMOTE) o undersampling de mayoritaria (borrar filas)
-cv_todos = 10  # CROSS_VALIDATION: número de iteraciones. Sirve para evitar el overfitting
+umbralNecesarioCompensarDesbalanceo = 1  # Umbral de desbalanceo clase positiva/negativa. Si se supera, es necesario hacer oversampling de minoritaria (SMOTE) o undersampling de mayoritaria (borrar filas con ENN)
+cv_todos = 15  # CROSS_VALIDATION: número de iteraciones. Sirve para evitar el overfitting
 fraccion_train = 0.75  # Fracción de datos usada para entrenar
 fraccion_test = 0.15  # Fracción de datos usada para testear (no es validación)
 fraccion_valid = 1-(fraccion_train + fraccion_test)
@@ -86,7 +85,6 @@ print("desplazamientoAntiguedad: %s" % desplazamientoAntiguedad)
 print("pathCsvReducido: %s" % pathCsvReducido)
 print("dir_subgrupo_img = %s" % dir_subgrupo_img)
 print("umbralProbTargetTrue = " + str(umbralProbTargetTrue))
-print("balancearConSmoteSoloTrain = " + str(balancearConSmoteSoloTrain))
 print("umbralFeaturesCorrelacionadas = " + str(umbralFeaturesCorrelacionadas))
 
 
@@ -275,7 +273,7 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
 
     casosInsuficientes = (num_muestras_minoria < umbralCasosSuficientesClasePositiva)
     if (casosInsuficientes):
-        print("Numero de casos en clase minoritaria es INSUFICIENTE. Así que abandonamos este dataset y seguimos")
+        print("Numero de casos en clase minoritaria es INSUFICIENTE: "+str(num_muestras_minoria)+" (umbral="+str(umbralCasosSuficientesClasePositiva)+"). Así que abandonamos este dataset y seguimos")
 
     else:
         ift_juntas = pd.concat([ift_mayoritaria.reset_index(drop=True), ift_minoritaria.reset_index(drop=True)],

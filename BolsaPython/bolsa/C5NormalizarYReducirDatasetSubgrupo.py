@@ -35,6 +35,7 @@ import warnings
 import datetime
 from sklearn.pipeline import make_pipeline
 from sklearn.manifold import TSNE
+import math
 
 
 print((datetime.datetime.now()).strftime("%Y%m%d_%H%M%S") + " **** CAPA 5  --> Selección de variables/ Reducción de dimensiones (para cada subgrupo) ****")
@@ -602,7 +603,14 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, path_modelo_pca, path
                     numFeaturesAnterior = rfecv.n_features_
 
     # The "accuracy" scoring is proportional to the number of correct classifications
-    rfecv_modelo = RFECV(estimator=estimador_interno, step=rfecv_step, min_features_to_select=4, cv=StratifiedKFold(n_splits=cv_todos, shuffle=True), scoring=rfecv_scoring, verbose=0, n_jobs=-1)
+    num_filas_en_cada_trozo = targetsFichero.shape[0] / cv_todos
+    if num_filas_en_cada_trozo < 10:  # La funcion fit() de RFECV exige que haya al menos 10 muestras en el vector target
+        n_splits_corregido = math.floor((cv_todos / 10) * num_filas_en_cada_trozo)
+    else:
+        n_splits_corregido = cv_todos
+
+    print("n_splits_corregido -->" + str(n_splits_corregido))
+    rfecv_modelo = RFECV(estimator=estimador_interno, step=rfecv_step, min_features_to_select=4, cv=StratifiedKFold(n_splits=n_splits_corregido, shuffle=True), scoring=rfecv_scoring, verbose=0, n_jobs=-1)
     print("rfecv_modelo -> fit ...")
     targetsLista = targetsFichero["TARGET"].tolist()
     rfecv_modelo.fit(featuresFicheroNorm, targetsLista)

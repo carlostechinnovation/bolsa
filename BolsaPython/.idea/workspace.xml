@@ -2,8 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="22edbd2f-b3d9-42f0-a7dd-659033ab601a" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/main/java/c10X/brutos/EstaticosNasdaqDescargarYParsear.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/main/java/c10X/brutos/EstaticosNasdaqDescargarYParsear.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/main/java/c30x/elaborados/construir/ConstructorElaborados.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/main/java/c30x/elaborados/construir/ConstructorElaborados.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/main/resources/desconocidos.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/main/resources/desconocidos.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bolsa/C5NormalizarYReducirDatasetSubgrupo.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/C5NormalizarYReducirDatasetSubgrupo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bolsa/C6CreadorModelosDeSubgrupo.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/C6CreadorModelosDeSubgrupo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bolsa/InversionJuntarPrediccionesDeUnDia.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/InversionJuntarPrediccionesDeUnDia.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BolsaScripts/parametros.config" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/parametros.config" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BolsaScripts/prueba.sh" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -105,7 +112,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/bolsa/C5NormalizarYReducirDatasetSubgrupo.py" />
-      <option name="PARAMETERS" value="/bolsa/pasado/subgrupos/SG_48/ pasado 40 8000" />
+      <option name="PARAMETERS" value="/bolsa/pasado/subgrupos/SG_46/ pasado 40 30000" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -126,7 +133,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/bolsa/C6CreadorModelosDeSubgrupo.py" />
-      <option name="PARAMETERS" value="/bolsa/pasado/subgrupos/SG_48/ pasado 0" />
+      <option name="PARAMETERS" value="/bolsa/pasado/subgrupos/SG_46/ pasado 0" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -387,10 +394,10 @@
     <option name="LAST_COMMIT_MESSAGE" value="Machine Learning - Ejemplo" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="177" y="407" width="1396" height="673" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1608641789303">
+    <state x="177" y="407" width="1396" height="673" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1610738241649">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
-    <state x="177" y="407" width="1396" height="673" key="#com.intellij.execution.impl.EditConfigurationsDialog/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1608641789303" />
+    <state x="177" y="407" width="1396" height="673" key="#com.intellij.execution.impl.EditConfigurationsDialog/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1610738241649" />
     <state x="65" y="24" width="1301" height="744" key="#com.intellij.execution.impl.EditConfigurationsDialog/65.24.1301.744@65.24.1301.744" timestamp="1603974430974" />
     <state width="1428" height="466" key="DebuggerActiveHint" timestamp="1606555353929">
       <screen x="65" y="24" width="1855" height="1056" />
@@ -400,62 +407,62 @@
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
     <state x="660" y="472" key="FileChooserDialogImpl/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1605442259947" />
-    <state width="1834" height="253" key="GridCell.Tab.0.bottom" timestamp="1608654698196">
+    <state width="1834" height="377" key="GridCell.Tab.0.bottom" timestamp="1611656038170">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
     <state width="1855" height="312" key="GridCell.Tab.0.bottom/1920.0.1920.1080/65.24.1855.1056@1920.0.1920.1080" timestamp="1604872854138" />
-    <state width="1834" height="253" key="GridCell.Tab.0.bottom/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1608654698196" />
+    <state width="1834" height="377" key="GridCell.Tab.0.bottom/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1611656038170" />
     <state width="1278" height="159" key="GridCell.Tab.0.bottom/65.24.1301.744@65.24.1301.744" timestamp="1604004290614" />
-    <state width="1834" height="253" key="GridCell.Tab.0.center" timestamp="1608654698196">
+    <state width="1834" height="377" key="GridCell.Tab.0.center" timestamp="1611656038170">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
     <state width="1855" height="312" key="GridCell.Tab.0.center/1920.0.1920.1080/65.24.1855.1056@1920.0.1920.1080" timestamp="1604872854138" />
-    <state width="1834" height="253" key="GridCell.Tab.0.center/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1608654698196" />
+    <state width="1834" height="377" key="GridCell.Tab.0.center/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1611656038170" />
     <state width="1278" height="159" key="GridCell.Tab.0.center/65.24.1301.744@65.24.1301.744" timestamp="1604004290614" />
-    <state width="1834" height="253" key="GridCell.Tab.0.left" timestamp="1608654698196">
+    <state width="1834" height="377" key="GridCell.Tab.0.left" timestamp="1611656038170">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
     <state width="1855" height="312" key="GridCell.Tab.0.left/1920.0.1920.1080/65.24.1855.1056@1920.0.1920.1080" timestamp="1604872854138" />
-    <state width="1834" height="253" key="GridCell.Tab.0.left/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1608654698196" />
+    <state width="1834" height="377" key="GridCell.Tab.0.left/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1611656038170" />
     <state width="1278" height="159" key="GridCell.Tab.0.left/65.24.1301.744@65.24.1301.744" timestamp="1604004290614" />
-    <state width="1834" height="253" key="GridCell.Tab.0.right" timestamp="1608654698196">
+    <state width="1834" height="377" key="GridCell.Tab.0.right" timestamp="1611656038170">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
     <state width="1855" height="312" key="GridCell.Tab.0.right/1920.0.1920.1080/65.24.1855.1056@1920.0.1920.1080" timestamp="1604872854138" />
-    <state width="1834" height="253" key="GridCell.Tab.0.right/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1608654698196" />
+    <state width="1834" height="377" key="GridCell.Tab.0.right/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1611656038170" />
     <state width="1278" height="159" key="GridCell.Tab.0.right/65.24.1301.744@65.24.1301.744" timestamp="1604004290614" />
-    <state width="1834" height="253" key="GridCell.Tab.1.bottom" timestamp="1608654698196">
+    <state width="1834" height="367" key="GridCell.Tab.1.bottom" timestamp="1611645041047">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
     <state width="1855" height="312" key="GridCell.Tab.1.bottom/1920.0.1920.1080/65.24.1855.1056@1920.0.1920.1080" timestamp="1604872858385" />
-    <state width="1834" height="253" key="GridCell.Tab.1.bottom/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1608654698196" />
+    <state width="1834" height="367" key="GridCell.Tab.1.bottom/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1611645041047" />
     <state width="1278" height="356" key="GridCell.Tab.1.bottom/65.24.1301.744@65.24.1301.744" timestamp="1603375491725" />
-    <state width="1834" height="253" key="GridCell.Tab.1.center" timestamp="1608654698196">
+    <state width="1834" height="367" key="GridCell.Tab.1.center" timestamp="1611645041047">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
     <state width="1855" height="312" key="GridCell.Tab.1.center/1920.0.1920.1080/65.24.1855.1056@1920.0.1920.1080" timestamp="1604872858385" />
-    <state width="1834" height="253" key="GridCell.Tab.1.center/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1608654698196" />
+    <state width="1834" height="367" key="GridCell.Tab.1.center/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1611645041047" />
     <state width="1278" height="356" key="GridCell.Tab.1.center/65.24.1301.744@65.24.1301.744" timestamp="1603375491723" />
-    <state width="1834" height="253" key="GridCell.Tab.1.left" timestamp="1608654698196">
+    <state width="1834" height="367" key="GridCell.Tab.1.left" timestamp="1611645041047">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
     <state width="1855" height="312" key="GridCell.Tab.1.left/1920.0.1920.1080/65.24.1855.1056@1920.0.1920.1080" timestamp="1604872858385" />
-    <state width="1834" height="253" key="GridCell.Tab.1.left/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1608654698196" />
+    <state width="1834" height="367" key="GridCell.Tab.1.left/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1611645041047" />
     <state width="1278" height="356" key="GridCell.Tab.1.left/65.24.1301.744@65.24.1301.744" timestamp="1603375491722" />
-    <state width="1834" height="253" key="GridCell.Tab.1.right" timestamp="1608654698196">
+    <state width="1834" height="367" key="GridCell.Tab.1.right" timestamp="1611645041047">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
     <state width="1855" height="312" key="GridCell.Tab.1.right/1920.0.1920.1080/65.24.1855.1056@1920.0.1920.1080" timestamp="1604872858385" />
-    <state width="1834" height="253" key="GridCell.Tab.1.right/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1608654698196" />
+    <state width="1834" height="367" key="GridCell.Tab.1.right/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1611645041047" />
     <state width="1278" height="356" key="GridCell.Tab.1.right/65.24.1301.744@65.24.1301.744" timestamp="1603375491724" />
     <state x="809" y="208" width="900" height="728" key="SettingsEditor" timestamp="1607791416487">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
     <state x="809" y="208" width="900" height="728" key="SettingsEditor/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1607791416487" />
-    <state width="927" height="542" key="XDebugger.FullValuePopup" timestamp="1608498209174">
+    <state width="927" height="542" key="XDebugger.FullValuePopup" timestamp="1610044849792">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
-    <state width="927" height="542" key="XDebugger.FullValuePopup/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1608498209174" />
+    <state width="927" height="542" key="XDebugger.FullValuePopup/1920.0.1920.1080/65.24.1855.1056@65.24.1855.1056" timestamp="1610044849792" />
     <state x="509" y="279" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2" timestamp="1607542529637">
       <screen x="65" y="24" width="1855" height="1056" />
     </state>
@@ -483,7 +490,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/bolsa/C6CreadorModelosDeSubgrupo.py</url>
-          <line>473</line>
+          <line>471</line>
           <option name="timeStamp" value="173" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -495,6 +502,16 @@
           <url>file://$PROJECT_DIR$/bolsa/FeaturesAnalisisPosteriori.py</url>
           <line>95</line>
           <option name="timeStamp" value="198" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/bolsa/C6CreadorModelosDeSubgrupo.py</url>
+          <line>502</line>
+          <option name="timeStamp" value="200" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/bolsa/InversionJuntarPrediccionesDeUnDia.py</url>
+          <line>49</line>
+          <option name="timeStamp" value="201" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

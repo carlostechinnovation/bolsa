@@ -9,14 +9,14 @@ import html, urllib3
 # - Carpeta Dropbox: contiene varios CSV (predicciones MANEJABLES para cada subgrupo, excluyendo el SG_0 que no es util)
 # - Path al fichero CALIDAD.csv
 # Salidas:
-# - Fichero llamado 202XMMDD.html en la carpeta de Dropbox que agrupa  toda la info predicha para ese dia. Ademas, le añade columnas de CALIDAD.csv para poder entregarlo ordenado
+# - Fichero llamado 202XMMDD.html en la carpeta de Dropbox que agrupa toda la info predicha para ese dia. Ademas, le añade columnas de CALIDAD.csv para poder entregarlo ordenado
 ###############################################################
 
 print("--- InversionJuntarPrediccionesDeUnDia: INICIO ---")
 entradaPathDirDropbox = sys.argv[1]
 entradaPathCalidad = sys.argv[2]
 entradaPathDescripcionSubgrupos = sys.argv[3]
-targetPredichoProbUmbral = float(0.80)
+targetPredichoProbUmbral = float(0.91)
 print("entradaPathDirDropbox = " + entradaPathDirDropbox)
 print("entradaPathCalidad = " + entradaPathCalidad)
 print("entradaPathDescripcionSubgrupos = " + entradaPathDescripcionSubgrupos)
