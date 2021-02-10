@@ -125,6 +125,13 @@ for file in manejablesCsv:
 
 todasEmpresasYProbabsDF = todasEmpresasYProbabsDF.sort_values(by=['empresa'], ascending=True).reset_index(drop=True)  # Ordenar filas
 todasEmpresasYProbabsDF = todasEmpresasYProbabsDF.fillna("")  # Sustituir NaN por cadena vacia para que quede bonito
+
+todasEmpresasYProbabsDF_aux=todasEmpresasYProbabsDF.drop(['empresa'], axis=1, inplace=False)
+import numpy as np
+todasEmpresasYProbabsDF_aux['prob_media'] = todasEmpresasYProbabsDF_aux.replace('', np.nan).astype(float).mean(skipna=True, numeric_only=True, axis=1)
+todasEmpresasYProbabsDF['prob_media']=todasEmpresasYProbabsDF_aux['prob_media']
+todasEmpresasYProbabsDF.sort_values(by=['prob_media'], ascending=False, inplace=True)
+
 pathSalida = entradaPathDirDropbox + str(fecha) + "_todas_las_empresas.html"
 print("Escribiendo en: " + pathSalida)
 datosEnHtml = HTML(todasEmpresasYProbabsDF.to_html(index=False, classes='table table-striped table-bordered table-hover table-condensed'))
