@@ -11,6 +11,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +43,7 @@ public class Validador implements Serializable {
 	private static String MODO_VALIDAR = "VALIDAR";
 	private static String MODO_MEDIR_OVERFITTING = "MEDIR_OVERFITTING";
 
-	public static final Integer UMBRAL_SUFICIENTES_ITEMS_OVERFITTING = 10;
+	public static final Integer UMBRAL_SUFICIENTES_ITEMS_OVERFITTING = 5;
 
 	private Validador() {
 		super();
@@ -434,9 +435,9 @@ public class Validador implements Serializable {
 			// MY_LOGGER.info(cad);
 			if (cad != null && cad.contains("SG_") && cad.contains("METRICA")) {
 				Integer subgrupo = Integer.valueOf((cad.split("SG_"))[1].split(" ")[0]);
-				Float metrica = Float.valueOf((cad.split("METRICA = "))[1].split(" ")[0]);
+				Float metrica = Float.valueOf((cad.split("avg_precision = "))[1].split(" ")[0].replace(")", "").trim());
 
-				mapaSubgrupoMetricaPasado.put(subgrupo, metrica);
+				mapaSubgrupoMetricaPasado.put(subgrupo, 100.0F * metrica);
 			}
 		}
 
@@ -467,23 +468,34 @@ public class Validador implements Serializable {
 		// Idealmente debería ser 0
 		Map<Integer, Float> mapaOverfitting = new HashMap<Integer, Float>();
 		for (Integer subgrupo : mapaSubgrupoMetricaPasado.keySet()) {
-			if (mapaSubgrupoMetricaFuturo.containsKey(subgrupo)) {
+			if (mapaSubgrupoMetricaFuturo.containsKey(subgrupo) && !mapaSubgrupoMetricaPasado.get(subgrupo).isNaN()
+					&& !mapaSubgrupoMetricaFuturo.get(subgrupo).isNaN()) {
 
 				mapaOverfitting.put(subgrupo,
-						Math.abs(mapaSubgrupoMetricaPasado.get(subgrupo) - mapaSubgrupoMetricaFuturo.get(subgrupo)));
+						mapaSubgrupoMetricaPasado.get(subgrupo) - mapaSubgrupoMetricaFuturo.get(subgrupo));
 			}
 		}
 
 		DecimalFormat df = new DecimalFormat("0.00");
-		MY_LOGGER.info("*******************");
-		MY_LOGGER.info("MEDIDA DEL SOBREENTRENAMIENTO (overfitting) de todos los subgrupos:");
-		for (Integer sg : mapaOverfitting.keySet()) {
-			MY_LOGGER.info("Overfitting del subgrupo=" + sg + " -> " + df.format(mapaOverfitting.get(sg)));
-		}
+
 		MY_LOGGER.info("*******************");
 		double suma = mapaOverfitting.values().stream().mapToDouble(a -> a).sum();
-		MY_LOGGER.info("OVERFITTING (sobreentrenamiento) MEDIO = " + df.format(suma / mapaOverfitting.size()));
+		double overfittingMedio = suma / mapaOverfitting.size();
+		MY_LOGGER.info("OVERFITTING (sobreentrenamiento) MEDIO = " + df.format(overfittingMedio));
 		MY_LOGGER.info("*******************");
+
+		MY_LOGGER.info("*******************");
+		MY_LOGGER.info(
+				"MEDIDA DEL SOBREENTRENAMIENTO (overfitting) de todos los subgrupos (UMBRAL_SUFICIENTES_ITEMS_OVERFITTING = "
+						+ UMBRAL_SUFICIENTES_ITEMS_OVERFITTING + "):");
+		List<Integer> clavesOrdenadas = new ArrayList(mapaOverfitting.keySet());
+		Collections.sort(clavesOrdenadas);
+		for (Integer sg : clavesOrdenadas) {
+			boolean mejorQueLaMedia = mapaOverfitting.get(sg) < overfittingMedio;
+			String mejorQueLaMediaStr = mejorQueLaMedia ? " --> POCO OVERFITTING" : "";
+			MY_LOGGER.info("Overfitting del subgrupo=" + sg + " -> " + df.format(mapaOverfitting.get(sg))
+					+ mejorQueLaMediaStr);
+		}
 
 	}
 
