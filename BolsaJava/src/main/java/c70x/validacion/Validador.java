@@ -478,24 +478,24 @@ public class Validador implements Serializable {
 
 		DecimalFormat df = new DecimalFormat("0.00");
 
-		MY_LOGGER.info("*******************");
+		MY_LOGGER.info("___*******************");
 		double suma = mapaOverfitting.values().stream().mapToDouble(a -> a).sum();
 		double overfittingMedio = suma / mapaOverfitting.size();
-		MY_LOGGER.info("OVERFITTING (sobreentrenamiento) MEDIO = " + df.format(overfittingMedio));
-		MY_LOGGER.info("*******************");
+		MY_LOGGER.info("___OVERFITTING (sobreentrenamiento) MEDIO = " + df.format(overfittingMedio));
+		MY_LOGGER.info("___*******************");
 
-		MY_LOGGER.info("*******************");
 		MY_LOGGER.info(
-				"MEDIDA DEL SOBREENTRENAMIENTO (overfitting) de todos los subgrupos (UMBRAL_SUFICIENTES_ITEMS_OVERFITTING = "
+				"___MEDIDA DEL SOBREENTRENAMIENTO (overfitting) de todos los subgrupos (UMBRAL_SUFICIENTES_ITEMS_OVERFITTING = "
 						+ UMBRAL_SUFICIENTES_ITEMS_OVERFITTING + "):");
-		List<Integer> clavesOrdenadas = new ArrayList(mapaOverfitting.keySet());
+		List<Integer> clavesOrdenadas = new ArrayList<Integer>(mapaOverfitting.keySet());
 		Collections.sort(clavesOrdenadas);
 		for (Integer sg : clavesOrdenadas) {
 			boolean mejorQueLaMedia = mapaOverfitting.get(sg) < overfittingMedio;
 			String mejorQueLaMediaStr = mejorQueLaMedia ? " --> POCO OVERFITTING" : "";
-			MY_LOGGER.info("Overfitting del subgrupo=" + sg + " -> " + df.format(mapaOverfitting.get(sg))
+			MY_LOGGER.info("___Overfitting del subgrupo=" + sg + " -> " + df.format(mapaOverfitting.get(sg))
 					+ mejorQueLaMediaStr);
 		}
+		MY_LOGGER.info("___*******************");
 
 	}
 

@@ -55,6 +55,7 @@ FUTURO2_t1="$((${VELAS_RETROCESO}-${X}-${M}))" #No tocar. Se usa en el validador
 DIR_BASE="/bolsa/"
 DIR_LOGS="${DIR_BASE}logs/"
 LOG_VALIDADOR="${DIR_LOGS}validador.log"
+LOG_VALIDADOR_OVERFITTING_REAL="${DIR_LOGS}medidasOverfittingReal.log"
 DIR_VALIDACION="${DIR_BASE}validacion/"
 DIR_FUT_SUBGRUPOS="${DIR_BASE}futuro/subgrupos/"
 DIR_JAVA="${DIR_CODIGOS}BolsaJava/"
@@ -239,6 +240,9 @@ cat "${LOG_VALIDADOR}" | grep "Porcentaje aciertos"  | sed -e "s/INFO c70x.valid
 
 echo -e "--------- SOBREENTRENAMIENTO OBTENIDO (overfitting): -------------" >> ${LOG_VALIDADOR}
 java -jar ${PATH_JAR} --class "coordinador.Principal" "c70X.validacion.Validador" "${VELAS_RETROCESO}" "${DIR_VALIDACION}" "${S}" "${X}" "${R}" "${M}" "MEDIR_OVERFITTING" "${LOG_VALIDADOR}" 2>>${LOG_VALIDADOR} 1>>${LOG_VALIDADOR}
+
+cat  ${LOG_VALIDADOR} | grep validacion | grep '___'  > ${LOG_VALIDADOR_OVERFITTING_REAL}
+chmod 777 ${LOG_VALIDADOR_OVERFITTING_REAL}
 echo -e "----------------------------------------------------------------------------------------------" >> ${LOG_VALIDADOR}
 ################################################################################################
 

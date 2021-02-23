@@ -90,6 +90,9 @@ for file in manejablesCsv:
 juntos = juntos.sort_values(by=['calidadMediana', 'TARGET_PREDICHO_PROB'], ascending=False).reset_index(drop=True)
 
 print("Numero de filas en fichero juntos: " + str(juntos.shape[0]))
+juntos['calidadMediana'] = juntos['calidadMediana'].round(decimals=2)  # redondear decimales
+juntos['TARGET_PREDICHO_PROB'] = juntos['TARGET_PREDICHO_PROB'].round(decimals=2)  # redondear decimales
+
 print("Aplicando umbral en target_prob para coger solo las altas probabilidades...")
 juntos = juntos[juntos['TARGET_PREDICHO_PROB'] >= targetPredichoProbUmbral]
 print("Numero de filas en fichero juntos con alta probabilidad: " + str(juntos.shape[0]))
@@ -101,12 +104,18 @@ print("Numero de filas en fichero juntos con alta probabilidad: " + str(juntos.s
 
 print("Reordenando columnas...")
 juntos = juntos.reindex(['subgrupo', 'descripcion', 'calidadMediana', 'empresa', 'mercado', 'TARGET_PREDICHO_PROB', 'NumAccionesPor1000dolares'],axis=1)
+
+juntos.rename(columns={"TARGET_PREDICHO_PROB": "PROBA"}, inplace=True)  #renombrar columna
+
 pathSalida = entradaPathDirDropbox + str(fecha) + ".html"
 print("Escribiendo en: " + pathSalida)
 datosEnHtml = HTML(juntos.to_html(index=False, classes='table table-striped table-bordered table-hover table-condensed'))
+contenidoHtml = datosEnHtml.data
+contenidoHtml = contenidoHtml.replace("<th>empresa</th>", "<th style=\"background-color: yellow;\">empresa</th>")  # Colores
+contenidoHtml = contenidoHtml.replace("<th>PROBA</th>", "<th style=\"background-color: yellow;\">prob_media</th>")  # Colores
 text_file = open(pathSalida, "w", encoding="utf-8")
 text_file.writelines('<meta charset="UTF-8">\n')
-text_file.write(datosEnHtml.data)
+text_file.write(contenidoHtml)
 text_file.close()
 
 
@@ -117,6 +126,7 @@ for file in manejablesCsv:
     print("Procesando: " + file + " ...")
     prediccionesDeUnSubgrupo = pd.read_csv(entradaPathDirDropbox + file, sep="|")
     prediccionesDeUnSubgrupo = prediccionesDeUnSubgrupo[["empresa", "TARGET_PREDICHO_PROB"]]
+    prediccionesDeUnSubgrupo['TARGET_PREDICHO_PROB'] = prediccionesDeUnSubgrupo['TARGET_PREDICHO_PROB'].round(decimals=2)  # redondear decimales
     idSubgrupo = file.split("_")[4]
     print("idSubgrupo=" + idSubgrupo)
     prediccionesDeUnSubgrupo.rename(columns={"TARGET_PREDICHO_PROB": "SG_"+idSubgrupo}, inplace=True)
@@ -132,17 +142,26 @@ todasEmpresasYProbabsDF_aux['prob_media'] = todasEmpresasYProbabsDF_aux.replace(
 todasEmpresasYProbabsDF['prob_media']=todasEmpresasYProbabsDF_aux['prob_media']
 todasEmpresasYProbabsDF.sort_values(by=['prob_media'], ascending=False, inplace=True)
 
+# Operaciones de insiders (tambien son buen indicador, pero lo ponemos para evitar entrar a mirar en Finviz manualmente)
+entradaSG46df = pd.read_csv("/bolsa/futuro/subgrupos/SG_46/COMPLETO.csv", sep="|")
+entradaSG46df = entradaSG46df[entradaSG46df['antiguedad']==0]
+entradaSG46df = entradaSG46df[["empresa", "flagOperacionesInsiderUltimos90dias", "flagOperacionesInsiderUltimos30dias", "flagOperacionesInsiderUltimos15dias", "flagOperacionesInsiderUltimos5dias"]]\
+    .rename(columns={"flagOperacionesInsiderUltimos90dias":"I90D", "flagOperacionesInsiderUltimos30dias":"I30D", "flagOperacionesInsiderUltimos15dias":"I15D", "flagOperacionesInsiderUltimos5dias":"I5D"})
+todasEmpresasYProbabsDFconInsiders = pd.merge(todasEmpresasYProbabsDF, entradaSG46df, how="left", on="empresa")
+todasEmpresasYProbabsDFconInsiders = todasEmpresasYProbabsDFconInsiders.fillna("")  # Sustituir NaN por cadena vacia para que quede bonito
+
+# Escritura a fichero HTML
 pathSalida = entradaPathDirDropbox + str(fecha) + "_todas_las_empresas.html"
 print("Escribiendo en: " + pathSalida)
-datosEnHtml = HTML(todasEmpresasYProbabsDF.to_html(index=False, classes='table table-striped table-bordered table-hover table-condensed'))
+datosEnHtml = HTML(todasEmpresasYProbabsDFconInsiders.to_html(index=False, classes='table table-striped table-bordered table-hover table-condensed'))
+contenidoHtml = datosEnHtml.data
+contenidoHtml = contenidoHtml.replace("<th>empresa</th>", "<th style=\"background-color: yellow;\">empresa</th>")  # Colores
+contenidoHtml = contenidoHtml.replace("<th>prob_media</th>", "<th style=\"background-color: yellow;\">prob_media</th>")  # Colores
 text_file = open(pathSalida, "w", encoding="utf-8")
 text_file.writelines('<meta charset="UTF-8">\n')
-text_file.write(datosEnHtml.data)
+text_file.write(contenidoHtml)
 text_file.close()
 ############################################################
-
-
-
 
 print("--- InversionJuntarPrediccionesDeUnDia: FIN ---")
 
