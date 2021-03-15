@@ -16,7 +16,7 @@ print("--- InversionJuntarPrediccionesDeUnDia: INICIO ---")
 entradaPathDirDropbox = sys.argv[1]
 entradaPathCalidad = sys.argv[2]
 entradaPathDescripcionSubgrupos = sys.argv[3]
-targetPredichoProbUmbral = float(0.91)
+targetPredichoProbUmbral = float(0.93)
 print("entradaPathDirDropbox = " + entradaPathDirDropbox)
 print("entradaPathCalidad = " + entradaPathCalidad)
 print("entradaPathDescripcionSubgrupos = " + entradaPathDescripcionSubgrupos)

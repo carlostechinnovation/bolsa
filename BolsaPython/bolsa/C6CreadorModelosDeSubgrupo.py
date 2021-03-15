@@ -58,10 +58,10 @@ umbralCasosSuficientesClasePositiva = 40  # Numero de casos en la clase minorita
 granProbTargetUno = 50  # De todos los target=1, nos quedaremos con los granProbTargetUno (en tanto por cien) MAS probables. Un valor de 100 o mayor anula este parámetro
 umbralFeaturesCorrelacionadas = 0.96  # Umbral aplicado para descartar features cuya correlacion sea mayor que él
 umbralNecesarioCompensarDesbalanceo = 1  # Umbral de desbalanceo clase positiva/negativa. Si se supera, es necesario hacer oversampling de minoritaria (SMOTE) o undersampling de mayoritaria (borrar filas con ENN)
-cv_todos = 15  # CROSS_VALIDATION: número de iteraciones. Sirve para evitar el overfitting
+cv_todos = 20  # CROSS_VALIDATION: número de iteraciones. Sirve para evitar el overfitting
 fraccion_train = 0.75  # Fracción de datos usada para entrenar
 fraccion_test = 0.15  # Fracción de datos usada para testear (no es validación)
-fraccion_valid = 1-(fraccion_train + fraccion_test)
+fraccion_valid = 1.00 - (fraccion_train + fraccion_test)
 
 ######### ID de subgrupo #######
 partes = dir_subgrupo.split("/")
@@ -502,7 +502,7 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
 
         optimizer = BayesianOptimization(f=xgboost_hyper_param, pbounds=pbounds, random_state=1,
                                          verbose=10)
-        optimizer.maximize(init_points=3, n_iter=10, acq='ucb', kappa=3, **gp_params)
+        optimizer.maximize(init_points=3, n_iter=20, acq='ucb', kappa=3, **gp_params)
         valoresOptimizados = optimizer.max
         print(valoresOptimizados)
         print("Fin del optimizador")
