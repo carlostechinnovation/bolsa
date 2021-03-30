@@ -19,6 +19,7 @@ import org.apache.log4j.helpers.NullEnumeration;
 
 import c10X.brutos.BrutosUtils;
 import c30x.elaborados.construir.GestorFicheros;
+import coordinador.Principal;
 
 public class LimpiarOperaciones implements Serializable {
 
@@ -44,7 +45,7 @@ public class LimpiarOperaciones implements Serializable {
 
 		Object appendersAcumulados = Logger.getRootLogger().getAllAppenders();
 		if (appendersAcumulados instanceof NullEnumeration) {
-			MY_LOGGER.addAppender(new ConsoleAppender(new PatternLayout(PatternLayout.TTCC_CONVERSION_PATTERN)));
+			MY_LOGGER.addAppender(new ConsoleAppender(new PatternLayout(Principal.LOG_PATRON)));
 		}
 		MY_LOGGER.setLevel(Level.INFO);
 		MY_LOGGER.info("INICIO");

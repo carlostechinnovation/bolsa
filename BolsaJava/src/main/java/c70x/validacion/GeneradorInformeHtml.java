@@ -25,6 +25,7 @@ import org.apache.log4j.PatternLayout;
 import org.apache.log4j.helpers.NullEnumeration;
 
 import c10X.brutos.BrutosUtils;
+import coordinador.Principal;
 
 /**
  * Genera informe HTML del estado actual de DATOS en la carpeta de tiempo
@@ -58,7 +59,7 @@ public class GeneradorInformeHtml implements Serializable {
 
 		Object appendersAcumulados = Logger.getRootLogger().getAllAppenders();
 		if (appendersAcumulados instanceof NullEnumeration) {
-			MY_LOGGER.addAppender(new ConsoleAppender(new PatternLayout(PatternLayout.TTCC_CONVERSION_PATTERN)));
+			MY_LOGGER.addAppender(new ConsoleAppender(new PatternLayout(Principal.LOG_PATRON)));
 		}
 		MY_LOGGER.setLevel(Level.INFO);
 		MY_LOGGER.info("INICIO");

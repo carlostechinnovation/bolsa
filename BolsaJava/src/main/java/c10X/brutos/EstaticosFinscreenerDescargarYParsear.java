@@ -15,6 +15,8 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.helpers.NullEnumeration;
 
+import coordinador.Principal;
+
 /**
  * Datos DINAMICOS sobre EARNINGS (pasados o futuros) de página
  * www.finscreener.com
@@ -46,7 +48,7 @@ public class EstaticosFinscreenerDescargarYParsear {
 
 		Object appendersAcumulados = Logger.getRootLogger().getAllAppenders();
 		if (appendersAcumulados instanceof NullEnumeration) {
-			MY_LOGGER.addAppender(new ConsoleAppender(new PatternLayout(PatternLayout.TTCC_CONVERSION_PATTERN)));
+			MY_LOGGER.addAppender(new ConsoleAppender(new PatternLayout(Principal.LOG_PATRON)));
 		}
 		MY_LOGGER.setLevel(Level.INFO);
 		MY_LOGGER.info("INICIO");

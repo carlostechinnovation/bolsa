@@ -210,4 +210,3 @@ text_file = open(pathSalidaAntesDePca, "w")
 text_file.write(datosEnHtml)
 text_file.close()
 
-

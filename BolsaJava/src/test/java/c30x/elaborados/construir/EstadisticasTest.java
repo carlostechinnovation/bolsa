@@ -47,7 +47,10 @@ public class EstadisticasTest {
 		modelo.addValue(1.15D);// Máximo
 		double out = modelo.getVariacionRelativaMaxima();
 
-		double esperado = 0D;
+		// Incrementos --> 0.02, 0.05, 0.06
+		// Incremento maximo/medio = 0.06 / ((0.02 + 0.05 + 0.06)/3) = 1.3846
+
+		double esperado = 1.3846153846153817D;
 		assertTrue(out == esperado);
 	}
 

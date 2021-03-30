@@ -30,6 +30,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import coordinador.Principal;
+
 /**
  * Datos ESTATICOS
  *
@@ -81,7 +83,7 @@ public class EstaticosFinvizDescargarYParsear {
 
 		Object appendersAcumulados = Logger.getRootLogger().getAllAppenders();
 		if (appendersAcumulados instanceof NullEnumeration) {
-			MY_LOGGER.addAppender(new ConsoleAppender(new PatternLayout(PatternLayout.TTCC_CONVERSION_PATTERN)));
+			MY_LOGGER.addAppender(new ConsoleAppender(new PatternLayout(Principal.LOG_PATRON)));
 		}
 		MY_LOGGER.setLevel(Level.INFO);
 		MY_LOGGER.info("INICIO");

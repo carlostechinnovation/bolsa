@@ -31,6 +31,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import coordinador.Principal;
+
 /**
  * Parsear datos de Yahoo Finance
  */
@@ -64,7 +66,7 @@ public class YahooFinance02Parsear implements Serializable {
 
 		Object appendersAcumulados = Logger.getRootLogger().getAllAppenders();
 		if (appendersAcumulados instanceof NullEnumeration) {
-			MY_LOGGER.addAppender(new ConsoleAppender(new PatternLayout(PatternLayout.TTCC_CONVERSION_PATTERN)));
+			MY_LOGGER.addAppender(new ConsoleAppender(new PatternLayout(Principal.LOG_PATRON)));
 		}
 		MY_LOGGER.setLevel(Level.INFO);
 		MY_LOGGER.info("INICIO");

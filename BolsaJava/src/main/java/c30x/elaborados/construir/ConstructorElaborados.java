@@ -20,6 +20,7 @@ import c20X.limpios.LimpiosUtils;
 import c30x.elaborados.construir.Estadisticas.COMIENZO_NOMBRES_PARAMETROS_ELABORADOS;
 import c30x.elaborados.construir.Estadisticas.FINAL_NOMBRES_PARAMETROS_ELABORADOS;
 import c30x.elaborados.construir.Estadisticas.OTROS_PARAMS_ELAB;
+import coordinador.Principal;
 
 public class ConstructorElaborados implements Serializable {
 
@@ -64,7 +65,7 @@ public class ConstructorElaborados implements Serializable {
 
 		Object appendersAcumulados = Logger.getRootLogger().getAllAppenders();
 		if (appendersAcumulados instanceof NullEnumeration) {
-			MY_LOGGER.addAppender(new ConsoleAppender(new PatternLayout(PatternLayout.TTCC_CONVERSION_PATTERN)));
+			MY_LOGGER.addAppender(new ConsoleAppender(new PatternLayout(Principal.LOG_PATRON)));
 		}
 		MY_LOGGER.setLevel(Level.INFO);
 		MY_LOGGER.info("INICIO");

@@ -21,6 +21,7 @@ import org.apache.log4j.helpers.NullEnumeration;
 
 import c20X.limpios.LimpiosUtils;
 import c30x.elaborados.construir.GestorFicheros;
+import coordinador.Principal;
 
 /**
  * Dado un fichero y una lista de features (columnas), muestra solo las columnas
@@ -52,7 +53,7 @@ public class ExtractorFeatures implements Serializable {
 
 		Object appendersAcumulados = Logger.getRootLogger().getAllAppenders();
 		if (appendersAcumulados instanceof NullEnumeration) {
-			MY_LOGGER.addAppender(new ConsoleAppender(new PatternLayout(PatternLayout.TTCC_CONVERSION_PATTERN)));
+			MY_LOGGER.addAppender(new ConsoleAppender(new PatternLayout(Principal.LOG_PATRON)));
 		}
 		MY_LOGGER.setLevel(Level.INFO);
 		MY_LOGGER.info("INICIO");

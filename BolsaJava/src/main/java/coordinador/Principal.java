@@ -30,6 +30,8 @@ import testIntegracion.ParserCsvEnTablaHtml;
  */
 public class Principal implements Serializable {
 
+	public final static String LOG_PATRON = "%d{ISO8601} %c [%t]%x %p - %m%n";
+
 	static Logger MY_LOGGER = Logger.getLogger(Principal.class);
 
 	/**
@@ -42,7 +44,7 @@ public class Principal implements Serializable {
 
 		Object appendersAcumulados = Logger.getRootLogger().getAllAppenders();
 		if (appendersAcumulados instanceof NullEnumeration) {
-			MY_LOGGER.addAppender(new ConsoleAppender(new PatternLayout(PatternLayout.TTCC_CONVERSION_PATTERN)));
+			MY_LOGGER.addAppender(new ConsoleAppender(new PatternLayout(Principal.LOG_PATRON)));
 		}
 		MY_LOGGER.setLevel(Level.INFO);
 		MY_LOGGER.info("INICIO");

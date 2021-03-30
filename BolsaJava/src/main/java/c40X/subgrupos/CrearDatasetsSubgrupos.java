@@ -24,6 +24,7 @@ import c10X.brutos.EstaticosFinvizDescargarYParsear;
 import c30x.elaborados.construir.ElaboradosUtils;
 import c30x.elaborados.construir.Estadisticas;
 import c30x.elaborados.construir.GestorFicheros;
+import coordinador.Principal;
 
 /**
  * Crea los datasets (CSV) de cada subgrupo
@@ -85,7 +86,7 @@ public class CrearDatasetsSubgrupos implements Serializable {
 
 		Object appendersAcumulados = Logger.getRootLogger().getAllAppenders();
 		if (appendersAcumulados instanceof NullEnumeration) {
-			MY_LOGGER.addAppender(new ConsoleAppender(new PatternLayout(PatternLayout.TTCC_CONVERSION_PATTERN)));
+			MY_LOGGER.addAppender(new ConsoleAppender(new PatternLayout(Principal.LOG_PATRON)));
 		}
 		MY_LOGGER.setLevel(Level.INFO);
 		MY_LOGGER.info("INICIO");
@@ -853,15 +854,15 @@ public class CrearDatasetsSubgrupos implements Serializable {
 	}
 
 	public static boolean isNumeric(String strNum) {
-	    if (strNum == null) {
-	        return false;
-	    }
-	    try {
-	        double d = Double.parseDouble(strNum);
-	    } catch (NumberFormatException nfe) {
-	        return false;
-	    }
-	    return true;
+		if (strNum == null) {
+			return false;
+		}
+		try {
+			double d = Double.parseDouble(strNum);
+		} catch (NumberFormatException nfe) {
+			return false;
+		}
+		return true;
 	}
-	
+
 }

@@ -27,6 +27,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import coordinador.Principal;
+
 /**
  * Datos ESTATICOS
  *
@@ -65,7 +67,7 @@ public class EstaticosNasdaqDescargarYParsear implements Serializable {
 
 		Object appendersAcumulados = Logger.getRootLogger().getAllAppenders();
 		if (appendersAcumulados instanceof NullEnumeration) {
-			MY_LOGGER.addAppender(new ConsoleAppender(new PatternLayout(PatternLayout.TTCC_CONVERSION_PATTERN)));
+			MY_LOGGER.addAppender(new ConsoleAppender(new PatternLayout(Principal.LOG_PATRON)));
 		}
 		MY_LOGGER.setLevel(Level.INFO);
 		MY_LOGGER.info("INICIO");
@@ -198,8 +200,6 @@ public class EstaticosNasdaqDescargarYParsear implements Serializable {
 			}
 			br.close();
 
-			MY_LOGGER.info("NASDAQ-TICKERS leidos: " + out.size());
-
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		}
@@ -207,8 +207,52 @@ public class EstaticosNasdaqDescargarYParsear implements Serializable {
 		MY_LOGGER.info("Empresas DESCONOCIDAS (sabemos que falta info en alguna de las fuentes de datos): "
 				+ BrutosUtils.DESCONOCIDOS_CSV + " --> Son " + desconocidos.size() + " empresas");
 
+		List<EstaticoNasdaqModelo> outActivas = seleccionarSoloLasActivas(out, BrutosUtils.NASDAQ_TICKERS_CSV_ACTIVAS);
+
+		MY_LOGGER.info(
+				"NASDAQ-TICKERS leidos son " + out.size() + ", pero de esas solo son ACTIVAS: " + outActivas.size());
+
 		// Colocar a la empresa de referencia la primera!!
-		return colocar(out, entornoDeValidacion);
+		return colocar(outActivas, entornoDeValidacion);
+	}
+
+	public static List<EstaticoNasdaqModelo> seleccionarSoloLasActivas(List<EstaticoNasdaqModelo> lista,
+			String pathActivas) {
+
+		// empresas ACTIVAS
+		List<String> activasTickers = new ArrayList<String>();
+		try {
+			File file = new File(pathActivas);
+			FileReader fr = new FileReader(file);
+			BufferedReader br = new BufferedReader(fr);
+
+			String line = "";
+			boolean primeraLinea = true;
+
+			while ((line = br.readLine()) != null) {
+
+				if (primeraLinea) {
+					primeraLinea = false;
+
+				} else if (primeraLinea == false) {
+
+					String[] tempArr = line.split("\\|", -1); // El -1 indica coger las cadenas vacías!!
+					activasTickers.add(tempArr[0]);
+				}
+			}
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+		}
+
+		// Coger solo las activas
+		List<EstaticoNasdaqModelo> seleccionadas = new ArrayList<EstaticoNasdaqModelo>();
+		for (EstaticoNasdaqModelo modelo : lista) {
+			if (activasTickers.contains(modelo.symbol)) {
+				seleccionadas.add(modelo);
+			}
+		}
+
+		return seleccionadas;
 	}
 
 	/**

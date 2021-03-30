@@ -22,6 +22,8 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.helpers.NullEnumeration;
 
+import coordinador.Principal;
+
 /**
  * A partir de una lista de ficheros CSV de un subgrupo, añade a TODAS esas
  * empresas unas FEATURES DEL SUBGRUPO.
@@ -37,7 +39,7 @@ public class GeneradorFeaturesDeSubgrupo implements Serializable {
 
 		Object appendersAcumulados = Logger.getRootLogger().getAllAppenders();
 		if (appendersAcumulados instanceof NullEnumeration) {
-			MY_LOGGER.addAppender(new ConsoleAppender(new PatternLayout(PatternLayout.TTCC_CONVERSION_PATTERN)));
+			MY_LOGGER.addAppender(new ConsoleAppender(new PatternLayout(Principal.LOG_PATRON)));
 		}
 		MY_LOGGER.setLevel(Level.INFO);
 		MY_LOGGER.info("INICIO");

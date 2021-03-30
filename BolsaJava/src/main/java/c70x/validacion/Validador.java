@@ -27,6 +27,7 @@ import org.apache.log4j.helpers.NullEnumeration;
 import c30x.elaborados.construir.ElaboradosUtils;
 import c30x.elaborados.construir.Estadisticas;
 import c40X.subgrupos.SubgruposUtils;
+import coordinador.Principal;
 
 public class Validador implements Serializable {
 
@@ -64,7 +65,7 @@ public class Validador implements Serializable {
 
 		Object appendersAcumulados = Logger.getRootLogger().getAllAppenders();
 		if (appendersAcumulados instanceof NullEnumeration) {
-			MY_LOGGER.addAppender(new ConsoleAppender(new PatternLayout(PatternLayout.TTCC_CONVERSION_PATTERN)));
+			MY_LOGGER.addAppender(new ConsoleAppender(new PatternLayout(Principal.LOG_PATRON)));
 		}
 		MY_LOGGER.setLevel(Level.INFO);
 		MY_LOGGER.info("INICIO");
