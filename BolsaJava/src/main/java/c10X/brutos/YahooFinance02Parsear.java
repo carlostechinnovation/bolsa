@@ -108,7 +108,7 @@ public class YahooFinance02Parsear implements Serializable {
 																			// de la empresa de referencia
 
 		if (velas != null && velas.size() > 0) {
-			MY_LOGGER.info("Descargando datos DINAMICOS de todas las empresas...");
+			MY_LOGGER.info("Parseando datos DINAMICOS de todas las empresas...");
 			parsearDinamicos01(nasdaqEstaticos1, directorioIn, directorioOut, false, modo);
 			rellenarVelasDiariasHuecoyAntiguedad02(nasdaqEstaticos1, directorioOut, velas);
 		} else {

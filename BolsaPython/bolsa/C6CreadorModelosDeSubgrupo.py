@@ -37,6 +37,10 @@ from subprocess import call
 from xgboost import XGBClassifier
 from matplotlib import pyplot
 import datetime
+from sklearn.manifold import TSNE
+from sklearn.decomposition import PCA, TruncatedSVD
+import time
+import matplotlib.patches as mpatches
 
 np.random.seed(12345)
 
@@ -53,8 +57,8 @@ modoDebug = False  # En modo debug se pintan los dibujos. En otro caso, se evita
 umbralCasosSuficientesClasePositiva = 50
 granProbTargetUno = 50  # De todos los target=1, nos quedaremos con los granProbTargetUno (en tanto por cien) MAS probables. Un valor de 100 o mayor anula este parámetro
 balancearConSmoteSoloTrain = True
-umbralFeaturesCorrelacionadas = 0.90  # Umbral aplicado para descartar features cuya correlacion sea mayor que él
-umbralNecesarioCompensarDesbalanceo = 9  # Umbral de desbalanceo clase positiva/negativa. Si se supera, es necesario hacer oversampling de minoritaria (SMOTE) o undersampling de mayoritaria (borrar filas)
+umbralFeaturesCorrelacionadas = 0.96  # Umbral aplicado para descartar features cuya correlacion sea mayor que él
+umbralNecesarioCompensarDesbalanceo = 1  # Umbral de desbalanceo clase positiva/negativa. Si se supera, es necesario hacer oversampling de minoritaria (SMOTE) o undersampling de mayoritaria (borrar filas)
 cv_todos = 10  # CROSS_VALIDATION: número de iteraciones. Sirve para evitar el overfitting
 fraccion_train = 0.75  # Fracción de datos usada para entrenar
 fraccion_test = 0.15  # Fracción de datos usada para testear (no es validación)
@@ -148,7 +152,6 @@ def ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_tr
     predictions = [round(value) for value in y_pred]
     precision_para_medir_overfitting = precision_score(ds_test_t, predictions)
     print("Accuracy (PRECISION) para medir el overfitting: %.2f%%" % (precision_para_medir_overfitting * 100.0))
-    # retrieve performance metrics
     results = modelo.evals_result()
 
     epochs = len(results['validation_0'][METODO_EVALUACION])
@@ -157,10 +160,12 @@ def ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_tr
     ax.plot(x_axis, results['validation_0'][METODO_EVALUACION], label='Train')
     ax.plot(x_axis, results['validation_1'][METODO_EVALUACION], label='Test')
     ax.legend()
-    pyplot.ylabel("Numero de epochs")
+    pyplot.xlabel("Numero de epochs")
     pyplot.ylabel(METODO_EVALUACION)
-    pyplot.title(METODO_EVALUACION + ': ' + nombreModelo)
-    plt.savefig(dir_subgrupo_img + nombreModelo + "_"+METODO_EVALUACION+".png", bbox_inches='tight')
+    pyplot.title("Modelo: " + nombreModelo + " - Metodo de evaluacion: " + METODO_EVALUACION)
+    path_img_metricas_modelo_ovft = dir_subgrupo_img + nombreModelo + "_" + METODO_EVALUACION + ".png"
+    print("Pintando IMG de metricas del modelo overfitting (train vs test). Path: " + path_img_metricas_modelo_ovft)
+    plt.savefig(path_img_metricas_modelo_ovft, bbox_inches='tight')
     plt.clf();        plt.cla();        plt.close();  # Limpiando dibujo
     #------------------------------------------------------------------------------
 
@@ -265,7 +270,7 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
     print("ift_minoritaria:" + str(ift_minoritaria.shape[0]) + " x " + str(ift_minoritaria.shape[1]))
 
     tasaDesbalanceoAntes = ift_mayoritaria.shape[0] / ift_minoritaria.shape[0]
-    print("Tasa de desbalanceo entre clases (antes de balancear) = " + str(ift_mayoritaria.shape[0]) + "/" + str(ift_minoritaria.shape[0]) + " = " + str(tasaDesbalanceoAntes))
+    print("Tasa de desbalanceo entre clases (antes de balancear INICIO) = " + str(ift_mayoritaria.shape[0]) + "/" + str(ift_minoritaria.shape[0]) + " = " + str(tasaDesbalanceoAntes))
     num_muestras_minoria = ift_minoritaria.shape[0]
 
     casosInsuficientes = (num_muestras_minoria < umbralCasosSuficientesClasePositiva)
@@ -387,20 +392,26 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         #         ds_train[nombreColumna] = np.power(ds_train[nombreColumna], 2)
         # ################################################################################################################
 
-        ########################### SMOTE-ENN (Oversamplig con SMOTE y undersampling con Edited Nearest Neighbours) ##################
+        ########################### SMOTE-ENN (Oversampling con SMOTE y undersampling con Edited Nearest Neighbours) ##################
+
+        df_mayoritaria = ds_train_t[ds_train_t == False]  # En este caso los mayoritarios son los False
+        df_minoritaria = ds_train_t[ds_train_t == True]
+        print("df_mayoritaria:" + str(len(df_mayoritaria)))
+        print("df_minoritaria:" + str(len(df_minoritaria)))
+        tasaDesbalanceoAntes = len(df_mayoritaria) / len(df_minoritaria)
+        print("Tasa de desbalanceo entre clases (antes de balancear con SMOTE) = " + str(len(df_mayoritaria)) + " / " + str(len(df_minoritaria)) + " = " + str(tasaDesbalanceoAntes))
+
         balancearConSmoteSoloTrain = (tasaDesbalanceoAntes > umbralNecesarioCompensarDesbalanceo)  # Condicion para decidir si hacer SMOTE
         if balancearConSmoteSoloTrain == True:
             print((datetime.datetime.now()).strftime("%Y%m%d_%H%M%S") + " ---------------- RESAMPLING con SMOTE (porque supera umbral = " + str(umbralNecesarioCompensarDesbalanceo) + ") --------")
             print(
                 "Resampling con SMOTE del vector de TRAINING (pero no a TEST ni a VALIDATION) según: " + "https://machinelearningmastery.com/combine-oversampling-and-undersampling-for-imbalanced-classification/")
-            resample = SMOTEENN(sampling_strategy='not majority',  # A que clase se hara el undersampling
-                                random_state=None, smote=None, enn=None,
-                                n_jobs=-1  # usa todos los procesadores
-                                )
+            resample = SMOTEENN(sampling_strategy='minority',  # A que clase se hara el undersampling
+                                random_state=0, smote=None, enn=None, n_jobs=-1)
             print("SMOTE antes (mayoritaria + minoritaria): %d" % ds_train_f.shape[0])
             ds_train_f, ds_train_t = resample.fit_resample(ds_train_f, ds_train_t)
             print("SMOTE después (mayoritaria + minoritaria): %d" % ds_train_f.shape[0])
-            
+
             # print("Antes (mayoritaria + minoritaria): %d" % ds_train_f.shape[0])
             # # https://machinelearningmastery.com/undersampling-algorithms-for-imbalanced-classification/
             # undersample = NeighbourhoodCleaningRule(n_neighbors=3, threshold_cleaning=0.5)

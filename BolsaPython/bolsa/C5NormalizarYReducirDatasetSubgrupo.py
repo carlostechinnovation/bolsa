@@ -33,6 +33,8 @@ import pickle
 from sklearn.impute import SimpleImputer
 import warnings
 import datetime
+from sklearn.pipeline import make_pipeline
+from sklearn.manifold import TSNE
 
 
 print((datetime.datetime.now()).strftime("%Y%m%d_%H%M%S") + " **** CAPA 5  --> Selección de variables/ Reducción de dimensiones (para cada subgrupo) ****")
@@ -50,23 +52,26 @@ print("modoTiempo = %s" % modoTiempo)
 print("maxFeatReducidas = %s" % maxFeatReducidas)
 print("maxFilasEntrada = %s" % maxFilasEntrada)
 
-varianza=0.88  # Variacion acumulada de las features PCA sobre el target
+varianza=0.92  # Variacion acumulada de las features PCA sobre el target
 compatibleParaMuchasEmpresas = False  # Si hay muchas empresas, debo hacer ya el undersampling (en vez de capa 6)
 global modoDebug; modoDebug = False  # VARIABLE GLOBAL: En modo debug se pintan los dibujos. En otro caso, se evita calculo innecesario
-global cv_todos; cv_todos = 10  # CROSS_VALIDATION: número de iteraciones. Sirve para evitar el overfitting
+global cv_todos; cv_todos = 12  # CROSS_VALIDATION: número de iteraciones. Sirve para evitar el overfitting
+global rfecv_step; rfecv_step=3  # Numero de features que va reduciendo en cada iteracion de RFE hasta encontrar el numero deseado
 global dibujoBins; dibujoBins=20  #VARIABLE GLOBAL: al pintar los histogramas, define el número de barras posibles en las que se divide el eje X.
 numTramos=7  # Numero de tramos usado para tramificar las features dinámicas
 pathCsvCompleto = dir_subgrupo + "COMPLETO.csv"
 dir_subgrupo_img = dir_subgrupo + "img/"
 pathCsvIntermedio = dir_subgrupo + "intermedio.csv"
 pathCsvReducido = dir_subgrupo + "REDUCIDO.csv"
-pathCsvFeaturesElegidas = dir_subgrupo + "FEATURES_ELEGIDAS.csv"
+pathCsvFeaturesElegidas = dir_subgrupo + "FEATURES_ELEGIDAS_RFECV.csv"
 pathModeloOutliers = (dir_subgrupo + "DETECTOR_OUTLIERS.tool").replace("futuro", "pasado")  # Siempre lo cojo del pasado
 path_modelo_tramificador = (dir_subgrupo + "tramif/" + "TRAMIFICADOR").replace("futuro", "pasado")  # Siempre lo cojo del pasado
 path_modelo_normalizador = (dir_subgrupo + "NORMALIZADOR.tool").replace("futuro", "pasado")  # Siempre lo cojo del pasado
 path_indices_out_capa5 = (dir_subgrupo + "indices_out_capa5.indices")
 path_modelo_reductor_features = (dir_subgrupo + "REDUCTOR.tool").replace("futuro", "pasado")  # Siempre lo cojo del pasado
 path_modelo_pca = (dir_subgrupo + "PCA.tool").replace("futuro", "pasado")  # Siempre lo cojo del pasado
+path_pesos_pca = (dir_subgrupo + "PCA_matriz.csv")
+
 
 balancear = False  # No usar este balanceo, sino el de Luis (capa 6), que solo actúa en el dataset de train, evitando tocar test y validation
 
@@ -94,10 +99,17 @@ def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmp
   print("Cargar datos (CSV)...")
   entradaFeaturesYTarget = pd.read_csv(filepath_or_buffer=path_csv_completo, sep='|')
   print("entradaFeaturesYTarget (LEIDO): " + str(entradaFeaturesYTarget.shape[0]) + " x " + str(entradaFeaturesYTarget.shape[1]))
+  entradaFeaturesYTarget.sort_index(inplace=True)  # Reordenando segun el indice (para facilitar el testIntegracion)
+  entradaFeaturesYTarget.to_csv(pathCsvIntermedio + ".entrada", index=True, sep='|')  # NO BORRAR: UTIL para testIntegracion
+
   if int(maxFilasEntrada) < entradaFeaturesYTarget.shape[0]:
+      print("entradaFeaturesYTarget (APLICANDO MAXIMO): " + str(entradaFeaturesYTarget.shape[0]) + " x " + str(
+          entradaFeaturesYTarget.shape[1]))
       entradaFeaturesYTarget = entradaFeaturesYTarget.sample(int(maxFilasEntrada), replace=False)
 
-  print("entradaFeaturesYTarget (APLICANDO MAXIMO): " + str(entradaFeaturesYTarget.shape[0]) + " x " + str(entradaFeaturesYTarget.shape[1]))
+  entradaFeaturesYTarget.sort_index(inplace=True)  # Reordenando segun el indice (para facilitar el testIntegracion)
+  entradaFeaturesYTarget.to_csv(pathCsvIntermedio + ".entrada_tras_maximo.csv", index=True, sep='|')  # NO BORRAR: UTIL para testIntegracion
+  entradaFeaturesYTarget.to_csv(pathCsvIntermedio + ".entrada_tras_maximo_INDICES.csv", columns=[])  # NO BORRAR: UTIL para testIntegracion
 
   num_nulos_por_fila_1 = np.logical_not(entradaFeaturesYTarget.isnull()).sum()
   indiceFilasFuturasTransformadas1 = entradaFeaturesYTarget.index.values  # DEFAULT
@@ -132,11 +144,11 @@ def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmp
       print("entradaFeaturesYTarget2:" + str(entradaFeaturesYTarget2.shape[0]) + " x " + str(entradaFeaturesYTarget2.shape[1]))
       #print(entradaFeaturesYTarget2.head())
 
-  print("Porcentaje de MISSING VALUES en cada columna del dataframe de entrada:")
+  print("Porcentaje de MISSING VALUES en cada columna del dataframe de entrada (mostramos las que superen 20%):")
   missing = pd.DataFrame(entradaFeaturesYTarget2.isnull().sum()).rename(columns={0: 'total'})
   missing['percent'] = missing['total'] / len(entradaFeaturesYTarget2)  # Create a percentage missing
   missing_df = missing.sort_values('percent', ascending=False)
-  missing_df = missing_df[missing_df['percent'] > 0]
+  missing_df = missing_df[missing_df['percent'] > 0.20]
   print(missing_df.to_string())  # .drop('TARGET')
 
   # print("Pasado o Futuro: Transformacion en la que borro filas. Por tanto, guardo el indice...")
@@ -145,7 +157,12 @@ def leerFeaturesyTarget(path_csv_completo, path_dir_img, compatibleParaMuchasEmp
   print("Borrar columnas especiales (idenficadoras de fila): empresa | antiguedad | mercado | anio | mes | dia | hora | minuto...")
   entradaFeaturesYTarget2 = entradaFeaturesYTarget2\
       .drop('empresa', axis=1).drop('antiguedad', axis=1).drop('mercado', axis=1)\
-      .drop('anio', axis=1).drop('mes', axis=1).drop('dia', axis=1).drop('hora', axis=1).drop('minuto', axis=1)
+      .drop('anio', axis=1).drop('mes', axis=1).drop('dia', axis=1).drop('hora', axis=1).drop('minuto', axis=1)\
+
+  print(
+      "Borrar columnas dinamicas que no aportan nada: volumen | high | low | close | open ...")
+  entradaFeaturesYTarget2 = entradaFeaturesYTarget2 \
+      .drop('volumen', axis=1).drop('high', axis=1).drop('low', axis=1).drop('close', axis=1).drop('open', axis=1)
   
   # entradaFeaturesYTarget2.to_csv(path_csv_completo + "_TEMP02", index=True, sep='|')  # UTIL para testIntegracion
 
@@ -477,11 +494,14 @@ def normalizarFeatures(featuresFichero, path_modelo_normalizador, dir_subgrupo_i
   #######################################################################################
 
   ################################### NORMALIZACIÓN YEO-JOHNSON ####################################################
+  print("Normalizando cada feature...")
   # Vamos a normalizar z-score (media 0, std_dvt=1), pero yeo-johnson tiene un bug (https://github.com/scipy/scipy/issues/10821) que se soluciona sumando una constante a toda la matriz, lo cual no afecta a la matriz normalizada
   featuresFichero = featuresFichero + 1.015815
 
   if modoTiempo == "pasado":
-      modelo_normalizador = PowerTransformer(method='yeo-johnson', standardize=True, copy=True).fit(featuresFichero)
+      # Con el "normalizador COMPLEJO" solucionamos este bug: https://github.com/scikit-learn/scikit-learn/issues/14959  --> Aplicar los cambios indicados a:_/home/carloslinux/Desktop/PROGRAMAS/anaconda3/envs/BolsaPython/lib/python3.7/site-packages/sklearn/preprocessing/_data.py
+      modelo_normalizador = make_pipeline(StandardScaler(with_std=False), PowerTransformer(method='yeo-johnson', standardize=True, copy=True), ).fit(featuresFichero) #COMPLEJO
+      #modelo_normalizador = PowerTransformer(method='yeo-johnson', standardize=True, copy=True).fit(featuresFichero)
       pickle.dump(modelo_normalizador, open(path_modelo_normalizador, 'wb'))
 
 
@@ -492,7 +512,7 @@ def normalizarFeatures(featuresFichero, path_modelo_normalizador, dir_subgrupo_i
   featuresFicheroNorm = pd.DataFrame(data=modelo_normalizador.transform(featuresFichero), index=featuresFichero.index, columns=featuresFichero.columns)
 
   print("featuresFicheroNorm:" + str(featuresFicheroNorm.shape[0]) + " x " + str(featuresFicheroNorm.shape[1]))
-  # featuresFicheroNorm.to_csv(pathCsvIntermedio + "_TEMP_NORM01", index=True, sep='|')  # UTIL para testIntegracion
+  featuresFicheroNorm.to_csv(pathCsvIntermedio + ".normalizado.csv", index=True, sep='|')  # UTIL para testIntegracion
 
   if modoDebug and modoTiempo == "pasado":
     print("FUNCIONES DE DENSIDAD (normalizadas):")
@@ -518,10 +538,11 @@ def comprobarSuficientesClasesTarget(featuresFicheroNorm, targetsFichero):
   return y_unicos.size
 
 
-def reducirFeaturesYGuardar(path_modelo_reductor_features, path_modelo_pca, featuresFicheroNorm, targetsFichero, pathCsvReducido, pathCsvFeaturesElegidas, varianzaAcumuladaDeseada, dir_subgrupo_img, modoTiempo, maxFeatReducidas):
+def reducirFeaturesYGuardar(path_modelo_reductor_features, path_modelo_pca, path_pesos_pca, featuresFicheroNorm, targetsFichero, pathCsvReducido, pathCsvFeaturesElegidas, varianzaAcumuladaDeseada, dir_subgrupo_img, modoTiempo, maxFeatReducidas):
   print((datetime.datetime.now()).strftime("%Y%m%d_%H%M%S") + " ----- reducirFeaturesYGuardar ------")
   print("path_modelo_reductor_features --> " + path_modelo_reductor_features)
   print("path_modelo_pca --> " + path_modelo_pca)
+  print("path_pesos_pca --> " + path_pesos_pca)
   print("featuresFicheroNorm: " + str(featuresFicheroNorm.shape[0]) + " x " + str(featuresFicheroNorm.shape[1]))
   print("targetsFichero: " + str(targetsFichero.shape[0]) + " x " + str(targetsFichero.shape[1]))
   print("pathCsvReducido --> " + pathCsvReducido)
@@ -581,7 +602,7 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, path_modelo_pca, feat
                     numFeaturesAnterior = rfecv.n_features_
 
     # The "accuracy" scoring is proportional to the number of correct classifications
-    rfecv_modelo = RFECV(estimator=estimador_interno, step=3, min_features_to_select=4, cv=StratifiedKFold(n_splits=cv_todos, shuffle=True), scoring=rfecv_scoring, verbose=0, n_jobs=-1)
+    rfecv_modelo = RFECV(estimator=estimador_interno, step=rfecv_step, min_features_to_select=4, cv=StratifiedKFold(n_splits=cv_todos, shuffle=True), scoring=rfecv_scoring, verbose=0, n_jobs=-1)
     print("rfecv_modelo -> fit ...")
     targetsLista = targetsFichero["TARGET"].tolist()
     rfecv_modelo.fit(featuresFicheroNorm, targetsLista)
@@ -617,6 +638,7 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, path_modelo_pca, feat
           if(rfecv_modelo.support_[i] == True):
               columnasSeleccionadas.append(columnas[i])
 
+
       # print("Mascara de features seleccionadas (rfecv_modelo.support_):")
       # print(rfecv_modelo.support_)
       # print("El ranking de importancia de las features (rfecv_modelo.ranking_) no distingue las features mas importantes dentro de las seleccionadas:")
@@ -624,7 +646,7 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, path_modelo_pca, feat
 
       featuresFicheroNormElegidas = featuresFicheroNorm[columnasSeleccionadas]
       print("Features seleccionadas escritas en: " + pathCsvFeaturesElegidas)
-      featuresFicheroNormElegidas.to_csv(pathCsvFeaturesElegidas, index=False, sep='|')
+      featuresFicheroNormElegidas.head(1).to_csv(pathCsvFeaturesElegidas, index=False, sep='|')
 
       ########### PCA: base de funciones ortogonales (con combinaciones de features) ########
       if True:
@@ -632,8 +654,13 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, path_modelo_pca, feat
 
           if modoTiempo == "pasado":
               print("Usando PCA, creamos una NUEVA BASE DE FEATURES ORTOGONALES y cogemos las que tengan un impacto agregado sobre el X% de la varianza del target. Descartamos el resto.")
-              modelo_pca_subgrupo = PCA(n_components=varianzaAcumuladaDeseada, svd_solver='full')  # Variaza acumulada sobre el target
-              # modelo_pca_subgrupo = PCA(n_components='mle', svd_solver='full')  # Metodo "MLE de Minka": https://vismod.media.mit.edu/tech-reports/TR-514.pdf
+              #modelo_pca_subgrupo = PCA(n_components=varianzaAcumuladaDeseada, svd_solver='full')  # Variaza acumulada sobre el target
+              modelo_pca_subgrupo = PCA(n_components='mle', svd_solver='full')  # Metodo "MLE de Minka": https://vismod.media.mit.edu/tech-reports/TR-514.pdf
+              # modelo_pca_subgrupo = TSNE(n_components=2, perplexity=30.0, early_exaggeration=12.0, learning_rate=200.0,
+              #                            n_iter=1000, n_iter_without_progress=300, min_grad_norm=1e-07,
+              #                            metric='euclidean', init='random', verbose=0, random_state=None,
+              #                            method='barnes_hut', angle=0.5,
+              #                            n_jobs=-1)  # https://scikit-learn.org/stable/modules/generated/sklearn.manifold.TSNE.html
               print(modelo_pca_subgrupo)
               featuresFicheroNorm_pca = modelo_pca_subgrupo.fit_transform(featuresFicheroNormElegidas)
               print("modelo_pca_subgrupo -> dump ...")
@@ -644,13 +671,21 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, path_modelo_pca, feat
               print(modelo_pca_subgrupo)
               featuresFicheroNorm_pca = modelo_pca_subgrupo.transform(featuresFicheroNormElegidas)
 
-          print('Dimensiones del dataframe tras PCA: ' + str(featuresFicheroNorm_pca.shape[0]) + ' x ' + str(featuresFicheroNorm_pca.shape[1]))
+          print("Dimensiones del dataframe tras PCA: " + str(featuresFicheroNorm_pca.shape[0]) + " x " + str(featuresFicheroNorm_pca.shape[1]))
+
           print("Las features están ya normalizadas, reducidas y en base ortogonal PCA. DESCRIBIMOS lo que hemos hecho y GUARDAMOS el dataset.")
           num_columnas_pca = featuresFicheroNorm_pca.shape[1]
           columnas_pca = ["pca_" + f"{i:0>2}" for i in range(num_columnas_pca)]  # Hacemos left padding con la funcion f-strings
           featuresFicheroNorm_pca_df = DataFrame(featuresFicheroNorm_pca, columns=columnas_pca, index=featuresFicheroNorm.index)
           print(featuresFicheroNorm_pca_df.head())
           featuresFicheroNormElegidas = featuresFicheroNorm_pca_df
+
+          print("Matriz de pesos de las features en la base de funciones PCA: " + path_pesos_pca)
+          pcaMatriz = pd.DataFrame(modelo_pca_subgrupo.components_)
+          pcaMatriz.columns = columnasSeleccionadas
+          columnas_pca_df = pd.DataFrame(columnas_pca)
+          pcaMatriz = pd.concat([columnas_pca_df, pcaMatriz], axis=1)
+          pcaMatriz.to_csv(path_pesos_pca, index=False, sep='|')
 
 
       ### Guardar a fichero
@@ -693,8 +728,8 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
     if(modoTiempo == "pasado" and numclases <= 1):
         print("El subgrupo solo tiene " + str(numclases) + " clases en el target. Abortamos...")
     else:
-        reducirFeaturesYGuardar(path_modelo_reductor_features, path_modelo_pca, featuresFichero3, targetsFichero, pathCsvReducido, pathCsvFeaturesElegidas, varianza, dir_subgrupo_img, modoTiempo, maxFeatReducidas)
+        reducirFeaturesYGuardar(path_modelo_reductor_features, path_modelo_pca, path_pesos_pca, featuresFichero3, targetsFichero, pathCsvReducido, pathCsvFeaturesElegidas, varianza, dir_subgrupo_img, modoTiempo, maxFeatReducidas)
 
 
-print((datetime.datetime.now()).strftime("%Y%m%d_%H%M%S") +" ------------ FIN de capa 5 ----------------")
+print((datetime.datetime.now()).strftime("%Y%m%d_%H%M%S") + " ------------ FIN de capa 5 ----------------")
 

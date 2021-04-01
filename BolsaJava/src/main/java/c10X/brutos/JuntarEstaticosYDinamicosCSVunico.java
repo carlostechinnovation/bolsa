@@ -37,6 +37,8 @@ public class JuntarEstaticosYDinamicosCSVunico {
 	private static JuntarEstaticosYDinamicosCSVunico instancia = null;
 	public static final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 
+	private static final int CINCO = 5, QUINCE = 15, TREINTA = 30, NOVENTA = 90;
+
 	private JuntarEstaticosYDinamicosCSVunico() {
 		super();
 	}
@@ -182,6 +184,8 @@ public class JuntarEstaticosYDinamicosCSVunico {
 	public static void nucleoEmpresa(String dirBrutoCsv, EstaticoNasdaqModelo enm, File fileEstat, File fileDin,
 			File fileDinInsiders, Integer desplazamientoAntiguedad) throws IOException, ParseException {
 
+		MY_LOGGER.info("Empresa: " + enm.symbol);
+
 		// --------- Variables ESTATICAS -------------
 		FileReader fr = new FileReader(fileEstat);
 		BufferedReader br = new BufferedReader(fr);
@@ -236,7 +240,7 @@ public class JuntarEstaticosYDinamicosCSVunico {
 				String[] partes = actual.split("\\|");
 
 				if ("null".equals(partes[2])) {
-					MY_LOGGER.warn("CASO NULO -> " + actual);
+					MY_LOGGER.debug("CASO NULO -> " + actual);
 					antiguedadDesplazada = Integer.valueOf(0) - desplazamientoAntiguedad;
 				} else {
 					antiguedadDesplazada = Integer.valueOf(partes[2]) - desplazamientoAntiguedad;
@@ -398,36 +402,44 @@ public class JuntarEstaticosYDinamicosCSVunico {
 
 			String[] dinPartes = din.split("\\|");
 			Calendar calDatoDinamico = Calendar.getInstance();
-			calDatoDinamico
-					.setTime(sdf.parse(dinPartes[posicionAnio] + dinPartes[posicionMes] + dinPartes[posicionDia]));
+			Integer amdDatoDinamico = Integer
+					.valueOf(dinPartes[posicionAnio] + dinPartes[posicionMes] + dinPartes[posicionDia]);
+			calDatoDinamico.setTime(sdf.parse(amdDatoDinamico.toString()));
 
 			if (insidersDatos != null && !insidersDatos.isEmpty()) {
 
 				for (OperacionInsiderFinvizModelo op : insidersDatos) {
 
-					long diffInMillies = Math.abs(calDatoDinamico.getTimeInMillis() - op.fecha.getTimeInMillis());
+					long diffInMillies = Math.abs(op.fecha.getTimeInMillis() - calDatoDinamico.getTimeInMillis());
 					long diasDiferencia = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
 
-					if (diasDiferencia >= 0 && diasDiferencia <= 90) {
-						operacionesUltimos90dias.add(op);
+					if (diasDiferencia >= 0 && Integer.valueOf(sdf.format(op.fecha.getTime())) <= amdDatoDinamico) {
+						if (diasDiferencia >= 0 && diasDiferencia <= NOVENTA) {
+							operacionesUltimos90dias.add(op);
+						}
+						if (diasDiferencia >= 0 && diasDiferencia <= TREINTA) {
+							operacionesUltimos30dias.add(op);
+						}
+						if (diasDiferencia >= 0 && diasDiferencia <= QUINCE) {
+//							MY_LOGGER.info("Operacion_insider=" + sdf.format(op.fecha.getTime()) + " Dato_dinamico="
+//									+ sdf.format(calDatoDinamico.getTime()) + " -->diasDiferencia=" + diasDiferencia);
+							operacionesUltimos15dias.add(op);
+						}
+						if (diasDiferencia >= 0 && diasDiferencia <= CINCO) {
+							operacionesUltimos5dias.add(op);
+						}
 					}
-					if (diasDiferencia >= 0 && diasDiferencia <= 30) {
-						operacionesUltimos30dias.add(op);
-					}
-					if (diasDiferencia >= 0 && diasDiferencia <= 15) {
-						operacionesUltimos15dias.add(op);
-					}
-					if (diasDiferencia >= 0 && diasDiferencia <= 5) {
-//						MY_LOGGER.debug("Operacion_insider=" + sdf.format(op.fecha.getTime()) + " Dato_dinamico="
-//								+ sdf.format(calDatoDinamico.getTime()) + " -->diasDiferencia=" + diasDiferencia);
-						operacionesUltimos5dias.add(op);
-					}
+
 				}
 
-				flagOperacionesInsiderUltimos90dias = sumarItemsYcalcularFlag(operacionesUltimos90dias);
-				flagOperacionesInsiderUltimos30dias = sumarItemsYcalcularFlag(operacionesUltimos30dias);
-				flagOperacionesInsiderUltimos15dias = sumarItemsYcalcularFlag(operacionesUltimos15dias);
-				flagOperacionesInsiderUltimos5dias = sumarItemsYcalcularFlag(operacionesUltimos15dias);
+				flagOperacionesInsiderUltimos90dias = sumarItemsYcalcularFlag(operacionesUltimos90dias, amdDatoDinamico,
+						NOVENTA);
+				flagOperacionesInsiderUltimos30dias = sumarItemsYcalcularFlag(operacionesUltimos30dias, amdDatoDinamico,
+						TREINTA);
+				flagOperacionesInsiderUltimos15dias = sumarItemsYcalcularFlag(operacionesUltimos15dias, amdDatoDinamico,
+						QUINCE);
+				flagOperacionesInsiderUltimos5dias = sumarItemsYcalcularFlag(operacionesUltimos5dias, amdDatoDinamico,
+						CINCO);
 			}
 
 			// Haya datos de insiders o no, añadimos las columnas dinamicas, rellenas o
@@ -467,18 +479,21 @@ public class JuntarEstaticosYDinamicosCSVunico {
 	 * @return Numero que indica "-1"=ventas, "1"=compras. En caso de que sumen 0 o
 	 *         que sea desconocido, devuelve cadena vacía.
 	 */
-	public static String sumarItemsYcalcularFlag(List<OperacionInsiderFinvizModelo> lista) {
+	public static String sumarItemsYcalcularFlag(List<OperacionInsiderFinvizModelo> lista, Integer amdReferencia,
+			int diasPeriodo) {
 		Long suma = 0L;
 		String out = "";
+
 		for (OperacionInsiderFinvizModelo op : lista) {
 			suma += op.importe;
 		}
 
 		if (suma > 0L) {
-			out = "1";
-		} else if (suma < 0L) {
-			out = "-1";
+			out = "1"; // COMPRAS
 		}
+//		else if (suma < 0L) {
+//			out = "-1";// VENTAS
+//		}
 		return out;
 	}
 

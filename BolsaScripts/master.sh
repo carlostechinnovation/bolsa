@@ -40,12 +40,15 @@ F="${10}" #default=5
 B="${11}" #default=5
 NUM_MAX_EMPRESAS_DESCARGADAS="${12}"  #default=100
 UMBRAL_SUBIDA_POR_VELA="${13}"  #default=3
-MIN_COBERTURA_CLUSTER="${14}"  #Porcentaje de empresas con al menos una vela positiva
-MIN_EMPRESAS_POR_CLUSTER="${15}"
-P_INICIO="${16}" #Periodo de entrenamiento (inicio)
-P_FIN="${17}" #Periodo de entrenamiento (fin)
-MAX_NUM_FEAT_REDUCIDAS="${18}"
-CAPA5_MAX_FILAS_ENTRADA="${19}"  # Maximo numero de filas permitido en entrada a capa 5 (por rendimiento)
+UMBRAL_MINIMO_GRAN_VELA="${14}"  #default=9999
+MIN_COBERTURA_CLUSTER="${15}"  #Porcentaje de empresas con al menos una vela positiva
+MIN_EMPRESAS_POR_CLUSTER="${16}"
+P_INICIO="${17}" #Periodo de entrenamiento (inicio)
+P_FIN="${18}" #Periodo de entrenamiento (fin)
+MAX_NUM_FEAT_REDUCIDAS="${19}"
+CAPA5_MAX_FILAS_ENTRADA="${20}"  # Maximo numero de filas permitido en entrada a capa 5 (por rendimiento)
+DINAMICA1="${21}" # Default = 1
+DINAMICA2="${22}" # Default = 1
 
 
 ################## FUNCIONES #############################################################
@@ -181,7 +184,7 @@ echo -e $( date '+%Y%m%d_%H%M%S' )" -------- Capa 3: VARIABLES ELABORADAS ------
 crearCarpetaSiNoExisteYVaciar "${DIR_ELABORADOS}"
 
 echo -e "Calculando elaborados y target..." >> ${LOG_MASTER}
-java -jar ${PATH_JAR} --class "coordinador.Principal" "c30X.elaborados.ConstructorElaborados" "${DIR_LIMPIOS}" "${DIR_ELABORADOS}" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" "${UMBRAL_SUBIDA_POR_VELA}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
+java -jar ${PATH_JAR} --class "coordinador.Principal" "c30X.elaborados.ConstructorElaborados" "${DIR_LIMPIOS}" "${DIR_ELABORADOS}" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" "${UMBRAL_SUBIDA_POR_VELA}" "${UMBRAL_MINIMO_GRAN_VELA}" "${DINAMICA1}" "${DINAMICA2}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 
 echo -e "Elaborados (incluye la variable elaborada TARGET) ya calculados" >> ${LOG_MASTER}
 
@@ -200,7 +203,7 @@ if [ "$ACTIVAR_SG_Y_PREDICCION" = "S" ];  then
 	
 	echo -e $( date '+%Y%m%d_%H%M%S' )" -------- Capa 4: SUBGRUPOS -------------" >> ${LOG_MASTER}
 	crearCarpetaSiNoExisteYVaciarRecursivo "${DIR_SUBGRUPOS}"
-	java -jar ${PATH_JAR} --class "coordinador.Principal" "c40X.subgrupos.CrearDatasetsSubgrupos" "${DIR_ELABORADOS}" "${DIR_SUBGRUPOS}" "${MIN_COBERTURA_CLUSTER}" "${MIN_EMPRESAS_POR_CLUSTER}" "${DIR_TIEMPO}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
+	java -jar ${PATH_JAR} --class "coordinador.Principal" "c40X.subgrupos.CrearDatasetsSubgrupos" "${DIR_ELABORADOS}" "${DIR_SUBGRUPOS}" "${MIN_COBERTURA_CLUSTER}" "${MIN_EMPRESAS_POR_CLUSTER}" "${DIR_TIEMPO}" "${DINAMICA1}" "${DINAMICA2}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 
 	############  PARA CADA SUBGRUPO ###############################################################
 	
@@ -244,7 +247,7 @@ java -jar ${PATH_JAR} --class "coordinador.Principal" "c70X.validacion.Generador
 
 echo -e "Actualizando informe HTML de uso de FEATURES (mirando el pasado)..." >> ${LOG_MASTER}
 DIR_SUBGRUPOS_PASADO=$(echo ${DIR_SUBGRUPOS} | sed -e "s/futuro/pasado/g")
-$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/FeaturesAnalisisPosteriori.py" "${DIR_SUBGRUPOS_PASADO}" "/bolsa/pasado/matriz_features.html" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
+$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/FeaturesAnalisisPosteriori.py" "${DIR_SUBGRUPOS_PASADO}" "/bolsa/pasado/matriz_features_antes_de_pca.html" "/bolsa/pasado/matriz_features.html" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 
 
 echo -e "MASTER - FIN: "$( date "+%Y%m%d%H%M%S" )

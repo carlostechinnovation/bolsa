@@ -289,6 +289,8 @@ def analizar(datosGrandes, datosManejables, X, dfSP500):
                           'numElementos': '{:.0f}'.format(numElementos), 'rentaRelativaSP500': rentaRelativaSP500,
                           'rentaMediaConProbUnoMinima': rentaMediaConProbUnoMinima,
                           'rentaRelativaSP500ConProbUnoMinima': rentaRelativaSP500ConProbUnoMinima}]
+            print("Nueva Fila: ")
+            print(nuevaFila)
             resultadoAnalisis = resultadoAnalisis.append(nuevaFila, ignore_index=True, sort=False)
 
         # Separación por subgrupos
@@ -329,6 +331,9 @@ def analizar(datosGrandes, datosManejables, X, dfSP500):
                 resultadoAnalisisAux = resultadoAnalisisAux.append(nuevaFilaAux, ignore_index=True, sort=False)
         resultadoAnalisis = resultadoAnalisisAux
 
+        # Se ordena por fecha (anio + mes + dia)
+        resultadoAnalisis=resultadoAnalisis.sort_values(by="fecha")
+
         # Se escriben los resultados a un Excel
         pathCsvResultados = dirAnalisis + "RESULTADOS_ANALISIS" + str(X) + ".csv"
         print("Guardando: " + pathCsvResultados)
@@ -360,9 +365,13 @@ def calidadSubgrupos(resultadoAnalisis, subgrupos):
             numElementos=len(rentaRelativaSP500)
 
             # Fórmula:
-            # CALIDAD = mediana renta diaria * log (1 + número de elementos)
-            calidadMediana = medianaRenta * np.log10(1 + numElementos)
-            calidadMediaStd =(mediaRenta-np.sqrt(stdRenta))*np.log10(1+numElementos)
+            if(numElementos>=10):
+                calidadMediana = medianaRenta
+                calidadMediaStd =mediaRenta-np.sqrt(stdRenta)
+            else:
+                calidadMediana = 0
+                calidadMediaStd = 0
+
 
             nuevoGrupo = [{'subgrupo': subgrupo, 'calidadMediana': calidadMediana, 'calidadMediaStd': calidadMediaStd}]
             subgruposPorCalidad = subgruposPorCalidad.append(nuevoGrupo, ignore_index=True, sort=False)
@@ -516,24 +525,25 @@ pintar(resultadoAnalisis, subgrupos, X)
 subgruposPorCalidad = calidadSubgrupos(resultadoAnalisis, subgrupos)
 
 #------------------------------ANÁLISIS AVANZADO -----------------------------
-resultadoAnalisisMenosDos, subgruposMenosDos = analizar(datosGrandes, datosManejables, int(X)-2, dfSP500)
-pintar(resultadoAnalisisMenosDos, subgruposMenosDos, int(X)-2)
-
-resultadoAnalisisMasDos, subgruposMasDos = analizar(datosGrandes, datosManejables, int(X)+2, dfSP500)
-pintar(resultadoAnalisisMasDos, subgruposMasDos, int(X)+2)
-resultadoAnalisisMasCuatro, subgruposMasCuatro = analizar(datosGrandes, datosManejables, int(X)+4, dfSP500)
-pintar(resultadoAnalisisMasCuatro, subgruposMasCuatro, int(X)+4)
-resultadoAnalisisMasSeis, subgruposMasSeis = analizar(datosGrandes, datosManejables, int(X)+6, dfSP500)
-pintar(resultadoAnalisisMasSeis, subgruposMasSeis, int(X)+6)
-resultadoAnalisisMasOcho, subgruposMasOcho = analizar(datosGrandes, datosManejables, int(X)+8, dfSP500)
-pintar(resultadoAnalisisMasOcho, subgruposMasOcho, int(X)+8)
-resultadoAnalisisMasDiez, subgruposMasDiez = analizar(datosGrandes, datosManejables, int(X)+10, dfSP500)
-pintar(resultadoAnalisisMasDiez, subgruposMasDiez, int(X)+10)
-resultadoAnalisisMasDoce, subgruposMasDoce = analizar(datosGrandes, datosManejables, int(X)+12, dfSP500)
-pintar(resultadoAnalisisMasDoce, subgruposMasDoce, int(X)+12)
+# resultadoAnalisisMenosCuatro, subgruposMenosCuatro = analizar(datosGrandes, datosManejables, int(X)-4, dfSP500)
+# pintar(resultadoAnalisisMenosCuatro, subgruposMenosCuatro, int(X)-4)
+# resultadoAnalisisMenosDos, subgruposMenosDos = analizar(datosGrandes, datosManejables, int(X)-2, dfSP500)
+# pintar(resultadoAnalisisMenosDos, subgruposMenosDos, int(X)-2)
+#
+# resultadoAnalisisMasDos, subgruposMasDos = analizar(datosGrandes, datosManejables, int(X)+2, dfSP500)
+# pintar(resultadoAnalisisMasDos, subgruposMasDos, int(X)+2)
+# resultadoAnalisisMasCuatro, subgruposMasCuatro = analizar(datosGrandes, datosManejables, int(X)+4, dfSP500)
+# pintar(resultadoAnalisisMasCuatro, subgruposMasCuatro, int(X)+4)
+# resultadoAnalisisMasSeis, subgruposMasSeis = analizar(datosGrandes, datosManejables, int(X)+6, dfSP500)
+# pintar(resultadoAnalisisMasSeis, subgruposMasSeis, int(X)+6)
+# resultadoAnalisisMasOcho, subgruposMasOcho = analizar(datosGrandes, datosManejables, int(X)+8, dfSP500)
+# pintar(resultadoAnalisisMasOcho, subgruposMasOcho, int(X)+8)
+# resultadoAnalisisMasDiez, subgruposMasDiez = analizar(datosGrandes, datosManejables, int(X)+10, dfSP500)
+# pintar(resultadoAnalisisMasDiez, subgruposMasDiez, int(X)+10)
+# resultadoAnalisisMasDoce, subgruposMasDoce = analizar(datosGrandes, datosManejables, int(X)+12, dfSP500)
+# pintar(resultadoAnalisisMasDoce, subgruposMasDoce, int(X)+12)
 
 
 print("\n--- InversionUtilsPosteriori: FIN ---")
-
 
 
