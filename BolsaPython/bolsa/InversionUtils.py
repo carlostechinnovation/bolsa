@@ -19,6 +19,7 @@ print("sufijoFicheroSalida = " + sufijoFicheroSalida)
 datosEntrada = pd.read_csv(filepath_or_buffer=pathFicheroEntrada, sep='|')
 
 print("Quitamos COLUMNAS que ya nos estorban...")
+datosEntrada = datosEntrada.drop(datosEntrada.filter(regex='MEDIA').columns, axis=1)
 datosEntrada = datosEntrada.drop(datosEntrada.filter(regex='PENDIENTE').columns, axis=1)
 datosEntrada = datosEntrada.drop(datosEntrada.filter(regex='RATIO').columns, axis=1)
 datosEntrada = datosEntrada.drop(datosEntrada.filter(regex='CURTOSIS').columns, axis=1)

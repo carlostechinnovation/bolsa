@@ -42,6 +42,7 @@ from sklearn.decomposition import PCA, TruncatedSVD
 import time
 import matplotlib.patches as mpatches
 
+
 np.random.seed(12345)
 
 
@@ -60,8 +61,8 @@ balancearConSmoteSoloTrain = True
 umbralFeaturesCorrelacionadas = 0.96  # Umbral aplicado para descartar features cuya correlacion sea mayor que él
 umbralNecesarioCompensarDesbalanceo = 1  # Umbral de desbalanceo clase positiva/negativa. Si se supera, es necesario hacer oversampling de minoritaria (SMOTE) o undersampling de mayoritaria (borrar filas)
 cv_todos = 10  # CROSS_VALIDATION: número de iteraciones. Sirve para evitar el overfitting
-fraccion_train = 0.75  # Fracción de datos usada para entrenar
-fraccion_test = 0.15  # Fracción de datos usada para testear (no es validación)
+fraccion_train = 0.50  # Fracción de datos usada para entrenar
+fraccion_test = 0.25  # Fracción de datos usada para testear (no es validación)
 fraccion_valid = 1-(fraccion_train + fraccion_test)
 
 ######### ID de subgrupo #######

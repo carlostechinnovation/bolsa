@@ -31,7 +31,7 @@ public class ConstructorElaborados implements Serializable {
 
 	// Se toman los parámetros de los grupos 11, 33 y 42 como los únicos autorizados
 	// en el sistema. Así evitamos que la matriz de datos se muy grande
-	private static String LISTA_PARAMETROS_AUTORIZADOS = "MEDIA_SMA_1_VOLUMEN,RATIO_MINRELATIVO_4_HIGH,RATIO_MAXRELATIVO_4_LOW,RATIO_U_MAXRELATIVO_20_HIGH,RATIO_U_MINRELATIVO_20_LOW,SKEWNESS_20_LOW,SKEWNESS_20_OPEN,RATIO_SMA_20_VOLUMEN,PENDIENTE_2M_SMA_50_HIGH,RATIO_U_MINRELATIVO_50_HIGH,PENDIENTE_SMA_50_OPEN,CURTOSIS_50_CLOSEOPEN,RATIO_MINRELATIVO_50_HIGHLOW,RATIO_U_SMA_50_HIGHLOW,SG_HIGH_PENDIENTE7D,MEDIA_SMA_1_LOW,CURTOSIS_1_OPEN,MEDIA_SMA_1_HIGHLOW,RATIO_U_MAXRELATIVO_1_VOLUMEN,RATIO_U_MINRELATIVO_1_VOLUMEN,CURTOSIS_1_VOLUMEN,MEDIA_SMA_4_CLOSE,RATIO_SMA_4_CLOSE,RATIO_MAXRELATIVO_4_CLOSE,RATIO_MINRELATIVO_SEGUNDO_4_HIGH,RATIO_U_MINRELATIVO_4_HIGH,PENDIENTE_SMA_4_LOW,RATIO_MINRELATIVO_SEGUNDO_4_LOW,RATIO_U_MAXRELATIVO_4_LOW,RATIO_MAXRELATIVO_4_OPEN,SKEWNESS_4_VOLUMEN,RATIO_MINRELATIVO_20_CLOSE,RATIO_U_MINRELATIVO_20_CLOSE,RATIO_MAXRELATIVO_20_HIGH,RATIO_U_MINRELATIVO_20_HIGH,MEDIA_SMA_20_LOW,RATIO_MINRELATIVO_20_LOW,RATIO_U_MAXRELATIVO_20_LOW,SKEWNESS_20_CLOSEOPEN,RATIO_MINRELATIVO_20_HIGHLOW,RATIO_MINRELATIVO_SEGUNDO_20_HIGHLOW,PENDIENTE_SMA_20_VOLUMEN,RATIO_MAXRELATIVO_20_VOLUMEN,RATIO_MINRELATIVO_SEGUNDO_20_VOLUMEN,RATIO_U_MAXRELATIVO_20_VOLUMEN,CURTOSIS_20_VOLUMEN,SKEWNESS_20_VOLUMEN,RATIO_MINRELATIVO_SEGUNDO_50_CLOSE,RATIO_U_SMA_50_CLOSE,RATIO_U_MAXRELATIVO_50_HIGH,CURTOSIS_50_HIGH,SKEWNESS_50_HIGH,PENDIENTE_SMA_50_LOW,RATIO_MINRELATIVO_50_LOW,RATIO_U_SMA_50_LOW,PENDIENTE_2M_SMA_50_OPEN,RATIO_U_SMA_50_OPEN,SKEWNESS_50_CLOSEOPEN,MEDIA_SMA_50_OPENHIGH,RATIO_U_SMA_50_OPENHIGH,PENDIENTE_2M_SMA_50_HIGHLOW,RATIO_MINRELATIVO_SEGUNDO_50_HIGHLOW,RATIO_MINRELATIVO_50_VOLUMEN,RATIO_MINRELATIVO_SEGUNDO_50_VOLUMEN,CURTOSIS_50_VOLUMEN,SKEWNESS_50_VOLUMEN,SG_LOW_PENDIENTE3D,RATIO_MAXRELATIVO_20_CLOSE,RATIO_MAXRELATIVO_50_HIGH,SG_HIGH_PENDIENTE3D";
+//	private static String LISTA_PARAMETROS_AUTORIZADOS = "MEDIA_SMA_1_VOLUMEN,RATIO_MINRELATIVO_4_HIGH,RATIO_MAXRELATIVO_4_LOW,RATIO_U_MAXRELATIVO_20_HIGH,RATIO_U_MINRELATIVO_20_LOW,SKEWNESS_20_LOW,SKEWNESS_20_OPEN,RATIO_SMA_20_VOLUMEN,PENDIENTE_2M_SMA_50_HIGH,RATIO_U_MINRELATIVO_50_HIGH,PENDIENTE_SMA_50_OPEN,CURTOSIS_50_CLOSEOPEN,RATIO_MINRELATIVO_50_HIGHLOW,RATIO_U_SMA_50_HIGHLOW,SG_HIGH_PENDIENTE7D,MEDIA_SMA_1_LOW,CURTOSIS_1_OPEN,MEDIA_SMA_1_HIGHLOW,RATIO_U_MAXRELATIVO_1_VOLUMEN,RATIO_U_MINRELATIVO_1_VOLUMEN,CURTOSIS_1_VOLUMEN,MEDIA_SMA_4_CLOSE,RATIO_SMA_4_CLOSE,RATIO_MAXRELATIVO_4_CLOSE,RATIO_MINRELATIVO_SEGUNDO_4_HIGH,RATIO_U_MINRELATIVO_4_HIGH,PENDIENTE_SMA_4_LOW,RATIO_MINRELATIVO_SEGUNDO_4_LOW,RATIO_U_MAXRELATIVO_4_LOW,RATIO_MAXRELATIVO_4_OPEN,SKEWNESS_4_VOLUMEN,RATIO_MINRELATIVO_20_CLOSE,RATIO_U_MINRELATIVO_20_CLOSE,RATIO_MAXRELATIVO_20_HIGH,RATIO_U_MINRELATIVO_20_HIGH,MEDIA_SMA_20_LOW,RATIO_MINRELATIVO_20_LOW,RATIO_U_MAXRELATIVO_20_LOW,SKEWNESS_20_CLOSEOPEN,RATIO_MINRELATIVO_20_HIGHLOW,RATIO_MINRELATIVO_SEGUNDO_20_HIGHLOW,PENDIENTE_SMA_20_VOLUMEN,RATIO_MAXRELATIVO_20_VOLUMEN,RATIO_MINRELATIVO_SEGUNDO_20_VOLUMEN,RATIO_U_MAXRELATIVO_20_VOLUMEN,CURTOSIS_20_VOLUMEN,SKEWNESS_20_VOLUMEN,RATIO_MINRELATIVO_SEGUNDO_50_CLOSE,RATIO_U_SMA_50_CLOSE,RATIO_U_MAXRELATIVO_50_HIGH,CURTOSIS_50_HIGH,SKEWNESS_50_HIGH,PENDIENTE_SMA_50_LOW,RATIO_MINRELATIVO_50_LOW,RATIO_U_SMA_50_LOW,PENDIENTE_2M_SMA_50_OPEN,RATIO_U_SMA_50_OPEN,SKEWNESS_50_CLOSEOPEN,MEDIA_SMA_50_OPENHIGH,RATIO_U_SMA_50_OPENHIGH,PENDIENTE_2M_SMA_50_HIGHLOW,RATIO_MINRELATIVO_SEGUNDO_50_HIGHLOW,RATIO_MINRELATIVO_50_VOLUMEN,RATIO_MINRELATIVO_SEGUNDO_50_VOLUMEN,CURTOSIS_50_VOLUMEN,SKEWNESS_50_VOLUMEN,SG_LOW_PENDIENTE3D,RATIO_MAXRELATIVO_20_CLOSE,RATIO_MAXRELATIVO_50_HIGH,SG_HIGH_PENDIENTE3D";
 
 	private ConstructorElaborados() {
 		super();
@@ -1190,78 +1190,78 @@ public class ConstructorElaborados implements Serializable {
 
 	}
 
-	/**
-	 * Se dejan pasar los parámetros que pertenezcan a una lista de autorizados. El
-	 * resto, se descartan.
-	 * 
-	 * @param datosEmpresa
-	 * @return
-	 */
-	public static HashMap<Integer, HashMap<String, String>> filtrarParametrosAutorizados(
-			HashMap<Integer, HashMap<String, String>> datosEmpresaIniciales) {
-
-		// Separo los parámetros por espacios o comas
-		ArrayList<String> parametrosAutorizados = new ArrayList<String>(
-				Arrays.asList(LISTA_PARAMETROS_AUTORIZADOS.split("\\s*,\\s*")));
-
-		// Se añade el target a los autorizados
-		parametrosAutorizados.add("TARGET");
-
-		HashMap<Integer, HashMap<String, String>> datosEmpresaFinales = new HashMap<Integer, HashMap<String, String>>();
-		Integer antiguedad;
-		String parametro;
-
-		Iterator<Integer> itAntiguedadDatos = datosEmpresaIniciales.keySet().iterator();
-		while (itAntiguedadDatos.hasNext()) {
-			antiguedad = itAntiguedadDatos.next();
-			HashMap<String, String> parametrosEntrada = datosEmpresaIniciales.get(antiguedad);
-			HashMap<String, String> parametrosSalida = new HashMap<String, String>(1);
-			Iterator<String> itParametros = parametrosEntrada.keySet().iterator();
-			while (itParametros.hasNext()) {
-				parametro = itParametros.next();
-				if (parametrosAutorizados.contains(parametro)) {
-					// El parámetro está dentro de los autorizados. Se añade a la lista final
-					// filtrada
-					parametrosSalida.put(parametro, parametrosEntrada.get(parametro));
-				}
-			}
-			// Se guarda el vector de parámetros filtrado
-			datosEmpresaFinales.put(antiguedad, parametrosSalida);
-		}
-
-		return datosEmpresaFinales;
-
-	}
-
-	/**
-	 * Se dejan pasar los parámetros que pertenezcan a una lista de autorizados. El
-	 * resto, se descartan.
-	 * 
-	 * @param ordenNombresParametrosEntrada
-	 * @return
-	 */
-	public static HashMap<Integer, String> filtrarNombresParametrosAutorizados(
-			HashMap<Integer, String> ordenNombresParametrosEntrada) {
-		HashMap<Integer, String> ordenNombresParametrosSalida = new HashMap<Integer, String>();
-
-		// Separo los parámetros por espacios o comas
-		ArrayList<String> parametrosAutorizados = new ArrayList<String>(
-				Arrays.asList(LISTA_PARAMETROS_AUTORIZADOS.split("\\s*,\\s*")));
-
-		// Se añade el target a los autorizados
-		parametrosAutorizados.add("TARGET");
-
-		Integer numeroParametrosEntrada = ordenNombresParametrosEntrada.size();
-		int iSalida = 0;
-		String nombreParametro;
-		for (int i = 0; i < numeroParametrosEntrada; i++) {
-			nombreParametro = ordenNombresParametrosEntrada.get(i);
-			if (parametrosAutorizados.contains(nombreParametro)) {
-				ordenNombresParametrosSalida.put(iSalida, nombreParametro);
-				iSalida++;
-			}
-		}
-		return ordenNombresParametrosSalida;
-	}
+//	/**
+//	 * Se dejan pasar los parámetros que pertenezcan a una lista de autorizados. El
+//	 * resto, se descartan.
+//	 * 
+//	 * @param datosEmpresa
+//	 * @return
+//	 */
+//	public static HashMap<Integer, HashMap<String, String>> filtrarParametrosAutorizados(
+//			HashMap<Integer, HashMap<String, String>> datosEmpresaIniciales) {
+//
+//		// Separo los parámetros por espacios o comas
+//		ArrayList<String> parametrosAutorizados = new ArrayList<String>(
+//				Arrays.asList(LISTA_PARAMETROS_AUTORIZADOS.split("\\s*,\\s*")));
+//
+//		// Se añade el target a los autorizados
+//		parametrosAutorizados.add("TARGET");
+//
+//		HashMap<Integer, HashMap<String, String>> datosEmpresaFinales = new HashMap<Integer, HashMap<String, String>>();
+//		Integer antiguedad;
+//		String parametro;
+//
+//		Iterator<Integer> itAntiguedadDatos = datosEmpresaIniciales.keySet().iterator();
+//		while (itAntiguedadDatos.hasNext()) {
+//			antiguedad = itAntiguedadDatos.next();
+//			HashMap<String, String> parametrosEntrada = datosEmpresaIniciales.get(antiguedad);
+//			HashMap<String, String> parametrosSalida = new HashMap<String, String>(1);
+//			Iterator<String> itParametros = parametrosEntrada.keySet().iterator();
+//			while (itParametros.hasNext()) {
+//				parametro = itParametros.next();
+//				if (parametrosAutorizados.contains(parametro)) {
+//					// El parámetro está dentro de los autorizados. Se añade a la lista final
+//					// filtrada
+//					parametrosSalida.put(parametro, parametrosEntrada.get(parametro));
+//				}
+//			}
+//			// Se guarda el vector de parámetros filtrado
+//			datosEmpresaFinales.put(antiguedad, parametrosSalida);
+//		}
+//
+//		return datosEmpresaFinales;
+//
+//	}
+//
+//	/**
+//	 * Se dejan pasar los parámetros que pertenezcan a una lista de autorizados. El
+//	 * resto, se descartan.
+//	 * 
+//	 * @param ordenNombresParametrosEntrada
+//	 * @return
+//	 */
+//	public static HashMap<Integer, String> filtrarNombresParametrosAutorizados(
+//			HashMap<Integer, String> ordenNombresParametrosEntrada) {
+//		HashMap<Integer, String> ordenNombresParametrosSalida = new HashMap<Integer, String>();
+//
+//		// Separo los parámetros por espacios o comas
+//		ArrayList<String> parametrosAutorizados = new ArrayList<String>(
+//				Arrays.asList(LISTA_PARAMETROS_AUTORIZADOS.split("\\s*,\\s*")));
+//
+//		// Se añade el target a los autorizados
+//		parametrosAutorizados.add("TARGET");
+//
+//		Integer numeroParametrosEntrada = ordenNombresParametrosEntrada.size();
+//		int iSalida = 0;
+//		String nombreParametro;
+//		for (int i = 0; i < numeroParametrosEntrada; i++) {
+//			nombreParametro = ordenNombresParametrosEntrada.get(i);
+//			if (parametrosAutorizados.contains(nombreParametro)) {
+//				ordenNombresParametrosSalida.put(iSalida, nombreParametro);
+//				iSalida++;
+//			}
+//		}
+//		return ordenNombresParametrosSalida;
+//	}
 
 }

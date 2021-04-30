@@ -48,7 +48,7 @@ public class EmpresaWrapper implements Clusterable {
 //				+ Double.valueOf(parametrosAux.get("SKEWNESS_140_VOLUMEN"));
 //		this.points = new double[] { Double.valueOf(parametrosAux.get("Market Cap")) };
 //		this.valorClustering = Double.valueOf(parametrosAux.get("Market Cap"));
-		this.points = new double[] { Double.valueOf(parametrosAux.get("STD_SMA_140_PRECIO")) };
+		this.points = new double[] { Double.valueOf(parametrosAux.get("STD_SMA_20_PRECIO")) };
 	}
 
 	public double[] getPoint() {
