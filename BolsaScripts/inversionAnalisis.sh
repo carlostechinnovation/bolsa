@@ -76,7 +76,7 @@ LOG_MASTER="${DIR_LOGS}${ID_EJECUCION}_bolsa_coordinador_analisis.log"
 rm -f "${LOG_MASTER}"
 
 ################################################################################################
-$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/InversionUtilsPosteriori.py" "${DIR_DROPBOX}" "${DIR_ANALISIS}" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" >> ${LOG_MASTER}
+$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/InversionUtilsPosteriori.py" "${DIR_DROPBOX}" "${DIR_ANALISIS}" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" "${VELA_YF}" >> ${LOG_MASTER}
 
 echo -e "INVERSION POSTERIORI - FIN: "$( date "+%Y%m%d%H%M%S" )
 
