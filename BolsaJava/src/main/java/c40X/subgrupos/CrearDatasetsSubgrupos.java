@@ -76,6 +76,24 @@ public class CrearDatasetsSubgrupos implements Serializable {
 	private final static Float factorPicoVolumen = 1.09F;// Pico en volumen
 	private final static Float factorPicoPrecio = 1.09F; // Pico en precio
 
+	// Las empresas muy pequeñas o con empleados desconocidos no son fiables, son
+	// opacas y MUY INESTABLES (ruido para el modelo)
+	private final static Integer MINIMO_NUMERO_EMPLEADOS = 40;
+
+	// DEUDA MAXIMA PERMITIDA (tanto por uno)
+	private final static Float MAX_DEUDA_PERMITIDA = 1.9F;
+
+	// MINIMO QUICK RATIO
+	private final static Float MIN_QUICK_RATIO = 0.75F;
+
+	// RECOMENDACIONES DE ANALISTAS (1= Comprar ... 5=Vender)
+	private final static Float MAX_RECOM_ANALISTAS = 4.1F;
+
+	// Ratio PER (price-earnings ratio): si lo conocemos y es muy alto, la empresa
+	// está demasiado sobrevalorada. Si no lo conocemos, seguimos, pero al menos lo
+	// hemos intentado filtrar
+	private final static Float MAX_PER = 60.0F;
+
 	private static HashMap<Integer, ArrayList<String>> empresasPorTipo;
 
 	/**
@@ -226,8 +244,13 @@ public class CrearDatasetsSubgrupos implements Serializable {
 		ArrayList<String> pathEmpresasTipo48 = new ArrayList<String>();
 		ArrayList<String> pathEmpresasTipo49 = new ArrayList<String>();
 
+		int contadorTotal = 0, contadorDescartadasPorEmpleados = 0, contadorDescartadasPorDeuda = 0,
+				contadorDescartadasPorQR = 0, contadorDescartadasPorRecom = 0, contadorDescartadasPorPER = 0;
+
 		// Para cada EMPRESA
 		while (iterator.hasNext()) {
+
+			contadorTotal++;
 
 			gestorFicheros = new GestorFicheros();
 			datosEntrada = new HashMap<String, HashMap<Integer, HashMap<String, String>>>();
@@ -262,7 +285,74 @@ public class CrearDatasetsSubgrupos implements Serializable {
 //			System.out.println(">>>>>indicePrimeraFilaDeDatos: "+indicePrimeraFilaDeDatos);
 			parametros = datosEmpresaEntrada.get(indicePrimeraFilaDeDatos); // PRIMERA FILA
 
+			boolean suficientesEmpleados = false;
+			boolean deudaConocidaYBaja = false;
+			boolean suficienteLiquidezSegunQuickRatio = false;
+			boolean analistasRecomiendanComprar = false;
+			boolean ratioPERDesconocido = false, ratioPERRazonable = false;
+
 			if (parametros != null) {
+
+//				for (String param : parametros.keySet()) {
+//					System.out.println(param + "->" + parametros.get(param));
+//				}
+
+				String empleados = parametros.get("Employees");
+				suficientesEmpleados = empleados != null && !empleados.equals("-") && !empleados.isEmpty()
+						&& Integer.valueOf(empleados) >= MINIMO_NUMERO_EMPLEADOS;
+				if (suficientesEmpleados == false) {
+					System.out.println("DESCARTADA empresa=" + empresa + " porque tiene pocos empleados (umbral="
+							+ MINIMO_NUMERO_EMPLEADOS + ") o desconocidos: " + empleados);
+					contadorDescartadasPorEmpleados++;
+
+				}
+
+				String deudaTotal = parametros.get("Debt/Eq");
+				deudaConocidaYBaja = deudaTotal != null && !deudaTotal.equals("-") && !deudaTotal.isEmpty()
+						&& Float.valueOf(deudaTotal) <= MAX_DEUDA_PERMITIDA;
+				if (deudaConocidaYBaja == false) {
+					System.out.println("DESCARTADA empresa=" + empresa + " porque tiene DEUDA muy alta (umbral="
+							+ MAX_DEUDA_PERMITIDA + ") o o desconocida: " + deudaTotal);
+					contadorDescartadasPorDeuda++;
+				}
+
+				// quick ratio (Test acido) -> https://es.wikipedia.org/wiki/Test_%C3%A1cido
+				String quickRatio = parametros.get("Quick Ratio");
+				suficienteLiquidezSegunQuickRatio = quickRatio != null && !quickRatio.equals("-")
+						&& !quickRatio.isEmpty() && Float.valueOf(quickRatio) >= MIN_QUICK_RATIO;
+				if (suficienteLiquidezSegunQuickRatio == false) {
+					System.out.println("DESCARTADA empresa=" + empresa
+							+ " porque tiene poca LIQUIDEZ INMEDIATA (QUICK RATIO) (umbral=" + MIN_QUICK_RATIO
+							+ ") o o desconocida: " + quickRatio);
+					contadorDescartadasPorQR++;
+				}
+
+				// Recomendaciones de analistas (de finviz)
+				String recomAnalistas = parametros.get("Recom");
+				analistasRecomiendanComprar = recomAnalistas != null && !recomAnalistas.equals("-")
+						&& !recomAnalistas.isEmpty() && Float.valueOf(recomAnalistas) <= MAX_RECOM_ANALISTAS;
+				if (analistasRecomiendanComprar == false) {
+					System.out.println("DESCARTADA empresa=" + empresa + " porque analistas recomiendan vender (umbral="
+							+ MAX_RECOM_ANALISTAS + ") o o desconocida: " + recomAnalistas);
+					contadorDescartadasPorRecom++;
+				}
+
+				// Ratio PER
+				String ratioPER = parametros.get("P/E");
+				ratioPERDesconocido = ratioPER == null || ratioPER.isEmpty() || ratioPER.equals("-");
+				ratioPERRazonable = ratioPER != null && !ratioPER.isEmpty() && !ratioPER.equals("-")
+						&& Float.valueOf(ratioPER) <= MAX_PER;
+				if (ratioPERDesconocido == false && ratioPERRazonable == false) {
+					System.out.println("DESCARTADA empresa=" + empresa + " porque el PER es demasiado alto (umbral="
+							+ MAX_PER + ") o o desconocido: " + ratioPER);
+					contadorDescartadasPorPER++;
+				} else if (ratioPERDesconocido) {
+					System.out.println("PERMITIDA No conocemos el ratio PER de la empresa=" + empresa);
+				}
+
+			}
+
+			if (parametros != null && suficientesEmpleados && deudaConocidaYBaja) {
 
 				// Para el subgrupo 0 siempre se añade
 				// NO QUITAR, PARA QUE LAS GRÁFICAS FINALES SE PINTEN BASADAS EN ESTE GRUPO,
@@ -284,14 +374,14 @@ public class CrearDatasetsSubgrupos implements Serializable {
 
 				// FILTRO DINÁMICO 1 (para reducir el uso de SMOTEENN):
 				// Se aplica el filtro dinámico a todos los subgrupos excepto al grupo 0 (porque
-				// es la base donde estarán todas las empresas con las que comparar
+				// es la base donde estarán todas las empresas con las que comparar)
 				// Se añade la empresa sólo si el filtro dinámico está desactivado, o si el
 				// filtro dinámico está activado + el parámetro calculado llamado dinamica1=1 en
 				// la fila 0 de la empresa
 
 				// FILTRO DINÁMICO 2 (para reducir el uso de SMOTEENN):
 				// Se aplica el filtro dinámico a todos los subgrupos excepto al grupo 0 (porque
-				// es la base donde estarán todas las empresas con las que comparar
+				// es la base donde estarán todas las empresas con las que comparar)
 				// Se añade la empresa sólo si el filtro dinámico está desactivado, o si el
 				// filtro dinámico está activado + el parámetro calculado llamado dinamica2=1 en
 				// la fila 0 de la empresa
@@ -572,11 +662,29 @@ public class CrearDatasetsSubgrupos implements Serializable {
 						if (insiders5dias != null && !insiders5dias.isEmpty()) {
 							pathEmpresasTipo49.add(ficheroGestionado.getAbsolutePath());
 						}
+
 					}
 				}
+
 				// ---------------------------------------------------------------------------------------
 			}
 		}
+
+		MY_LOGGER.info("=============== CONTADORES DE EMPRESAS PROCESADAS ===============");
+		MY_LOGGER.info("Numero empresas total a la ENTRADA: " + contadorTotal + " empresas");
+		MY_LOGGER.info("De las descartadas, algunas tienen pocos empleados (< " + MINIMO_NUMERO_EMPLEADOS
+				+ ") o desconocidos: " + contadorDescartadasPorEmpleados + " empresas");
+		MY_LOGGER.info("De las descartadas, algunas tienen demasiada deuda (> " + (200 * MAX_DEUDA_PERMITIDA)
+				+ " %) o desconocida: " + contadorDescartadasPorDeuda + " empresas");
+		MY_LOGGER.info("De las descartadas, algunas tienen un QUICK RATIO muy bajo (< " + MIN_QUICK_RATIO
+				+ ") o desconocido: " + contadorDescartadasPorQR + " empresas");
+		MY_LOGGER.info("De las descartadas, algunas tienen RECOMENDACION de VENTA FUERTE (>" + MAX_RECOM_ANALISTAS
+				+ ") o desconocida: " + contadorDescartadasPorRecom + " empresas");
+		MY_LOGGER.info("De las descartadas, algunas tienen el ratio PER demasiado alto (> " + MAX_PER
+				+ " años) o desconocido: " + contadorDescartadasPorPER + " empresas");
+		MY_LOGGER.info("Numero empresas total a la SALIDA (con las que hacemos los subgrupos): "
+				+ pathEmpresasTipo0.size() + " empresas");
+		MY_LOGGER.info("=================================================================");
 
 		// Almacenamiento del tipo de empresa en la lista
 		empresasPorTipo = new HashMap<Integer, ArrayList<String>>();

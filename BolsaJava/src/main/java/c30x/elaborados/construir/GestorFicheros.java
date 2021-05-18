@@ -103,9 +103,10 @@ public class GestorFicheros {
 		ordenNombresParametrosLeidos.put(26, "LT Debt/Eq");
 		ordenNombresParametrosLeidos.put(27, "EPS next Y");
 		ordenNombresParametrosLeidos.put(28, "Earnings");
-		ordenNombresParametrosLeidos.put(29, "sector");
-		ordenNombresParametrosLeidos.put(30, "Inst Own");
-		ordenNombresParametrosLeidos.put(31, "Market Cap");
+		ordenNombresParametrosLeidos.put(29, "Recom");
+		ordenNombresParametrosLeidos.put(30, "sector");
+		ordenNombresParametrosLeidos.put(31, "Inst Own");
+		ordenNombresParametrosLeidos.put(32, "Market Cap");
 	}
 
 	public static final int INDICE_PRIMER_CAMPO_INSIDERS = 13;

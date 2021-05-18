@@ -1,7 +1,5 @@
-import sys
 import os
 import pandas as pd
-from pathlib import Path
 import seaborn as sns
 import matplotlib.pyplot as plt
 
@@ -11,7 +9,7 @@ print("AnalizarFeaturesVsTarget - INICIO")
 for idSubgrupo in range(1, 100):
     print("Analizando las features del SUBGRUPO: " +str(idSubgrupo))
 
-    pathEntrada = "/bolsa/pasado/subgrupos/SG_" + str(idSubgrupo) + "/COMPLETO.csv"
+    pathEntrada = "/bolsa/pasado/subgrupos/SG_" + str(idSubgrupo) + "/REDUCIDO.csv"
     path_dir_img = "/bolsa/pasado/subgrupos/SG_" + str(idSubgrupo) + "/img/"
     variableAnalizada = "CURTOSIS_20_OPENHIGH"
     print("pathEntrada = %s" % pathEntrada)

@@ -44,7 +44,6 @@ import matplotlib.patches as mpatches
 
 np.random.seed(12345)
 
-
 print("\n" + (datetime.datetime.now()).strftime("%Y%m%d_%H%M%S") + " **** CAPA 6 - Crear almacenar y evaluar varios modelos (para cada subgrupo) ****")
 print("Tipo de problema: CLASIFICACION DICOTOMICA (target es boolean)")
 
@@ -55,7 +54,11 @@ desplazamientoAntiguedad = sys.argv[3]
 pathFeaturesSeleccionadas = dir_subgrupo + "FEATURES_SELECCIONADAS.csv"
 modoDebug = False  # En modo debug se pintan los dibujos. En otro caso, se evita calculo innecesario
 umbralCasosSuficientesClasePositiva = 40  # Numero de casos en la clase minoritaria (target=1). Si hay menos, son demasiado pocos, abortamos.
-granProbTargetUno = 50  # De todos los target=1, nos quedaremos con los granProbTargetUno (en tanto por cien) MAS probables. Un valor de 100 o mayor anula este parámetro
+
+# De todos los target=1, nos quedaremos con los granProbTargetUno (en tanto por cien) MAS probables. Un valor de 100 o mayor anula este parámetro.
+# MOTIVO: hay subgrupos cuyo top 10 empresas le asigna una probab muy alta a muchas empresas; y hay otros que dan una prob baja a su top 10 empresas.
+granProbTargetUno = 50
+
 umbralFeaturesCorrelacionadas = 0.96  # Umbral aplicado para descartar features cuya correlacion sea mayor que él
 umbralNecesarioCompensarDesbalanceo = 1  # Umbral de desbalanceo clase positiva/negativa. Si se supera, es necesario hacer oversampling de minoritaria (SMOTE) o undersampling de mayoritaria (borrar filas con ENN)
 cv_todos = 20  # CROSS_VALIDATION: número de iteraciones. Sirve para evitar el overfitting
@@ -77,7 +80,7 @@ pathCsvPredichos = dir_subgrupo + "TARGETS_PREDICHOS.csv"
 pathCsvPredichosIndices = dir_subgrupo + "TARGETS_PREDICHOS.csv_indices"
 pathCsvFinalFuturo = dir_subgrupo + desplazamientoAntiguedad + "_" + id_subgrupo + "_COMPLETO_PREDICCION.csv"
 dir_subgrupo_img = dir_subgrupo + "img/"
-umbralProbTargetTrue = float("0.5")
+umbralProbTargetTrue = float("0.50")
 
 print("dir_subgrupo: %s" % dir_subgrupo)
 print("modoTiempo: %s" % modoTiempo)
@@ -997,25 +1000,41 @@ elif (modoTiempo == "futuro" and pathCsvReducido.endswith('.csv') and os.path.is
             inputFeatures_sinnulos = inputFeatures_sinnulosNuevo
 
         targets_predichos = modelo_predictor_ganador.predict(inputFeatures_sinnulos)
-        print("Numero de targets_predichos: " + str(len(targets_predichos)) + " con numero de TRUEs = " + str(
+        num_targets_predichos = len(targets_predichos)
+        print("Numero de targets_predichos: " + str(num_targets_predichos) + " con numero de TRUEs = " + str(
             np.sum(targets_predichos, where=["True"])))
+        # print("El array de targets contiene:")
+        # print(targets_predichos)
 
         # probabilities
         probs = pd.DataFrame(data=modelo_predictor_ganador.predict_proba(inputFeatures_sinnulos),
                              index=inputFeatures_sinnulos.index)
 
         # UMBRAL MENOS PROBABLES CON TARGET=1. Cuando el target es 1, se guarda su probabilidad
-        print(probs.columns)
+        # print("El DF llamado probs contiene las probabilidades de predecir un 0 o un 1:")
+        # print(probs)
+
         probabilidadesEnTargetUnoPeq = probs.iloc[:, 1]  # Cogemos solo la segunda columna: prob de que sea target=1
         probabilidadesEnTargetUnoPeq2 = probabilidadesEnTargetUnoPeq.apply(
-            lambda x: x if (x >= umbralProbTargetTrue) else np.nan)
+            lambda x: x if (x >= umbralProbTargetTrue) else np.nan) # Cogemos solo las filas cuya prob_1 > umbral
         probabilidadesEnTargetUnoPeq3 = probabilidadesEnTargetUnoPeq2[
-            np.isnan(probabilidadesEnTargetUnoPeq2[:]) == False]  # Cogemos todos los no nulos
-        probabilidadesEnTargetUnoPeq4 = probabilidadesEnTargetUnoPeq3.sort_values(ascending=False)
+            np.isnan(probabilidadesEnTargetUnoPeq2[:]) == False]  # Cogemos todos los no nulos (NAN)
+        # print("El DF llamado probabilidadesEnTargetUnoPeq3 contiene las probabilidades de los UNO con prob mayor que umbral ("+str(umbralProbTargetTrue)+"):")
+        # print(probabilidadesEnTargetUnoPeq3)
+
+        probabilidadesEnTargetUnoPeq4 = probabilidadesEnTargetUnoPeq3.sort_values(ascending=False)  # descendente
+        print("El DF llamado probabilidadesEnTargetUnoPeq4 contiene los indices y probabilidades, tras aplicar umbral INFERIOR: " + str(umbralProbTargetTrue) + ". Son:")
+        print(probabilidadesEnTargetUnoPeq4)
+
         numfilasSeleccionadas = int(granProbTargetUno * probabilidadesEnTargetUnoPeq4.shape[
             0] / 100)  # Como están ordenadas en descendente, cojo estas NUM primeras filas
-        targets_predichosCorregidos_probs = probabilidadesEnTargetUnoPeq4[0:(numfilasSeleccionadas - 1)]
+        print("numfilasSeleccionadas: " + str(numfilasSeleccionadas))
+        targets_predichosCorregidos_probs = probabilidadesEnTargetUnoPeq4[0:numfilasSeleccionadas]
         targets_predichosCorregidos = targets_predichosCorregidos_probs.apply(lambda x: 1)
+        print(
+            "El DF llamado targets_predichosCorregidos contiene los indices y probabilidades, tras aplicar umbral SUPERIOR: top " + str(
+                granProbTargetUno) + " % de muestras. Son:")
+        print(targets_predichosCorregidos)
 
         print("Guardando targets PREDICHOS en: " + pathCsvPredichos)
         df_predichos = targets_predichosCorregidos.to_frame()

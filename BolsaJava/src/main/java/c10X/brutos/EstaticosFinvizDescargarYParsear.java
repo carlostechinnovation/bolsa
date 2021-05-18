@@ -349,6 +349,8 @@ public class EstaticosFinvizDescargarYParsear {
 			extraerInfoDeFila("Debt/Eq", t, mapaExtraidos, BrutosUtils.ESCALA_UNO, false);
 			extraerInfoDeFila("LT Debt/Eq", t, mapaExtraidos, BrutosUtils.ESCALA_UNO, false);
 			extraerInfoDeFila("Earnings", t, mapaExtraidos, BrutosUtils.ESCALA_UNO, true);
+			extraerInfoDeFila("Recom", t, mapaExtraidos, BrutosUtils.ESCALA_UNO, true);
+
 		}
 
 		// ---------- TABLA DE COMPRAS/VENTAS DE INSIDERS --------------

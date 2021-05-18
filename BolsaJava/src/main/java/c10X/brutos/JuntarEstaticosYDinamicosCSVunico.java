@@ -194,7 +194,7 @@ public class JuntarEstaticosYDinamicosCSVunico {
 		String actual;
 		boolean primeraLinea = true;
 
-		String estaticosCabecera = "industria|Insider Own|Quick Ratio|Current Ratio|P/E|Dividend %|Employees|geo|Debt/Eq|LT Debt/Eq|EPS next Y|Earnings|sector|Inst Own|Market Cap";
+		String estaticosCabecera = "industria|Insider Own|Quick Ratio|Current Ratio|P/E|Dividend %|Employees|geo|Debt/Eq|LT Debt/Eq|EPS next Y|Earnings|Recom|sector|Inst Own|Market Cap";
 		String estaticosDatos = "";
 
 		while ((actual = br.readLine()) != null) {
@@ -214,9 +214,10 @@ public class JuntarEstaticosYDinamicosCSVunico {
 				estaticosDatos += "|" + partes[11];
 				estaticosDatos += "|" + partes[12];
 				estaticosDatos += "|" + partes[13];// presentacion resultados (Earnings date)
-				estaticosDatos += "|" + partes[14];// sector
-				estaticosDatos += "|" + partes[15];
+				estaticosDatos += "|" + partes[14];// Recom
+				estaticosDatos += "|" + partes[15];// sector
 				estaticosDatos += "|" + partes[16];
+				estaticosDatos += "|" + partes[17];
 			}
 			primeraLinea = false;
 		}

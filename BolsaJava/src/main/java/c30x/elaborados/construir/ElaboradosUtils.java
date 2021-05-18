@@ -12,6 +12,6 @@ public class ElaboradosUtils {
 	public static final Integer F = 5;
 	public static final Integer B = 5;
 	public static final Double SUBIDA_MAXIMA_POR_VELA = 3.0D; // 300%
-	public static final Integer DINAMICA1 = 1;
+	public static final Integer DINAMICA1 = 0;
 	public static final Integer DINAMICA2 = 1;
 }
