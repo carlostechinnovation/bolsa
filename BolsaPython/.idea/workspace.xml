@@ -2,16 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="22edbd2f-b3d9-42f0-a7dd-659033ab601a" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../.metadata/.plugins/org.eclipse.jdt.core/1072511054.index" beforeDir="false" afterPath="$PROJECT_DIR$/../.metadata/.plugins/org.eclipse.jdt.core/1072511054.index" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.metadata/.plugins/org.eclipse.jdt.core/1089239932.index" beforeDir="false" afterPath="$PROJECT_DIR$/../.metadata/.plugins/org.eclipse.jdt.core/1089239932.index" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.metadata/.plugins/org.eclipse.jdt.core/1628687906.index" beforeDir="false" afterPath="$PROJECT_DIR$/../.metadata/.plugins/org.eclipse.jdt.core/1628687906.index" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.metadata/.plugins/org.eclipse.jdt.core/502732891.index" beforeDir="false" afterPath="$PROJECT_DIR$/../.metadata/.plugins/org.eclipse.jdt.core/502732891.index" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.metadata/.plugins/org.eclipse.jdt.core/821608291.index" beforeDir="false" afterPath="$PROJECT_DIR$/../.metadata/.plugins/org.eclipse.jdt.core/821608291.index" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.metadata/.plugins/org.eclipse.jdt.core/925982370.index" beforeDir="false" afterPath="$PROJECT_DIR$/../.metadata/.plugins/org.eclipse.jdt.core/925982370.index" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bolsa/C5C6H2O.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../BolsaJava/src/main/resources/desconocidos.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/main/resources/desconocidos.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bolsa/InversionUtilsPosteriori.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/InversionUtilsPosteriori.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaScripts/generaModelo.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/generaModelo.sh" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../BolsaScripts/inversionHistoricaSoloFuturoSimplificado.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/inversionHistoricaSoloFuturoSimplificado.sh" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../BolsaScripts/parametros.config" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/parametros.config" afterDir="false" />
     </list>
@@ -396,6 +390,13 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/bolsa/InversionUtilsPosteriori.py</url>
+          <line>326</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
       <default-breakpoints>
         <breakpoint type="python-exception">
           <properties notifyOnTerminate="true" exception="BaseException">

@@ -241,7 +241,7 @@ def analizar(datosGrandes, datosManejables, X, dfSP500):
                 elif VELA_YF == '1h':
                     fila = datosGrandes.loc[
                         (datosGrandes['aniomesdiahora'] == fechaDesplazada) & (
-                                    datosGrandes['empresa'] == row['empresa'])]
+                                datosGrandes['empresa'] == row['empresa'])]
                 else:
                     sys.exit('ERROR: en este análisis no se tratan velas de duración: ' + VELA_YF)
 
@@ -273,7 +273,7 @@ def analizar(datosGrandes, datosManejables, X, dfSP500):
         resultadoAnalisis = pd.DataFrame(
             columns=["fecha", "anio", "mes", "dia", "subgrupo", "precisionMedia", "rentaMedia", "stdMedia",
                      "numElementos",
-                     "rentaRelativaSP500"])
+                     "rentaRelativaSP500", "numElementosConProbUnoMinima"])
 
         # Se calculan probabilidades, y se loggean/grafican por antiguedad
         for group_name, df_group in grupos:
@@ -320,6 +320,9 @@ def analizar(datosGrandes, datosManejables, X, dfSP500):
             # Se cuenta el número de elementos analizados por subgrupo
             numElementos = len(rentasSubgrupo)
 
+            # Se cuenta el número de elementos analizados por subgrupo con prob mínima
+            numElementosConProbUnoMinima = len(rentasSubgrupoConProbUnoMinima)
+
             # Se guarda la fecha
             datetime_str = str(int(dia)) + '/' + str(int(mes)) + '/' + str(int(anio))
             fecha = datetime.strptime(datetime_str, '%d/%m/%Y')
@@ -341,13 +344,15 @@ def analizar(datosGrandes, datosManejables, X, dfSP500):
             print(' RENTABILIDAD vs SP500: {:.2f}%'.format(rentaRelativaSP500))
             print(' RENTABILIDAD MEDIA CON PROB UNO MÍNIMA: {:.2f}%'.format(rentaMediaConProbUnoMinima))
             print(' RENTABILIDAD vs SP500 CON PROB UNO MÍNIMA: {:.2f}%'.format(rentaRelativaSP500ConProbUnoMinima))
+            print(' NUMERO ELEMENTOS CON PROB UNO MÍNIMA: {:.0f}'.format(numElementosConProbUnoMinima))
 
             # Se guardan los resultados en un DataFrame
             nuevaFila = [{'fecha': fecha, 'anio': anio, 'mes': mes, 'dia': dia, 'subgrupo': subgrupo,
                           'precisionMedia': precisionMedia, 'rentaMedia': rentaMedia, 'stdMedia': stdMedia,
                           'numElementos': '{:.0f}'.format(numElementos), 'rentaRelativaSP500': rentaRelativaSP500,
                           'rentaMediaConProbUnoMinima': rentaMediaConProbUnoMinima,
-                          'rentaRelativaSP500ConProbUnoMinima': rentaRelativaSP500ConProbUnoMinima}]
+                          'rentaRelativaSP500ConProbUnoMinima': rentaRelativaSP500ConProbUnoMinima,
+                          'numElementosConProbUnoMinima': numElementosConProbUnoMinima}]
             print("Nueva Fila: ")
             print(nuevaFila)
             resultadoAnalisis = resultadoAnalisis.append(nuevaFila, ignore_index=True, sort=False)
@@ -361,7 +366,7 @@ def analizar(datosGrandes, datosManejables, X, dfSP500):
         resultadoAnalisisAux = pd.DataFrame(
             columns=["fecha", "anio", "mes", "dia", "subgrupo", "precisionMedia", "rentaMedia", "stdMedia",
                      "numElementos",
-                     "rentaRelativaSP500", "rentaAcumulada", "rentaAcumuladavsSP500", "rentaMediaConProbUnoMinima"])
+                     "rentaRelativaSP500", "rentaAcumulada", "rentaAcumuladavsSP500", "rentaMediaConProbUnoMinima", "numElementosConProbUnoMinima"])
 
         for subgrupo in subgrupos:
             resultadoPorSubgrupo = resultadoAnalisis.loc[resultadoAnalisis['subgrupo'] == subgrupo]
@@ -405,7 +410,7 @@ def analizar(datosGrandes, datosManejables, X, dfSP500):
         resultadoAnalisis = pd.DataFrame(
             columns=["fecha", "anio", "mes", "dia", "subgrupo", "precisionMedia", "rentaMedia", "stdMedia",
                      "numElementos",
-                     "rentaRelativaSP500", "rentaAcumulada", "rentaAcumuladavsSP500", "rentaMediaConProbUnoMinima"])
+                     "rentaRelativaSP500", "rentaAcumulada", "rentaAcumuladavsSP500", "rentaMediaConProbUnoMinima", "numElementosConProbUnoMinima"])
         subgrupos = resultadoAnalisis
 
     return resultadoAnalisis, subgrupos
