@@ -169,7 +169,7 @@ if (modoTiempo == "pasado" and pathCsvCompleto.endswith('.csv') and os.path.isfi
     validaciondf[y] = validaciondf[y].asfactor()
 
     # AutoML H2O:
-    aml = H2OAutoML(max_models=80, max_runtime_secs=1*3600, seed=247)  # --> CAMBIAR EL TIEMPO a 1*3600
+    aml = H2OAutoML(max_models=80, max_runtime_secs=1*360, seed=247)  # --> CAMBIAR EL TIEMPO a 1*3600
     aml.train(x=x, y=y, training_frame=traindf)
 
     # Leader board:
@@ -238,7 +238,7 @@ if (modoTiempo == "pasado" and pathCsvCompleto.endswith('.csv') and os.path.isfi
     print("Precision: " + str(precision_val))
     print("Recall: " + str(recall_val))
     precision_media = (precision_test + precision_val) / 2
-    print("PRECISION MEDIA"+str(precision_media))
+    print("PRECISION MEDIA: "+str(precision_media))
 
     precision_test = precision_score(df_test['actual'], df_test['Ypredict'])
     precision_avg_test = average_precision_score(df_test['actual'], df_test['Ypredict'])
