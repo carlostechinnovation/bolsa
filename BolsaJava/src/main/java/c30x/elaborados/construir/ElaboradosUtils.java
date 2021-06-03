@@ -15,4 +15,5 @@ public class ElaboradosUtils {
 	public static final Double SUBIDA_MINIMA_POR_VELA = 3.0D; // 300%
 	public static final Integer DINAMICA1 = 1;
 	public static final Integer DINAMICA2 = 1;
+	public static final Integer DINAMICA3 = 1;
 }

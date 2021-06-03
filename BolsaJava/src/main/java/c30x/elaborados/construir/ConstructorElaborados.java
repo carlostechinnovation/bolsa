@@ -46,7 +46,7 @@ public class ConstructorElaborados implements Serializable {
 
 	// Se usan los periodos típicos que suelen usar los robots
 	// (consideraremos velas)
-	public final static Integer[] periodosDParaParametros = new Integer[] { 3, 20, 50 };
+	public final static Integer[] periodosDParaParametros = new Integer[] { 3, 5, 7, 10, 20, 50 };
 
 	// IMPORTANTE: se asume que los datos estan ordenados de menor a mayor
 	// antiguedad, y agrupados por empresa
@@ -166,7 +166,8 @@ public class ConstructorElaborados implements Serializable {
 	public static void anadirParametrosElaboradosDeSoloUnaEmpresa(
 			HashMap<String, HashMap<Integer, HashMap<String, String>>> datos,
 			HashMap<Integer, String> ordenNombresParametros, Integer S, Integer X, Integer R, Integer M, Integer F,
-			Integer B, Double umbralMaximo, Double umbralMinimo, Integer filtroDinamico1, Integer filtroDinamico2) throws Exception {
+			Integer B, Double umbralMaximo, Double umbralMinimo, Integer filtroDinamico1, Integer filtroDinamico2)
+			throws Exception {
 
 		HashMap<String, HashMap<Integer, HashMap<String, String>>> datosSalida = new HashMap<String, HashMap<Integer, HashMap<String, String>>>();
 		HashMap<Integer, HashMap<String, String>> datosEmpresaEntrada = new HashMap<Integer, HashMap<String, String>>();
@@ -646,6 +647,13 @@ public class ConstructorElaborados implements Serializable {
 			parametrosAcumulados++;
 		}
 
+		// Se añade una variable elaborada que servirá para eliminar directamente todas
+		// las empresas que no cumplan
+//		if (filtroDinamico3 == 1) {
+		ordenNombresParametrosSalida.put(ordenNombresParametrosSalida.size(), "DINAMICA3");
+		parametrosAcumulados++;
+//		}
+
 		// Aniado el TARGET
 		// Target=0 es que no se cumple. 1 es que sí. TARGET_INVALIDO es que no se puede
 		// calcular
@@ -689,6 +697,7 @@ public class ConstructorElaborados implements Serializable {
 //			String HYPE1 = "0", HYPE2 = "0", HYPE3 = "0", HYPE4 = "0";
 			String DINAMICA1 = "0";
 			String DINAMICA2 = "0";
+			String DINAMICA3 = "0";
 
 			// Se rellena el target en los datos de entrada tras el analisis, al final de
 			// todos los parametros
@@ -878,18 +887,20 @@ public class ConstructorElaborados implements Serializable {
 				if (filtroDinamico2 == 1) {
 					// PARÁMETRO DINAMICA2:
 					// Valores: Será 0 siempre, y sólo será 1 si cumple todo lo siguiente:
-					// - Su tasa de desbalanceo (mayoritarios/minoritarios) < MAXIMO_DESBALANCEO (se asume que los
+					// - Su tasa de desbalanceo (mayoritarios/minoritarios) < MAXIMO_DESBALANCEO (se
+					// asume que los
 					// mayoritarios son los target == 0)
-					// - Al menos hay 20 valores de los que tomar información (realmente 
+					// - Al menos hay 20 valores de los que tomar información (realmente
 					// se coge todo el rango disponible, que será común para todas las filas).
 					//
 					// El valor analizado (mayoritarios y minoritarios) es el target.
-					// Hay que tener en cuenta que el target sólo estará relleno si es 
-					// calculable (las fechas más recientes y las más antiguas no son calculables. En
+					// Hay que tener en cuenta que el target sólo estará relleno si es
+					// calculable (las fechas más recientes y las más antiguas no son calculables.
+					// En
 					// esas filas, siempre fijaremos: DINAMICA2=0 o null).
 
-					Integer MAXIMO_DESBALANCEO=7;
-					
+					Integer MAXIMO_DESBALANCEO = 7;
+
 					itAntiguedadTarget = antiguedadYTarget.keySet().iterator();
 
 					Integer targetCero = 0, targetUno = 0;
@@ -912,11 +923,37 @@ public class ConstructorElaborados implements Serializable {
 //					System.out.println("targetCero: " + targetCero);
 //					System.out.println("targetUno: " + targetUno);
 
-					if ((targetCero / (Float.valueOf(targetUno)) < MAXIMO_DESBALANCEO) && (targetCero + targetUno) > 20) {
+					if ((targetCero / (Float.valueOf(targetUno)) < MAXIMO_DESBALANCEO)
+							&& (targetCero + targetUno) > 20) {
 						DINAMICA2 = "1";
 					}
 //					System.out.println("DINAMICA2: " + DINAMICA2);
 				}
+
+//				if (filtroDinamico3 == 1) {
+				// PARÁMETRO DINAMICA3:
+				// Se guardará el volumenRelativo * precioRelativo, ya que cuando un valor sube
+				// con fuerza, sigue subiendo. No será parametrizable, sino que se guardará
+				// directamente el valor relativo.
+				// Valores:
+				// volumen relativo (close hoy vs 50 días) * variación de precio relativo
+				// (close hoy vs 50 días)
+				String Sclose = parametros.get("close");
+				String Svolumen = parametros.get("volumen");
+				String Ssma50Close = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_ + "50_CLOSE");
+				String Ssma50Volumen = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_ + "50_VOLUMEN");
+
+				Float DINAMICA3_INVALIDO = 1.0F;
+				DINAMICA3 = String.valueOf(DINAMICA3_INVALIDO);
+				if (Sclose != null && Svolumen != null && Ssma50Close != null && Ssma50Volumen != null) {
+					Float aux = (Float.valueOf(Sclose) / Float.valueOf(Ssma50Volumen))
+							* (Float.valueOf(Svolumen) / Float.valueOf(Ssma50Close));
+					if (aux != null) {
+						DINAMICA3 = String.valueOf(aux);
+					}
+				}
+//				System.out.println("DINAMICA3: " + DINAMICA3);
+//				}
 
 //				// AÑADO PARÁMETROS. TAMBIÉN HAY QUE AÑADIRLO EN LA LÍNEA 358 (VER OTROS
 //				// EJEMPLOS)
@@ -941,6 +978,12 @@ public class ConstructorElaborados implements Serializable {
 					// Se añade DINAMICA2
 					parametros.put("DINAMICA2", DINAMICA2);
 				}
+
+//				if (filtroDinamico3 == 1) {
+				// Se añade DINAMICA3
+				parametros.put("DINAMICA3", DINAMICA3);
+//				}
+
 				// SE AÑADE EL TARGET
 				parametros.put("TARGET", String.valueOf(antiguedadYTarget.get(antiguedad)));
 				datosEmpresaFinales.replace(antiguedad, parametros);
@@ -1125,9 +1168,10 @@ public class ConstructorElaborados implements Serializable {
 					+ datosAntiguedad.get("mes") + " Dia: " + datosAntiguedad.get("dia") + " Hora: "
 					+ datosAntiguedad.get("hora") + ". Variabilidad: " + e.getVariacionRelativaMaxima()
 					+ ", umbral máximo: " + umbralMaximo + ", umbral mínimo: " + umbralMinimo);
-			
+
 			// Ninguna vela puede superar a la media en una cantidad igual a un umbral
-			// MAXIMO en [t1,t2], pero esa varicación debe superar un umbral MINIMO en [t1, t2]
+			// MAXIMO en [t1,t2], pero esa varicación debe superar un umbral MINIMO en [t1,
+			// t2]
 			Double variacionRelativaMaxEncontrada = e.getVariacionRelativaMaxima();
 			if (variacionRelativaMaxEncontrada > umbralMaximo) {
 				String cadenaMotivoMaximo = "calcularTarget() -> Alguna vela desde " + (antiguedad - 1) + " hasta "
