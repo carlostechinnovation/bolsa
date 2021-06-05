@@ -194,7 +194,7 @@ public class JuntarEstaticosYDinamicosCSVunico {
 		String actual;
 		boolean primeraLinea = true;
 
-		String estaticosCabecera = "industria|Insider Own|Quick Ratio|Current Ratio|P/E|Dividend %|Employees|geo|Debt/Eq|LT Debt/Eq|EPS next Y|Earnings|Recom|sector|Inst Own|Market Cap|Short Float|Short Ratio|P/S";
+		String estaticosCabecera = "industria|Insider Own|Quick Ratio|Current Ratio|P/E|Dividend %|Employees|Short Ratio|geo|Short Float|Debt/Eq|LT Debt/Eq|P/S|EPS next Y|Earnings|Recom|sector|Inst Own|Market Cap";
 		String estaticosDatos = "";
 
 		while ((actual = br.readLine()) != null) {

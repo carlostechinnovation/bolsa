@@ -98,18 +98,18 @@ public class GestorFicheros {
 		ordenNombresParametrosLeidos.put(21, "P/E");
 		ordenNombresParametrosLeidos.put(22, "Dividend %");
 		ordenNombresParametrosLeidos.put(23, "Employees");
-		ordenNombresParametrosLeidos.put(24, "geo");
-		ordenNombresParametrosLeidos.put(25, "Debt/Eq");
-		ordenNombresParametrosLeidos.put(26, "LT Debt/Eq");
-		ordenNombresParametrosLeidos.put(27, "EPS next Y");
-		ordenNombresParametrosLeidos.put(28, "Earnings");
-		ordenNombresParametrosLeidos.put(29, "Recom");
-		ordenNombresParametrosLeidos.put(30, "sector");
-		ordenNombresParametrosLeidos.put(31, "Inst Own");
-		ordenNombresParametrosLeidos.put(32, "Market Cap");
-		ordenNombresParametrosLeidos.put(33, "Short Float");
-		ordenNombresParametrosLeidos.put(34, "Short Ratio");
-		ordenNombresParametrosLeidos.put(35, "P/S");
+		ordenNombresParametrosLeidos.put(24, "Short Ratio");
+		ordenNombresParametrosLeidos.put(25, "geo");
+		ordenNombresParametrosLeidos.put(26, "Short Float");
+		ordenNombresParametrosLeidos.put(27, "Debt/Eq");
+		ordenNombresParametrosLeidos.put(28, "LT Debt/Eq");
+		ordenNombresParametrosLeidos.put(29, "P/S");
+		ordenNombresParametrosLeidos.put(30, "EPS next Y");
+		ordenNombresParametrosLeidos.put(31, "Earnings");
+		ordenNombresParametrosLeidos.put(32, "Recom");
+		ordenNombresParametrosLeidos.put(33, "sector");
+		ordenNombresParametrosLeidos.put(34, "Inst Own");
+		ordenNombresParametrosLeidos.put(35, "Market Cap");
 	}
 
 	public static final int INDICE_PRIMER_CAMPO_INSIDERS = 13;

@@ -342,7 +342,7 @@ public class CrearDatasetsSubgrupos implements Serializable {
 				ratioPERDesconocido = ratioPER == null || ratioPER.isEmpty() || ratioPER.equals("-");
 				ratioPERRazonable = ratioPER != null && !ratioPER.isEmpty() && !ratioPER.equals("-")
 						&& Float.valueOf(ratioPER) <= MAX_PER;
-				if (ratioPERDesconocido == false && ratioPERRazonable == false) {
+				if (!(ratioPERDesconocido || ratioPERRazonable)) {
 					System.out.println("DESCARTADA empresa=" + empresa + " porque el PER es demasiado alto (umbral="
 							+ MAX_PER + ") o o desconocido: " + ratioPER);
 					contadorDescartadasPorPER++;
@@ -352,7 +352,18 @@ public class CrearDatasetsSubgrupos implements Serializable {
 
 			}
 
-			if (parametros != null && suficientesEmpleados && deudaConocidaYBaja) {
+			boolean empresaCumpleCriteriosComunes = suficientesEmpleados && deudaConocidaYBaja
+					&& suficienteLiquidezSegunQuickRatio && analistasRecomiendanComprar
+					&& (ratioPERDesconocido || ratioPERRazonable);
+			String empresaCumpleCriteriosComunesStr = empresaCumpleCriteriosComunes ? "ENTRA" : "DESCARTADA";
+
+			MY_LOGGER.info("EMPRESA: " + empresa + " ==> " + empresaCumpleCriteriosComunesStr + " ==>"
+					+ " suficientesEmpleados:" + suficientesEmpleados + " deudaConocidaYBaja:" + deudaConocidaYBaja
+					+ " suficienteLiquidezSegunQuickRatio:" + suficienteLiquidezSegunQuickRatio
+					+ " analistasRecomiendanComprar:" + analistasRecomiendanComprar + " ratioPERDesconocido:"
+					+ ratioPERDesconocido + " ratioPERRazonable:" + ratioPERRazonable);
+
+			if (parametros != null && empresaCumpleCriteriosComunes) {
 
 				// Para el subgrupo 0 siempre se añade
 				// NO QUITAR, PARA QUE LAS GRÁFICAS FINALES SE PINTEN BASADAS EN ESTE GRUPO,
