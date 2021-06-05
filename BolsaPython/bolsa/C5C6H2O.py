@@ -153,7 +153,7 @@ if (modoTiempo == "pasado" and pathCsvCompleto.endswith('.csv') and os.path.isfi
                                        [int(fraccion_train * len(inputFeaturesyTarget)),
                                         int((fraccion_train + fraccion_test) * len(inputFeaturesyTarget))])
 
-    # Conversión oara h2o frame:
+    # Conversión para h2o frame:
     traindf = h2o.H2OFrame(ds_train)
     testdf = h2o.H2OFrame(ds_test)
     validaciondf = h2o.H2OFrame(ds_validacion)
