@@ -107,12 +107,15 @@ public class GestorFicheros {
 		ordenNombresParametrosLeidos.put(30, "sector");
 		ordenNombresParametrosLeidos.put(31, "Inst Own");
 		ordenNombresParametrosLeidos.put(32, "Market Cap");
+		ordenNombresParametrosLeidos.put(33, "Short Float");
+		ordenNombresParametrosLeidos.put(34, "Short Ratio");
+		ordenNombresParametrosLeidos.put(35, "P/S");
 	}
 
 	public static final int INDICE_PRIMER_CAMPO_INSIDERS = 13;
 	public static final int INDICE_ULTIMO_CAMPO_INSIDERS = 16;
 	public static final int INDICE_PRIMER_CAMPO_ESTATICO = 17;
-	public static final int INDICE_ULTIMO_CAMPO_ESTATICO = 31;
+	public static final int INDICE_ULTIMO_CAMPO_ESTATICO = 35;
 
 	/**
 	 * 

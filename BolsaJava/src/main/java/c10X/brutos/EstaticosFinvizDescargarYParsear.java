@@ -351,6 +351,13 @@ public class EstaticosFinvizDescargarYParsear {
 			extraerInfoDeFila("Earnings", t, mapaExtraidos, BrutosUtils.ESCALA_UNO, true);
 			extraerInfoDeFila("Recom", t, mapaExtraidos, BrutosUtils.ESCALA_UNO, true);
 
+			// Float short indica cuántos se han puesto en corto ese día
+			extraerInfoDeFila("Short Float", t, mapaExtraidos, BrutosUtils.ESCALA_UNO, false);
+			// Short Interest Ratio: cuánto es el interés que deben pagar por tomar
+			// prestadas esas acciones
+			extraerInfoDeFila("Short Ratio", t, mapaExtraidos, BrutosUtils.ESCALA_UNO, false);
+			// Price-to-Sales (ttm)
+			extraerInfoDeFila("P/S", t, mapaExtraidos, BrutosUtils.ESCALA_UNO, false);
 		}
 
 		// ---------- TABLA DE COMPRAS/VENTAS DE INSIDERS --------------

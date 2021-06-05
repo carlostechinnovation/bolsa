@@ -194,30 +194,36 @@ public class JuntarEstaticosYDinamicosCSVunico {
 		String actual;
 		boolean primeraLinea = true;
 
-		String estaticosCabecera = "industria|Insider Own|Quick Ratio|Current Ratio|P/E|Dividend %|Employees|geo|Debt/Eq|LT Debt/Eq|EPS next Y|Earnings|Recom|sector|Inst Own|Market Cap";
+		String estaticosCabecera = "industria|Insider Own|Quick Ratio|Current Ratio|P/E|Dividend %|Employees|geo|Debt/Eq|LT Debt/Eq|EPS next Y|Earnings|Recom|sector|Inst Own|Market Cap|Short Float|Short Ratio|P/S";
 		String estaticosDatos = "";
 
 		while ((actual = br.readLine()) != null) {
 			if (primeraLinea == false) {
 
 				String[] partes = actual.split("\\|");
-				// Descartamos: partes[0]=mercado y partes[1]=empresa
+
+				// partes[0]=mercado//DESCARTADO porque es un IDENTIFICADOR
+				// partes[1]=empresa//DESCARTADO porque es un IDENTIFICADOR
+
 				estaticosDatos += partes[2]; // industria
-				estaticosDatos += "|" + partes[3];
-				estaticosDatos += "|" + partes[4];
-				estaticosDatos += "|" + partes[5];
-				estaticosDatos += "|" + partes[6];
+				estaticosDatos += "|" + partes[3];// Insider Own
+				estaticosDatos += "|" + partes[4];// Quick Ratio
+				estaticosDatos += "|" + partes[5];// Current Ratio
+				estaticosDatos += "|" + partes[6];// P/E
 				estaticosDatos += "|" + partes[7];// Dividend %
-				estaticosDatos += "|" + partes[8];
-				estaticosDatos += "|" + partes[9];// geo
-				estaticosDatos += "|" + partes[10];
-				estaticosDatos += "|" + partes[11];
-				estaticosDatos += "|" + partes[12];
-				estaticosDatos += "|" + partes[13];// presentacion resultados (Earnings date)
-				estaticosDatos += "|" + partes[14];// Recom
-				estaticosDatos += "|" + partes[15];// sector
-				estaticosDatos += "|" + partes[16];
-				estaticosDatos += "|" + partes[17];
+				estaticosDatos += "|" + partes[8];// Employees
+				estaticosDatos += "|" + partes[9];// Short Ratio
+				estaticosDatos += "|" + partes[10];// geo
+				estaticosDatos += "|" + partes[11];// Short Float
+				estaticosDatos += "|" + partes[12];// Debt/Eq
+				estaticosDatos += "|" + partes[13];// LT Debt/Eq
+				estaticosDatos += "|" + partes[14];// P/S
+				estaticosDatos += "|" + partes[15];// EPS next Y
+				estaticosDatos += "|" + partes[16];// Earnings date: presentacion resultados
+				estaticosDatos += "|" + partes[17];// Recom
+				estaticosDatos += "|" + partes[18];// sector
+				estaticosDatos += "|" + partes[19];// Inst Own
+				estaticosDatos += "|" + partes[20];// Market Cap
 			}
 			primeraLinea = false;
 		}
