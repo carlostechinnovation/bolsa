@@ -385,14 +385,14 @@ public class CrearDatasetsSubgrupos implements Serializable {
 
 				// FILTRO DINÁMICO 1 (para reducir el uso de SMOTEENN):
 				// Se aplica el filtro dinámico a todos los subgrupos excepto al grupo 0 (porque
-				// es la base donde estarán todas las empresas con las que comparar)
+				// es la base donde estarán todas las empresas con las que comparar
 				// Se añade la empresa sólo si el filtro dinámico está desactivado, o si el
 				// filtro dinámico está activado + el parámetro calculado llamado dinamica1=1 en
 				// la fila 0 de la empresa
 
 				// FILTRO DINÁMICO 2 (para reducir el uso de SMOTEENN):
 				// Se aplica el filtro dinámico a todos los subgrupos excepto al grupo 0 (porque
-				// es la base donde estarán todas las empresas con las que comparar)
+				// es la base donde estarán todas las empresas con las que comparar
 				// Se añade la empresa sólo si el filtro dinámico está desactivado, o si el
 				// filtro dinámico está activado + el parámetro calculado llamado dinamica2=1 en
 				// la fila 0 de la empresa
@@ -673,10 +673,8 @@ public class CrearDatasetsSubgrupos implements Serializable {
 						if (insiders5dias != null && !insiders5dias.isEmpty()) {
 							pathEmpresasTipo49.add(ficheroGestionado.getAbsolutePath());
 						}
-
 					}
 				}
-
 				// ---------------------------------------------------------------------------------------
 			}
 		}
@@ -716,52 +714,52 @@ public class CrearDatasetsSubgrupos implements Serializable {
 		empresasPorTipo.put(9, pathEmpresasTipo9);
 		empresasPorTipo.put(10, pathEmpresasTipo10);
 		empresasPorTipo.put(11, pathEmpresasTipo11);
-		empresasPorTipo.put(12, pathEmpresasTipo12);
-		empresasPorTipo.put(13, pathEmpresasTipo13);
-		empresasPorTipo.put(14, pathEmpresasTipo14);
-		empresasPorTipo.put(15, pathEmpresasTipo15);
-		empresasPorTipo.put(16, pathEmpresasTipo16);
-
-		empresasPorTipo.put(17, pathEmpresasTipo17);
-		empresasPorTipo.put(18, pathEmpresasTipo18);
-		empresasPorTipo.put(19, pathEmpresasTipo19);
-		empresasPorTipo.put(20, pathEmpresasTipo20);
-		empresasPorTipo.put(21, pathEmpresasTipo21);
-
-		empresasPorTipo.put(22, pathEmpresasTipo22);
-		empresasPorTipo.put(23, pathEmpresasTipo23);
-		empresasPorTipo.put(24, pathEmpresasTipo24);
-		empresasPorTipo.put(25, pathEmpresasTipo25);
-		empresasPorTipo.put(26, pathEmpresasTipo26);
-
-		empresasPorTipo.put(27, pathEmpresasTipo27);
-		empresasPorTipo.put(28, pathEmpresasTipo28);
-		empresasPorTipo.put(29, pathEmpresasTipo29);
-		empresasPorTipo.put(30, pathEmpresasTipo30);
-		empresasPorTipo.put(31, pathEmpresasTipo31);
-
-		empresasPorTipo.put(32, pathEmpresasTipo32);
-		empresasPorTipo.put(33, pathEmpresasTipo33);
-		empresasPorTipo.put(34, pathEmpresasTipo34);
-		empresasPorTipo.put(35, pathEmpresasTipo35);
-		empresasPorTipo.put(36, pathEmpresasTipo36);
-
-		empresasPorTipo.put(37, pathEmpresasTipo37);
-		empresasPorTipo.put(38, pathEmpresasTipo38);
-		empresasPorTipo.put(39, pathEmpresasTipo39);
-		empresasPorTipo.put(40, pathEmpresasTipo40);
-
-		empresasPorTipo.put(41, pathEmpresasTipo41);
-		empresasPorTipo.put(42, pathEmpresasTipo42);
-
-		empresasPorTipo.put(43, pathEmpresasTipo43);
-		empresasPorTipo.put(44, pathEmpresasTipo44);
-		empresasPorTipo.put(45, pathEmpresasTipo45);
-
-		empresasPorTipo.put(46, pathEmpresasTipo46);
-		empresasPorTipo.put(47, pathEmpresasTipo47);
-		empresasPorTipo.put(48, pathEmpresasTipo48);
-		empresasPorTipo.put(49, pathEmpresasTipo49);
+//		empresasPorTipo.put(12, pathEmpresasTipo12);
+//		empresasPorTipo.put(13, pathEmpresasTipo13);
+//		empresasPorTipo.put(14, pathEmpresasTipo14);
+//		empresasPorTipo.put(15, pathEmpresasTipo15);
+//		empresasPorTipo.put(16, pathEmpresasTipo16);
+//
+//		empresasPorTipo.put(17, pathEmpresasTipo17);
+//		empresasPorTipo.put(18, pathEmpresasTipo18);
+//		empresasPorTipo.put(19, pathEmpresasTipo19);
+//		empresasPorTipo.put(20, pathEmpresasTipo20);
+//		empresasPorTipo.put(21, pathEmpresasTipo21);
+//
+//		empresasPorTipo.put(22, pathEmpresasTipo22);
+//		empresasPorTipo.put(23, pathEmpresasTipo23);
+//		empresasPorTipo.put(24, pathEmpresasTipo24);
+//		empresasPorTipo.put(25, pathEmpresasTipo25);
+//		empresasPorTipo.put(26, pathEmpresasTipo26);
+//
+//		empresasPorTipo.put(27, pathEmpresasTipo27);
+//		empresasPorTipo.put(28, pathEmpresasTipo28);
+//		empresasPorTipo.put(29, pathEmpresasTipo29);
+//		empresasPorTipo.put(30, pathEmpresasTipo30);
+//		empresasPorTipo.put(31, pathEmpresasTipo31);
+//
+//		empresasPorTipo.put(32, pathEmpresasTipo32);
+//		empresasPorTipo.put(33, pathEmpresasTipo33);
+//		empresasPorTipo.put(34, pathEmpresasTipo34);
+//		empresasPorTipo.put(35, pathEmpresasTipo35);
+//		empresasPorTipo.put(36, pathEmpresasTipo36);
+//
+//		empresasPorTipo.put(37, pathEmpresasTipo37);
+//		empresasPorTipo.put(38, pathEmpresasTipo38);
+//		empresasPorTipo.put(39, pathEmpresasTipo39);
+//		empresasPorTipo.put(40, pathEmpresasTipo40);
+//
+//		empresasPorTipo.put(41, pathEmpresasTipo41);
+//		empresasPorTipo.put(42, pathEmpresasTipo42);
+//
+//		empresasPorTipo.put(43, pathEmpresasTipo43);
+//		empresasPorTipo.put(44, pathEmpresasTipo44);
+//		empresasPorTipo.put(45, pathEmpresasTipo45);
+//
+//		empresasPorTipo.put(46, pathEmpresasTipo46);
+//		empresasPorTipo.put(47, pathEmpresasTipo47);
+//		empresasPorTipo.put(48, pathEmpresasTipo48);
+//		empresasPorTipo.put(49, pathEmpresasTipo49);
 
 		// Se crea un CSV para cada subgrupo
 		Set<Integer> tipos = empresasPorTipo.keySet();
@@ -973,15 +971,15 @@ public class CrearDatasetsSubgrupos implements Serializable {
 	}
 
 	public static boolean isNumeric(String strNum) {
-		if (strNum == null) {
-			return false;
-		}
-		try {
-			double d = Double.parseDouble(strNum);
-		} catch (NumberFormatException nfe) {
-			return false;
-		}
-		return true;
+	    if (strNum == null) {
+	        return false;
+	    }
+	    try {
+	        double d = Double.parseDouble(strNum);
+	    } catch (NumberFormatException nfe) {
+	        return false;
+	    }
+	    return true;
 	}
-
+	
 }
