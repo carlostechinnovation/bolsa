@@ -50,7 +50,7 @@ public class ConstructorElaborados implements Serializable {
 
 	// Se usan los periodos típicos que suelen usar los robots
 	// (consideraremos velas)
-	public final static Integer[] periodosDParaParametros = new Integer[] { 3, 20, 50 };
+	public final static Integer[] periodosDParaParametros = new Integer[] { 3, 5, 7, 10, 20, 50 };
 
 	// IMPORTANTE: se asume que los datos estan ordenados de menor a mayor
 	// antiguedad, y agrupados por empresa
@@ -79,12 +79,13 @@ public class ConstructorElaborados implements Serializable {
 		Integer F = ElaboradosUtils.F; // DEFAULT
 		Integer B = ElaboradosUtils.B; // DEFAULT
 		Double umbralMaximo = ElaboradosUtils.SUBIDA_MAXIMA_POR_VELA; // DEFAULT
+		Double umbralMinimo = ElaboradosUtils.SUBIDA_MINIMA_POR_VELA; // DEFAULT
 		Integer filtroDinamico1 = ElaboradosUtils.DINAMICA1; // DEFAULT
 		Integer filtroDinamico2 = ElaboradosUtils.DINAMICA2; // DEFAULT
 
 		if (args.length == 0) {
 			MY_LOGGER.info("Sin parametros de entrada. Rellenamos los DEFAULT...");
-		} else if (args.length != 11) {
+		} else if (args.length != 12) {
 			MY_LOGGER.error("Total Parametros de entrada: " + args.length);
 			MY_LOGGER.error("Parametros de entrada incorrectos!!");
 			for (String param : args) {
@@ -101,8 +102,9 @@ public class ConstructorElaborados implements Serializable {
 			F = Integer.valueOf(args[6]);
 			B = Integer.valueOf(args[7]);
 			umbralMaximo = Double.valueOf(args[8]);
-			filtroDinamico1 = Integer.valueOf(args[9]);
-			filtroDinamico2 = Integer.valueOf(args[10]);
+			umbralMinimo = Double.valueOf(args[9]);
+			filtroDinamico1 = Integer.valueOf(args[10]);
+			filtroDinamico2 = Integer.valueOf(args[11]);
 		}
 
 		File directorioEntrada = new File(directorioIn);
@@ -139,7 +141,7 @@ public class ConstructorElaborados implements Serializable {
 
 			ordenNombresParametros = gestorFicheros.getOrdenNombresParametrosLeidos();
 			anadirParametrosElaboradosDeSoloUnaEmpresa(datosEntrada, ordenNombresParametros, S, X, R, M, F, B,
-					umbralMaximo, filtroDinamico1, filtroDinamico2);
+					umbralMaximo, umbralMinimo, filtroDinamico1, filtroDinamico2);
 			gestorFicheros.creaFicheroDeSoloUnaEmpresa(datosEntrada, ordenNombresParametros, destino);
 		}
 
@@ -160,6 +162,7 @@ public class ConstructorElaborados implements Serializable {
 	 * @param M
 	 * @param B
 	 * @param umbralMaximo
+	 * @param umbralMinimo
 	 * @param filtroDinamico1
 	 * @param filtroDinamico2
 	 * @throws Exception
@@ -167,7 +170,8 @@ public class ConstructorElaborados implements Serializable {
 	public static void anadirParametrosElaboradosDeSoloUnaEmpresa(
 			HashMap<String, HashMap<Integer, HashMap<String, String>>> datos,
 			HashMap<Integer, String> ordenNombresParametros, Integer S, Integer X, Integer R, Integer M, Integer F,
-			Integer B, Double umbralMaximo, Integer filtroDinamico1, Integer filtroDinamico2) throws Exception {
+			Integer B, Double umbralMaximo, Double umbralMinimo, Integer filtroDinamico1, Integer filtroDinamico2)
+			throws Exception {
 
 		HashMap<String, HashMap<Integer, HashMap<String, String>>> datosSalida = new HashMap<String, HashMap<Integer, HashMap<String, String>>>();
 		HashMap<Integer, HashMap<String, String>> datosEmpresaEntrada = new HashMap<Integer, HashMap<String, String>>();
@@ -647,6 +651,13 @@ public class ConstructorElaborados implements Serializable {
 			parametrosAcumulados++;
 		}
 
+		// Se añade una variable elaborada que servirá para eliminar directamente todas
+		// las empresas que no cumplan
+//		if (filtroDinamico3 == 1) {
+		ordenNombresParametrosSalida.put(ordenNombresParametrosSalida.size(), "DINAMICA3");
+		parametrosAcumulados++;
+//		}
+
 		// Aniado el TARGET
 		// Target=0 es que no se cumple. 1 es que sí. TARGET_INVALIDO es que no se puede
 		// calcular
@@ -673,7 +684,7 @@ public class ConstructorElaborados implements Serializable {
 
 					} else {
 						target = calcularTarget(empresa, datosEmpresaEntrada, antiguedad, S, X, R, M, F, B,
-								umbralMaximo);
+								umbralMaximo, umbralMinimo);
 					}
 				} else {
 					// La antiguedad es demasiado reciente para ver si es estable en X+M
@@ -690,6 +701,7 @@ public class ConstructorElaborados implements Serializable {
 //			String HYPE1 = "0", HYPE2 = "0", HYPE3 = "0", HYPE4 = "0";
 			String DINAMICA1 = "0";
 			String DINAMICA2 = "0";
+			String DINAMICA3 = "0";
 
 			// Se rellena el target en los datos de entrada tras el analisis, al final de
 			// todos los parametros
@@ -879,7 +891,8 @@ public class ConstructorElaborados implements Serializable {
 				if (filtroDinamico2 == 1) {
 					// PARÁMETRO DINAMICA2:
 					// Valores: Será 0 siempre, y sólo será 1 si cumple todo lo siguiente:
-					// - Su tasa de desbalanceo (mayoritarios/minoritarios) < 10 (se asume que los
+					// - Su tasa de desbalanceo (mayoritarios/minoritarios) < MAXIMO_DESBALANCEO (se
+					// asume que los
 					// mayoritarios son los target == 0)
 					// - Al menos hay 20 valores de los que tomar información (realmente
 					// se coge todo el rango disponible, que será común para todas las filas).
@@ -919,6 +932,31 @@ public class ConstructorElaborados implements Serializable {
 //					System.out.println("DINAMICA2: " + DINAMICA2);
 				}
 
+//				if (filtroDinamico3 == 1) {
+				// PARÁMETRO DINAMICA3:
+				// Se guardará el volumenRelativo * precioRelativo, ya que cuando un valor sube
+				// con fuerza, sigue subiendo. No será parametrizable, sino que se guardará
+				// directamente el valor relativo.
+				// Valores:
+				// volumen relativo (close hoy vs 50 días) * variación de precio relativo
+				// (close hoy vs 50 días)
+				String Sclose = parametros.get("close");
+				String Svolumen = parametros.get("volumen");
+				String Ssma50Close = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_ + "50_CLOSE");
+				String Ssma50Volumen = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_ + "50_VOLUMEN");
+
+				Float DINAMICA3_INVALIDO = 1.0F;
+				DINAMICA3 = String.valueOf(DINAMICA3_INVALIDO);
+				if (Sclose != null && Svolumen != null && Ssma50Close != null && Ssma50Volumen != null) {
+					Float aux = (Float.valueOf(Sclose) / Float.valueOf(Ssma50Volumen))
+							* (Float.valueOf(Svolumen) / Float.valueOf(Ssma50Close));
+					if (aux != null) {
+						DINAMICA3 = String.valueOf(aux);
+					}
+				}
+//				System.out.println("DINAMICA3: " + DINAMICA3);
+//				}
+
 //				// AÑADO PARÁMETROS. TAMBIÉN HAY QUE AÑADIRLO EN LA LÍNEA 358 (VER OTROS
 //				// EJEMPLOS)
 //				// Se añade HYPE1
@@ -942,6 +980,12 @@ public class ConstructorElaborados implements Serializable {
 					// Se añade DINAMICA2
 					parametros.put("DINAMICA2", DINAMICA2);
 				}
+
+//				if (filtroDinamico3 == 1) {
+				// Se añade DINAMICA3
+				parametros.put("DINAMICA3", DINAMICA3);
+//				}
+
 				// SE AÑADE EL TARGET
 				parametros.put("TARGET", String.valueOf(antiguedadYTarget.get(antiguedad)));
 				datosEmpresaFinales.replace(antiguedad, parametros);
@@ -1002,11 +1046,14 @@ public class ConstructorElaborados implements Serializable {
 	 *                     velas.
 	 * @param umbralMaximo Porcentaje máximo aceptado para la subida de cada vela
 	 *                     respecto del incremento medio en las velas de 1 a X.
+	 * @param umbralMinimo Porcentaje mínimo aceptado para la subida de cada vela
+	 *                     respecto del incremento medio en las velas de 1 a X.
 	 * 
 	 * @return
 	 */
 	public static String calcularTarget(String empresa, HashMap<Integer, HashMap<String, String>> datosEmpresaEntrada,
-			Integer antiguedad, Integer S, Integer X, Integer R, Integer M, Integer F, Integer B, Double umbralMaximo) {
+			Integer antiguedad, Integer S, Integer X, Integer R, Integer M, Integer F, Integer B, Double umbralMaximo,
+			Double umbralMinimo) {
 
 		String targetOut = TARGET_INVALIDO; // default
 
@@ -1122,18 +1169,26 @@ public class ConstructorElaborados implements Serializable {
 			MY_LOGGER.debug("ANÁLISIS VARIABILIDAD--> EMPRESA: " + empresa + " -> Antigüedad: " + antiguedad + " (Mes: "
 					+ datosAntiguedad.get("mes") + " Dia: " + datosAntiguedad.get("dia") + " Hora: "
 					+ datosAntiguedad.get("hora") + ". Variabilidad: " + e.getVariacionRelativaMaxima()
-					+ " y umbral máximo: " + umbralMaximo);
+					+ ", umbral máximo: " + umbralMaximo + ", umbral mínimo: " + umbralMinimo);
 
 			// Ninguna vela puede superar a la media en una cantidad igual a un umbral
-			// MAXIMO en [t1,t2]
+			// MAXIMO en [t1,t2], pero esa variación debe superar un umbral MINIMO en [t1,
+			// t2]
 			Double variacionRelativaMaxEncontrada = e.getVariacionRelativaMaxima();
 			if (variacionRelativaMaxEncontrada > umbralMaximo) {
-				String cadenaMotivo = "calcularTarget() -> Alguna vela desde " + (antiguedad - 1) + " hasta "
+				String cadenaMotivoMaximo = "calcularTarget() -> Alguna vela desde " + (antiguedad - 1) + " hasta "
 						+ (antiguedad - X) + " supera el umbral=" + umbralMaximo
 						+ " siendo variacionRelativaMaxEncontrada=" + variacionRelativaMaxEncontrada;
+				MY_LOGGER.debug(cadenaMotivoMaximo);
 				mCumplida = false;
 			}
-
+			if (variacionRelativaMaxEncontrada < umbralMinimo) {
+				String cadenaMotivoMinimo = "calcularTarget() -> Ninguna vela desde " + (antiguedad - 1) + " hasta "
+						+ (antiguedad - X) + " supera el umbral=" + umbralMinimo
+						+ " siendo variacionRelativaMaxEncontrada=" + variacionRelativaMaxEncontrada;
+				MY_LOGGER.debug(cadenaMotivoMinimo);
+				mCumplida = false;
+			}
 		}
 
 		if (mCumplida) {
@@ -1181,78 +1236,78 @@ public class ConstructorElaborados implements Serializable {
 
 	}
 
-	/**
-	 * Se dejan pasar los parámetros que pertenezcan a una lista de autorizados. El
-	 * resto, se descartan.
-	 * 
-	 * @param datosEmpresa
-	 * @return
-	 */
-	public static HashMap<Integer, HashMap<String, String>> filtrarParametrosAutorizados(
-			HashMap<Integer, HashMap<String, String>> datosEmpresaIniciales) {
-
-		// Separo los parámetros por espacios o comas
-		ArrayList<String> parametrosAutorizados = new ArrayList<String>(
-				Arrays.asList(LISTA_PARAMETROS_AUTORIZADOS.split("\\s*,\\s*")));
-
-		// Se añade el target a los autorizados
-		parametrosAutorizados.add("TARGET");
-
-		HashMap<Integer, HashMap<String, String>> datosEmpresaFinales = new HashMap<Integer, HashMap<String, String>>();
-		Integer antiguedad;
-		String parametro;
-
-		Iterator<Integer> itAntiguedadDatos = datosEmpresaIniciales.keySet().iterator();
-		while (itAntiguedadDatos.hasNext()) {
-			antiguedad = itAntiguedadDatos.next();
-			HashMap<String, String> parametrosEntrada = datosEmpresaIniciales.get(antiguedad);
-			HashMap<String, String> parametrosSalida = new HashMap<String, String>(1);
-			Iterator<String> itParametros = parametrosEntrada.keySet().iterator();
-			while (itParametros.hasNext()) {
-				parametro = itParametros.next();
-				if (parametrosAutorizados.contains(parametro)) {
-					// El parámetro está dentro de los autorizados. Se añade a la lista final
-					// filtrada
-					parametrosSalida.put(parametro, parametrosEntrada.get(parametro));
-				}
-			}
-			// Se guarda el vector de parámetros filtrado
-			datosEmpresaFinales.put(antiguedad, parametrosSalida);
-		}
-
-		return datosEmpresaFinales;
-
-	}
-
-	/**
-	 * Se dejan pasar los parámetros que pertenezcan a una lista de autorizados. El
-	 * resto, se descartan.
-	 * 
-	 * @param ordenNombresParametrosEntrada
-	 * @return
-	 */
-	public static HashMap<Integer, String> filtrarNombresParametrosAutorizados(
-			HashMap<Integer, String> ordenNombresParametrosEntrada) {
-		HashMap<Integer, String> ordenNombresParametrosSalida = new HashMap<Integer, String>();
-
-		// Separo los parámetros por espacios o comas
-		ArrayList<String> parametrosAutorizados = new ArrayList<String>(
-				Arrays.asList(LISTA_PARAMETROS_AUTORIZADOS.split("\\s*,\\s*")));
-
-		// Se añade el target a los autorizados
-		parametrosAutorizados.add("TARGET");
-
-		Integer numeroParametrosEntrada = ordenNombresParametrosEntrada.size();
-		int iSalida = 0;
-		String nombreParametro;
-		for (int i = 0; i < numeroParametrosEntrada; i++) {
-			nombreParametro = ordenNombresParametrosEntrada.get(i);
-			if (parametrosAutorizados.contains(nombreParametro)) {
-				ordenNombresParametrosSalida.put(iSalida, nombreParametro);
-				iSalida++;
-			}
-		}
-		return ordenNombresParametrosSalida;
-	}
+//	/**
+//	 * Se dejan pasar los parámetros que pertenezcan a una lista de autorizados. El
+//	 * resto, se descartan.
+//	 * 
+//	 * @param datosEmpresa
+//	 * @return
+//	 */
+//	public static HashMap<Integer, HashMap<String, String>> filtrarParametrosAutorizados(
+//			HashMap<Integer, HashMap<String, String>> datosEmpresaIniciales) {
+//
+//		// Separo los parámetros por espacios o comas
+//		ArrayList<String> parametrosAutorizados = new ArrayList<String>(
+//				Arrays.asList(LISTA_PARAMETROS_AUTORIZADOS.split("\\s*,\\s*")));
+//
+//		// Se añade el target a los autorizados
+//		parametrosAutorizados.add("TARGET");
+//
+//		HashMap<Integer, HashMap<String, String>> datosEmpresaFinales = new HashMap<Integer, HashMap<String, String>>();
+//		Integer antiguedad;
+//		String parametro;
+//
+//		Iterator<Integer> itAntiguedadDatos = datosEmpresaIniciales.keySet().iterator();
+//		while (itAntiguedadDatos.hasNext()) {
+//			antiguedad = itAntiguedadDatos.next();
+//			HashMap<String, String> parametrosEntrada = datosEmpresaIniciales.get(antiguedad);
+//			HashMap<String, String> parametrosSalida = new HashMap<String, String>(1);
+//			Iterator<String> itParametros = parametrosEntrada.keySet().iterator();
+//			while (itParametros.hasNext()) {
+//				parametro = itParametros.next();
+//				if (parametrosAutorizados.contains(parametro)) {
+//					// El parámetro está dentro de los autorizados. Se añade a la lista final
+//					// filtrada
+//					parametrosSalida.put(parametro, parametrosEntrada.get(parametro));
+//				}
+//			}
+//			// Se guarda el vector de parámetros filtrado
+//			datosEmpresaFinales.put(antiguedad, parametrosSalida);
+//		}
+//
+//		return datosEmpresaFinales;
+//
+//	}
+//
+//	/**
+//	 * Se dejan pasar los parámetros que pertenezcan a una lista de autorizados. El
+//	 * resto, se descartan.
+//	 * 
+//	 * @param ordenNombresParametrosEntrada
+//	 * @return
+//	 */
+//	public static HashMap<Integer, String> filtrarNombresParametrosAutorizados(
+//			HashMap<Integer, String> ordenNombresParametrosEntrada) {
+//		HashMap<Integer, String> ordenNombresParametrosSalida = new HashMap<Integer, String>();
+//
+//		// Separo los parámetros por espacios o comas
+//		ArrayList<String> parametrosAutorizados = new ArrayList<String>(
+//				Arrays.asList(LISTA_PARAMETROS_AUTORIZADOS.split("\\s*,\\s*")));
+//
+//		// Se añade el target a los autorizados
+//		parametrosAutorizados.add("TARGET");
+//
+//		Integer numeroParametrosEntrada = ordenNombresParametrosEntrada.size();
+//		int iSalida = 0;
+//		String nombreParametro;
+//		for (int i = 0; i < numeroParametrosEntrada; i++) {
+//			nombreParametro = ordenNombresParametrosEntrada.get(i);
+//			if (parametrosAutorizados.contains(nombreParametro)) {
+//				ordenNombresParametrosSalida.put(iSalida, nombreParametro);
+//				iSalida++;
+//			}
+//		}
+//		return ordenNombresParametrosSalida;
+//	}
 
 }

@@ -75,6 +75,13 @@ crearCarpetaSiNoExisteYVaciarRecursivo() {
 	rm -Rf ${param1}*
 }
 
+crearCarpetaSiNoExistePeroNoVaciar() {
+	param1=${1} 			#directorio
+	echo "Creando carpeta: $param1"
+	mkdir -p ${param1}
+	chmod 777 -Rf ${param1}
+}
+
 comprobarQueDirectorioNoEstaVacio(){
 	param1="${1}"
 	a=`(ls -lrt "${param1}"  | grep "total 0")`
@@ -104,7 +111,8 @@ DIR_IMG="img/"
 DIR_TRAMIF="tramif/"
 
 crearCarpetaSiNoExiste "${DIR_LOGS}"
-crearCarpetaSiNoExisteYVaciar "${DIR_BASE}${DIR_TIEMPO}"
+# AQUÍ NO SE VACIARÁ LA CARPETA SI YA EXISTE
+crearCarpetaSiNoExistePeroNoVaciar "${DIR_BASE}${DIR_TIEMPO}"
 
 ############### LOGS ########################################################
 rm -f "${DIR_LOGS}log4j.log"
@@ -117,93 +125,8 @@ cd "${DIR_JAVA}" >> ${LOG_MASTER}
 rm -Rf "${DIR_JAVA}target/" >> ${LOG_MASTER}
 mvn clean compile assembly:single >> ${LOG_MASTER}
 
-################################################################################################
-echo -e $( date '+%Y%m%d_%H%M%S' )" -------- Capa 1: DATOS BRUTOS -------------" >> ${LOG_MASTER}
-
-if [ "${ACTIVAR_DESCARGA}" = "S" ];  then
-
-	crearCarpetaSiNoExisteYVaciar "${DIR_BRUTOS}"
-	crearCarpetaSiNoExisteYVaciar "${DIR_BRUTOS_CSV}"
-
-	echo -e "DINAMICOS - Descargando de YAHOO FINANCE..." >> ${LOG_MASTER}
-	java -jar ${PATH_JAR} --class "coordinador.Principal" "c10X.brutos.YahooFinance01Descargar" "${NUM_MAX_EMPRESAS_DESCARGADAS}" "${DIR_BRUTOS}" "${DIR_TIEMPO}" "${RANGO_YF}" "${VELA_YF}" "${ES_ENTORNO_VALIDACION}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
-
-	echo -e "DINAMICOS - Limpieza de YAHOO FINANCE..." >> ${LOG_MASTER}
-	java -jar ${PATH_JAR} --class "coordinador.Principal" "c10X.brutos.YahooFinance02Parsear" "${DIR_BRUTOS}" "${DIR_BRUTOS_CSV}" "${DIR_TIEMPO}" "${ES_ENTORNO_VALIDACION}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
-	
-	#PENDIENTE DINAMICOS: YAHOO FINANCE (solo modo FUTURO) --> https://finance.yahoo.com/quote/AAPL?p=AAPL --> Campo: Earnings Date
-	#PENDIENTE DINAMICOS: NASDAQOLD_EARNINGS (solo modo PASADO) --> https://old.nasdaq.com/symbol/aapl/earnings-surprise --> tabla de fechas
-
-	echo -e "ESTATICOS - Descargando de FINVIZ (igual para Pasado o Futuro, salvo el directorio)..." >> ${LOG_MASTER}
-	java -jar ${PATH_JAR} --class "coordinador.Principal" "c10X.brutos.EstaticosFinvizDescargarYParsear" "${NUM_MAX_EMPRESAS_DESCARGADAS}" "${DIR_BRUTOS}" "${DIR_BRUTOS_CSV}" "${ES_ENTORNO_VALIDACION}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
-
-	echo -e "ESTATICOS + DINAMICOS: juntando en un CSV único..." >> ${LOG_MASTER}
-	java -jar ${PATH_JAR} --class "coordinador.Principal" "c10X.brutos.JuntarEstaticosYDinamicosCSVunico" "${DIR_BRUTOS_CSV}" "${DESPLAZAMIENTO_ANTIGUEDAD}" "${ES_ENTORNO_VALIDACION}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
-
-	echo -e "ESTATICOS + DINAMICOS: limpiando CSVs intermedios brutos..." >> ${LOG_MASTER}
-	java -jar ${PATH_JAR} --class "coordinador.Principal" "c10X.brutos.LimpiarCSVBrutosTemporales" "${DIR_BRUTOS_CSV}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
-
-fi;
-
-comprobarQueDirectorioNoEstaVacio "${DIR_BRUTOS}"
-comprobarQueDirectorioNoEstaVacio "${DIR_BRUTOS_CSV}"
-
-#Borramos fichero auxiliar de velas
-echo "Borrando: ${DIR_BRUTOS_CSV}/VELAS*" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
-rm ${DIR_BRUTOS_CSV}/VELAS* 2>>${LOG_MASTER} 1>>${LOG_MASTER}
-
-NUM_FICHEROS_10x=$(ls -l ${DIR_BRUTOS_CSV} | grep -v 'total' | wc -l)
-echo -e "La capa 10X ha generado $NUM_FICHEROS_10x ficheros" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
-if [ "$NUM_FICHEROS_10x" -lt 1 ]; then
-	echo -e "El numero de ficheros es 0. Asi que se han perdido algunos por algun problema. Debemos analizarlo. Saliendo..." 2>>${LOG_MASTER} 1>>${LOG_MASTER}
-	exit -1
-fi
-
-################################################################################################
-echo -e $( date '+%Y%m%d_%H%M%S' )" -------- Capa 2: DATOS LIMPIOS -------------" >> ${LOG_MASTER}
-
-crearCarpetaSiNoExisteYVaciar "${DIR_LIMPIOS}"
-
-echo -e "Operaciones de limpieza: limitar periodo..." >> ${LOG_MASTER}
-java -jar ${PATH_JAR} --class "coordinador.Principal" "c30X.elaborados.LimpiarOperaciones" "${DIR_BRUTOS_CSV}" "${DIR_LIMPIOS}" "${P_INICIO}" "${P_FIN}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
-
-# cp ${DIR_BRUTOS_CSV}*.csv ${DIR_LIMPIOS} 2>>${LOG_MASTER} 1>>${LOG_MASTER}
-
-NUM_FICHEROS_20x=$(ls -l ${DIR_LIMPIOS} | grep -v 'total' | wc -l)
-echo -e "La capa 20X ha generado $NUM_FICHEROS_20x ficheros" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
-if [ "$NUM_FICHEROS_20x" -lt "$NUM_FICHEROS_10x" ]; then
-	echo -e "El numero de ficheros es menor que el de la capa anterior. Asi que se han perdido algunos por algun problema. Debemos analizarlo. Saliendo..." 2>>${LOG_MASTER} 1>>${LOG_MASTER}
-	exit -1
-fi
-
-comprobarQueDirectorioNoEstaVacio "${DIR_LIMPIOS}"
-
-################################################################################################
-echo -e $( date '+%Y%m%d_%H%M%S' )" -------- Capa 3: VARIABLES ELABORADAS -------------" >> ${LOG_MASTER}
-
-crearCarpetaSiNoExisteYVaciar "${DIR_ELABORADOS}"
-
-echo -e "Calculando elaborados y target..." >> ${LOG_MASTER}
-java -jar ${PATH_JAR} --class "coordinador.Principal" "c30X.elaborados.ConstructorElaborados" "${DIR_LIMPIOS}" "${DIR_ELABORADOS}" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" "${UMBRAL_SUBIDA_POR_VELA}" "${UMBRAL_MINIMO_GRAN_VELA}" "${DINAMICA1}" "${DINAMICA2}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
-
-echo -e "Elaborados (incluye la variable elaborada TARGET) ya calculados" >> ${LOG_MASTER}
-
-NUM_FICHEROS_30x=$(ls -l ${DIR_ELABORADOS} | grep -v 'total' | wc -l)
-echo -e "La capa 30X ha generado $NUM_FICHEROS_30x ficheros" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
-if [ "$NUM_FICHEROS_30x" -lt "$NUM_FICHEROS_20x" ]; then
-	echo -e "El numero de ficheros es menor que el de la capa anterior. Asi que se han perdido algunos por algun problema. Debemos analizarlo. Saliendo..." 2>>${LOG_MASTER} 1>>${LOG_MASTER}
-	exit -1
-fi
-
-comprobarQueDirectorioNoEstaVacio "${DIR_ELABORADOS}"
-
-############## Calcular Subgrupos ####################################################################
 
 if [ "$ACTIVAR_SG_Y_PREDICCION" = "S" ];  then
-	
-	echo -e $( date '+%Y%m%d_%H%M%S' )" -------- Capa 4: SUBGRUPOS -------------" >> ${LOG_MASTER}
-	crearCarpetaSiNoExisteYVaciarRecursivo "${DIR_SUBGRUPOS}"
-	java -jar ${PATH_JAR} --class "coordinador.Principal" "c40X.subgrupos.CrearDatasetsSubgrupos" "${DIR_ELABORADOS}" "${DIR_SUBGRUPOS}" "${MIN_COBERTURA_CLUSTER}" "${MIN_EMPRESAS_POR_CLUSTER}" "${DIR_TIEMPO}" "${DINAMICA1}" "${DINAMICA2}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 
 	############  PARA CADA SUBGRUPO ###############################################################
 	
@@ -222,8 +145,9 @@ if [ "$ACTIVAR_SG_Y_PREDICCION" = "S" ];  then
 		
 			if [ "$DIR_TIEMPO" = "pasado" ] || { [ "$DIR_TIEMPO" = "futuro" ] && [ -f "$path_normalizador_pasado" ]; };  then 
 			
-				crearCarpetaSiNoExisteYVaciar  "${dir_subgrupo}${DIR_IMG}"
-				crearCarpetaSiNoExisteYVaciar  "${dir_subgrupo}${DIR_TRAMIF}"
+# AQUÍ NO SE VACIARÁ LA CARPETA SI YA EXISTE
+				crearCarpetaSiNoExistePeroNoVaciar  "${dir_subgrupo}${DIR_IMG}"
+				crearCarpetaSiNoExistePeroNoVaciar  "${dir_subgrupo}${DIR_TRAMIF}"
 				
 				echo -e $( date '+%Y%m%d_%H%M%S' )" ##################### Capa 5 #####################" >> ${LOG_MASTER}
 				echo -e $( date '+%Y%m%d_%H%M%S' )" Se elimina MISSING VALUES (NA en columnas y filas), elimina OUTLIERS, balancea clases (undersampling de mayoritaria), calcula IMG funciones de densidad, NORMALIZA las features, comprueba suficientes casos en clase minoritaria, REDUCCION de FEATURES y guarda el CSV REDUCIDO..." >> ${LOG_MASTER}

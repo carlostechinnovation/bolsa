@@ -77,6 +77,7 @@ public class Estadisticas extends DescriptiveStatistics {
 		System.out.println("e5.getKurtosis(): " + e5.getKurtosis());
 		System.out.println("e5.getSkewness(): " + e5.getSkewness());
 		System.out.println("e5.getFaseWyckoff(): " + e5.getFaseWyckoff());
+		System.out.println("e5.getVariacionRelativaMaxima(): " + e5.getVariacionRelativaMaxima());
 
 	}
 
@@ -574,6 +575,8 @@ public class Estadisticas extends DescriptiveStatistics {
 
 		Double n = Double.valueOf(incrementos.getNumElements()); // N elementos
 		average = average / n; // INCREMENTO MEDIO
+//		System.out.println("max: "+max);
+//		System.out.println("average: "+average);
 		return Math.abs(max / average); // INCREMENTO MAXIMO RESPECTO AL MEDIO
 	}
 

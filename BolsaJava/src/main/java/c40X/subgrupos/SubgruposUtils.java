@@ -4,9 +4,8 @@ public class SubgruposUtils {
 
 	public static final String DIR_SUBGRUPOS = "/bolsa/pasado/subgrupos/";
 	// Cobertura mínima en tanto por 100
-	public static final String MIN_COBERTURA_CLUSTER = "20"; // Porcentaje de empresas con al menos una vela positiva.
-																// Default=60
-	public static final String MIN_EMPRESAS_POR_CLUSTER = "10";// Numero minimo de empresas dentro de cada cluster
+	public static final String MIN_COBERTURA_CLUSTER = "30";
+	public static final String MIN_EMPRESAS_POR_CLUSTER = "10";
 
 	/**
 	 * 
