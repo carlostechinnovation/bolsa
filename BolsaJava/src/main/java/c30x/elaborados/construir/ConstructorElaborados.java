@@ -3,7 +3,6 @@ package c30x.elaborados.construir;
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
@@ -78,13 +77,14 @@ public class ConstructorElaborados implements Serializable {
 		Integer M = ElaboradosUtils.M; // DEFAULT
 		Integer F = ElaboradosUtils.F; // DEFAULT
 		Integer B = ElaboradosUtils.B; // DEFAULT
-		Double umbralMaximo = ElaboradosUtils.SUBIDA_MAXIMA_POR_VELA; // DEFAULT
-		Double umbralMinimo = ElaboradosUtils.SUBIDA_MINIMA_POR_VELA; // DEFAULT
+		Double umbralSubidaPorVela = ElaboradosUtils.SUBIDA_MAXIMA_POR_VELA; // DEFAULT
+		Double umbralMinimoGranVela = ElaboradosUtils.SUBIDA_MINIMA_GRAN_VELA; // DEFAULT
 		Integer filtroDinamico1 = ElaboradosUtils.DINAMICA1; // DEFAULT
 		Integer filtroDinamico2 = ElaboradosUtils.DINAMICA2; // DEFAULT
 
 		if (args.length == 0) {
 			MY_LOGGER.info("Sin parametros de entrada. Rellenamos los DEFAULT...");
+
 		} else if (args.length != 12) {
 			MY_LOGGER.error("Total Parametros de entrada: " + args.length);
 			MY_LOGGER.error("Parametros de entrada incorrectos!!");
@@ -92,7 +92,9 @@ public class ConstructorElaborados implements Serializable {
 				MY_LOGGER.info("Param: " + param);
 			}
 			System.exit(-1);
+
 		} else {
+			MY_LOGGER.error("Total Parametros de entrada: " + args.length);
 			directorioIn = args[0];
 			directorioOut = args[1];
 			S = Integer.valueOf(args[2]);
@@ -101,8 +103,8 @@ public class ConstructorElaborados implements Serializable {
 			M = Integer.valueOf(args[5]);
 			F = Integer.valueOf(args[6]);
 			B = Integer.valueOf(args[7]);
-			umbralMaximo = Double.valueOf(args[8]);
-			umbralMinimo = Double.valueOf(args[9]);
+			umbralSubidaPorVela = Double.valueOf(args[8]);
+			umbralMinimoGranVela = Double.valueOf(args[9]);
 			filtroDinamico1 = Integer.valueOf(args[10]);
 			filtroDinamico2 = Integer.valueOf(args[11]);
 		}
@@ -141,7 +143,7 @@ public class ConstructorElaborados implements Serializable {
 
 			ordenNombresParametros = gestorFicheros.getOrdenNombresParametrosLeidos();
 			anadirParametrosElaboradosDeSoloUnaEmpresa(datosEntrada, ordenNombresParametros, S, X, R, M, F, B,
-					umbralMaximo, umbralMinimo, filtroDinamico1, filtroDinamico2);
+					umbralSubidaPorVela, umbralMinimoGranVela, filtroDinamico1, filtroDinamico2);
 			gestorFicheros.creaFicheroDeSoloUnaEmpresa(datosEntrada, ordenNombresParametros, destino);
 		}
 

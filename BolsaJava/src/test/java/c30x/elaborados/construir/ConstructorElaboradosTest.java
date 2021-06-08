@@ -42,7 +42,7 @@ public class ConstructorElaboradosTest {
 		Integer F = ElaboradosUtils.F; // DEFAULT
 		Integer B = ElaboradosUtils.B; // DEFAULT
 		Double umbralMaximo = ElaboradosUtils.SUBIDA_MAXIMA_POR_VELA; // DEFAULT
-		Double umbralMinimo = ElaboradosUtils.SUBIDA_MINIMA_POR_VELA; // DEFAULT
+		Double umbralMinimo = ElaboradosUtils.SUBIDA_MINIMA_GRAN_VELA; // DEFAULT
 
 		String targetCalculado = ConstructorElaborados.calcularTarget(empresa, datosEmpresaEntrada, antiguedad, S, X, R,
 				M, F, B, umbralMaximo, umbralMinimo);
