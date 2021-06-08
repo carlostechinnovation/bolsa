@@ -46,7 +46,7 @@ source ${PARAMS_CONFIG}
 VELAS_RETROCESO="$((${X}+${M}+2))" #INSTANTE ANALIZADO (T1). Su antiguedad debe ser mayor o igual que X+M, para poder ver esas X+M velas del futuro
 
 #Instantes de las descargas
-PASADO_t1="0"
+PASADO_t1="50"
 FUTURO1_t1="${VELAS_RETROCESO}" #No tocar. Se usa en el validador
 FUTURO2_t1="$((${VELAS_RETROCESO}-${X}-${M}))" #No tocar. Se usa en el validador
 
