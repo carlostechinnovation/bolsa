@@ -285,10 +285,10 @@ public class CrearDatasetsSubgrupos implements Serializable {
 //			System.out.println(">>>>>indicePrimeraFilaDeDatos: "+indicePrimeraFilaDeDatos);
 			parametros = datosEmpresaEntrada.get(indicePrimeraFilaDeDatos); // PRIMERA FILA
 
-			boolean suficientesEmpleados = false;
-			boolean deudaConocidaYBaja = false;
-			boolean suficienteLiquidezSegunQuickRatio = false;
-			boolean analistasRecomiendanComprar = false;
+			boolean empleadosDesconocidos = false, suficientesEmpleados = false;
+			boolean deudaDesconocida = false, deudaConocidaYBaja = false;
+			boolean quickRatioDesconocido = false, suficienteLiquidezSegunQuickRatio = false;
+			boolean recomAnalistasDesconocido = false, analistasRecomiendanComprar = false;
 			boolean ratioPERDesconocido = false, ratioPERRazonable = false;
 
 			if (parametros != null) {
@@ -298,43 +298,63 @@ public class CrearDatasetsSubgrupos implements Serializable {
 //				}
 
 				String empleados = parametros.get("Employees");
+				empleadosDesconocidos = empleados != null && (empleados.equals("-") || !empleados.isEmpty());
 				suficientesEmpleados = empleados != null && !empleados.equals("-") && !empleados.isEmpty()
 						&& Integer.valueOf(empleados) >= MINIMO_NUMERO_EMPLEADOS;
-				if (suficientesEmpleados == false) {
-					System.out.println("DESCARTADA empresa=" + empresa + " porque tiene pocos empleados (umbral="
-							+ MINIMO_NUMERO_EMPLEADOS + ") o desconocidos: " + empleados);
-					contadorDescartadasPorEmpleados++;
 
+				if (empleadosDesconocidos) {
+					MY_LOGGER.info("Permitida, aunque no conocemos el numero de empleados de la empresa=" + empresa);
+
+				} else if (suficientesEmpleados == false) {
+					MY_LOGGER.info("Motivo suficiente para DESCARTE en empresa=" + empresa
+							+ " porque tiene pocos empleados (umbral=" + MINIMO_NUMERO_EMPLEADOS + "): " + empleados);
+					contadorDescartadasPorEmpleados++;
 				}
 
 				String deudaTotal = parametros.get("Debt/Eq");
+				deudaDesconocida = deudaTotal != null && (deudaTotal.equals("-") || deudaTotal.isEmpty());
 				deudaConocidaYBaja = deudaTotal != null && !deudaTotal.equals("-") && !deudaTotal.isEmpty()
 						&& Float.valueOf(deudaTotal) <= MAX_DEUDA_PERMITIDA;
-				if (deudaConocidaYBaja == false) {
-					System.out.println("DESCARTADA empresa=" + empresa + " porque tiene DEUDA muy alta (umbral="
-							+ MAX_DEUDA_PERMITIDA + ") o o desconocida: " + deudaTotal);
+				if (deudaDesconocida) {
+					MY_LOGGER.info("Permitida, aunque no conocemos la deuda de la empresa=" + empresa);
+
+				} else if (deudaConocidaYBaja == false) {
+					MY_LOGGER.info("Motivo suficiente para DESCARTE en empresa=" + empresa
+							+ " porque tiene DEUDA muy alta (umbral=" + MAX_DEUDA_PERMITIDA + "): " + deudaTotal);
 					contadorDescartadasPorDeuda++;
 				}
 
 				// quick ratio (Test acido) -> https://es.wikipedia.org/wiki/Test_%C3%A1cido
 				String quickRatio = parametros.get("Quick Ratio");
+				quickRatioDesconocido = quickRatio != null && (quickRatio.equals("-") || quickRatio.isEmpty());
 				suficienteLiquidezSegunQuickRatio = quickRatio != null && !quickRatio.equals("-")
 						&& !quickRatio.isEmpty() && Float.valueOf(quickRatio) >= MIN_QUICK_RATIO;
-				if (suficienteLiquidezSegunQuickRatio == false) {
-					System.out.println("DESCARTADA empresa=" + empresa
-							+ " porque tiene poca LIQUIDEZ INMEDIATA (QUICK RATIO) (umbral=" + MIN_QUICK_RATIO
-							+ ") o o desconocida: " + quickRatio);
+				if (quickRatioDesconocido) {
+					MY_LOGGER.info("Permitida, aunque no conocemos el quickRatio de la empresa=" + empresa);
+
+				} else if (suficienteLiquidezSegunQuickRatio == false) {
+					MY_LOGGER.info("Motivo suficiente para DESCARTE en empresa=" + empresa
+							+ " porque tiene poca LIQUIDEZ INMEDIATA (QUICK RATIO) (umbral=" + MIN_QUICK_RATIO + "): "
+							+ quickRatio);
 					contadorDescartadasPorQR++;
 				}
 
 				// Recomendaciones de analistas (de finviz)
 				String recomAnalistas = parametros.get("Recom");
+				recomAnalistasDesconocido = recomAnalistas != null
+						&& (recomAnalistas.equals("-") || recomAnalistas.isEmpty());
 				analistasRecomiendanComprar = recomAnalistas != null && !recomAnalistas.equals("-")
 						&& !recomAnalistas.isEmpty() && Float.valueOf(recomAnalistas) <= MAX_RECOM_ANALISTAS;
-				if (analistasRecomiendanComprar == false) {
-					System.out.println("DESCARTADA empresa=" + empresa + " porque analistas recomiendan vender (umbral="
-							+ MAX_RECOM_ANALISTAS + ") o o desconocida: " + recomAnalistas);
+				if (recomAnalistasDesconocido) {
+					MY_LOGGER.info(
+							"Permitida, aunque no conocemos la recomendacion de analistas de la empresa=" + empresa);
+
+				} else if (analistasRecomiendanComprar == false) {
+					MY_LOGGER.info("Motivo suficiente para DESCARTE en empresa=" + empresa
+							+ " porque analistas recomiendan vender (umbral=" + MAX_RECOM_ANALISTAS + "): "
+							+ recomAnalistas);
 					contadorDescartadasPorRecom++;
+
 				}
 
 				// Ratio PER
@@ -342,19 +362,24 @@ public class CrearDatasetsSubgrupos implements Serializable {
 				ratioPERDesconocido = ratioPER == null || ratioPER.isEmpty() || ratioPER.equals("-");
 				ratioPERRazonable = ratioPER != null && !ratioPER.isEmpty() && !ratioPER.equals("-")
 						&& Float.valueOf(ratioPER) <= MAX_PER;
-				if (!(ratioPERDesconocido || ratioPERRazonable)) {
-					System.out.println("DESCARTADA empresa=" + empresa + " porque el PER es demasiado alto (umbral="
-							+ MAX_PER + ") o o desconocido: " + ratioPER);
+				if (ratioPERDesconocido) {
+					MY_LOGGER.info("Permitida, aunque no conocemos el ratio PER de la empresa=" + empresa);
+
+				} else if (ratioPERRazonable == false) {
+					MY_LOGGER.info("Motivo suficiente para DESCARTE en empresa=" + empresa
+							+ " porque el PER es demasiado alto (umbral=" + MAX_PER + "): " + ratioPER);
 					contadorDescartadasPorPER++;
-				} else if (ratioPERDesconocido) {
-					System.out.println("PERMITIDA No conocemos el ratio PER de la empresa=" + empresa);
+
 				}
 
 			}
 
-			boolean empresaCumpleCriteriosComunes = suficientesEmpleados && deudaConocidaYBaja
-					&& suficienteLiquidezSegunQuickRatio && analistasRecomiendanComprar
+			boolean empresaCumpleCriteriosComunes = (empleadosDesconocidos || suficientesEmpleados)
+					&& (deudaDesconocida || deudaConocidaYBaja)
+					&& (quickRatioDesconocido || suficienteLiquidezSegunQuickRatio)
+					&& (recomAnalistasDesconocido || analistasRecomiendanComprar)
 					&& (ratioPERDesconocido || ratioPERRazonable);
+
 			String empresaCumpleCriteriosComunesStr = empresaCumpleCriteriosComunes ? "ENTRA" : "DESCARTADA";
 
 			MY_LOGGER.info("EMPRESA: " + empresa + " ==> " + empresaCumpleCriteriosComunesStr + " ==>"
@@ -681,16 +706,16 @@ public class CrearDatasetsSubgrupos implements Serializable {
 
 		MY_LOGGER.info("=============== CONTADORES DE EMPRESAS PROCESADAS ===============");
 		MY_LOGGER.info("Numero empresas total a la ENTRADA: " + contadorTotal + " empresas");
-		MY_LOGGER.info("De las descartadas, algunas tienen pocos empleados (< " + MINIMO_NUMERO_EMPLEADOS
-				+ ") o desconocidos: " + contadorDescartadasPorEmpleados + " empresas");
-		MY_LOGGER.info("De las descartadas, algunas tienen demasiada deuda (> " + (200 * MAX_DEUDA_PERMITIDA)
-				+ " %) o desconocida: " + contadorDescartadasPorDeuda + " empresas");
-		MY_LOGGER.info("De las descartadas, algunas tienen un QUICK RATIO muy bajo (< " + MIN_QUICK_RATIO
-				+ ") o desconocido: " + contadorDescartadasPorQR + " empresas");
+		MY_LOGGER.info("De las descartadas, algunas tienen pocos empleados (< " + MINIMO_NUMERO_EMPLEADOS + "): "
+				+ contadorDescartadasPorEmpleados + " empresas (conocemos el dato concreto)");
+		MY_LOGGER.info("De las descartadas, algunas tienen demasiada deuda (> " + (200 * MAX_DEUDA_PERMITIDA) + " %): "
+				+ contadorDescartadasPorDeuda + " empresas (conocemos el dato concreto)");
+		MY_LOGGER.info("De las descartadas, algunas tienen un QUICK RATIO muy bajo (< " + MIN_QUICK_RATIO + "): "
+				+ contadorDescartadasPorQR + " empresas (conocemos el dato concreto)");
 		MY_LOGGER.info("De las descartadas, algunas tienen RECOMENDACION de VENTA FUERTE (>" + MAX_RECOM_ANALISTAS
-				+ ") o desconocida: " + contadorDescartadasPorRecom + " empresas");
-		MY_LOGGER.info("De las descartadas, algunas tienen el ratio PER demasiado alto (> " + MAX_PER
-				+ " años) o desconocido: " + contadorDescartadasPorPER + " empresas");
+				+ "): " + contadorDescartadasPorRecom + " empresas (conocemos el dato concreto)");
+		MY_LOGGER.info("De las descartadas, algunas tienen el ratio PER demasiado alto (> " + MAX_PER + " años): "
+				+ contadorDescartadasPorPER + " empresas (conocemos el dato concreto)");
 		MY_LOGGER.info("Numero empresas total a la SALIDA (con las que hacemos los subgrupos): "
 				+ pathEmpresasTipo0.size() + " empresas");
 		MY_LOGGER.info("=================================================================");
@@ -971,15 +996,15 @@ public class CrearDatasetsSubgrupos implements Serializable {
 	}
 
 	public static boolean isNumeric(String strNum) {
-	    if (strNum == null) {
-	        return false;
-	    }
-	    try {
-	        double d = Double.parseDouble(strNum);
-	    } catch (NumberFormatException nfe) {
-	        return false;
-	    }
-	    return true;
+		if (strNum == null) {
+			return false;
+		}
+		try {
+			double d = Double.parseDouble(strNum);
+		} catch (NumberFormatException nfe) {
+			return false;
+		}
+		return true;
 	}
-	
+
 }
