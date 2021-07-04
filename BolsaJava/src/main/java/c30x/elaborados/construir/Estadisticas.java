@@ -2,6 +2,7 @@ package c30x.elaborados.construir;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -9,6 +10,7 @@ import java.util.Locale;
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.commons.math3.util.ResizableDoubleArray;
+import org.apache.log4j.Logger;
 
 /**
  * @author carloslinux
@@ -24,6 +26,8 @@ public class Estadisticas extends DescriptiveStatistics {
 	public final static double NUM1K = 1000.0D;
 	public final static double NUM1M = 1000000.0D;
 
+	static Logger MY_LOGGER = Logger.getLogger(Estadisticas.class);
+
 	// Si anhado mas parametros, debo modificar la constructora
 	private HashMap<Integer, String> ordenNombresParametrosElaborados;
 
@@ -32,7 +36,7 @@ public class Estadisticas extends DescriptiveStatistics {
 //	RATIO_MINRELATIVO_SEGUNDO_, RATIO_U_SMA_, RATIO_U_MAXRELATIVO_, RATIO_U_MINRELATIVO_, FASEWYCKOFF_
 	public enum COMIENZO_NOMBRES_PARAMETROS_ELABORADOS {
 		PENDIENTE_SMA_SEGUNDO_, PENDIENTE_1M_SMA_SEGUNDO_, PENDIENTE_2M_SMA_SEGUNDO_, MEDIA_SMA_, PENDIENTE_SMA_,
-		PENDIENTE_2M_SMA_, RATIO_SMA_, RATIO_MAXRELATIVO_, RATIO_MINRELATIVO_, CURTOSIS_, SKEWNESS_;
+		PENDIENTE_2M_SMA_, RATIO_SMA_, RATIO_MAXRELATIVO_, RATIO_MINRELATIVO_, CURTOSIS_, SKEWNESS_, EMA_, MACD_;
 	}
 
 //	Otros menos útiles: 
@@ -78,7 +82,8 @@ public class Estadisticas extends DescriptiveStatistics {
 		System.out.println("e5.getSkewness(): " + e5.getSkewness());
 		System.out.println("e5.getFaseWyckoff(): " + e5.getFaseWyckoff());
 		System.out.println("e5.getVariacionRelativaMaxima(): " + e5.getVariacionRelativaMaxima());
-
+		System.out.println("e5.getRatioEMA(): " + e5.getRatioEMA());
+		System.out.println("e5.getRatioMACDMitadPeriodo(): " + e5.getRatioMACDMitadPeriodo());
 	}
 
 	/**
@@ -138,6 +143,10 @@ public class Estadisticas extends DescriptiveStatistics {
 				COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.SKEWNESS_.toString());
 //		ordenNombresParametrosElaborados.put(ordenNombresParametrosElaborados.size() + 1,
 //				COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.FASEWYCKOFF_.toString());
+		ordenNombresParametrosElaborados.put(ordenNombresParametrosElaborados.size() + 1,
+				COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.EMA_.toString());
+		ordenNombresParametrosElaborados.put(ordenNombresParametrosElaborados.size() + 1,
+				COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MACD_.toString());
 
 		locale = new Locale("en", "UK");
 		df = (DecimalFormat) NumberFormat.getNumberInstance(locale);
@@ -352,14 +361,13 @@ public class Estadisticas extends DescriptiveStatistics {
 		double salidaTemp = VALOR_FAKE;
 		if (this.getN() > 4) {
 			double numerador, denominador;
-			double primero_1m, ultimo_1m, primero_2m, ultimo_2m, num_elementos;
-			primero_1m=this.getElement(0);
-			ultimo_1m=this.getElement((int) ((int) this.getN() / 2.0 - 1));
-			primero_2m=this.getElement((int) (Math.floor(this.getN() / 2.0 )));
-			ultimo_2m=this.getElement((int) (Math.ceil(this.getN() - 1)));
-			num_elementos=Math.ceil(this.getN() - 1);
-			numerador = (ultimo_2m-primero_2m)/primero_2m;
-			denominador = (ultimo_1m-primero_1m)/primero_1m;
+			double primero_1m, ultimo_1m, primero_2m, ultimo_2m;
+			primero_1m = this.getElement(0);
+			ultimo_1m = this.getElement((int) ((int) this.getN() / 2.0 - 1));
+			primero_2m = this.getElement((int) (Math.floor(this.getN() / 2.0)));
+			ultimo_2m = this.getElement((int) (Math.ceil(this.getN() - 1)));
+			numerador = (ultimo_2m - primero_2m) / primero_2m;
+			denominador = (ultimo_1m - primero_1m) / primero_1m;
 			salidaTemp = numerador / denominador;
 		}
 		// Para evitar infinitos, asumimos estos valores como infinito
@@ -412,6 +420,8 @@ public class Estadisticas extends DescriptiveStatistics {
 		System.out.println("curtosis = " + getKurtosis());
 		System.out.println("skewness = " + getSkewness());
 		System.out.println("faseWyckoff = " + getFaseWyckoff());
+		System.out.println("ema = " + getRatioEMA());
+		System.out.println("macd = " + getRatioMACDMitadPeriodo());
 	}
 
 	/**
@@ -446,6 +456,8 @@ public class Estadisticas extends DescriptiveStatistics {
 		String kurtosis = VALOR_INVALIDO;// default
 		String skewness = VALOR_INVALIDO;// default
 //		String faseWyckoff = VALOR_INVALIDO;// default
+		String ema = VALOR_INVALIDO;// default
+		String macd = VALOR_INVALIDO;// default
 
 		if (rellenarConInvalidos == false) {
 
@@ -469,6 +481,8 @@ public class Estadisticas extends DescriptiveStatistics {
 			double d_kurtosis = this.getKurtosis();
 			double d_skewness = this.getSkewness();
 //			double d_faseWyckoff = this.getFaseWyckoff();
+			double d_ema = this.getRatioEMA();
+			double d_macd = this.getRatioMACDMitadPeriodo();
 
 			media_sma = Double.isNaN(d_media_sma) ? VALOR_INVALIDO : df.format(d_media_sma);
 //			std_sma = Double.isNaN(d_std_sma) ? VALOR_INVALIDO : df.format(d_std_sma);
@@ -495,6 +509,8 @@ public class Estadisticas extends DescriptiveStatistics {
 			kurtosis = Double.isNaN(d_kurtosis) ? "0" : df.format(d_kurtosis);
 			skewness = Double.isNaN(d_skewness) ? VALOR_INVALIDO : df.format(d_skewness);
 //			faseWyckoff = Double.isNaN(d_faseWyckoff) ? VALOR_INVALIDO : df.format(d_faseWyckoff);
+			ema = Double.isNaN(d_ema) ? VALOR_INVALIDO : df.format(d_ema);
+			macd = Double.isNaN(d_macd) ? VALOR_INVALIDO : df.format(d_macd);
 		}
 
 		parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_ + periodoString + finalNombreParametro,
@@ -538,6 +554,8 @@ public class Estadisticas extends DescriptiveStatistics {
 				skewness);
 //		parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.FASEWYCKOFF_ + periodoString + finalNombreParametro,
 //				faseWyckoff);
+		parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.EMA_ + periodoString + finalNombreParametro, ema);
+		parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MACD_ + periodoString + finalNombreParametro, macd);
 
 		return parametros;
 	}
@@ -651,6 +669,71 @@ public class Estadisticas extends DescriptiveStatistics {
 						/ (24 * 60 * 60 * 1000));
 
 		return remainingDays;
+	}
+
+	/**
+	 * Ratio Exponential Moving Average, en porcentaje de MILLÓN
+	 */
+	public int getRatioEMA() {
+		return getRatioEMAPeriodo((int) this.getN());
+	}
+
+	/**
+	 * Ratio Exponential Moving Average por periodo, en porcentaje de MILLÓN
+	 */
+	public int getRatioEMAPeriodo(int period) {
+
+		double[] prices = this.getValues();
+
+		double[] periodSma;
+		double smoothingConstant;
+		double[] periodEma;
+
+		smoothingConstant = 2d / (period + 1);
+
+		periodSma = new double[prices.length];
+		periodEma = new double[prices.length];
+
+		SimpleMovingAverage sma = new SimpleMovingAverage();
+
+		int salida = VALOR_FAKE;
+
+		try {
+			for (int i = (period - 1); i < prices.length; i++) {
+				double[] slice = Arrays.copyOfRange(prices, 0, i + 1);
+
+				double[] smaResults = sma.calculate(slice, period).getSMA();
+
+				periodSma[i] = smaResults[smaResults.length - 1];
+
+				if (i == (period - 1)) {
+					periodEma[i] = periodSma[i];
+				} else if (i > (period - 1)) {
+					// Formula: (Close - EMA(previous day)) x multiplier +
+					// EMA(previous day)
+					periodEma[i] = (prices[i] - periodEma[i - 1]) * smoothingConstant + periodEma[i - 1];
+				}
+
+				periodEma[i] = NumberFormatter.round(periodEma[i]);
+			}
+
+			// Se toma sólo el último valor del periodo
+			salida = (int) Math.round(NUM1M * (periodEma[prices.length - 1]));
+
+		} catch (Exception e) {
+			MY_LOGGER.debug(e.getMessage());
+		}
+
+		return salida;
+	}
+
+	/**
+	 * Ratio MACD calculado según: MACD =
+	 * EMA(datos,floor(periodo/2))-EMA(datos,periodo) En porcentaje de MILLÓN.
+	 * 
+	 */
+	public int getRatioMACDMitadPeriodo() {
+		return getRatioEMAPeriodo((int) Math.floor(this.getN() / 2)) - getRatioEMAPeriodo((int) this.getN());
 	}
 
 }

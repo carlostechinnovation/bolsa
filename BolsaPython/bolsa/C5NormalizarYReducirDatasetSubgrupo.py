@@ -560,7 +560,6 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, path_modelo_pca, path
 
   # Comparación de clasificadores
   print('CLASIFICADORES - DENTRO DEL HILO DE EJECUCIÓN')
-  print('Se analiza el accuracy de varios tipos de clasificadores...')
 
   if modoTiempo == "pasado":
     # OPCIÓN NO USADA: Si quisiera probar varios clasificadores
@@ -575,10 +574,11 @@ def reducirFeaturesYGuardar(path_modelo_reductor_features, path_modelo_pca, path
     #                                    verbose=0, warm_start=False, class_weight=None, ccp_alpha=0.0, max_samples=None)
 
     # accuracy,balanced_accuracy,average_precision,neg_brier_score,f1,f1_micro,f1_macro,f1_weighted,roc_auc,roc_auc_ovr,roc_auc_ovo,roc_auc_ovr_weighted,roc_auc_ovo_weighted
-    #Es mejor roc_auc que f1 y que average_precision. El roc_auc_ovo_weighted no mejora, y roc_auc_ovr_weighted es peor.
+    #Es mejor roc_auc que f1 y que average_precision/precision. El roc_auc_ovo_weighted no mejora, y roc_auc_ovr_weighted es peor.
     rfecv_scoring = 'roc_auc'
 
     if probarVariosClasificadores:
+        print('Se analiza el accuracy de varios tipos de clasificadores...')
         classifiers = [
         SVC(kernel="rbf"),
         AdaBoostClassifier(n_estimators=50, learning_rate=1.),

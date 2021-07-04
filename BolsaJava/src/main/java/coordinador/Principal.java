@@ -116,9 +116,10 @@ public class Principal implements Serializable {
 			} else if (programa.equals("c40X.subgrupos.CrearDatasetsSubgrupos")) {
 				CrearDatasetsSubgrupos.getInstance();
 				CrearDatasetsSubgrupos.main(params);
-			} else if (programa.equals("c40X.subgrupos.CrearDatasetsSubgruposKMeans")) {
-				CrearDatasetsSubgruposKMeans.getInstance();
-				CrearDatasetsSubgruposKMeans.main(params);
+//			} else if (programa.equals("c40X.subgrupos.CrearDatasetsSubgruposKMeans")) {
+				// 20210629: QUITAMOS ESTA CLASIFICACIÓN
+//				CrearDatasetsSubgruposKMeans.getInstance();
+//				CrearDatasetsSubgruposKMeans.main(params);
 			} else if (programa.equals("c70X.validacion.Validador")) {
 				Validador.getInstance();
 				Validador.main(params);

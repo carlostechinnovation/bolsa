@@ -140,7 +140,8 @@ def ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_tr
     #-------------------URL: https://machinelearningmastery.com/avoid-overfitting-by-early-stopping-with-xgboost-in-python/
     #--- URL: https://xgboost.readthedocs.io/en/latest/parameter.html
 
-    METODO_EVALUACION="map"  # Mean average Precision. Explicacion: https://xgboost.readthedocs.io/en/latest/parameter.html
+    METODO_EVALUACION="map"  # map: Mean average Precision. aucpr: Area under the PR curve (peores resultados en precisión)
+    # Explicacion: https://xgboost.readthedocs.io/en/latest/parameter.html
 
     # Con PARAMETROS PARA VER EL OVERFITTING
     modelo = modelo.fit(ds_train_f, ds_train_t, eval_metric=[METODO_EVALUACION], early_stopping_rounds=param_parada_iteraciones, eval_set=eval_set, verbose=False)  # ENTRENAMIENTO (TRAIN)
@@ -344,53 +345,6 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
 
         feature_names = ds_train.columns.drop('TARGET')
 
-        # ################### Según un caso de Kaggle, se transforma alguna columna para que se vean bien
-        # ################### las diferencias: https://www.kaggle.com/jesucristo/1-house-prices-solution-top-1
-        # ################### Se aplica sólo en el training, con logaritmos
-        # columnasAEstirar=[
-        #     'volumen', 'low', 'close', 'PENDIENTE_2M_SMA_4_PRECIO', 'RATIO_SMA_4_PRECIO', 'RATIO_U_MINRELATIVO_4_PRECIO',
-        #  'PENDIENTE_2M_SMA_7_PRECIO', 'RATIO_U_MAXRELATIVO_7_PRECIO', 'SKEWNESS_7_PRECIO',
-        #  'RATIO_U_MAXRELATIVO_7_VOLUMEN', 'SKEWNESS_7_VOLUMEN', 'PENDIENTE_SMA_20_PRECIO', 'PENDIENTE_1M_SMA_20_PRECIO',
-        #  'RATIO_SMA_20_PRECIO', 'RATIO_MAXRELATIVO_20_PRECIO', 'RATIO_MINRELATIVO_20_PRECIO',
-        #  'RATIO_U_MINRELATIVO_20_PRECIO', 'CURTOSIS_20_PRECIO', 'RATIO_U_MAXRELATIVO_20_VOLUMEN', 'SKEWNESS_20_VOLUMEN',
-        #  'PENDIENTE_SMA_50_PRECIO', 'PENDIENTE_1M_SMA_50_PRECIO', 'RATIO_SMA_50_PRECIO', 'RATIO_MAXRELATIVO_50_PRECIO',
-        #  'RATIO_MINRELATIVO_50_PRECIO', 'RATIO_U_SMA_50_PRECIO', 'RATIO_U_MAXRELATIVO_50_PRECIO',
-        #  'RATIO_U_MINRELATIVO_50_PRECIO', 'CURTOSIS_50_PRECIO', 'RATIO_MAXRELATIVO_50_VOLUMEN'
-        # ]
-        # for nombreColumna in columnasAEstirar:
-        #     if nombreColumna in ds_train.columns:
-        #         min=np.min(ds_train[nombreColumna])
-        #         max = np.max(ds_train[nombreColumna])
-        #         mean = np.mean(ds_train[nombreColumna])
-        #         median = np.median(ds_train[nombreColumna])
-        #         print("\n feature: "+nombreColumna+"\t min: "+str(min)+"\t max "+str(max)+
-        #               "\t mean: "+str(mean)+"\t median: "+str(median))
-        #         ds_train[nombreColumna] = np.log1p(ds_train[nombreColumna])
-        #
-        # ###############################################################################################
-
-        # # ################### Se aplica al training, desplazar para evitar valores negativos, y
-        # # achatar los rangos muy grandes/estirar los pequeños
-        # for nombreColumna in ds_train.columns:
-        #     min = np.min(ds_train[nombreColumna])
-        #     max = np.max(ds_train[nombreColumna])
-        #     mean = np.mean(ds_train[nombreColumna])
-        #     median = np.median(ds_train[nombreColumna])
-        #     print("\n feature: " + nombreColumna + "\t min: " + str(min) + "\t max " + str(max) +
-        #           "\t mean: " + str(mean) + "\t median: " + str(median))
-        #     # Se evitan números negativos, desplazando la feature el absoluto de la cantidad mínima
-        #     if min < 0:
-        #         ds_train[nombreColumna] = ds_train[nombreColumna] - min
-        #     # Si, una vez desplazado, la diferencia entre mínimo y máximo es mayor que 100, se aplica logaritmo
-        #     # para achatar las diferencias
-        #     min = np.min(ds_train[nombreColumna])
-        #     max = np.max(ds_train[nombreColumna])
-        #     if min == 0 or (max / min > 100):
-        #         ds_train[nombreColumna] = np.log1p(ds_train[nombreColumna])
-        #     else:
-        #         ds_train[nombreColumna] = np.power(ds_train[nombreColumna], 2)
-        # ################################################################################################################
-
         ########################### SMOTE-ENN (Oversampling con SMOTE y undersampling con Edited Nearest Neighbours) ##################
 
         df_mayoritaria = ds_train_t[ds_train_t == False]  # En este caso los mayoritarios son los False
@@ -434,32 +388,7 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         print(
             "EVALUACION con curva precision-recall: " + "https://scikit-learn.org/stable/auto_examples/model_selection/plot_precision_recall.html")
 
-        # Parametros por defecto de los modelos que usan árboles de decisión
-        ARBOLES_n_estimators = 80
-        ARBOLES_max_depth = 11
-        ARBOLES_min_samples_leaf = 20
-        ARBOLES_max_features = "auto"
-        ARBOLES_min_samples_split = 3
-        ARBOLES_max_leaf_nodes = None
-        ARBOLES_min_impurity_decrease = 0.001
-
         seed = 112  # Random seed
-
-        # nombreModelo = "gradient_boosting"
-        # pathModelo = dir_subgrupo + nombreModelo + ".modelo"
-        # modelo = GradientBoostingClassifier(n_estimators=3000, learning_rate=0.05,
-        #                   max_depth=4, max_features='sqrt',
-        #                   min_samples_leaf=15, min_samples_split=10, random_state=42)
-        # modelo_grid_mejores_parametros = ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f,
-        #                                           ds_train_t, ds_test_f, ds_test_t, feature_names, False, modoDebug, dir_subgrupo_img)
-        # modelo_metrica = cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, id_subgrupo,
-        #                          modoDebug)
-        # print(type(modelo_metrica))
-        # if modelo_metrica > ganador_metrica:
-        #     ganador_metrica = modelo_metrica
-        #     ganador_metrica_avg = modelo_metrica
-        #     ganador_nombreModelo = nombreModelo
-        #     ganador_grid_mejores_parametros = modelo.best_params_
 
         #################### OPTIMIZACION DE PARAMETROS DE XGBOOST ###############################################################
         # Descomentar para obtener los parámetros con optimización Bayesiana
@@ -470,6 +399,25 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
 
         print("Inicio del optimizador de parametros de XGBOOST...")
 
+        def xgboost_hyper_param(max_depth, learning_rate, n_estimators, reg_alpha, min_child_weight, colsample_bytree,
+                                gamma):
+            """Crea un modelo XGBOOST con los parametros indicados en la entrada. Aplica el numero de iteraciones de cross-validation indicado
+                """
+            clf = XGBClassifier(max_depth=int(max_depth), learning_rate=learning_rate, n_estimators=int(n_estimators),
+                                reg_alpha=reg_alpha, min_child_weight=int(min_child_weight),
+                                colsample_bytree=colsample_bytree, gamma=gamma,
+                                nthread=-1, objective='binary:logistic', seed=seed)
+            # "precision" tiene peores resultados que f1_weighted
+            return np.mean(cross_val_score(clf, ds_train_f, ds_train_t, cv=cv_todos, scoring='f1_weighted'))
+
+        # alpha is a parameter for the gaussian process
+        # Note that this is itself a hyperparameter that can be optimized.
+        gp_params = {"alpha": 1e-10}
+
+        # Añadir carpeta dinámicamente: https://stackoverflow.com/questions/4383571/importing-files-from-different-folder
+        sys.path.append('/bayes_opt')
+        from bayes_opt import BayesianOptimization
+
         pbounds = {
             'max_depth': (5, 20),
             'learning_rate': (0, 1),
@@ -479,27 +427,6 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
             'colsample_bytree': (0.1, 1),
             'gamma': (0, 10)
         }
-
-        hyperparameter_space = {
-        }
-
-        def xgboost_hyper_param(max_depth, learning_rate, n_estimators, reg_alpha, min_child_weight, colsample_bytree,
-                                gamma):
-            """Crea un modelo XGBOOST con los parametros indicados en la entrada. Aplica el numero de iteraciones de cross-validation indicado
-                """
-            clf = XGBClassifier(max_depth=int(max_depth), learning_rate=learning_rate, n_estimators=int(n_estimators),
-                                reg_alpha=reg_alpha, min_child_weight=int(min_child_weight),
-                                colsample_bytree=colsample_bytree, gamma=gamma,
-                                nthread=-1, objective='binary:logistic', seed=seed)
-            return np.mean(cross_val_score(clf, ds_train_f, ds_train_t, cv=cv_todos, scoring='f1'))
-
-        # alpha is a parameter for the gaussian process
-        # Note that this is itself a hyperparameter that can be optimized.
-        gp_params = {"alpha": 1e-10}
-
-        # Añadir carpeta dinámicamente: https://stackoverflow.com/questions/4383571/importing-files-from-different-folder
-        sys.path.append('/bayes_opt')
-        from bayes_opt import BayesianOptimization
 
         optimizer = BayesianOptimization(f=xgboost_hyper_param, pbounds=pbounds, random_state=1,
                                          verbose=10)
@@ -515,42 +442,6 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         # Parametros: https://xgboost.readthedocs.io/en/latest/parameter.html
         # Instalación en Conda: conda install -c anaconda py-xgboost
         # Instalación en Python básico: pip install xgboost
-
-        # MODELO LUIS
-        # modelo = XGBClassifier(learning_rate=0.1174, n_estimators=291,
-        #                max_depth=8,
-        #                gamma=1.95, subsample=0.8531,
-        #                colsample_bytree=0.4302)
-        # MODELO CARLOS sin optimizar
-        # modelo = XGBClassifier(base_score=0.5, learning_rate=0.09, n_estimators=100,
-        #                max_depth=10, min_child_weight=1, missing=None, nthread=-1,
-        #                gamma=0, subsample=1, colsample_bylevel=0.05,
-        #                objective='binary:logistic',
-        #                colsample_bytree=0.43)
-        # MODELO CARLOS optimizado 20200901 para SG_9
-        # modelo = XGBClassifier(base_score=0.5, learning_rate=0.077, n_estimators=174,
-        #                max_depth=10, min_child_weight=1, missing=None, nthread=-1,
-        #                gamma=0, subsample=1, colsample_bylevel=0.08,
-        #                objective='binary:logistic',
-        #                colsample_bytree=0.4124)
-        # MODELO Wyckoff optimizado 20201021 para SG_9
-        # modelo = XGBClassifier(base_score=0.5, learning_rate=0.099, n_estimators=999,
-        #                max_depth=10, min_child_weight=1, missing=None, nthread=-1,
-        #                gamma=0.38, subsample=1, colsample_bylevel=0.15,
-        #                objective='binary:logistic',
-        #                colsample_bytree=0.159)
-
-        # MODELO LUIS optimizado 20201029 para SG_0, con MUCHOS PARÁMETROS, OPTIMIZADOS EN 2 FASES
-        # max_depth=int(19.875739502287676)
-        # learning_rate=0.10747964980067382
-        # n_estimators=int(87.78327797884377)
-        # reg_alpha=0.47008972843185215
-        # min_child_weight=int(18.988768331879523)
-        # colsample_bytree=0.6642859226619113
-        # gamma=0.5553040946637466
-        # nthread=-1
-        # objective='binary:logistic'
-        # seed=seed
 
         # MODELO LUIS AUTOOPTIMIZADO PARA CADA SUBGRUPO
         max_depth = int(valoresOptimizados.get("params").get("max_depth"))
@@ -568,12 +459,6 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
                                reg_alpha=reg_alpha, min_child_weight=min_child_weight,
                                colsample_bytree=colsample_bytree, gamma=gamma,
                                nthread=nthread, objective=objective, seed=seed)
-        # MODELO CARLOS optimizado 20200908 para varios grupos
-        # modelo = XGBClassifier(base_score=0.5, learning_rate=0.1178, n_estimators=170,
-        #                max_depth=8, min_child_weight=1, missing=None, nthread=-1,
-        #                gamma=1.601, subsample=1, colsample_bylevel=0.06404,
-        #                objective='binary:logistic',
-        #                colsample_bytree=0.3396)
         modelo_xgboost = ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f,
                                                   ds_train_t, ds_test_f, ds_test_t, feature_names, False, modoDebug,
                                                   dir_subgrupo_img)
@@ -596,334 +481,6 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
             ganador_grid_mejores_parametros = []  # Este modelo no tiene esta variable
         print("Fin de XGBOOST")
 
-        ###################################################################################
-
-        # print("Inicio de SGDClassifier")
-        # nombreModelo = "sgdclassifier"
-        # pathModelo = dir_subgrupo + nombreModelo + ".modelo"
-        #
-        # # SGDClassifier optimizado con parfit
-        # # Instalar antes:
-        # # sudo apt-get install zlib1g-dev
-        # # sudo apt-get install -y libffi-dev
-        # # Parfit: https: // towardsdatascience.com / how - to - make - sgd - classifier - perform -as-well -as-logistic - regression - using - parfit - cc10bca2d3c4
-        # # Para instalar parfit, es necesario usar Python3.7, porque en Conda no está. Para instalar parfit, además, se debe tener scikit-learn 0,23, y para eso hay qeu instalar Python 3.7 o mayor:
-        # # Para instalar Python 3.7: Seguir método 2 de: https: // websiteforstudents.com / installing - the - latest - python - 3 - 7 - on - ubuntu - 16 - 04 - 18 - 04 /
-        # # Dentro de PyCHarm, seleccionar el nuevo Python3.7 como interpreter, y meterle los paquetes cmake, xgboost, pandas, parfit.
-        # IMPORTANTE: el script debe ejecutar python3.7 con parfit. Actualmente NO es así
-        # import parfit.parfit as pf
-        # grid = {
-        #     'alpha': [1e-4, 1e-3, 1e-2, 1e-1, 1e0, 1e1, 1e2, 1e3],
-        #     'max_iter': [100, 500, 1000],  # number of epochs
-        #     'loss': ['log', 'hinge'],
-        #     'penalty': ['l2', 'l1', 'elasticnet'],
-        #     'learning_rate': ['optimal'],
-        #     'eta0': [0.0]
-        # }
-        # paramGrid = ParameterGrid(grid)
-        #
-        # # En modelo estará el optimizado
-        # modelo_sgdclassifier, bestScore, allModels, allScores = pf.bestFit(SGDClassifier, paramGrid,
-        #                                                ds_train_f,
-        #                                                ds_train_t, ds_test_f, ds_test_t,
-        #                                                metric=f1_score)
-        #
-        # print(modelo_sgdclassifier, bestScore)
-        #
-        # # fit modelo
-        # eval_set = [(ds_train_f, ds_train_t), (ds_test_f, ds_test_t)]
-        #
-        # # Training
-        # modelo_sgdclassifier=modelo_sgdclassifier.fit(ds_train_f, ds_train_t)  # ENTRENAMIENTO (TRAIN)
-        #
-        # # Guardar modelo
-        # pickle.dump(modelo_sgdclassifier, open(pathModelo, 'wb'))
-        #
-        #
-        # cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, id_subgrupo, modoDebug)
-        #
-        # test_t_predicho = modelo_sgdclassifier.predict(ds_test_f);
-        # validac_t_predicho = modelo_sgdclassifier.predict(ds_validac_f)
-        # precision_test = precision_score(ds_test_t, test_t_predicho);
-        # precision_avg_test = average_precision_score(ds_test_t, test_t_predicho)
-        # precision_validation = precision_score(ds_validac_t, validac_t_predicho);
-        # precision_avg_validation = average_precision_score(ds_validac_t, validac_t_predicho)
-        # precision_media = (precision_test + precision_validation) / 2
-        # precision_avg_media = (precision_avg_test + precision_avg_validation) / 2
-        # print(id_subgrupo + " " + nombreModelo + " -> Precision = " + '{0:0.2f}'.format(
-        #     precision_media) + " (average precision = " + '{0:0.2f}'.format(precision_avg_media) + ")")
-        # if precision_media > ganador_metrica:
-        #     ganador_metrica = precision_media
-        #     ganador_metrica_avg = precision_avg_media
-        #     ganador_nombreModelo = nombreModelo
-        #     ganador_grid_mejores_parametros = modelo_sgdclassifier
-        #
-        # print("Fin de SGDClassifier")
-
-        ###################################################################################
-
-        # #============================================================================
-        # nombreModelo = "extra_trees"
-        # pathModelo = dir_subgrupo + nombreModelo + ".modelo"
-        # modelo = ExtraTreesClassifier(n_estimators=ARBOLES_n_estimators, max_depth=ARBOLES_max_depth, min_samples_leaf=ARBOLES_min_samples_leaf,
-        #                       max_features=ARBOLES_max_features, min_samples_split=ARBOLES_min_samples_split,
-        #                       max_leaf_nodes=ARBOLES_max_leaf_nodes, min_impurity_decrease=ARBOLES_min_impurity_decrease,
-        #                       criterion="gini", min_weight_fraction_leaf=0., min_impurity_split=None, bootstrap=False, oob_score=False,
-        #                       n_jobs=None, random_state=1, verbose=0, warm_start=False, class_weight=None, ccp_alpha=0.0, max_samples=None)
-        # modelo = ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_train_t, ds_test_f, ds_test_t, feature_names, False, modoDebug, dir_subgrupo_img)
-        # cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, id_subgrupo, modoDebug)
-        #
-        # test_t_predicho = modelo.predict(ds_test_f); validac_t_predicho = modelo.predict(ds_validac_f)
-        # precision_test = precision_score(ds_test_t, test_t_predicho); precision_avg_test = average_precision_score(ds_test_t, test_t_predicho)
-        # precision_validation = precision_score(ds_validac_t, validac_t_predicho); precision_avg_validation = average_precision_score(ds_validac_t, validac_t_predicho)
-        # precision_media = (precision_test + precision_validation) / 2
-        # precision_avg_media = (precision_avg_test + precision_avg_validation) / 2
-        # print(id_subgrupo + " " + nombreModelo + " -> Precision = " + '{0:0.2f}'.format(precision_media) + " (average precision = " + '{0:0.2f}'.format(precision_avg_media) + ")")
-        # if precision_media > ganador_metrica:
-        #     ganador_metrica = precision_media
-        #     ganador_metrica_avg = precision_avg_media
-        #     ganador_nombreModelo = nombreModelo
-        #     ganador_grid_mejores_parametros = modelo_grid_mejores_parametros.best_params_
-        #
-        #
-        # # ============================================================================
-        # nombreModelo = "nn"  # MultiLayer Perceptron
-        # pathModelo = dir_subgrupo + nombreModelo + ".modelo"
-        # modelo = MLPClassifier(hidden_layer_sizes=(20, 5), activation="tanh", solver='lbfgs', alpha=0.0001, batch_size='auto', learning_rate="constant",
-        #                learning_rate_init=0.001, power_t=0.5, max_iter=200, shuffle=True, random_state=1, tol=1e-4,
-        #                verbose=False, warm_start=False, momentum=0.9, nesterovs_momentum=True, early_stopping=False,
-        #                validation_fraction=0.1, beta_1=0.9, beta_2=0.999, epsilon=1e-8, n_iter_no_change=10, max_fun=15000)
-        #
-        # modelo = ejecutarModeloyGuardarlo(nombreModelo, modelo, pathModelo, ds_train_f, ds_train_t, ds_test_f, ds_test_t, feature_names, False, modoDebug, dir_subgrupo_img)
-        # cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, id_subgrupo, modoDebug)
-        #
-        # test_t_predicho = modelo.predict(ds_test_f)
-        # validac_t_predicho = modelo.predict(ds_validac_f)
-        # precision_test = precision_score(ds_test_t, test_t_predicho)
-        # precision_avg_test = average_precision_score(ds_test_t, test_t_predicho)
-        # precision_validation = precision_score(ds_validac_t, validac_t_predicho)
-        # precision_avg_validation = average_precision_score(ds_validac_t, validac_t_predicho)
-        # precision_media = (precision_test + precision_validation) / 2
-        # precision_avg_media = (precision_avg_test + precision_avg_validation) / 2
-        # print(id_subgrupo + " " + nombreModelo + " -> Precision = " + '{0:0.2f}'.format(
-        #     precision_media) + " (average precision = " + '{0:0.2f}'.format(precision_avg_media) + ")")
-        # if precision_media > ganador_metrica:
-        #     ganador_metrica = precision_media
-        #     ganador_metrica_avg = precision_avg_media
-        #     ganador_nombreModelo = nombreModelo
-        #     ganador_grid_mejores_parametros = modelo_grid_mejores_parametros.best_params_
-        #
-        #
-        # # ################### Muchos modelos, usando GRID de parametros ###################################################
-        # print("HYPERPARAMETROS - URL: https://scikit-learn.org/stable/modules/grid_search.html")
-        #
-        # # ============================================================================
-        # # nombreModelo = "svc_grid"
-        # # pathModelo = dir_subgrupo + nombreModelo + ".modelo"
-        # # modelo_base = svm.SVC()
-        # # hiperparametros = [{'C': [10, 50], 'gamma':[10, 30], 'kernel':['rbf']}]
-        # # modelos_grid = GridSearchCV(modelo_base, hiperparametros, scoring='precision', n_jobs=-1, refit=True, cv=cv_todos, pre_dispatch='2*n_jobs', return_train_score=False)
-        # # modelo = ejecutarModeloyGuardarlo(nombreModelo, modelos_grid, pathModelo, ds_train_f, ds_train_t, ds_test_f, ds_test_t, feature_names, True, modoDebug, dir_subgrupo_img)
-        # # cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, id_subgrupo, modoDebug)
-        # #
-        # # test_t_predicho = modelo.predict(ds_test_f)
-        # # validac_t_predicho = modelo.predict(ds_validac_f)
-        # # precision_test = precision_score(ds_test_t, test_t_predicho)
-        # # precision_avg_test = average_precision_score(ds_test_t, test_t_predicho)
-        # # precision_validation = precision_score(ds_validac_t, validac_t_predicho)
-        # # precision_avg_validation = average_precision_score(ds_validac_t, validac_t_predicho)
-        # # precision_media = (precision_test + precision_validation) / 2
-        # # precision_avg_media = (precision_avg_test + precision_avg_validation) / 2
-        # # print(id_subgrupo + " " + nombreModelo + " -> Precision = " + '{0:0.2f}'.format(
-        # #     precision_media) + " (average precision = " + '{0:0.2f}'.format(precision_avg_media) + ")")
-        # # if precision_media > ganador_metrica:
-        # #     ganador_metrica = precision_media
-        # #     ganador_metrica_avg = precision_avg_media
-        # #     ganador_nombreModelo = nombreModelo
-        # #     ganador_grid_mejores_parametros = modelo.best_params_
-        #
-        # # ============================================================================
-        # nombreModelo = "nn_grid"
-        # pathModelo = dir_subgrupo + nombreModelo + ".modelo"
-        # modelo_base = MLPClassifier(hidden_layer_sizes=(5, 2), activation="relu", solver='lbfgs', alpha=0.0001, batch_size='auto', learning_rate="constant",
-        #                learning_rate_init=0.01, power_t=0.5, max_iter=200, shuffle=True, random_state=1, tol=1e-2,
-        #                verbose=False, warm_start=False, momentum=0.9, nesterovs_momentum=True, early_stopping=False,
-        #                validation_fraction=0.1, beta_1=0.9, beta_2=0.999, epsilon=1e-8, n_iter_no_change=10,
-        #                max_fun=15000)
-        # hiperparametros = {'hidden_layer_sizes': [(5, 2), (20, 5), (50, 20)], 'solver': ['lbfgs'], 'activation': ['identity', 'logistic', 'tanh', 'relu']}
-        # modelos_grid = GridSearchCV(modelo_base, hiperparametros, scoring='precision', n_jobs=-1, refit=True, cv=cv_todos,pre_dispatch='2*n_jobs', return_train_score=False)
-        # modelo = ejecutarModeloyGuardarlo(nombreModelo, modelos_grid, pathModelo,ds_train_f, ds_train_t, ds_test_f, ds_test_t, feature_names, True, modoDebug, dir_subgrupo_img)
-        # cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, id_subgrupo, modoDebug)
-        # test_t_predicho = modelo.predict(ds_test_f)
-        # validac_t_predicho = modelo.predict(ds_validac_f)
-        # precision_test = precision_score(ds_test_t, test_t_predicho)
-        # precision_avg_test = average_precision_score(ds_test_t, test_t_predicho)
-        # precision_validation = precision_score(ds_validac_t, validac_t_predicho)
-        # precision_avg_validation = average_precision_score(ds_validac_t, validac_t_predicho)
-        # precision_media = (precision_test + precision_validation) / 2
-        # precision_avg_media = (precision_avg_test + precision_avg_validation) / 2
-        # print(id_subgrupo + " " + nombreModelo + " -> Precision = " + '{0:0.2f}'.format(
-        #     precision_media) + " (average precision = " + '{0:0.2f}'.format(precision_avg_media) + ")")
-        # if precision_media > ganador_metrica:
-        #     ganador_metrica = precision_media
-        #     ganador_metrica_avg = precision_avg_media
-        #     ganador_nombreModelo = nombreModelo
-        #     ganador_grid_mejores_parametros = modelo.best_params_
-        #
-        #
-        # # ============================================================================
-
-        # print("Inicio de Logistic Regression")
-        #
-        # nombreModelo = "logisticregression"
-        # pathModelo = dir_subgrupo + nombreModelo + ".modelo"
-        # grid = {
-        #     'C': [1e-7, 1e-6, 1e-5, 1e-4, 1e-3, 1e-2, 1e-1, 1e0],
-        #     'penalty': ['l2'],
-        #     'n_jobs': [-1]
-        # }
-        # paramGrid = ParameterGrid(grid)
-        #
-        # # En modelo estará el optimizado
-        # modelo_logisticregression, bestScore, allModels, allScores = pf.bestFit(LogisticRegression, paramGrid,
-        #                                                ds_train_f,
-        #                                                ds_train_t, ds_test_f, ds_test_t,
-        #                                                metric=f1_score)
-        #
-        # print(modelo_logisticregression, bestScore)
-        #
-        # # fit modelo
-        # eval_set = [(ds_train_f, ds_train_t), (ds_test_f, ds_test_t)]
-        #
-        # # Training
-        # modelo_logisticregression=modelo_logisticregression.fit(ds_train_f, ds_train_t)  # ENTRENAMIENTO (TRAIN)
-        #
-        # # Guardar modelo
-        # pickle.dump(modelo_logisticregression, open(pathModelo, 'wb'))
-        #
-        # cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, id_subgrupo, modoDebug)
-        #
-        # test_t_predicho = modelo_logisticregression.predict(ds_test_f);
-        # validac_t_predicho = modelo_logisticregression.predict(ds_validac_f)
-        # precision_test = precision_score(ds_test_t, test_t_predicho);
-        # precision_avg_test = average_precision_score(ds_test_t, test_t_predicho)
-        # precision_validation = precision_score(ds_validac_t, validac_t_predicho);
-        # precision_avg_validation = average_precision_score(ds_validac_t, validac_t_predicho)
-        # precision_media = (precision_test + precision_validation) / 2
-        # precision_avg_media = (precision_avg_test + precision_avg_validation) / 2
-        # print(id_subgrupo + " " + nombreModelo + " -> Precision = " + '{0:0.2f}'.format(
-        #     precision_media) + " (average precision = " + '{0:0.2f}'.format(precision_avg_media) + ")")
-        # if precision_media > ganador_metrica:
-        #     ganador_metrica = precision_media
-        #     ganador_metrica_avg = precision_avg_media
-        #     ganador_nombreModelo = nombreModelo
-        #     ganador_grid_mejores_parametros = modelo_logisticregression
-        #
-        # print("Fin de Logistic Regression")
-
-        #
-        # # ============================================================================
-        # nombreModelo = "rf_grid"
-        # pathModelo = dir_subgrupo + nombreModelo + ".modelo"
-        # modelo_base = RandomForestClassifier(n_estimators=ARBOLES_n_estimators, max_depth=ARBOLES_max_depth, min_samples_leaf=ARBOLES_min_samples_leaf,
-        #                          max_features=ARBOLES_max_features, min_samples_split=ARBOLES_min_samples_split,
-        #                          max_leaf_nodes=ARBOLES_max_leaf_nodes, min_impurity_decrease=ARBOLES_min_impurity_decrease, random_state=1)
-        # hiperparametros = {'min_impurity_decrease': [0.001, 0.00001], 'max_depth': [9, 11, 13]}
-        # modelos_grid = GridSearchCV(modelo_base, hiperparametros, scoring='precision', n_jobs=-1, refit=True, return_train_score=False, cv=cv_todos)
-        # modelo = ejecutarModeloyGuardarlo(nombreModelo, modelos_grid, pathModelo, ds_train_f, ds_train_t, ds_test_f, ds_test_t, feature_names, True, modoDebug, dir_subgrupo_img)
-        # cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, id_subgrupo, modoDebug)
-        #
-        # test_t_predicho = modelo.predict(ds_test_f)
-        # validac_t_predicho = modelo.predict(ds_validac_f)
-        # precision_test = precision_score(ds_test_t, test_t_predicho)
-        # precision_avg_test = average_precision_score(ds_test_t, test_t_predicho)
-        # precision_validation = precision_score(ds_validac_t, validac_t_predicho)
-        # precision_avg_validation = average_precision_score(ds_validac_t, validac_t_predicho)
-        # precision_media = (precision_test + precision_validation) / 2
-        # precision_avg_media = (precision_avg_test + precision_avg_validation) / 2
-        # print(id_subgrupo + " " + nombreModelo + " -> Precision = " + '{0:0.2f}'.format(
-        #     precision_media) + " (average precision = " + '{0:0.2f}'.format(precision_avg_media) + ")")
-        # if precision_media > ganador_metrica:
-        #     ganador_metrica = precision_media
-        #     ganador_metrica_avg = precision_avg_media
-        #     ganador_nombreModelo = nombreModelo
-        #     ganador_grid_mejores_parametros = modelo.best_params_
-        #
-        #
-        # # ============================================================================
-        # nombreModelo = "extra_trees_grid"
-        # pathModelo = dir_subgrupo + nombreModelo + ".modelo"
-        # # n_estimators=100, max_depth=11, min_samples_leaf=20, max_features=None, min_impurity_decrease=0.001, min_samples_split=3, random_state=1
-        # modelo_base = ExtraTreesClassifier(n_estimators=ARBOLES_n_estimators, max_depth=ARBOLES_max_depth, min_samples_leaf=ARBOLES_min_samples_leaf,
-        #                               max_features=ARBOLES_max_features, min_samples_split=ARBOLES_min_samples_split,
-        #                               max_leaf_nodes=ARBOLES_max_leaf_nodes, min_impurity_decrease=ARBOLES_min_impurity_decrease)
-        # # Tomados de https://predictivelearning.github.io/projects/Project_241_ML_AllEnsembleClassifiers_GaussianNB__Predict_Income_from_US_census.html
-        # hiperparametros = {"n_estimators": [100], "criterion": ["gini"], "max_depth": [9, 11, 13], "min_impurity_decrease": [0.001, 0.00001],
-        #                "max_features": ["auto"], "min_samples_leaf": [15, 25], "min_samples_split": [3], "class_weight": [None]}
-        # modelos_grid = GridSearchCV(modelo_base, hiperparametros, scoring='precision', n_jobs=-1, refit=True, return_train_score=False, cv=cv_todos)
-        # modelo = ejecutarModeloyGuardarlo(nombreModelo, modelos_grid, pathModelo, ds_train_f, ds_train_t, ds_test_f, ds_test_t, feature_names, True, modoDebug, dir_subgrupo_img)
-        # cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, id_subgrupo, modoDebug)
-        #
-        # test_t_predicho = modelo.predict(ds_test_f)
-        # validac_t_predicho = modelo.predict(ds_validac_f)
-        # precision_test = precision_score(ds_test_t, test_t_predicho);
-        # precision_avg_test = average_precision_score(ds_test_t, test_t_predicho)
-        # precision_validation = precision_score(ds_validac_t, validac_t_predicho);
-        # precision_avg_validation = average_precision_score(ds_validac_t, validac_t_predicho)
-        # precision_media = (precision_test + precision_validation) / 2
-        # precision_avg_media = (precision_avg_test + precision_avg_validation) / 2
-        # print(id_subgrupo + " " + nombreModelo + " -> Precision = " + '{0:0.2f}'.format(
-        #     precision_media) + " (average precision = " + '{0:0.2f}'.format(precision_avg_media) + ")")
-        # if precision_media > ganador_metrica:
-        #     ganador_metrica = precision_media
-        #     ganador_metrica_avg = precision_avg_media
-        #     ganador_nombreModelo = nombreModelo
-        #     ganador_grid_mejores_parametros = modelo.best_params_
-
-        # # ============================================================================
-
-        # # Se calcula ENSEMBLE (mezcla de modelos)
-        # print("Inicio de Ensemble")
-        # clf1 = LogisticRegression()
-        # clf2 = MultinomialNB()
-        # clf3 = SGDClassifier(max_iter=1000, loss='log')
-        # eclf = VotingClassifier(estimators=[('lr', clf1), ('nb', clf2), ('sgd', clf3)],
-        #                 voting='soft')
-        # params = {'lr__C': [0.5, 1, 1.5], 'lr__class_weight': [None, 'balanced'],
-        #             'nb__alpha': [0.1, 1, 2],
-        #             'sgd__penalty': ['l2', 'l1'], 'sgd__alpha': [0.0001, 0.001,
-        #                                          0.01]}
-        # grid = GridSearchCV(estimator=eclf, param_grid=params, cv=cv_todos, scoring='f1', n_jobs=-1)
-        #
-        # # fit ensemble model to training data
-        # ensemble_model=grid.fit(ds_train_f, ds_train_t)  # test our model on the test data
-        # nombreModelo = "ensemble"
-        # pathModelo = dir_subgrupo + nombreModelo + ".modelo"
-        # pickle.dump(ensemble_model, open(pathModelo, 'wb'))
-        #
-        # #Se pinta la precisión del ensemble
-        # print("TEST ENSEMBLE -> Score (precision): " + '{0:0.2f}'.format(average_precision_score(ds_test_t, ensemble_model.predict(ds_test_f))))
-        #
-        #
-        # cargarModeloyUsarlo(dir_subgrupo_img, pathModelo, ds_test_f, ds_test_t, id_subgrupo, modoDebug)
-        #
-        # test_t_predicho = ensemble_model.predict(ds_test_f);
-        # validac_t_predicho = ensemble_model.predict(ds_validac_f)
-        # precision_test = precision_score(ds_test_t, test_t_predicho);
-        # precision_avg_test = average_precision_score(ds_test_t, test_t_predicho)
-        # precision_validation = precision_score(ds_validac_t, validac_t_predicho)
-        # precision_avg_validation = average_precision_score(ds_validac_t, validac_t_predicho)
-        # precision_media = (precision_test + precision_validation) / 2
-        # precision_avg_media = (precision_avg_test + precision_avg_validation) / 2
-        # print(id_subgrupo + " " + nombreModelo + " -> Precision = " + '{0:0.2f}'.format(
-        #     precision_media) + " (average precision = " + '{0:0.2f}'.format(precision_avg_media) + ")")
-        # if precision_media > ganador_metrica:
-        #     ganador_metrica = precision_media
-        #     ganador_metrica_avg = precision_avg_media
-        #     ganador_nombreModelo = nombreModelo
-        #     ganador_grid_mejores_parametros = ensemble_model
-        #
-        # print("Fin de Ensemble")
 
         ######################################################################################################################
         ######################################################################################################################

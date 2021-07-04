@@ -49,7 +49,7 @@ public class ConstructorElaborados implements Serializable {
 
 	// Se usan los periodos típicos que suelen usar los robots
 	// (consideraremos velas)
-	public final static Integer[] periodosDParaParametros = new Integer[] { 3, 5, 7, 10, 20, 50 };
+	public final static Integer[] periodosDParaParametros = new Integer[] { 3, 4, 7, 20, 50 };
 
 	// IMPORTANTE: se asume que los datos estan ordenados de menor a mayor
 	// antiguedad, y agrupados por empresa
@@ -94,7 +94,7 @@ public class ConstructorElaborados implements Serializable {
 			System.exit(-1);
 
 		} else {
-			MY_LOGGER.error("Total Parametros de entrada: " + args.length);
+			MY_LOGGER.info("Total Parametros de entrada: " + args.length);
 			directorioIn = args[0];
 			directorioOut = args[1];
 			S = Integer.valueOf(args[2]);
