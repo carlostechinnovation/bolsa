@@ -83,7 +83,7 @@ print("pathModeloOutliers = %s" % pathModeloOutliers)
 print("path_modelo_normalizador = %s" % path_modelo_normalizador)
 print("path_indices_out_capa5 = %s" % path_indices_out_capa5)
 print("path_modelo_reductor_features = %s" % path_modelo_reductor_features)
-print("balancear = " + str(balancear))
+print("balancear en C5 (en C6 también hay otro) = " + str(balancear))
 
 
 ######################## FUNCIONES #######################################################
