@@ -225,10 +225,13 @@ if [ "$ACTIVAR_SG_Y_PREDICCION" = "S" ];  then
 				crearCarpetaSiNoExisteYVaciar  "${dir_subgrupo}${DIR_IMG}"
 				crearCarpetaSiNoExisteYVaciar  "${dir_subgrupo}${DIR_TRAMIF}"
 				
-				echo -e $( date '+%Y%m%d_%H%M%S' )" ##################### Capa 5 y 6 #####################" >> ${LOG_MASTER}
+				echo -e $( date '+%Y%m%d_%H%M%S' )" ##################### Capa 5 #####################" >> ${LOG_MASTER}
 				echo -e $( date '+%Y%m%d_%H%M%S' )" Se elimina MISSING VALUES (NA en columnas y filas), elimina OUTLIERS, balancea clases (undersampling de mayoritaria), calcula IMG funciones de densidad, NORMALIZA las features, comprueba suficientes casos en clase minoritaria, REDUCCION de FEATURES y guarda el CSV REDUCIDO..." >> ${LOG_MASTER}
+				$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/C5NormalizarYReducirDatasetSubgrupo.py" "${dir_subgrupo}/" "${DIR_TIEMPO}" "${MAX_NUM_FEAT_REDUCIDAS}" "${CAPA5_MAX_FILAS_ENTRADA}" >> ${LOG_MASTER}
+				
+				echo -e $( date '+%Y%m%d_%H%M%S' )" ##################### Capa 6 #####################" >> ${LOG_MASTER}
 				echo -e $( date '+%Y%m%d_%H%M%S' )" PASADO ó FUTURO: se balancean las clases (aunque ya se hizo en capa 5), se divide dataset de entrada (entrenamiento, test, validación), se CREA MODELOS (con hyperparámetros)  los evalúa. Guarda el modelo GANADOR de cada subgrupo..." >> ${LOG_MASTER}
-				$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/C5C6Manual.py" "${dir_subgrupo}/" "${DIR_TIEMPO}" "${MAX_NUM_FEAT_REDUCIDAS}" "${CAPA5_MAX_FILAS_ENTRADA}" "${DESPLAZAMIENTO_ANTIGUEDAD}" >> ${LOG_MASTER}
+				$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/C6CreadorModelosDeSubgrupo.py" "${dir_subgrupo}/" "${DIR_TIEMPO}" "${DESPLAZAMIENTO_ANTIGUEDAD}"  >> ${LOG_MASTER}
 				
 			else
 				echo "Al evaluar el subgrupo cuyo directorio es $dir_subgrupo para el tiempo $DIR_TIEMPO vemos que no existe entrenamiento en el pasado, asi que no existe $path_normalizador_pasado" >> ${LOG_MASTER}

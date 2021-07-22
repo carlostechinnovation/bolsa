@@ -381,9 +381,6 @@ public class CrearDatasetsSubgrupos implements Serializable {
 					&& (ratioPERDesconocido || ratioPERRazonable);
 
 			
-			//20210629: QUITAMOS ESTAS CONDICIONES:
-			empresaCumpleCriteriosComunes=true;
-			
 			String empresaCumpleCriteriosComunesStr = empresaCumpleCriteriosComunes ? "ENTRA" : "DESCARTADA";
 
 			MY_LOGGER.info("EMPRESA: " + empresa + " ==> " + empresaCumpleCriteriosComunesStr + " ==>"
@@ -758,7 +755,7 @@ public class CrearDatasetsSubgrupos implements Serializable {
 		empresasPorTipo.put(22, pathEmpresasTipo22);
 //		empresasPorTipo.put(23, pathEmpresasTipo23);
 //		empresasPorTipo.put(24, pathEmpresasTipo24);
-//		empresasPorTipo.put(25, pathEmpresasTipo25);
+		empresasPorTipo.put(25, pathEmpresasTipo25);
 //		empresasPorTipo.put(26, pathEmpresasTipo26);
 //
 //		empresasPorTipo.put(27, pathEmpresasTipo27);

@@ -15,7 +15,7 @@
 #Instantes de las descargas
 #Se analizará el tramo de antiguedad desde máxima hasta minima
 #Se tomarán los ficheros *_GRANDE_0_SG_0_* generados, o que ya se tienen de ejecuciones antiguas, para usarlo como base de información futura.
-ANTIGUEDAD_MAXIMA="50"
+ANTIGUEDAD_MAXIMA="150"
 ANTIGUEDAD_MINIMA="0" # Se puede usar cualquier valor
 NUM_EMPRESAS_TRAIN="1000" # Número de empresas de entrenamiento, NO para los días posteriores (que estarán en el fichero de parámetros). Se recomienda dejar 1000 siempre.
 
