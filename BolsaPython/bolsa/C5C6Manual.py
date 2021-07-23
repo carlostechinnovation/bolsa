@@ -28,7 +28,7 @@ from sklearn import linear_model
 import seaborn as sns
 from sklearn.ensemble import IsolationForest, RandomForestClassifier, AdaBoostClassifier
 from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LinearRegression, LogisticRegression
+from sklearn.linear_model import LinearRegression, LogisticRegression, BayesianRidge
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.utils import resample
 import pickle
@@ -720,14 +720,180 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
 
         ################################# GENERACIÓN DE MODELOS #################################
 
-        ########################### MODELO SVC balanceado ##################################
-        print("Inicio de SVC")
-        modelo = SVC(class_weight='balanced',  # penalize
-                    probability=True)
-        modelo=modelo.fit(ds_train_f, ds_train_t)
-        print("Fin de SVC")
-        nombreModelo = "svc"
-        ###########################################################################
+        # ########################### MODELO SVC balanceado ##################################
+        # print("Inicio de SVC")
+        # modelo = SVC(class_weight='balanced',  # penalize
+        #             probability=True)
+        #
+        # modelo=modelo.fit(ds_train_f, ds_train_t)
+        # print("Fin de SVC")
+        # nombreModelo = "svc"
+        # ###########################################################################
+
+        # ########################### MODELO MLP ##################################
+        # # Resultado: 0.43
+        # print("Inicio de MLP")
+        # modelo = MLPClassifier()
+        #
+        # modelo=modelo.fit(ds_train_f, ds_train_t)
+        # print("Fin de MLP")
+        # nombreModelo = "mlp"
+        # ###########################################################################
+
+        # ########################## INICIO DE GRID SEARCH #########################################################
+        #
+        # print("Inicio de GRID SEARCH")
+        #
+        # skf = StratifiedKFold(n_splits=10)
+        # clf = RandomForestClassifier(n_jobs=-1)
+        # param_grid = {
+        #     'min_samples_split': [3, 5, 10],
+        #     'n_estimators': [100, 200],
+        #     'max_depth': [3, 5, 15],
+        #     'max_features': [3, 5, 10]
+        # }
+        # scorers = {
+        #     'precision_score': make_scorer(precision_score),
+        #     'recall_score': make_scorer(recall_score),
+        #     'accuracy_score': make_scorer(accuracy_score)
+        # }
+        # grid = GridSearchCV(clf, param_grid=param_grid, scoring=scorers, refit='precision_score',
+        #                     cv=skf, return_train_score=True, n_jobs=-1)
+        #
+        # # fit ensemble model to training data
+        # modelo = grid.fit(ds_train_f, ds_train_t)  # test our model on the test data
+        # nombreModelo = "gridsearch"
+        #
+        # print("Fin de GRID SEARCH")
+        #
+        # ########################## FIN DE GRID SEARCH #########################################################
+
+        ########################## INICIO DE ENSEMBLE #########################################################
+
+        # Se calcula ENSEMBLE (mezcla de modelos)
+        print("Inicio de Ensemble")
+        clf1 = SVC(class_weight='balanced',  # penalize
+                     probability=True)
+        #clf2 = RandomForestClassifier(class_weight='balanced') # Rendimiento: 0.45
+        clf2=MLPClassifier() # Rendimiento: 0.46
+        eclf = VotingClassifier(estimators=[('m1', clf1), ('m2', clf2)],
+                        voting='soft')
+        params = {}
+        grid = GridSearchCV(estimator=eclf, param_grid=params, cv=cv_todos, scoring='precision', n_jobs=-1)
+
+        # fit ensemble model to training data
+        modelo=grid.fit(ds_train_f, ds_train_t)  # test our model on the test data
+        nombreModelo = "ensemble"
+
+        print("Fin de Ensemble")
+
+        ########################## FIN DE ENSEMBLE #########################################################
+
+
+        # ########################## INICIO DE XGBOOST OPTIMIZADO ########################################################33
+        #
+        #
+        #     #################### OPTIMIZACION DE PARAMETROS DE XGBOOST ###############################################################
+        #
+        # # Parametros por defecto de los modelos que usan árboles de decisión
+        # ARBOLES_n_estimators = 80
+        # ARBOLES_max_depth = 11
+        # ARBOLES_min_samples_leaf = 20
+        # ARBOLES_max_features = "auto"
+        # ARBOLES_min_samples_split = 3
+        # ARBOLES_max_leaf_nodes = None
+        # ARBOLES_min_impurity_decrease = 0.001
+        #
+        # seed = 112  # Random seed
+        #
+        # # Descomentar para obtener los parámetros con optimización Bayesiana
+        # # IMPORTANTE: se debe instalar el paquete de bayes en Conda: conda install -c conda-forge bayesian-optimization
+        # # Se imprimirán en el log, pero debo luego meterlos manualmente en el modelo
+        # # IMPORTANTE: DEBEN RELLENARSE 2 VALORES POR CADA ATRIBUTO DE PBOUND
+        # # https://ayguno.github.io/curious/portfolio/bayesian_optimization.html
+        #
+        # print("Inicio del optimizador de parametros de XGBOOST...")
+        #
+        # pbounds = {
+        #     'max_depth': (5, 20),
+        #     'learning_rate': (0, 1),
+        #     'n_estimators': (10, 100),
+        #     'reg_alpha': (0, 1),
+        #     'min_child_weight': (1, 20),
+        #     'colsample_bytree': (0.1, 1),
+        #     'gamma': (0, 10)
+        # }
+        #
+        # hyperparameter_space = {
+        # }
+        #
+        # def xgboost_hyper_param(max_depth, learning_rate, n_estimators, reg_alpha, min_child_weight, colsample_bytree,
+        #                         gamma):
+        #     """Crea un modelo XGBOOST con los parametros indicados en la entrada. Aplica el numero de iteraciones de cross-validation indicado
+        #         """
+        #     clf = XGBClassifier(max_depth=int(max_depth), learning_rate=learning_rate, n_estimators=int(n_estimators),
+        #                         reg_alpha=reg_alpha, min_child_weight=int(min_child_weight),
+        #                         colsample_bytree=colsample_bytree, gamma=gamma,
+        #                         nthread=-1, objective='binary:logistic', seed=seed)
+        #     return np.mean(cross_val_score(clf, ds_train_f, ds_train_t, cv=cv_todos, scoring='f1'))
+        #
+        # # alpha is a parameter for the gaussian process
+        # # Note that this is itself a hyperparameter that can be optimized.
+        # gp_params = {"alpha": 1e-10}
+        #
+        # # Añadir carpeta dinámicamente: https://stackoverflow.com/questions/4383571/importing-files-from-different-folder
+        # sys.path.append('/bayes_opt')
+        # from bayes_opt import BayesianOptimization
+        #
+        # optimizer = BayesianOptimization(f=xgboost_hyper_param, pbounds=pbounds, random_state=1,
+        #                                  verbose=10)
+        # optimizer.maximize(init_points=3, n_iter=10, acq='ucb', kappa=3, **gp_params)
+        # valoresOptimizados = optimizer.max
+        # print(valoresOptimizados)
+        # print("Fin del optimizador")
+        #     ###################################################################################
+        #
+        # print("Inicio de XGBOOST")
+        # nombreModelo = "xgboost"
+        # pathModelo = dir_subgrupo + nombreModelo + ".modelo"
+        # # Parametros: https://xgboost.readthedocs.io/en/latest/parameter.html
+        # # Instalación en Conda: conda install -c anaconda py-xgboost
+        # # Instalación en Python básico: pip install xgboost
+        #
+        # # MODELO LUIS AUTOOPTIMIZADO PARA CADA SUBGRUPO
+        # max_depth = int(valoresOptimizados.get("params").get("max_depth"))
+        # learning_rate = valoresOptimizados.get("params").get("learning_rate")
+        # n_estimators = int(valoresOptimizados.get("params").get("n_estimators"))
+        # reg_alpha = valoresOptimizados.get("params").get("reg_alpha")
+        # min_child_weight = int(valoresOptimizados.get("params").get("min_child_weight"))
+        # colsample_bytree = valoresOptimizados.get("params").get("colsample_bytree")
+        # gamma = valoresOptimizados.get("params").get("gamma")
+        # nthread = -1
+        # objective = 'binary:logistic'
+        # seed = seed
+        #
+        # modelo = XGBClassifier(max_depth=max_depth, learning_rate=learning_rate, n_estimators=n_estimators,
+        #                        reg_alpha=reg_alpha, min_child_weight=min_child_weight,
+        #                        colsample_bytree=colsample_bytree, gamma=gamma,
+        #                        nthread=nthread, objective=objective, seed=seed)
+        #
+        # eval_set = [(ds_train_f, ds_train_t), (ds_test_f, ds_test_t)]
+        # modelo = modelo.fit(ds_train_f, ds_train_t, eval_metric=["map"], early_stopping_rounds=4, eval_set=eval_set, verbose=False)  # ENTRENAMIENTO (TRAIN)
+        #
+        # ########################## FIN DE XGBOOST OPTIMIZADO ########################################################
+
+
+        # ########################## INICIO DE XGBOOST SIN OPTIMIZAR ########################################################
+        #
+        # nombreModelo = "xgboost_noopt"
+        #
+        # modelo = XGBClassifier()
+        #
+        # eval_set = [(ds_train_f, ds_train_t), (ds_test_f, ds_test_t)]
+        # modelo = modelo.fit(ds_train_f, ds_train_t, eval_metric=["map"], early_stopping_rounds=4, eval_set=eval_set,
+        #                     verbose=False)  # ENTRENAMIENTO (TRAIN)
+        #
+        # ########################## FIN DE XGBOOST SIN OPTIMIZAR ########################################################
 
         ############################## GUARDADO DE MODELO #########################
         pathModelo = dir_subgrupo + nombreModelo + ".modelo"
@@ -910,4 +1076,5 @@ else:
 
 ############################################################
 print((datetime.datetime.now()).strftime("%Y%m%d_%H%M%S") + " ------------ FIN de capa 6----------------")
+
 
