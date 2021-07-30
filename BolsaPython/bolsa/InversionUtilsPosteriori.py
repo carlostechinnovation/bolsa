@@ -334,6 +334,31 @@ def analizar(datosGrandes, datosManejables, X, dfSP500):
         print("Guardando: " + pathCsvResultados)
         resultadoAnalisis.to_csv(pathCsvResultados, index=False, sep='|')
 
+        # Se generará un EXCEL de RENTA VS SP500 y PROB UNO MIN con:
+        # Para cada subgrupo, sacar la renta vs SP500 con p>p_min, ponderada por número de elementos en cada día,
+        # siempre que no sea nan. Guardar el resultado en un CSV, en cuyo nombre meteré X.
+        datos = []
+        for subgrupo in subgrupos:
+            resultadoPorSubgrupo = resultadoAnalisis.loc[resultadoAnalisis['subgrupo'] == subgrupo]
+            resultadoPorSubgruposinnan=resultadoPorSubgrupo[resultadoPorSubgrupo['rentaRelativaSP500ConProbUnoMinima'].notna()]
+            d = pd.to_numeric(resultadoPorSubgruposinnan['rentaRelativaSP500ConProbUnoMinima'],errors='coerce')
+            w = pd.to_numeric(resultadoPorSubgruposinnan['numElementos'],errors='coerce')
+            a=(d * w).sum()
+            b=w.sum()
+            rentaPonderadaPorElementoYSubgrupo = (d * w).sum() / w.sum()
+            datos.append([subgrupo, rentaPonderadaPorElementoYSubgrupo])
+        columnas = ["subgrupo", "rentavsSP500yProbUnoMin"]
+        rentasPonderadas = pd.DataFrame(datos, columns=columnas)
+        # Se eliminan los grupos sin resultados
+        rentasPonderadas = rentasPonderadas.dropna()
+        # Se ordena por renta
+        rentasPonderadas=rentasPonderadas.sort_values("rentavsSP500yProbUnoMin", ascending=False)
+        # Se escriben los resultados a un Excel
+        pathCsvResultados = dirAnalisis + "RENTAS_vs_SP500_y_PROBUNOMIN_PARA_X_" + str(X) + ".csv"
+        print("Guardando: " + pathCsvResultados)
+        rentasPonderadas.to_csv(pathCsvResultados, index=False, sep='|')
+
+
     else:
         print("Los datos son INCOMPLETOS. Salimos...")
         #Se generan los siguientes datos sólo por completitud, pero son fakes

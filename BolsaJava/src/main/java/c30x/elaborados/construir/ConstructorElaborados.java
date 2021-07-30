@@ -1017,13 +1017,13 @@ public class ConstructorElaborados implements Serializable {
 	public static String crearDefinicionTarget(Integer S, Integer X, Integer R, Integer M, Integer F, Integer B) {
 
 		String definicion = "DEFINICION DE TARGET --> Vemos los instantes [t1,t2,t3]. Ahora estamos en t1. El periodo [t1,t2] dura "
-				+ X + " velas, en el que el precio debe subir >= " + S
-				+ "% . Durante todas ellas, el precio de cierre nunca puede estar debajo del de t1*(1-B%), con B=" + B
-				+ "% . El periodo [t2,t3] dura " + M
-				+ " velas; durante TODAS ellas, el precio de cierre puede caer un poco, pero nunca por debajo de un "
-				+ R + "% respecto del precio de t2. El precio en el instante t3 (es decir, tras "
-				+ Integer.valueOf(X + M) + " velas desde ahora) debe ser >= " + F
-				+ "% respecto del t2. Sólo entonces, Target=1";
+				+ X + " (X) velas, en el que el precio debe subir >= " + (100 + S)
+				+ "% (100 + S). Durante todas ellas, el precio de cierre nunca puede estar debajo de " + (100 - B)
+				+ "% (100 - B) respecto de t1. El periodo [t2,t3] dura " + M
+				+ " (M) velas; durante TODAS ellas, el precio de cierre puede caer un poco, pero nunca por debajo de un "
+				+ (100 + S - R) + "% (100 + S - R) respecto del precio de t1. El precio en el instante t3 (es decir, tras = "
+				+ Integer.valueOf(X + M) + " velas (X + M) desde ahora) debe ser >= " + (100 + S - F)
+				+ "% (100 + S - F) respecto de t1. Sólo entonces, Target = 1";
 
 		return definicion;
 
@@ -1132,7 +1132,7 @@ public class ConstructorElaborados implements Serializable {
 								boolean cumpleUmbralVelaZ = closeAntiguedadZ > subidaSmenosRPrecioTantoPorUno
 										* closeAntiguedad;
 								if (cumpleUmbralVelaZ) {
-									// El precio no debe bajar más de X-R
+									// El precio no debe bajar más de S-R
 									mCumplida = Boolean.TRUE;
 								} else {
 									// Se ha encontrado AL MENOS una vela posterior, en las (X+1 a X+M) siguientes,
