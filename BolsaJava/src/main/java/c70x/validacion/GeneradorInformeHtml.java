@@ -64,7 +64,7 @@ public class GeneradorInformeHtml implements Serializable {
 		MY_LOGGER.setLevel(Level.INFO);
 		MY_LOGGER.info("INICIO");
 
-		String dirTiempo = DIR_FUTURO; // DEFAULT
+		String dirTiempo = DIR_PASADO; // DEFAULT
 
 		if (args.length == 0) {
 			MY_LOGGER.info("Sin parametros de entrada. Rellenamos los DEFAULT...");
@@ -217,6 +217,7 @@ public class GeneradorInformeHtml implements Serializable {
 		boolean esFuturo = dirTiempo.contains("uturo");
 
 		outSB.append("<table><tr><th>Subgrupo</th><th>COMPLETO.csv</th><th>REDUCIDO.csv</th>");
+		outSB.append("<th>Ratio de reducción (reducido/completo)</th>");
 		outSB.append(esFuturo ? "<th>TARGETS_PREDICHOS.csv_humano</th>" : "");
 		outSB.append("</tr>");
 
@@ -227,11 +228,30 @@ public class GeneradorInformeHtml implements Serializable {
 
 		for (String carpetaSubgrupo : carpetasSubgruposOrdenadas) {
 
+			String tamCompletoStr = analizarCsv(carpetaSubgrupo + "/COMPLETO.csv");
+			Long numFilasCompleto = tamCompletoStr.contains("x") ? Long.valueOf(tamCompletoStr.split("x")[0].trim())
+					: 0L;
+			String tamReducidoStr = analizarCsv(carpetaSubgrupo + "/REDUCIDO.csv");
+			Long numFilasReducido = tamReducidoStr.contains("x") ? Long.valueOf(tamReducidoStr.split("x")[0].trim())
+					: 0L;
+			Float ratioReduccion = 100.0F - (100.0F * numFilasReducido / numFilasCompleto);
+			String ratioReduccionStr = numFilasReducido > 0 ? String.format("%.0f", ratioReduccion) : "-";
+
+			String ratioReduccionColor = "white";
+			if (numFilasReducido > 0 && ratioReduccion >= 40 && ratioReduccion < 70) {
+				ratioReduccionColor = "yellow";
+			} else if (numFilasReducido > 0 && ratioReduccion >= 70) {
+				ratioReduccionColor = "orange";
+			} else {
+				ratioReduccionColor = "white";
+			}
+
 			outSB.append("<tr>");
 
 			outSB.append("<td>" + carpetaSubgrupo.split("/")[4] + "</td>");
-			outSB.append("<td>" + analizarCsv(carpetaSubgrupo + "/COMPLETO.csv") + "</td>");
-			outSB.append("<td>" + analizarCsv(carpetaSubgrupo + "/REDUCIDO.csv") + "</td>");
+			outSB.append("<td>" + tamCompletoStr + "</td>");
+			outSB.append("<td>" + tamReducidoStr + "</td>");
+			outSB.append("<td bgcolor=\"" + ratioReduccionColor + "\">" + ratioReduccionStr + " %" + "</td>");
 			outSB.append(esFuturo ? ("<td>" + analizarCsv(carpetaSubgrupo + "/TARGETS_PREDICHOS.csv_humano") + "</td>")
 					: "");
 
