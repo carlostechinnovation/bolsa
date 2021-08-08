@@ -494,15 +494,21 @@ public class JuntarEstaticosYDinamicosCSVunico {
 		String out = "";
 
 		for (OperacionInsiderFinvizModelo op : lista) {
-			suma += op.importe;
+
+			if (op.tipooperacion.equalsIgnoreCase(OperacionInsiderFinvizModelo.VENTA)) {
+				suma -= op.importe;
+			} else if (op.tipooperacion.equalsIgnoreCase(OperacionInsiderFinvizModelo.COMPRA)) {
+				suma += op.importe;
+			} else {
+				System.err.println("Operacion de insider rara: " + op);
+			}
 		}
 
 		if (suma > 0L) {
 			out = "1"; // COMPRAS
+		} else if (suma < 0L) {
+			out = "-1";// VENTAS
 		}
-//		else if (suma < 0L) {
-//			out = "-1";// VENTAS
-//		}
 		return out;
 	}
 
