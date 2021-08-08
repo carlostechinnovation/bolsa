@@ -310,11 +310,12 @@ public class JuntarEstaticosYDinamicosCSVunico {
 
 			// Para cada día (VELA), metemos NUEVAS FEATURES interpretando la lista de
 			// operaciones de insiders de la empresa estudiada
-			dinamicosDatos = anhadirOperacionesInsidersEnDinamicos(dinamicosDatos, dinamicosCabecera, insidersDatos);
+			dinamicosDatos = anhadirOperacionesInsidersEnDinamicos(dinamicosDatos, dinamicosCabecera, insidersDatos,
+					enm.symbol);
 
 		} else {
 			// Si no hay fichero FI, añadimos columnas vacías a CADA DIA (fila)
-			dinamicosDatos = anhadirOperacionesInsidersEnDinamicos(dinamicosDatos, dinamicosCabecera, null);
+			dinamicosDatos = anhadirOperacionesInsidersEnDinamicos(dinamicosDatos, dinamicosCabecera, null, enm.symbol);
 		}
 
 		// ---------- JUNTOS -----------------------
@@ -385,7 +386,8 @@ public class JuntarEstaticosYDinamicosCSVunico {
 	 * @throws ParseException
 	 */
 	public static List<String> anhadirOperacionesInsidersEnDinamicos(List<String> dinamicosDatos,
-			String dinamicosCabecera, List<OperacionInsiderFinvizModelo> insidersDatos) throws ParseException {
+			String dinamicosCabecera, List<OperacionInsiderFinvizModelo> insidersDatos, String empresa)
+			throws ParseException {
 
 		List<String> out = new ArrayList<String>();
 
@@ -442,13 +444,13 @@ public class JuntarEstaticosYDinamicosCSVunico {
 				}
 
 				flagOperacionesInsiderUltimos90dias = sumarItemsYcalcularFlag(operacionesUltimos90dias, amdDatoDinamico,
-						NOVENTA);
+						NOVENTA, empresa);
 				flagOperacionesInsiderUltimos30dias = sumarItemsYcalcularFlag(operacionesUltimos30dias, amdDatoDinamico,
-						TREINTA);
+						TREINTA, empresa);
 				flagOperacionesInsiderUltimos15dias = sumarItemsYcalcularFlag(operacionesUltimos15dias, amdDatoDinamico,
-						QUINCE);
+						QUINCE, empresa);
 				flagOperacionesInsiderUltimos5dias = sumarItemsYcalcularFlag(operacionesUltimos5dias, amdDatoDinamico,
-						CINCO);
+						CINCO, empresa);
 			}
 
 			// Haya datos de insiders o no, añadimos las columnas dinamicas, rellenas o
@@ -485,20 +487,23 @@ public class JuntarEstaticosYDinamicosCSVunico {
 	 * de salida, indicando si la suma son ventas o compras.
 	 * 
 	 * @param lista
+	 * @param amdReferencia
+	 * @param diasPeriodo
+	 * @param empresa
 	 * @return Numero que indica "-1"=ventas, "1"=compras. En caso de que sumen 0 o
 	 *         que sea desconocido, devuelve cadena vacía.
 	 */
 	public static String sumarItemsYcalcularFlag(List<OperacionInsiderFinvizModelo> lista, Integer amdReferencia,
-			int diasPeriodo) {
+			int diasPeriodo, String empresa) {
 		Long suma = 0L;
 		String out = "";
 
 		for (OperacionInsiderFinvizModelo op : lista) {
 
 			if (op.tipooperacion.equalsIgnoreCase(OperacionInsiderFinvizModelo.VENTA)) {
-				suma -= op.importe;
+				suma = suma + op.importe; // El importe ya viene negativo
 			} else if (op.tipooperacion.equalsIgnoreCase(OperacionInsiderFinvizModelo.COMPRA)) {
-				suma += op.importe;
+				suma = suma + op.importe;
 			} else {
 				System.err.println("Operacion de insider rara: " + op);
 			}
@@ -509,6 +514,9 @@ public class JuntarEstaticosYDinamicosCSVunico {
 		} else if (suma < 0L) {
 			out = "-1";// VENTAS
 		}
+
+		MY_LOGGER.info("JuntarEstaticosYDinamicosCSVunico.sumarItemsYcalcularFlag() -->" + "Empresa=" + empresa
+				+ " AMD=" + amdReferencia + " periodo=" + diasPeriodo + " --> OUT=" + out);
 		return out;
 	}
 

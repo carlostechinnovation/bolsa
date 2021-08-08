@@ -5,6 +5,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+import math
 
 print("\n********* Analisis de uso de las FEATURES por cada modelo ganador en todos los subgrupos ********* ")
 
@@ -18,7 +19,9 @@ print("pathSalida: %s" % pathSalida)
 
 ##################### FUNCION - ESTILOS CSS ####################################
 def pintarColores(val):
-    if int(val) == 1:
+    if math.isnan(val):
+        color = ''
+    elif int(val) == 1:
         color = 'background-color: #64b41a99'
     elif 2 <= int(val) < 20:
         color = 'background-color: #f0f600b3'
