@@ -515,8 +515,8 @@ public class JuntarEstaticosYDinamicosCSVunico {
 			out = "-1";// VENTAS
 		}
 
-		MY_LOGGER.info("JuntarEstaticosYDinamicosCSVunico.sumarItemsYcalcularFlag() -->" + "Empresa=" + empresa
-				+ " AMD=" + amdReferencia + " periodo=" + diasPeriodo + " --> OUT=" + out);
+//		MY_LOGGER.info("JuntarEstaticosYDinamicosCSVunico.sumarItemsYcalcularFlag() -->" + "Empresa=" + empresa
+//				+ " AMD=" + amdReferencia + " periodo=" + diasPeriodo + " --> OUT=" + out);
 		return out;
 	}
 

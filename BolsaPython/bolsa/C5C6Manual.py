@@ -82,6 +82,7 @@ from sklearn.decomposition import PCA, TruncatedSVD
 import time
 import matplotlib.patches as mpatches
 
+
 print((datetime.datetime.now()).strftime(
     "%Y%m%d_%H%M%S") + " **** CAPA 5  --> Selección de variables/ Reducción de dimensiones (para cada subgrupo) ****")
 print("URL PCA: https://scikit-learn.org/stable/modules/unsupervised_reduction.html")
@@ -138,6 +139,7 @@ print("path_modelo_reductor_features = %s" % path_modelo_reductor_features)
 print("balancear en C5 (en C6 también hay otro) = " + str(balancear))
 
 ######################## FUNCIONES #######################################################
+
 
 with warnings.catch_warnings():
     warnings.filterwarnings(action="ignore",
@@ -509,6 +511,10 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
         columnasSeleccionadas = featuresFichero3.columns
         ####################### FIN SIN RFECV ###############################
 
+        print("Features seleccionadas (tras el paso de RFECV, cuya aplicacion es opcional) escritas en: " + pathCsvFeaturesElegidas)
+        featuresFichero3Elegidas.head(1).to_csv(pathCsvFeaturesElegidas, index=False, sep='|')
+
+
         ########### PCA: base de funciones ortogonales (con combinaciones de features) ########
 
         print("** PCA (Principal Components Algorithm) **")
@@ -516,9 +522,9 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
         if modoTiempo == "pasado":
             print(
                 "Usando PCA, creamos una NUEVA BASE DE FEATURES ORTOGONALES y cogemos las que tengan un impacto agregado sobre el X% de la varianza del target. Descartamos el resto.")
-            # modelo_pca_subgrupo = PCA(n_components=varianza, svd_solver='full')  # Variaza acumulada sobre el target
-            modelo_pca_subgrupo = PCA(n_components='mle',
-                                      svd_solver='full')  # Metodo "MLE de Minka": https://vismod.media.mit.edu/tech-reports/TR-514.pdf
+            #varianza=0.99
+            #modelo_pca_subgrupo = PCA(n_components=varianza, svd_solver='full')  # Variaza acumulada sobre el target
+            modelo_pca_subgrupo = PCA(n_components='mle', svd_solver='full')  # Metodo "MLE de Minka": https://vismod.media.mit.edu/tech-reports/TR-514.pdf
             # modelo_pca_subgrupo = TSNE(n_components=2, perplexity=30.0, early_exaggeration=12.0, learning_rate=200.0,
             #                            n_iter=1000, n_iter_without_progress=300, min_grad_norm=1e-07,
             #                            metric='euclidean', init='random', verbose=0, random_state=None,
@@ -526,10 +532,11 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
             #                            n_jobs=-1)  # https://scikit-learn.org/stable/modules/generated/sklearn.manifold.TSNE.html
             print(modelo_pca_subgrupo)
             featuresFichero3_pca = modelo_pca_subgrupo.fit_transform(featuresFichero3Elegidas)
-            print("modelo_pca_subgrupo -> dump ...")
+            print("modelo_pca_subgrupo -> Guardando en: " + path_modelo_pca)
             pickle.dump(modelo_pca_subgrupo, open(path_modelo_pca, 'wb'))
+
         else:
-            print("modelo_pca_subgrupo -> load ...")
+            print("modelo_pca_subgrupo -> Leyendo desde: " + path_modelo_pca)
             modelo_pca_subgrupo = pickle.load(open(path_modelo_pca, 'rb'))
             print(modelo_pca_subgrupo)
             featuresFichero3_pca = modelo_pca_subgrupo.transform(featuresFichero3Elegidas)
@@ -647,13 +654,13 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         # print(matrizCorr)
         print("matrizCorr:" + str(matrizCorr.shape[0]) + " x " + str(matrizCorr.shape[1]))
         # ##################################################################
-        # columnasSeleccionadas = ift_juntas.columns
-        # print("Guardando las columnas seleccionadas en: ", pathFeaturesSeleccionadas)
-        # print(columnasSeleccionadas)
-        # columnasSeleccionadasStr = '|'.join(columnasSeleccionadas)
-        # featuresSeleccionadasFile = open(pathFeaturesSeleccionadas, "w")
-        # featuresSeleccionadasFile.write(columnasSeleccionadasStr)
-        # featuresSeleccionadasFile.close()
+        columnasSeleccionadas = ift_juntas.columns
+        print("Guardando las columnas seleccionadas en: ", pathFeaturesSeleccionadas)
+        print(columnasSeleccionadas)
+        columnasSeleccionadasStr = '|'.join(columnasSeleccionadas)
+        featuresSeleccionadasFile = open(pathFeaturesSeleccionadas, "w")
+        featuresSeleccionadasFile.write(columnasSeleccionadasStr)
+        featuresSeleccionadasFile.close()
 
         ##################################################################
 

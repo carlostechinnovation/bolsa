@@ -19,9 +19,7 @@ print("pathSalida: %s" % pathSalida)
 
 ##################### FUNCION - ESTILOS CSS ####################################
 def pintarColores(val):
-    if math.isnan(val):
-        color = ''
-    elif int(val) == 1:
+    if int(val) == 1:
         color = 'background-color: #64b41a99'
     elif 2 <= int(val) < 20:
         color = 'background-color: #f0f600b3'
@@ -37,6 +35,7 @@ def pintarColores(val):
 ################################################################################################
 acumuladoElegidasDF = pd.DataFrame(columns=['id_subgrupo', 'columnas_elegidas'])
 acumuladoDF = pd.DataFrame(columns=['id_subgrupo', 'columnas_seleccionadas'])
+pesosPcaValorAbsolutoAcumuladoDF = pd.DataFrame()  # las variables relevantes tendran mas peso (en valor absoluto)
 contador = 0
 featuresTodasCompleto = list()
 featuresElegidasRfecv = list()
@@ -48,7 +47,7 @@ for directorio in os.listdir(dir_subgrupos):
 
     # COMPLETO
     pathFileCompleto = dir_subgrupos + directorio + "/COMPLETO.csv"
-    print("Leyendo las features del fichero COMPLETO (antes de PCA): " + pathFileCompleto)
+    #print("Leyendo las features del fichero COMPLETO (antes de PCA): " + pathFileCompleto)
     if os.path.exists(pathFileCompleto):
         f = open(pathFileCompleto, "r")
         columnas = f.readline().split("|")
@@ -57,10 +56,12 @@ for directorio in os.listdir(dir_subgrupos):
             columnasCompleto.append(sub.replace("\n", ""))
 
         featuresTodasCompleto.extend(filter(lambda x: x, columnasCompleto))
+    else:
+        print("ERROR - El fichero no existe pero deberia: " + pathFileCompleto + "  !!!!!")
 
     # ELEGIDAS (con RFE-CV)
     pathFileElegidasRfecv = dir_subgrupos + directorio + "/FEATURES_ELEGIDAS_RFECV.csv"
-    print("Leyendo las features del fichero ELEGIDAS (antes de PCA): " + pathFileCompleto)
+    #print("Leyendo las features del fichero ELEGIDAS (antes de PCA): " + pathFileElegidasRfecv)
     if os.path.exists(pathFileElegidasRfecv):
         f = open(pathFileElegidasRfecv, "r")
         columnas = f.readline().split("|")  # solo la primera linea
@@ -72,10 +73,12 @@ for directorio in os.listdir(dir_subgrupos):
         featuresElegidasRfecv.extend(filter(lambda x: x, columnasElegidas))
         subgrupoElegidasDF = pd.DataFrame(data=[[id_subgrupo, featuresElegidasRfecv]], columns=['id_subgrupo', 'columnas_elegidas'])
         acumuladoElegidasDF = acumuladoElegidasDF.append(subgrupoElegidasDF)
+    else:
+        print("ERROR - El fichero no existe pero deberia: " + pathFileElegidasRfecv + "  !!!!!")
 
     #Extraer TODAS las features, mirando la cabecera del REDUCIDO
     pathFileReducido = dir_subgrupos + directorio + "/REDUCIDO.csv"
-    print("Leyendo las features del fichero REDUCIDO (tras PCA): " + pathFileReducido)
+    #print("Leyendo las features del fichero REDUCIDO (tras PCA): " + pathFileReducido)
     if os.path.exists(pathFileReducido):
         f = open(pathFileReducido, "r")
         columnas = f.readline().split("|")
@@ -86,13 +89,55 @@ for directorio in os.listdir(dir_subgrupos):
         featuresTodasReducido.extend(filter(lambda x: x, columnasLimpio))
 
         pathFicheroAbsoluto = dir_subgrupos + directorio + "/FEATURES_SELECCIONADAS.csv"
-        print("Leyendo las features del fichero final (SELECCIONADAS tras PCA): " + pathFicheroAbsoluto)
+        # print("Leyendo las features del fichero final (SELECCIONADAS tras PCA): " + pathFicheroAbsoluto)
         if os.path.exists(pathFicheroAbsoluto):
             f = open(pathFicheroAbsoluto, "r")
             featuresModelo = f.read()
-            print("id_subgrupo = " + id_subgrupo + " -> features= " + featuresModelo)
-            subgrupoDF = pd.DataFrame(data=[[id_subgrupo, featuresModelo]], columns=['id_subgrupo', 'columnas_seleccionadas'])
+            #print("id_subgrupo = " + id_subgrupo + " -> features= " + featuresModelo)
+            subgrupoDF = pd.DataFrame(data=[[id_subgrupo, featuresModelo]],
+                                      columns=['id_subgrupo', 'columnas_seleccionadas'])
             acumuladoDF = acumuladoDF.append(subgrupoDF)
+        else:
+            print("ERROR - El fichero no existe pero deberia: " + pathFicheroAbsoluto + "  !!!!!")
+
+
+        # Para cada subgrupo SG_X, hay N features de entrada. Con PCA se habran generado nuevas N variables llamadas PCA1, PCA2...
+        # Las combinaciones lineales han dado unos pesos a las features. Ej: PCA1=0.4*F1 +0.01*F2 -0.2*F3 +...
+        # Si acumulamos los pesos en cada una de las features (en valor absoluto), podemos ver cuales son las features originales mas influyentes de forma agregada.
+        pathFicheroMatrizPca = dir_subgrupos + directorio + "/PCA_matriz.csv"
+        #print("Leyendo la matriz de pesos de las nuevas variables generadas por PCA (respecto de las features originales de entrada): " + pathFicheroMatrizPca)
+        if os.path.exists(pathFicheroMatrizPca):
+            auxiliarDF = pd.read_csv(pathFicheroMatrizPca, delimiter="|")
+            auxiliarDF = auxiliarDF.drop(auxiliarDF.columns[0], axis=1) # Quitamos la primera columna porque es el nombre de las variables PCA, que no vamos a usarlo
+            pesosPcaValorAbsolutoAcumuladoDF = pesosPcaValorAbsolutoAcumuladoDF.append(auxiliarDF)
+        else:
+            print("ERROR - El fichero no existe pero deberia: " + pathFicheroAbsoluto + "  !!!!!")
+
+
+
+    else:
+        print("El fichero REDUCIDO no existe: " + pathFileReducido)
+
+
+
+#Pesos de PCA: convertir a valores absolutos y sumar columnas para ver que columnas son las mas influyentes (features originales)
+print("Pesos PCA acumulados:")
+pesosPcaValorAbsolutoAcumuladoDF = pesosPcaValorAbsolutoAcumuladoDF.astype(float)
+pesosPcaValorAbsolutoAcumuladoDF=pesosPcaValorAbsolutoAcumuladoDF.abs()
+#print("Suma por indice:")
+sumaPesosPca = pesosPcaValorAbsolutoAcumuladoDF.sum(axis=0, skipna=True)
+sumaPesosPca = sumaPesosPca.sort_values(ascending=False)
+sumaPesosPcaDF = sumaPesosPca.to_frame()
+
+pathSalidaSumaPesosPca=pathSalida.replace(".html", "_sumapesospca.html")
+print("Escribiendo en (pathSalidaAntesDePca): " + pathSalidaSumaPesosPca)
+
+cm = sns.light_palette("green", as_cmap=True)
+sumaPesosPcaDF = sumaPesosPcaDF.style.background_gradient(cmap=cm).bar()
+datosEnHtml = sumaPesosPcaDF.render()
+text_file = open(pathSalidaSumaPesosPca, "w")
+text_file.write(datosEnHtml)
+text_file.close()
 
 
 #Limpiar nombres de columnas duplicados
@@ -146,7 +191,7 @@ matrizDFtraspuesta.sort_index(inplace=True)
 print("matrizDFtraspuesta: " + str(matrizDFtraspuesta.shape[0]) + " x " + str(matrizDFtraspuesta.shape[1]))
 # matrizDFtraspuesta.to_csv(pathSalida, index=False, sep='|')
 
-print("Escribiendo en: " + pathSalida)
+print("Escribiendo en (pathSalida): " + pathSalida)
 datosEnHtml = matrizDFtraspuesta.style.applymap(pintarColores).render()
 text_file = open(pathSalida, "w")
 text_file.write(datosEnHtml)
@@ -207,7 +252,7 @@ matrizDFtraspuesta=matrizDFtraspuesta.append(filaEspecial)  # la ponemos al fina
 print("matrizDFtraspuesta: " + str(matrizDFtraspuesta.shape[0]) + " x " + str(matrizDFtraspuesta.shape[1]))
 # matrizDFtraspuesta.to_csv(pathSalida, index=False, sep='|')
 
-print("Escribiendo en: " + pathSalidaAntesDePca)
+print("Escribiendo en (pathSalidaAntesDePca): " + pathSalidaAntesDePca)
 datosEnHtml = matrizDFtraspuesta.style.applymap(pintarColores).render()
 text_file = open(pathSalidaAntesDePca, "w")
 text_file.write(datosEnHtml)

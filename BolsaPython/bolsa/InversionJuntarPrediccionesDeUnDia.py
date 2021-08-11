@@ -150,13 +150,17 @@ entradaSG46df = entradaSG46df[["empresa", "flagOperacionesInsiderUltimos90dias",
 todasEmpresasYProbabsDFconInsiders = pd.merge(todasEmpresasYProbabsDF, entradaSG46df, how="left", on="empresa")
 todasEmpresasYProbabsDFconInsiders = todasEmpresasYProbabsDFconInsiders.fillna("")  # Sustituir NaN por cadena vacia para que quede bonito
 
+
 # Escritura a fichero HTML
 pathSalida = entradaPathDirDropbox + str(fecha) + "_todas_las_empresas.html"
 print("Escribiendo en: " + pathSalida)
 datosEnHtml = HTML(todasEmpresasYProbabsDFconInsiders.to_html(index=False, classes='table table-striped table-bordered table-hover table-condensed'))
 contenidoHtml = datosEnHtml.data
+contenidoHtml = contenidoHtml.replace("<td></td>", "<td style=\"background-color: lightsteelblue;\"></td>")  # Colores de celda vacia
 contenidoHtml = contenidoHtml.replace("<th>empresa</th>", "<th style=\"background-color: yellow;\">empresa</th>")  # Colores
 contenidoHtml = contenidoHtml.replace("<th>prob_media</th>", "<th style=\"background-color: yellow;\">prob_media</th>")  # Colores
+contenidoHtml = contenidoHtml.replace("<td>-1.0</td>", "<td style=\"background-color: lightcoral;\">-1</td>")  # Colores de las Ventas
+contenidoHtml = contenidoHtml.replace("<td>1.0</td>", "<td style=\"background-color: greenyellow;\">1</td>")  # Colores de las Compras
 text_file = open(pathSalida, "w", encoding="utf-8")
 text_file.writelines('<meta charset="UTF-8">\n')
 text_file.write(contenidoHtml)
