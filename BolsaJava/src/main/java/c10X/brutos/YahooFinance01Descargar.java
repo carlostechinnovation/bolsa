@@ -162,7 +162,7 @@ public class YahooFinance01Descargar implements Serializable {
 	 */
 	public static Boolean descargarPagina(String pathOut, Boolean borrarSiExiste, String urlEntrada) {
 
-		MY_LOGGER.debug("descargarPagina --> " + urlEntrada + " | " + pathOut + " | " + borrarSiExiste);
+		MY_LOGGER.info("descargarPagina --> " + urlEntrada + " | " + pathOut + " | " + borrarSiExiste);
 		Boolean out = false;
 
 		try {
