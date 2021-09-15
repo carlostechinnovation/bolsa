@@ -13,7 +13,7 @@ import math
 #EXPLICACIÓN:
 #Se recorren los ficheros grandes y manejables, y se saca el rendimiento medio, por día y subgrupo.
 # Se vuelcan en log, excel y dibujo
-from docutils.nodes import subscript
+#from docutils.nodes import subscript
 
 print("--- InversionUtilsPosteriori: INICIO ---")
 
@@ -329,11 +329,6 @@ def analizar(datosGrandes, datosManejables, X, dfSP500):
                 resultadoAnalisisAux = resultadoAnalisisAux.append(nuevaFilaAux, ignore_index=True, sort=False)
         resultadoAnalisis = resultadoAnalisisAux
 
-        # Se escriben los resultados a un Excel
-        pathCsvResultados = dirAnalisis + "RESULTADOS_ANALISIS" + str(X) + ".csv"
-        print("Guardando: " + pathCsvResultados)
-        resultadoAnalisis.to_csv(pathCsvResultados, index=False, sep='|')
-
         # Se generará un EXCEL de RENTA VS SP500 y PROB UNO MIN con:
         # Para cada subgrupo, sacar la renta vs SP500 con p>p_min, ponderada por número de elementos en cada día,
         # siempre que no sea nan. Guardar el resultado en un CSV, en cuyo nombre meteré X.
@@ -347,16 +342,24 @@ def analizar(datosGrandes, datosManejables, X, dfSP500):
             b=w.sum()
             rentaPonderadaPorElementoYSubgrupo = (d * w).sum() / w.sum()
             datos.append([subgrupo, rentaPonderadaPorElementoYSubgrupo])
-        columnas = ["subgrupo", "rentavsSP500yProbUnoMin"]
+        columnas = ["subgrupo", "rentavsSP500yProbUnoMinPonderada"]
         rentasPonderadas = pd.DataFrame(datos, columns=columnas)
         # Se eliminan los grupos sin resultados
         rentasPonderadas = rentasPonderadas.dropna()
         # Se ordena por renta
-        rentasPonderadas=rentasPonderadas.sort_values("rentavsSP500yProbUnoMin", ascending=False)
+        rentasPonderadas=rentasPonderadas.sort_values("rentavsSP500yProbUnoMinPonderada", ascending=False)
         # Se escriben los resultados a un Excel
         pathCsvResultados = dirAnalisis + "RENTAS_vs_SP500_y_PROBUNOMIN_PARA_X_" + str(X) + ".csv"
         print("Guardando: " + pathCsvResultados)
         rentasPonderadas.to_csv(pathCsvResultados, index=False, sep='|')
+
+        # Se añaden las rentas ponderadas a los resultados
+        resultadoAnalisis=resultadoAnalisis.merge(rentasPonderadas, on='subgrupo', how='left')
+
+            # Se escriben los resultados a un Excel
+        pathCsvResultados = dirAnalisis + "RESULTADOS_ANALISIS" + str(X) + ".csv"
+        print("Guardando: " + pathCsvResultados)
+        resultadoAnalisis.to_csv(pathCsvResultados, index=False, sep='|')
 
 
     else:
@@ -384,18 +387,24 @@ def calidadSubgrupos(resultadoAnalisis, subgrupos):
             stdRenta=np.std(rentaRelativaSP500)
             numElementos=len(rentaRelativaSP500)
 
+            print("resultadoPorSubgrupo['rentavsSP500yProbUnoMinPonderada']: ")
+            print(resultadoPorSubgrupo['rentavsSP500yProbUnoMinPonderada'])
+
+            # Se toma el primer valor
+            calidadPonderada = resultadoPorSubgrupo['rentavsSP500yProbUnoMinPonderada'].reset_index(drop=True)[0]
+
             # Fórmula:
             # CALIDAD = mediana renta diaria * log (1 + número de elementos)
             calidadMediana = medianaRenta * np.log10(1 + numElementos)
             calidadMediaStd =(mediaRenta-np.sqrt(stdRenta))*np.log10(1+numElementos)
 
-            nuevoGrupo = [{'subgrupo': subgrupo, 'calidadMediana': calidadMediana, 'calidadMediaStd': calidadMediaStd}]
+            nuevoGrupo = [{'subgrupo': subgrupo, 'calidadPonderada': calidadPonderada, 'calidadMediana': calidadMediana, 'calidadMediaStd': calidadMediaStd}]
             subgruposPorCalidad = subgruposPorCalidad.append(nuevoGrupo, ignore_index=True, sort=False)
-            subgruposPorCalidad=subgruposPorCalidad.sort_values("calidadMediana", ascending=False)
+            subgruposPorCalidad=subgruposPorCalidad.sort_values("calidadPonderada", ascending=False)
 
         # Se sacan por log
         for row_index, row in subgruposPorCalidad.iterrows():
-            print("subgrupo: " + row['subgrupo'] + "  -> CALIDAD: " + str(row['calidad']))
+            print("subgrupo: " + row['subgrupo'] + "  -> CALIDAD: " + str(row['calidadPonderada']))
 
         # Se escriben los resultados a un csv
         pathCsvResultados = dirAnalisis + "CALIDAD" + ".csv"
