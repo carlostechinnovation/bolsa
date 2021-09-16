@@ -5,12 +5,14 @@
 echo -e "INVERSION POSTERIORI - INICIO: "$( date "+%Y%m%d%H%M%S" )
 
 #################### DIRECTORIOS ###############################################################
+DIR_BASE="/bolsa/"
+DIR_DROPBOX_REPO="/BOLSA_PREDICTOR/"
 PYTHON_MOTOR_CARLOS="/home/carloslinux/Desktop/PROGRAMAS/anaconda3/envs/BolsaPython/bin/python"
 PYTHON_MOTOR_LUIS="/home/t151521/anaconda3/envs/BolsaPython/bin/python"
 DIR_CODIGOS_CARLOS="/home/carloslinux/Desktop/GIT_BOLSA/"
-DIR_CODIGOS_LUIS="/home/t151521/bolsa/"
-DIR_DROPBOX_CARLOS="/home/carloslinux/Dropbox/BOLSA_PREDICTOR/"
-DIR_DROPBOX_LUIS="/home/t151521/Dropbox/BOLSA_PREDICTOR/"
+DIR_CODIGOS_LUIS="/home/t151521${DIR_BASE}"
+DIR_DROPBOX_CARLOS="/home/carloslinux/Dropbox${DIR_DROPBOX_REPO}"
+DIR_DROPBOX_LUIS="/home/t151521/Dropbox${DIR_DROPBOX_REPO}"
 
 usuario=$(whoami)
 if [ $usuario == "carloslinux" ]
@@ -63,7 +65,6 @@ source ${PARAMS_CONFIG}
 DIR_JAVA="${DIR_CODIGOS}BolsaJava/"
 PATH_JAR="${DIR_JAVA}target/bolsajava-1.0-jar-with-dependencies.jar"
 
-DIR_BASE="/bolsa/"
 DIR_LOGS="${DIR_BASE}logs/"
 DIR_ANALISIS="${DIR_DROPBOX}ANALISIS/"
 DIR_BRUTOS_CSV="${DIR_BASE}futuro/brutos_csv/"
