@@ -5,8 +5,9 @@
 echo -e "MASTER - INICIO: "$( date "+%Y%m%d%H%M%S" )
 
 #################### DIRECTORIOS ###############################################################
+DIR_BASE="/bolsa/"
 DIR_CODIGOS_CARLOS="/home/carloslinux/Desktop/GIT_BOLSA/"
-DIR_CODIGOS_LUIS="/home/t151521/bolsa/"
+DIR_CODIGOS_LUIS="/home/t151521${DIR_BASE}"
 PYTHON_MOTOR_CARLOS="/home/carloslinux/Desktop/PROGRAMAS/anaconda3/envs/BolsaPython/bin/python"
 PYTHON_MOTOR_LUIS="/home/t151521/anaconda3/envs/BolsaPython/bin/python"
 
@@ -93,7 +94,6 @@ PYTHON_SCRIPTS="${DIR_CODIGOS}BolsaPython/"
 DIR_JAVA="${DIR_CODIGOS}BolsaJava/"
 PATH_JAR="${DIR_JAVA}target/bolsajava-1.0-jar-with-dependencies.jar"
 
-DIR_BASE="/bolsa/"
 DIR_LOGS="${DIR_BASE}logs/"
 DIR_BRUTOS="${DIR_BASE}${DIR_TIEMPO}/brutos/"
 DIR_BRUTOS_CSV="${DIR_BASE}${DIR_TIEMPO}/brutos_csv/"
@@ -244,7 +244,7 @@ java -jar ${PATH_JAR} --class "coordinador.Principal" "c70X.validacion.Generador
 
 echo -e "Actualizando informe HTML de uso de FEATURES (mirando el pasado)..." >> ${LOG_MASTER}
 DIR_SUBGRUPOS_PASADO=$(echo ${DIR_SUBGRUPOS} | sed -e "s/futuro/pasado/g")
-$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/FeaturesAnalisisPosteriori.py" "${DIR_SUBGRUPOS_PASADO}" "/bolsa/pasado/matriz_features_antes_de_pca.html" "/bolsa/pasado/matriz_features.html" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
+$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/FeaturesAnalisisPosteriori.py" "${DIR_SUBGRUPOS_PASADO}" "${DIR_BASE}pasado/matriz_features_antes_de_pca.html" "${DIR_BASE}pasado/matriz_features.html" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 
 
 echo -e "MASTER - FIN: "$( date "+%Y%m%d%H%M%S" )
