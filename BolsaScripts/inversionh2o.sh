@@ -5,12 +5,13 @@
 echo -e "INVERSION - INICIO: "$( date "+%Y%m%d%H%M%S" )
 
 #################### DIRECTORIOS ###############################################################
+DIR_DROPBOX_REPO="/BOLSA_PREDICTOR/"
 DIR_CODIGOS_CARLOS="/home/carloslinux/Desktop/GIT_BOLSA/"
-DIR_CODIGOS_LUIS="/home/t151521/bolsa/"
+DIR_CODIGOS_LUIS="/home/t151521${DIR_BASE}"
 PYTHON_MOTOR_CARLOS="/home/carloslinux/Desktop/PROGRAMAS/anaconda3/envs/BolsaPython/bin/python"
 PYTHON_MOTOR_LUIS="/home/t151521/anaconda3/envs/BolsaPython/bin/python"
-DIR_DROPBOX_CARLOS="/home/carloslinux/Dropbox/BOLSA_PREDICTOR/"
-DIR_DROPBOX_LUIS="/home/t151521/Dropbox/BOLSA_PREDICTOR/"
+DIR_DROPBOX_CARLOS="/home/carloslinux/Dropbox${DIR_DROPBOX_REPO}"
+DIR_DROPBOX_LUIS="/home/t151521/Dropbox${DIR_DROPBOX_REPO}"
 
 usuario=$(whoami)
 if [ $usuario == "carloslinux" ]
@@ -52,7 +53,6 @@ source ${PARAMS_CONFIG}
 #Instantes de las descargas
 FUTURO_INVERSION="0" #Ahora mismo
 
-DIR_BASE="/bolsa/"
 DIR_LOGS="${DIR_BASE}logs/"
 LOG_INVERSION="${DIR_LOGS}inversion.log"
 DIR_INVERSION="${DIR_BASE}inversion/"
@@ -72,7 +72,7 @@ rm -f "${LOG_INVERSION}"
 
 #En esta ejecucion, nos situamos en HOY MISMO y PREDECIMOS el futuro. Guardaremos esa predicción para meter dinero REAL.
 
-rm -Rf /bolsa/futuro/ >>${LOG_INVERSION}
+rm -Rf ${DIR_BASE}futuro/ >>${LOG_INVERSION}
 crearCarpetaSiNoExiste "${DIR_FUT_SUBGRUPOS}"
 
 echo -e $( date '+%Y%m%d_%H%M%S' )" Ejecución del futuro (para velas de antiguedad=0) con TODAS LAS EMPRESAS (lista DIRECTA ó INVERSA, ya da igual, no estamos mirando overfitting)..." >>${LOG_INVERSION}

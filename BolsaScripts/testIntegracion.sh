@@ -2,7 +2,9 @@
 #set -e
 echo -e "TEST INTEGRACION - INICIO: "$( date "+%Y%m%d%H%M%S" )
 
-INFORME_OUT="/bolsa/logs/integracion.html"
+DIR_BASE="/bolsa/"
+
+INFORME_OUT="${DIR_BASE}logs/integracion.html"
 echo -e  "Fichero de salida del test de integracion: ${INFORME_OUT}"
 echo -e "<!DOCTYPE html><html><head><meta charset=\"UTF-8\">"  > ${INFORME_OUT}
 echo -e "<style>table, th, td {  border: 1px solid black; border-collapse: collapse;}table.center {  margin-left: auto;  margin-right: auto;}</style>"  >> ${INFORME_OUT}
@@ -13,8 +15,8 @@ echo -e "<h2 style=\"text-align: center;\">Test de integración</h2>" >> ${INFOR
 if [ $# -eq 0 ];  then
     echo "Hay 0 parametros de entrada. Se elegiran subgrupo+empresa al azar."
 	#Elegimos un subgrupo y empresa al azar para el que tengamos datos hasta la última capa...
-	SG_ANALIZADO=$(find "/bolsa/pasado/subgrupos/" | grep "REDUCIDO" | shuf -n 1 | cut -d'/' -f5)
-	empresa=$(cat /bolsa/pasado/subgrupos/${SG_ANALIZADO}/EMPRESAS.txt | shuf -n 1 | tr -d '\n' | cut -d'/' -f5 | cut -d'.' -f1 | cut -d'_' -f2)
+	SG_ANALIZADO=$(find "${DIR_BASE}pasado/subgrupos/" | grep "REDUCIDO" | shuf -n 1 | cut -d'/' -f5)
+	empresa=$(cat ${DIR_BASE}pasado/subgrupos/${SG_ANALIZADO}/EMPRESAS.txt | shuf -n 1 | tr -d '\n' | cut -d'/' -f5 | cut -d'.' -f1 | cut -d'_' -f2)
 	
 elif [ $# -eq 2 ];  then
 	echo "Hay 2 parametros de entrada: SUBGRUPO + EMPRESA del pasado."
@@ -32,7 +34,7 @@ echo "PASADO - Empresa: ${empresa}"
 
 #################### DIRECTORIOS ###############################################################
 DIR_CODIGOS_CARLOS="/home/carloslinux/Desktop/GIT_BOLSA/"
-DIR_CODIGOS_LUIS="/home/t151521/bolsa/"
+DIR_CODIGOS_LUIS="/home/t151521${DIR_BASE}"
 PYTHON_MOTOR_CARLOS="/home/carloslinux/Desktop/PROGRAMAS/anaconda3/envs/BolsaPython/bin/python"
 PYTHON_MOTOR_LUIS="/home/t151521/anaconda3/envs/BolsaPython/bin/python"
 
@@ -73,35 +75,35 @@ echo -e "<br><b>FINVIZ: <a href=\"https://finviz.com/quote.ashx?t=${empresa}\">$
 
 #####
 echo -e "<br><h3>Capa 1.1 (brutos desestructurados)</h3>" >> ${INFORME_OUT}
-BRUTO_YF="/bolsa/pasado/brutos/YF_NASDAQ_${empresa}.txt"
-BRUTO_FZ="/bolsa/pasado/brutos/FZ_NASDAQ_${empresa}.html"
+BRUTO_YF="${DIR_BASE}pasado/brutos/YF_NASDAQ_${empresa}.txt"
+BRUTO_FZ="${DIR_BASE}pasado/brutos/FZ_NASDAQ_${empresa}.html"
 echo -e "Bruto - YahooFinance: ${BRUTO_YF} --> Tamanio (bytes) = "$(stat -c%s "$BRUTO_YF") >> ${INFORME_OUT}
 echo -e "<br>Bruto - Finviz - Datos estáticos: ${BRUTO_FZ} --> Tamanio (bytes) = "$(stat -c%s "$BRUTO_FZ") >> ${INFORME_OUT}
 
 #####
 echo -e "<br><h3>Capa 1.2 (brutos estructurados)</h3>" >> ${INFORME_OUT}
-BRUTO_CSV="/bolsa/pasado/brutos_csv/NASDAQ_${empresa}.csv"
+BRUTO_CSV="${DIR_BASE}pasado/brutos_csv/NASDAQ_${empresa}.csv"
 echo -e "Bruto CSV: <a href=\"${BRUTO_CSV}\">${BRUTO_CSV}</a> --> Tamanio (bytes) = "$(stat -c%s "$BRUTO_CSV")" con "$(wc -l $BRUTO_CSV | cut -d\  -f 1)" filas<br><br>" >> ${INFORME_OUT}
 head -n 10 ${BRUTO_CSV} > "/tmp/entrada.csv"
 java -jar ${PATH_JAR} --class "coordinador.Principal" "testIntegracion.ParserCsvEnTablaHtml" "/tmp/entrada.csv" "${INFORME_OUT}" "\\|" "append"
 
 #####
 echo -e "<br><h3>Capa 2 (limpios)</h3>" >> ${INFORME_OUT}
-LIMPIO="/bolsa/pasado/limpios/NASDAQ_${empresa}.csv"
+LIMPIO="${DIR_BASE}pasado/limpios/NASDAQ_${empresa}.csv"
 echo -e "Limpio: <a href=\"${LIMPIO}\">${LIMPIO}</a> --> Tamanio (bytes) = "$(stat -c%s "$LIMPIO")" con "$(wc -l $LIMPIO | cut -d\  -f 1)" filas<br><br>" >> ${INFORME_OUT}
 head -n 5 ${LIMPIO}  > "/tmp/entrada.csv"
 java -jar ${PATH_JAR} --class "coordinador.Principal" "testIntegracion.ParserCsvEnTablaHtml" "/tmp/entrada.csv" "${INFORME_OUT}" "\\|" "append"
 
 #####
 echo -e "<br><h3>Capa 3 (elaboradas)</h3>" >> ${INFORME_OUT}
-ELABORADO="/bolsa/pasado/elaborados/NASDAQ_${empresa}.csv"
+ELABORADO="${DIR_BASE}pasado/elaborados/NASDAQ_${empresa}.csv"
 echo -e "Elaborado: <a href=\"${ELABORADO}\">${ELABORADO}</a> --> Tamanio (bytes) = "$(stat -c%s "$ELABORADO")" con "$(wc -l $ELABORADO | cut -d\  -f 1)" filas<br><br>" >> ${INFORME_OUT}
 head -n 10 ${ELABORADO}  > "/tmp/entrada.csv"
 java -jar ${PATH_JAR} --class "coordinador.Principal" "testIntegracion.ParserCsvEnTablaHtml" "/tmp/entrada.csv" "${INFORME_OUT}" "\\|" "append"
 
 #####
 echo -e "<br><h3>Capa 4 (subgrupos)</h3>" >> ${INFORME_OUT}
-DIR_SUBGRUPOS="/bolsa/pasado/subgrupos/"
+DIR_SUBGRUPOS="${DIR_BASE}pasado/subgrupos/"
 echo -e "Subgrupos creados (los que superan suficientes requisitos): <br>"$(ls $DIR_SUBGRUPOS)"<br>" >> ${INFORME_OUT}
 SG_EMPRESAS="${DIR_SUBGRUPOS}${SG_ANALIZADO}/EMPRESAS.txt"
 

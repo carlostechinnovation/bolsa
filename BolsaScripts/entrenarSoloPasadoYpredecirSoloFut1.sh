@@ -1,8 +1,9 @@
 #!/bin/bash
 
 #################### DIRECTORIOS ###############################################################
+DIR_BASE="/bolsa/"
 DIR_CODIGOS_CARLOS="/home/carloslinux/Desktop/GIT_BOLSA/"
-DIR_CODIGOS_LUIS="/home/t151521/bolsa/"
+DIR_CODIGOS_LUIS="/home/t151521${DIR_BASE}"
 PYTHON_MOTOR_CARLOS="/home/carloslinux/Desktop/PROGRAMAS/anaconda3/envs/BolsaPython/bin/python"
 PYTHON_MOTOR_LUIS="/home/t151521/anaconda3/envs/BolsaPython/bin/python"
 
@@ -48,7 +49,6 @@ PASADO_t1="0"
 FUTURO1_t1="${VELAS_RETROCESO}" #No tocar. Se usa en el validador
 FUTURO2_t1="$((${VELAS_RETROCESO}-${X}-${M}))" #No tocar. Se usa en el validador
 
-DIR_BASE="/bolsa/"
 DIR_LOGS="${DIR_BASE}logs/"
 LOG_VALIDADOR="${DIR_LOGS}validador.log"
 LOG_VALIDADOR_OVERFITTING_REAL="${DIR_LOGS}medidasOverfittingReal.log"
@@ -74,39 +74,39 @@ echo -e "PARAMETROS -->  PASADO_t1 | FUTURO1_t1 | FUTURO2_t1--> ${PASADO_t1}|${F
 echo -e "PARAMETROS -->  ACTIVAR_DESCARGAS --> ${ACTIVAR_DESCARGAS}" >>${LOG_VALIDADOR}
 echo -e "PARAMETROS -->  CAPA5_MAX_FILAS_ENTRADA --> ${CAPA5_MAX_FILAS_ENTRADA}" >>${LOG_VALIDADOR}
 
-rm -Rf /bolsa/pasado/ >>${LOG_VALIDADOR}
-mkdir -p /bolsa/logs/ >>${LOG_VALIDADOR}
+rm -Rf ${DIR_BASE}pasado/ >>${LOG_VALIDADOR}
+mkdir -p ${DIR_BASE}logs/ >>${LOG_VALIDADOR}
 echo -e ""  >>${LOG_VALIDADOR}
 
 if [ "${ACTIVAR_DESCARGAS}" = "N" ];  then
-	echo -e "PASADO - Usamos datos LOCALES (sin Internet) de la ruta /bolsa/datos_validacion/pasado_brutos_csv/" >>${LOG_VALIDADOR}
-	tamanioorigen=$(du -s "/bolsa/validacion/pasado_brutos_csv/" | cut -f1)
+	echo -e "PASADO - Usamos datos LOCALES (sin Internet) de la ruta ${DIR_BASE}datos_validacion/pasado_brutos_csv/" >>${LOG_VALIDADOR}
+	tamanioorigen=$(du -s "${DIR_BASE}validacion/pasado_brutos_csv/" | cut -f1)
 	echo "${tamanioorigen}"
 	if [ ${tamanioorigen} > 0 ]; then
-		rm -Rf /bolsa/pasado/ >>${LOG_VALIDADOR}
-		mkdir -p /bolsa/logs/ >>${LOG_VALIDADOR}
+		rm -Rf ${DIR_BASE}pasado/ >>${LOG_VALIDADOR}
+		mkdir -p ${DIR_BASE}logs/ >>${LOG_VALIDADOR}
 		echo -e ""  >>${LOG_VALIDADOR}
-		crearCarpetaSiNoExiste "/bolsa/pasado/brutos_csv/"
-		cp -a "/bolsa/validacion/pasado_brutos_csv/." "/bolsa/pasado/brutos_csv/" >>${LOG_VALIDADOR}
+		crearCarpetaSiNoExiste "${DIR_BASE}pasado/brutos_csv/"
+		cp -a "${DIR_BASE}validacion/pasado_brutos_csv/." "${DIR_BASE}pasado/brutos_csv/" >>${LOG_VALIDADOR}
 	else
-		echo "No existe o no hay datos en: /bolsa/validacion/pasado_brutos_csv/   Saliendo..."
+		echo "No existe o no hay datos en: ${DIR_BASE}validacion/pasado_brutos_csv/   Saliendo..."
 		exit -1
 	fi
 
 else
-	rm -Rf /bolsa/pasado/ >>${LOG_VALIDADOR}
-	mkdir -p /bolsa/logs/ >>${LOG_VALIDADOR}
-	echo "Se borra y se crea TOTALMENTE la carpeta:  /bolsa/pasado/"
+	rm -Rf ${DIR_BASE}pasado/ >>${LOG_VALIDADOR}
+	mkdir -p ${DIR_BASE}logs/ >>${LOG_VALIDADOR}
+	echo "Se borra y se crea TOTALMENTE la carpeta:  ${DIR_BASE}pasado/"
 	echo -e ""  >>${LOG_VALIDADOR}
 fi
 
 echo -e $( date '+%Y%m%d_%H%M%S' )" Ejecución del PASADO (para entrenar los modelos a dia de HOY con la lista normal de empresas)..." >>${LOG_VALIDADOR}
 ${PATH_SCRIPTS}master.sh "pasado" "${PASADO_t1}" "0" "${ACTIVAR_DESCARGAS}" "S" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" "${NUM_EMPRESAS}" "${UMBRAL_SUBIDA_POR_VELA}" "${UMBRAL_MINIMO_GRAN_VELA}" "${MIN_COBERTURA_CLUSTER}" "${MIN_EMPRESAS_POR_CLUSTER}" "${P_INICIO}" "${P_FIN}" "${MAX_NUM_FEAT_REDUCIDAS}" "${CAPA5_MAX_FILAS_ENTRADA}" "${DINAMICA1}" "${DINAMICA2}" 2>>${LOG_VALIDADOR} 1>>${LOG_VALIDADOR}
 
-dir_val_pasado="/bolsa/validacion/E${NUM_EMPRESAS}_VR${VELAS_RETROCESO}_S${S}_X${X}_R${R}_M${M}_F${F}_B${B}_pasado/"
+dir_val_pasado="${DIR_BASE}validacion/E${NUM_EMPRESAS}_VR${VELAS_RETROCESO}_S${S}_X${X}_R${R}_M${M}_F${F}_B${B}_pasado/"
 rm -Rf $dir_val_pasado
 mkdir -p $dir_val_pasado
-cp -R "/bolsa/pasado/" $dir_val_pasado
+cp -R "${DIR_BASE}pasado/" $dir_val_pasado
 
 echo -e "--------------------------" >> ${LOG_VALIDADOR}
 
