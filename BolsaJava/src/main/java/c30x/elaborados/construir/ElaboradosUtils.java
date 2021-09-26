@@ -11,8 +11,8 @@ public class ElaboradosUtils {
 	public static final Integer M = 1;
 	public static final Integer F = 5;
 	public static final Integer B = 5;
-	public static final Double SUBIDA_MAXIMA_POR_VELA = 999.0D; // 99900%
-	public static final Double SUBIDA_MINIMA_GRAN_VELA = 3.0D; // 300%
+	public static final Double SUBIDA_MAXIMA_POR_VELA = 999.0D; // Variabilidad maxima permitida 99900%
+	public static final Double SUBIDA_MINIMA_GRAN_VELA = 0.0D; // Variabilidad mínima permitida 0.0 %
 	public static final Integer DINAMICA1 = 1;
 	public static final Integer DINAMICA2 = 1;
 	public static final Integer DINAMICA3 = 1;

@@ -3,37 +3,21 @@ import pandas as pd
 from pandas_profiling import ProfileReport
 import numpy as np
 from imblearn.combine import SMOTEENN
-from imblearn.pipeline import Pipeline
-from imblearn.under_sampling import RandomUnderSampler, EditedNearestNeighbours, NearMiss, NeighbourhoodCleaningRule
 from numpy import mean
-from scipy.stats import stats, chi2
 from sklearn.feature_selection import SelectKBest
-from sklearn.naive_bayes import MultinomialNB
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.utils.fixes import loguniform
 from pathlib import Path
-from sklearn import svm
 from sklearn.linear_model import LogisticRegression, SGDClassifier
-from sklearn.ensemble import RandomForestClassifier, ExtraTreesClassifier, VotingClassifier
-from sklearn.neural_network import MLPClassifier
 import pickle
-from sklearn.metrics import roc_auc_score, confusion_matrix, classification_report, recall_score, make_scorer, \
-    precision_score, f1_score
+from sklearn.metrics import confusion_matrix, recall_score, precision_score, f1_score
 from sklearn.metrics import roc_curve
 from sklearn.metrics import average_precision_score
 import matplotlib.pyplot as plt
 from sklearn.metrics import plot_confusion_matrix
 from sklearn.utils import resample
-from sklearn.model_selection import GridSearchCV, RepeatedStratifiedKFold, cross_val_score, train_test_split, \
-    ParameterGrid
-from sklearn.calibration import CalibratedClassifierCV
+from sklearn.model_selection import GridSearchCV, cross_val_score
 from shutil import copyfile
 import os.path
-from imblearn.over_sampling import SMOTE, RandomOverSampler
-from sklearn.metrics import make_scorer, accuracy_score
 from sklearn.tree import export_graphviz
-from subprocess import call
 from xgboost import XGBClassifier
 from matplotlib import pyplot
 import datetime

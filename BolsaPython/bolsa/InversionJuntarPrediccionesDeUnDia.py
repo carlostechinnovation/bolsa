@@ -1,8 +1,8 @@
-import sys
 import os
+import sys
+
 import pandas as pd
 from IPython.display import HTML
-import html, urllib3
 
 ##################### EXPLICACION #####################
 # Entradas:

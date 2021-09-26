@@ -9,12 +9,9 @@ sequentially. The example below shows how to first fit the models and build the
 ensembles afterwards.
 """
 
-import sklearn.model_selection
+import autosklearn.classification
 import sklearn.datasets
 import sklearn.metrics
-
-import autosklearn.classification
-
 
 ############################################################################
 # Data Loading

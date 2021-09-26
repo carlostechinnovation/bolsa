@@ -9,13 +9,10 @@ by specifying the arguments ``resampling_strategy`` and
 settings for the ``AutoSklearnClassifier``.
 """
 
+import autosklearn.classification
 import numpy as np
-import sklearn.model_selection
 import sklearn.datasets
 import sklearn.metrics
-
-import autosklearn.classification
-
 
 ############################################################################
 # Data Loading

@@ -1,6 +1,3 @@
-from sklearn import metrics
-
-
 ############### MEDIDA DE LA CALIDAD DE LOS MODELOS
 
 # Curva de PRECISION-COBERTURA:

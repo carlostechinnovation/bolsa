@@ -14,11 +14,9 @@ Auto-sklearn is a wrapper on top of
 the sklearn models. This example illustrates how to interact
 with the sklearn components directly, in this case a PCA preprocessor.
 """
+import autosklearn.classification
 import sklearn.datasets
 import sklearn.metrics
-
-import autosklearn.classification
-
 
 ############################################################################
 # Data Loading

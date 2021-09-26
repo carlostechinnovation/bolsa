@@ -1,11 +1,10 @@
 ##### Regression
 import shutil
-import sklearn.datasets
-import sklearn.metrics
+
 import autosklearn.classification
-import pandas as pd
-import shutil
 import numpy as np
+import pandas as pd
+import sklearn.metrics
 
 if __name__ == "__main__":  # Esto sirve para que el paralelizador DASK sepa cual es el codigo principal de cada hilo/thread
     print("-------- PARAMETROS -------- ")

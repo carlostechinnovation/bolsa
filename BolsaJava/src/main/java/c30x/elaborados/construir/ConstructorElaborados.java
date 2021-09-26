@@ -1089,10 +1089,11 @@ public class ConstructorElaborados implements Serializable {
 
 			if (datosAntiguedadXyM == null) {
 				mCumplida = Boolean.FALSE;
-				MY_LOGGER.error("Empresa=" + empresa + " -> datosAntiguedadM es NULO para antiguedad=" + antiguedad
+				String msg="Empresa=" + empresa + " -> datosAntiguedadM es NULO para antiguedad=" + antiguedad
 						+ ", M=" + M + " -> antiguedadM=" + (antiguedad - M) + ", X+M=" + Integer.valueOf(X + M)
 						+ " -> antiguedadXyM=" + (antiguedad - X - M)
-						+ " Posible causa: el mercado estaba abierto cuando hemos ejecutado la descarga de datos");
+						+ " Posible causa: el mercado estaba abierto cuando hemos ejecutado la descarga de datos";
+				MY_LOGGER.error(msg);
 			} else {
 
 				closeAntiguedadXyM = Double.valueOf(datosAntiguedadXyM.get("close"));
@@ -1108,9 +1109,10 @@ public class ConstructorElaborados implements Serializable {
 						boolean cumpleEncimaDeB = closeAntiguedadI > bajadaBPrecioTantoPorUno * closeAntiguedad;
 						if (cumpleEncimaDeB) {
 							// El precio no debe bajar más de B
-							MY_LOGGER.debug("---ATENCION ENCONTRADO TARGET 1---> EMPRESA: " + empresa
+							String msg="---ATENCION ENCONTRADO TARGET 1---> EMPRESA: " + empresa
 									+ " y antigüedad: " + antiguedad + " (Mes: " + datosAntiguedad.get("mes") + " Dia: "
-									+ datosAntiguedad.get("dia") + " Hora: " + datosAntiguedad.get("hora") + ")");
+									+ datosAntiguedad.get("dia") + " Hora: " + datosAntiguedad.get("hora") + ")";
+							MY_LOGGER.debug(msg);
 							mCumplida = Boolean.TRUE;
 						} else {
 							// Se ha encontrado AL MENOS una vela posterior, en las (1 a X) siguientes,
@@ -1168,10 +1170,11 @@ public class ConstructorElaborados implements Serializable {
 				MY_LOGGER.debug(closeAntiguedadI + ", ");
 			}
 
-			MY_LOGGER.debug("ANÁLISIS VARIABILIDAD--> EMPRESA: " + empresa + " -> Antigüedad: " + antiguedad + " (Mes: "
+			String msg="ANÁLISIS VARIABILIDAD--> EMPRESA: " + empresa + " -> Antigüedad: " + antiguedad + " (Mes: "
 					+ datosAntiguedad.get("mes") + " Dia: " + datosAntiguedad.get("dia") + " Hora: "
 					+ datosAntiguedad.get("hora") + ". Variabilidad: " + e.getVariacionRelativaMaxima()
-					+ ", umbral máximo: " + umbralMaximo + ", umbral mínimo: " + umbralMinimo);
+					+ ", umbral máximo: " + umbralMaximo + ", umbral mínimo: " + umbralMinimo;
+			MY_LOGGER.debug(msg);
 
 			// Ninguna vela puede superar a la media en una cantidad igual a un umbral
 			// MAXIMO en [t1,t2], pero esa variación debe superar un umbral MINIMO en [t1,
@@ -1196,9 +1199,11 @@ public class ConstructorElaborados implements Serializable {
 		if (mCumplida) {
 			// La S sí se cumple, y la M también en todo el rango
 			targetOut = "1";
-			MY_LOGGER.debug("---ATENCION ENCONTRADO TARGET 1 --> EMPRESA: " + empresa + " -> Antigüedad: " + antiguedad
+			String msg="---ATENCION ENCONTRADO TARGET 1 --> EMPRESA: " + empresa + " -> Antigüedad: " + antiguedad
 					+ " (Mes: " + datosAntiguedad.get("mes") + " Dia: " + datosAntiguedad.get("dia") + " Hora: "
-					+ datosAntiguedad.get("hora") + ")");
+					+ datosAntiguedad.get("hora") + ")";
+			MY_LOGGER.debug(msg);
+			
 		} else {
 			targetOut = "0";
 		}

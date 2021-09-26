@@ -1,18 +1,12 @@
-import math
 import matplotlib.pyplot as plt
-import keras
-import pandas as pd
 import numpy as np
-from keras.models import Sequential
-from keras.layers import Dense
-from keras.layers import LSTM
-from keras.layers import Dropout
+import pandas as pd
 from keras.layers import *
+from keras.layers import Dense
+from keras.layers import Dropout
+from keras.layers import LSTM
+from keras.models import Sequential
 from sklearn.preprocessing import MinMaxScaler
-from sklearn.metrics import mean_squared_error
-from sklearn.metrics import mean_absolute_error
-from sklearn.model_selection import train_test_split
-from keras.callbacks import EarlyStopping
 
 datos_entrada = pd.read_csv("/home/carloslinux/Desktop/GIT_BOLSA/BolsaPython/ejemplos/06_redneuronal_lstm_TSLA.csv")
 print("Entrada - Numero de filas y columnas:", datos_entrada.shape)

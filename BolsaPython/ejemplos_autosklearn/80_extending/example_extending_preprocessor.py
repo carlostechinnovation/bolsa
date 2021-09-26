@@ -8,19 +8,16 @@ discriminant analysis (LDA) algorithm from sklearn and use it as a preprocessor
 in auto-sklearn.
 """
 
+import autosklearn.pipeline.components.feature_preprocessing
+import sklearn.metrics
+from ConfigSpace.conditions import InCondition
 from ConfigSpace.configuration_space import ConfigurationSpace
 from ConfigSpace.hyperparameters import UniformFloatHyperparameter, CategoricalHyperparameter
-from ConfigSpace.conditions import InCondition
-
-import sklearn.metrics
-import autosklearn.classification
-import autosklearn.pipeline.components.feature_preprocessing
 from autosklearn.pipeline.components.base \
     import AutoSklearnPreprocessingAlgorithm
 from autosklearn.pipeline.constants import DENSE, SIGNED_DATA, \
     UNSIGNED_DATA
 from autosklearn.util.common import check_none
-
 from sklearn.datasets import load_breast_cancer
 from sklearn.model_selection import train_test_split
 

@@ -1,7 +1,7 @@
-import sys
 import os
+import sys
+
 import pandas as pd
-from numpy import number
 
 print("--- Validador en Python: INICIO ---")
 dir_validacion = sys.argv[1]

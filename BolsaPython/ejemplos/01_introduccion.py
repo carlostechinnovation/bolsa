@@ -1,8 +1,5 @@
 from sklearn import datasets
 
-import pandas as pd
-from sklearn.decomposition import PCA
-
 print("----------- DATOS (pasado + futuro) ----------")
 print("Datasets de ejemplo")
 iris = datasets.load_iris()

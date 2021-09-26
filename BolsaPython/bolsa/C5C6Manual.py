@@ -1,6 +1,5 @@
 import sys
 import os
-import pandas as pd
 from pathlib import Path
 from random import sample, choice
 
@@ -13,7 +12,6 @@ from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 from sklearn.gaussian_process import GaussianProcessClassifier
 from sklearn.gaussian_process.kernels import RBF
 from sklearn.naive_bayes import GaussianNB
-from sklearn.neighbors import KNeighborsClassifier, KNeighborsTransformer
 from sklearn.neural_network import MLPClassifier
 from sklearn.preprocessing import StandardScaler, RobustScaler, PowerTransformer, QuantileTransformer, KBinsDiscretizer, \
     MinMaxScaler
@@ -23,12 +21,10 @@ from sklearn.svm import SVC, SVR
 from sklearn.model_selection import StratifiedKFold, cross_validate
 from sklearn.feature_selection import RFECV, RFE
 from sklearn import metrics
-import numpy as np
 from sklearn import linear_model
 import seaborn as sns
 from sklearn.ensemble import IsolationForest, RandomForestClassifier, AdaBoostClassifier
 from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LinearRegression, LogisticRegression, BayesianRidge
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.utils import resample
 import pickle
@@ -37,21 +33,15 @@ import warnings
 import datetime
 from sklearn.pipeline import make_pipeline
 from sklearn.manifold import TSNE
-import math
 import sys
 import pandas as pd
 from pandas_profiling import ProfileReport
 import numpy as np
-from imblearn.combine import SMOTEENN
 from imblearn.pipeline import Pipeline
-from imblearn.under_sampling import RandomUnderSampler, EditedNearestNeighbours, NearMiss, NeighbourhoodCleaningRule
 from numpy import mean
-from scipy.stats import stats, chi2
 from sklearn.feature_selection import SelectKBest
 from sklearn.naive_bayes import MultinomialNB
-from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.utils.fixes import loguniform
 from pathlib import Path
 from sklearn import svm
 from sklearn.linear_model import LogisticRegression, SGDClassifier
@@ -65,21 +55,16 @@ from sklearn.metrics import average_precision_score
 import matplotlib.pyplot as plt
 from sklearn.metrics import plot_confusion_matrix
 from sklearn.utils import resample
-from sklearn.model_selection import GridSearchCV, RepeatedStratifiedKFold, cross_val_score, train_test_split, \
-    ParameterGrid
+from sklearn.model_selection import GridSearchCV, cross_val_score, train_test_split
 from sklearn.calibration import CalibratedClassifierCV
 from shutil import copyfile
 import os.path
-from imblearn.over_sampling import SMOTE, RandomOverSampler
 from sklearn.metrics import make_scorer, accuracy_score
 from sklearn.tree import export_graphviz
-from subprocess import call
-from xgboost import XGBClassifier
 from matplotlib import pyplot
 import datetime
 from sklearn.manifold import TSNE
 from sklearn.decomposition import PCA, TruncatedSVD
-import time
 import matplotlib.patches as mpatches
 
 

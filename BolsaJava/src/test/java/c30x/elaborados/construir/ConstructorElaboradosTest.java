@@ -33,7 +33,7 @@ public class ConstructorElaboradosTest {
 		myReader.close();
 
 		String empresa = "AACG";
-		Integer antiguedad = 10; // ANTIGUEDAD ESTUDIADA (su target será 1 ó 0 mirando las X+M velas más
+		Integer ANTIGUEDAD_ESTUDIADA = 10; // ANTIGUEDAD ESTUDIADA (su target será 1 ó 0 mirando las X+M velas más
 									// recientes (futuras)
 		Integer S = ElaboradosUtils.S; // DEFAULT
 		Integer X = ElaboradosUtils.X; // DEFAULT
@@ -44,7 +44,7 @@ public class ConstructorElaboradosTest {
 		Double umbralMaximo = ElaboradosUtils.SUBIDA_MAXIMA_POR_VELA; // DEFAULT
 		Double umbralMinimo = ElaboradosUtils.SUBIDA_MINIMA_GRAN_VELA; // DEFAULT
 
-		String targetCalculado = ConstructorElaborados.calcularTarget(empresa, datosEmpresaEntrada, antiguedad, S, X, R,
+		String targetCalculado = ConstructorElaborados.calcularTarget(empresa, datosEmpresaEntrada, ANTIGUEDAD_ESTUDIADA, S, X, R,
 				M, F, B, umbralMaximo, umbralMinimo);
 		String targetEsperado = "1";
 

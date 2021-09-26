@@ -6,21 +6,17 @@ Extending Auto-Sklearn with Regression Component
 The following example demonstrates how to create a new regression component for using in auto-sklearn.
 """
 
+import autosklearn.pipeline.components.regression
+import sklearn.metrics
+from ConfigSpace.conditions import EqualsCondition
 from ConfigSpace.configuration_space import ConfigurationSpace
 from ConfigSpace.hyperparameters import UniformFloatHyperparameter, \
     UniformIntegerHyperparameter, CategoricalHyperparameter
-from ConfigSpace.conditions import EqualsCondition
-
-import sklearn.metrics
-import autosklearn.regression
-import autosklearn.pipeline.components.regression
 from autosklearn.pipeline.components.base import AutoSklearnRegressionAlgorithm
 from autosklearn.pipeline.constants import SPARSE, DENSE, \
     SIGNED_DATA, UNSIGNED_DATA, PREDICTIONS
-
 from sklearn.datasets import load_diabetes
 from sklearn.model_selection import train_test_split
-
 
 print("----------- Implement kernel ridge regression component for auto-sklearn ---------")
 class KernelRidgeRegression(AutoSklearnRegressionAlgorithm):

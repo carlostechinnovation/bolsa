@@ -17,15 +17,12 @@ Description: This notebook demonstrates how to do timeseries forecasting using a
 ## Setup
 This example requires TensorFlow 2.3 or higher.
 """
-import pandas as pd
-import matplotlib.pyplot as plt
-from tensorflow import keras
-from keras.models import Sequential
-from keras.layers import Dense
-from keras.models import model_from_json
-from keras.models import model_from_yaml
-from keras import backend as K
 import sys
+
+import matplotlib.pyplot as plt
+import pandas as pd
+from keras import backend as K
+from tensorflow import keras
 
 print("INICIO")
 
@@ -69,7 +66,6 @@ Index| Features      |Format             |Description
 """
 
 from zipfile import ZipFile
-import os
 
 uri = "https://storage.googleapis.com/tensorflow/tf-keras-datasets/jena_climate_2009_2016.csv.zip"
 zip_path = keras.utils.get_file(origin=uri, fname="jena_climate_2009_2016.csv.zip")

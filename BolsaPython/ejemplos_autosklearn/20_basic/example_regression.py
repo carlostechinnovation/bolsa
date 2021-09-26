@@ -1,10 +1,9 @@
 # -*- encoding: utf-8 -*-
 
+import autosklearn.regression
 ##### Regression
-import shutil
 import sklearn.datasets
 import sklearn.metrics
-import autosklearn.regression
 
 print("-------- Limpieza -------- ")
 #shutil.rmtree("/tmp/autosklearn_regression_example_tmp")

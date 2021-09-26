@@ -11,14 +11,10 @@ The following examples show how to use built-in and self-defined metrics for a
 classification problem.
 """
 
+import autosklearn.metrics
 import numpy as np
-
-import sklearn.model_selection
 import sklearn.datasets
 import sklearn.metrics
-
-import autosklearn.classification
-import autosklearn.metrics
 
 
 ############################################################################

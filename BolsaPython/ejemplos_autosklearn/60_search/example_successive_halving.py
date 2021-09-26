@@ -10,12 +10,9 @@ the intensification strategy to use in smac, in this case:
 `SuccessiveHalving <http://proceedings.mlr.press/v80/falkner18a/falkner18a-supp.pdf>`_.
 """  # noqa (links are too long)
 
-
-import sklearn.model_selection
+import autosklearn.classification
 import sklearn.datasets
 import sklearn.metrics
-
-import autosklearn.classification
 
 
 ############################################################################

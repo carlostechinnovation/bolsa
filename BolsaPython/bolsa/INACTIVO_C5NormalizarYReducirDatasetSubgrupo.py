@@ -1,42 +1,22 @@
-import sys
-import os
-import pandas as pd
-from pathlib import Path
-from random import sample, choice
-
-from imblearn.combine import SMOTETomek
-from imblearn.under_sampling import TomekLinks
-from pandas import DataFrame
-from sklearn.covariance import EllipticEnvelope
-from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
-from sklearn.gaussian_process import GaussianProcessClassifier
-from sklearn.gaussian_process.kernels import RBF
-from sklearn.naive_bayes import GaussianNB
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.neural_network import MLPClassifier
-from sklearn.preprocessing import StandardScaler, RobustScaler, PowerTransformer, QuantileTransformer, KBinsDiscretizer
-from sklearn.decomposition import PCA
-import matplotlib.pyplot as plt
-from sklearn.svm import SVC, SVR
-from sklearn.model_selection import StratifiedKFold
-from sklearn.feature_selection import RFECV, RFE
-from sklearn import metrics
-import numpy as np
-from sklearn import linear_model
-import seaborn as sns
-from sklearn.ensemble import IsolationForest, RandomForestClassifier, AdaBoostClassifier
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LinearRegression, LogisticRegression
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.utils import resample
-import pickle
-from sklearn.impute import SimpleImputer
-import warnings
 import datetime
-from sklearn.pipeline import make_pipeline
-from sklearn.manifold import TSNE
 import math
+import os
+import pickle
+import sys
+import warnings
 
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import seaborn as sns
+from pandas import DataFrame
+from sklearn.decomposition import PCA
+from sklearn.ensemble import IsolationForest, RandomForestClassifier, AdaBoostClassifier
+from sklearn.feature_selection import RFECV
+from sklearn.model_selection import StratifiedKFold
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import StandardScaler, PowerTransformer, KBinsDiscretizer
+from sklearn.svm import SVC
 
 print((datetime.datetime.now()).strftime("%Y%m%d_%H%M%S") + " **** CAPA 5  --> Selección de variables/ Reducción de dimensiones (para cada subgrupo) ****")
 print("URL PCA: https://scikit-learn.org/stable/modules/unsupervised_reduction.html")

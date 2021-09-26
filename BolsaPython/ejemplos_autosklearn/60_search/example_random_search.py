@@ -12,15 +12,11 @@ as yet another alternative optimizatino strategy.
 Both examples are intended to show how the optimization strategy in *auto-sklearn* can be adapted.
 """  # noqa (links are too long)
 
-import sklearn.model_selection
+import autosklearn.classification
 import sklearn.datasets
 import sklearn.metrics
-
 from smac.facade.roar_facade import ROAR
 from smac.scenario.scenario import Scenario
-
-import autosklearn.classification
-
 
 ############################################################################
 # Data Loading

@@ -7,11 +7,9 @@ Classification
 The following example shows how to fit a simple classification model with
 *auto-sklearn*.
 """
+import autosklearn.classification
 import sklearn.datasets
 import sklearn.metrics
-
-import autosklearn.classification
-
 
 ############################################################################
 # Data Loading

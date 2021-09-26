@@ -16,12 +16,9 @@ To run *Auto-sklearn* on multiple machines check the example
 `Parallel Usage with manual process spawning <example_parallel_manual_spawning.html>`_.
 """
 
-import sklearn.model_selection
+import autosklearn.classification
 import sklearn.datasets
 import sklearn.metrics
-
-import autosklearn.classification
-
 
 ############################################################################
 # Data Loading

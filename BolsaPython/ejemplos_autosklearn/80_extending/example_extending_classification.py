@@ -7,18 +7,15 @@ The following example demonstrates how to create a new classification
 component for using in auto-sklearn.
 """
 
+import autosklearn.pipeline.components.classification
+import sklearn.metrics
 from ConfigSpace.configuration_space import ConfigurationSpace
 from ConfigSpace.hyperparameters import CategoricalHyperparameter, \
     UniformIntegerHyperparameter, UniformFloatHyperparameter
-
-import sklearn.metrics
-import autosklearn.classification
-import autosklearn.pipeline.components.classification
 from autosklearn.pipeline.components.base \
     import AutoSklearnClassificationAlgorithm
 from autosklearn.pipeline.constants import DENSE, SIGNED_DATA, UNSIGNED_DATA, \
     PREDICTIONS
-
 from sklearn.datasets import load_breast_cancer
 from sklearn.model_selection import train_test_split
 

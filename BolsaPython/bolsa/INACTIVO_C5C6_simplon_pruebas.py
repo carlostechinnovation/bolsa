@@ -1,100 +1,40 @@
-import sys
-import os
-import pandas as pd
-from pathlib import Path
-from random import sample, choice
-
 from imblearn.combine import SMOTETomek
 from imblearn.under_sampling import TomekLinks
-from pandas import DataFrame
-from sklearn.covariance import EllipticEnvelope
-from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
-from sklearn.gaussian_process import GaussianProcessClassifier
 from sklearn.gaussian_process.kernels import RBF
 from sklearn.naive_bayes import GaussianNB
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.neural_network import MLPClassifier
-from sklearn.preprocessing import StandardScaler, RobustScaler, PowerTransformer, QuantileTransformer, KBinsDiscretizer
-from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
-from sklearn.svm import SVC, SVR
 from sklearn.feature_selection import RFECV, RFE
 from sklearn import metrics
-import numpy as np
 from sklearn import linear_model
 import seaborn as sns
-from sklearn.ensemble import IsolationForest, RandomForestClassifier, AdaBoostClassifier
 from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LinearRegression, LogisticRegression
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.utils import resample
 import pickle
-from sklearn.impute import SimpleImputer
 import warnings
 import datetime
-from sklearn.pipeline import make_pipeline
 from sklearn.manifold import TSNE
-import math
 import sys
 import pandas as pd
 import numpy as np
 from imblearn.combine import SMOTEENN
 from imblearn.pipeline import Pipeline
-from imblearn.under_sampling import RandomUnderSampler, EditedNearestNeighbours, NearMiss, NeighbourhoodCleaningRule
 from numpy import mean
-from scipy.stats import stats, chi2
 from sklearn.feature_selection import SelectKBest
-from sklearn.naive_bayes import MultinomialNB
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.utils.fixes import loguniform
 from pathlib import Path
 from sklearn import svm
-from sklearn.linear_model import LogisticRegression, SGDClassifier
-from sklearn.ensemble import RandomForestClassifier, ExtraTreesClassifier, VotingClassifier
-from sklearn.neural_network import MLPClassifier
-import pickle
-from sklearn.metrics import roc_auc_score, confusion_matrix, classification_report, recall_score, make_scorer, \
-    precision_score, f1_score
-from sklearn.metrics import roc_curve
-from sklearn.metrics import average_precision_score
-import matplotlib.pyplot as plt
-from sklearn.metrics import plot_confusion_matrix
-from sklearn.utils import resample
-from sklearn.model_selection import GridSearchCV, RepeatedStratifiedKFold, cross_val_score, train_test_split, \
-    ParameterGrid
-from sklearn.calibration import CalibratedClassifierCV
-from shutil import copyfile
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import roc_auc_score, classification_report, precision_score
 import os.path
-from imblearn.over_sampling import SMOTE, RandomOverSampler
-from sklearn.metrics import make_scorer, accuracy_score
-from sklearn.tree import export_graphviz
-from subprocess import call
 
 from statsmodels.tools.eval_measures import rmse
 from xgboost import XGBClassifier
 from matplotlib import pyplot
 import datetime
 from sklearn.manifold import TSNE
-from sklearn.decomposition import PCA, TruncatedSVD
-import time
 import matplotlib.patches as mpatches
 
-import numpy as np
-import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
-
-import torch
-import torch.nn as nn
-import torch.optim as optim
-from torch.utils.data import Dataset, DataLoader
-
-from sklearn.preprocessing import StandardScaler
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import confusion_matrix, classification_report
-
-print("CUDA IS AVAILABLE???:", torch.cuda.is_available())
 
 print((datetime.datetime.now()).strftime(
     "%Y%m%d_%H%M%S") + " **** CAPA 5  --> Selección de variables/ Reducción de dimensiones (para cada subgrupo) ****")
@@ -157,6 +97,8 @@ print("balancear en C5 (en C6 también hay otro) = " + str(balancear))
 with warnings.catch_warnings():
     warnings.filterwarnings(action="ignore",
                             message="Bins whose width are too small.*")  # Ignorar los warnings del tramificador (KBinsDiscretizer)
+
+
 
 
 np.random.seed(12345)
@@ -249,19 +191,8 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
         #  Features (X) y Targets (Y)
         x = df
 
-# Device
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-print(device)
-
 ######################### GENERACIÓN DE MODELO (PASADO) ###################################
 if modoTiempo == "pasado":
-
-    # Se recodifica el target a 0/1
-    df['TARGET'] = df['TARGET'].astype(np.int64)
-
-    # Se separa features y target
-    x = df.iloc[:, 0:-1]
-    y = df.iloc[:, -1]
 
     ################## Splitting train, test, validation
     from sklearn.model_selection import train_test_split
@@ -276,7 +207,7 @@ if modoTiempo == "pasado":
 
     ################## Escalado
     import numpy as np
-    from sklearn.preprocessing import StandardScaler, RobustScaler
+    from sklearn.preprocessing import RobustScaler
     from pickle import dump
 
     # define scaler
@@ -307,148 +238,67 @@ if modoTiempo == "pasado":
     # print("df_minoritaria:" + str(len(df_minoritaria)))
     # ################# FIN DE SMOTE
 
-    # Hiperparámetros del modelo
-    EPOCHS = 50
-    BATCH_SIZE = 64
-    LEARNING_RATE = 0.1
 
 
-    ## train data
-    class trainData(Dataset):
-        def __init__(self, X_data, y_data):
-            self.X_data = X_data
-            self.y_data = y_data
+    ###################### MODELO LOGISTIC REGRESSION ########################
+    model = LogisticRegression(solver='lbfgs')
+    model.fit(x_train, y_train)
 
-        def __getitem__(self, index):
-            return self.X_data[index], self.y_data[index]
+    ###################### FIN MODELO LOGISTIC REGRESSION ###################
 
-        def __len__(self):
-            return len(self.X_data)
-
-
-    train_data = trainData(torch.FloatTensor(x_train),
-                           torch.FloatTensor(y_train))
-
-
-    ## test data
-    class testData(Dataset):
-        def __init__(self, X_data):
-            self.X_data = X_data
-
-        def __getitem__(self, index):
-            return self.X_data[index]
-
-        def __len__(self):
-            return len(self.X_data)
-
-
-    test_data = testData(torch.FloatTensor(x_test))
-
-    train_loader = DataLoader(dataset=train_data, batch_size=BATCH_SIZE, shuffle=True)
-    test_loader = DataLoader(dataset=test_data, batch_size=1)
-
-    # El número de neuronas de entrada sería el número de features
-    neuronasEntrada=x_train.columns
-
-    # Define NN
-    class binaryClassification(nn.Module):
-        def __init__(self):
-            super(binaryClassification, self).__init__()
-            self.layer_1 = nn.Linear(neuronasEntrada, 64)
-            self.layer_2 = nn.Linear(64, 64)
-            self.layer_out = nn.Linear(64, 1)
-
-            self.relu = nn.ReLU()
-            self.dropout = nn.Dropout(p=0.1)
-            self.batchnorm1 = nn.BatchNorm1d(64)
-            self.batchnorm2 = nn.BatchNorm1d(64)
-
-        def forward(self, inputs):
-            x = self.relu(self.layer_1(inputs))
-            x = self.batchnorm1(x)
-            x = self.relu(self.layer_2(x))
-            x = self.batchnorm2(x)
-            x = self.dropout(x)
-            x = self.layer_out(x)
-
-            return x
-
-
-
-
-    model = binaryClassification()
-    model.to(device)
-    print(model)
-    criterion = nn.BCEWithLogitsLoss()
-    optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
-
-
-    # Train
-    def binary_acc(y_pred, y_test):
-        y_pred_tag = torch.round(torch.sigmoid(y_pred))
-
-        correct_results_sum = (y_pred_tag == y_test).sum().float()
-        acc = correct_results_sum / y_test.shape[0]
-        acc = torch.round(acc * 100)
-
-        return acc
-
-
-    model.train()
-
-
-    ############ GUARDADO DE MODELO ###############################
+    ############ GUARDADO DE MODELO ###############################33
     # save the model
     dump(model, open('model.pkl', 'wb'))
-    ##################################################################
 
-    # Se calculan loss y accuracy
-    for e in range(1, EPOCHS + 1):
-        epoch_loss = 0
-        epoch_acc = 0
-        for X_batch, y_batch in train_loader:
-            X_batch, y_batch = X_batch.to(device), y_batch.to(device)
-            optimizer.zero_grad()
+    ##################### ANÁLISIS DE TRAIN
+    # Precisión de train
+    print('INICIO PRECISIÓN DE TRAIN...')
+    ypred_train = model.predict(x_train)
+    precision_train = precision_score(y_train, ypred_train)
+    print('TRAIN Precision:', precision_train)
+    print('FIN PRECISIÓN DE TRAIN...')
 
-            y_pred = model(X_batch)
+    ##################### ANÁLISIS DE TEST
+    # Precisión de test
+    print('INICIO PRECISIÓN DE TEST...')
+    ypred = model.predict(x_test)
+    precision = precision_score(y_test, ypred)
+    print('Test Precision:', precision)
+    print('FIN PRECISIÓN DE TEST...')
 
-            loss = criterion(y_pred, y_batch.unsqueeze(1))
-            acc = binary_acc(y_pred, y_batch.unsqueeze(1))
-
-            loss.backward()
-            optimizer.step()
-
-            epoch_loss += loss.item()
-            epoch_acc += acc.item()
-
-        print(
-            f'Epoch {e + 0:03}: | Loss: {epoch_loss / len(train_loader):.5f} | Acc: {epoch_acc / len(train_loader):.3f}')
-
-    # Test
-    y_pred_list = []
-    model.eval()
-    with torch.no_grad():
-        for X_batch in test_loader:
-            X_batch = X_batch.to(device)
-            y_test_pred = model(X_batch)
-            y_test_pred = torch.sigmoid(y_test_pred)
-            y_pred_tag = torch.round(y_test_pred)
-            y_pred_list.append(y_pred_tag.cpu().numpy())
-    y_pred_list = [a.squeeze().tolist() for a in y_pred_list]
-
-    # Confusion matrix
-    confusion_matrix(y_test, y_pred_list)
-
-    # Classification report
-    print(classification_report(y_test, y_pred_list))
-
-
-
+    ###################### PRINT TRAIN VS TEST
+    from sklearn import datasets, linear_model
+    from sklearn.model_selection import cross_val_predict
+    # define lists to collect scores
+    train_scores, test_scores = list(), list()
+    # define the tree depths to evaluate
+    values = [i for i in range(1, 21)]
+    # evaluate a decision tree for each depth
+    for i in values:
+        # configure the model
+        model = DecisionTreeClassifier(max_depth=i)
+        # CV
+        y_pred = cross_val_predict(model, x_train, y_train, cv=5)
+        # fit model on the training dataset
+        model.fit(x_train, y_train)
+        # evaluate on the train dataset
+        train_yhat = model.predict(x_train)
+        train_prec = precision_score(y_train, train_yhat)
+        train_scores.append(train_prec)
+        # evaluate on the test dataset
+        test_yhat = model.predict(x_test)
+        test_prec = precision_score(y_test, test_yhat)
+        test_scores.append(test_prec)
+        # summarize progress
+        print('>%d, train: %.3f, test: %.3f' % (i, train_prec, test_prec))
+    # plot of train and test scores vs tree depth
+    pyplot.plot(values, train_scores, '-o', label='Train')
+    pyplot.plot(values, test_scores, '-o', label='Test')
+    pyplot.legend()
+    pyplot.show()
 
 ######################### USO DE MODELO (FUTURO) ###################################
 elif modoTiempo == "futuro":
-
-    test_loader = DataLoader(dataset=x, batch_size=1)
 
     #  Features (X) y Targets (Y)
     from sklearn.model_selection import train_test_split
@@ -462,17 +312,20 @@ elif modoTiempo == "futuro":
 
     # make predictions
     print('INICIO PREDICCIÓN...')
-    y_pred_list = []
-    model.eval()
-    with torch.no_grad():
-        for X_batch in x:
-            X_batch = X_batch.to(device)
-            y_test_pred = model(X_batch)
-            y_test_pred = torch.sigmoid(y_test_pred)
-            y_pred_tag = torch.round(y_test_pred)
-            y_pred_list.append(y_pred_tag.cpu().numpy())
-    y_pred_list = [a.squeeze().tolist() for a in y_pred_list]
+    ypred = model.predict(x)
     print('FIN PREDICCIÓN...')
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -8,17 +8,14 @@ component with a new component, implementing the same classifier,
 but with different hyperparameters .
 """
 
+import autosklearn.pipeline.components.classification
 from ConfigSpace.configuration_space import ConfigurationSpace
 from ConfigSpace.hyperparameters import UniformIntegerHyperparameter, UniformFloatHyperparameter
-
-from sklearn.datasets import load_breast_cancer
-from sklearn.model_selection import train_test_split
-
-import autosklearn.classification
-import autosklearn.pipeline.components.classification
 from autosklearn.pipeline.components.classification \
     import AutoSklearnClassificationAlgorithm
 from autosklearn.pipeline.constants import DENSE, UNSIGNED_DATA, PREDICTIONS, SPARSE
+from sklearn.datasets import load_breast_cancer
+from sklearn.model_selection import train_test_split
 
 
 ############################################################################

@@ -12,14 +12,10 @@ Additionally, you can provide a properly formatted pandas DataFrame, and the fea
 types will be automatically inferred, as demonstrated in
 `Pandas Train and Test inputs <example_pandas_train_test.html>`_.
 """
+import autosklearn.classification
 import numpy as np
-
-import sklearn.model_selection
 import sklearn.datasets
 import sklearn.metrics
-
-import autosklearn.classification
-
 
 ############################################################################
 # Data Loading

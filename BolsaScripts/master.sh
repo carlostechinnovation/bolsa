@@ -8,7 +8,7 @@ echo -e "MASTER - INICIO: "$( date "+%Y%m%d%H%M%S" )
 DIR_BASE="/bolsa/"
 DIR_CODIGOS_CARLOS="/home/carloslinux/Desktop/GIT_BOLSA/"
 DIR_CODIGOS_LUIS="/home/t151521${DIR_BASE}"
-PYTHON_MOTOR_CARLOS="/home/carloslinux/Desktop/PROGRAMAS/anaconda3/envs/BolsaPython/bin/python"
+PYTHON_MOTOR_CARLOS="/home/carloslinux/anaconda3/envs/BolsaPython38/bin/python"
 PYTHON_MOTOR_LUIS="/home/t151521/anaconda3/envs/BolsaPython/bin/python"
 
 usuario=$(whoami)

@@ -1,13 +1,12 @@
 import warnings
-import numpy as np
 
-from .target_space import TargetSpace
+from sklearn.gaussian_process import GaussianProcessRegressor
+from sklearn.gaussian_process.kernels import Matern
+
 from .event import Events, DEFAULT_EVENTS
 from .logger import _get_default_logger
+from .target_space import TargetSpace
 from .util import UtilityFunction, acq_max, ensure_rng
-
-from sklearn.gaussian_process.kernels import Matern
-from sklearn.gaussian_process import GaussianProcessRegressor
 
 
 class Queue:

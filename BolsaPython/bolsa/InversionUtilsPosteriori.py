@@ -1,14 +1,13 @@
-import sys
-
 import glob
+import sys
+from datetime import date
+from datetime import datetime
+
+import matplotlib.dates as mdates
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-from datetime import datetime
-import matplotlib.dates as mdates
 import requests
-from datetime import date
-import math
 
 #EXPLICACIÓN:
 #Se recorren los ficheros grandes y manejables, y se saca el rendimiento medio, por día y subgrupo.

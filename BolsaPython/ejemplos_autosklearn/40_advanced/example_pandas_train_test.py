@@ -24,16 +24,13 @@ list or numpy arrays as there is no per-column dtype (further details in the exa
 """
 import time
 
+import autosklearn.classification
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import sklearn.model_selection
 import sklearn.datasets
 import sklearn.metrics
-
 from smac.tae import StatusType
-
-import autosklearn.classification
 
 
 def get_runhistory_models_performance(automl):

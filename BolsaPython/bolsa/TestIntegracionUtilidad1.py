@@ -1,8 +1,7 @@
-import sys
 import os
+import sys
+
 import pandas as pd
-from pathlib import Path
-from pandas import DataFrame
 
 print("TestIntegracionUtilidad1 - INICIO")
 print("PARAMETROS: ")

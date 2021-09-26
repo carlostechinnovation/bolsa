@@ -7,14 +7,11 @@ This examples shows how to format the targets for a multilabel classification
 problem. Details on multilabel classification can be found
 `here <https://scikit-learn.org/stable/modules/multiclass.html>`_.
 """
+import autosklearn.classification
 import numpy as np
-
 import sklearn.datasets
 import sklearn.metrics
 from sklearn.utils.multiclass import type_of_target
-
-import autosklearn.classification
-
 
 ############################################################################
 # Data Loading

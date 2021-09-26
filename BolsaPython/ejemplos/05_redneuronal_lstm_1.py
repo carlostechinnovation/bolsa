@@ -1,15 +1,16 @@
 #WEB: https://machinelearningmastery.com/time-series-prediction-lstm-recurrent-neural-networks-python-keras/
 
+import math
+
+import matplotlib.pyplot as plt
 # LSTM for international airline passengers problem with window regression framing
 import numpy
-import matplotlib.pyplot as plt
-from pandas import read_csv
-import math
-from keras.models import Sequential
 from keras.layers import Dense
 from keras.layers import LSTM
-from sklearn.preprocessing import MinMaxScaler
+from keras.models import Sequential
+from pandas import read_csv
 from sklearn.metrics import mean_squared_error
+from sklearn.preprocessing import MinMaxScaler
 
 # fix random seed for reproducibility
 numpy.random.seed(7)

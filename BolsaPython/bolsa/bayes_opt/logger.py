@@ -1,9 +1,10 @@
 from __future__ import print_function
-import os
-import json
 
-from .observer import _Tracker
+import json
+import os
+
 from .event import Events
+from .observer import _Tracker
 from .util import Colours
 
 
