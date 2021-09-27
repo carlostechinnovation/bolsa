@@ -68,6 +68,16 @@ crearCarpetaSiNoExiste "${DIR_INVERSION}"
 rm -f "${DIR_LOGS}log4j.log"
 rm -f "${LOG_INVERSION}"
 
+############### COMPILAR JAR ########################################################
+echo -e "Comprobando que JAVA tenga su JAR aunque no lo usemos en este script..." >> ${LOG_INVERSION}
+
+if [ -f "$PATH_JAR" ]; then
+    echo "El siguiente JAR se ha generado bien: ${PATH_JAR}"
+else 
+    echo "El siguiente JAR no se ha generado bien: ${PATH_JAR}   Saliendo..."
+	exit -1
+fi
+
 ################################################################################################
 
 #En esta ejecucion, nos situamos en HOY MISMO y PREDECIMOS el futuro. Guardaremos esa predicción para meter dinero REAL.

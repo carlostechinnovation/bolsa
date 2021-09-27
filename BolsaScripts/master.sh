@@ -112,10 +112,23 @@ LOG_MASTER="${DIR_LOGS}${ID_EJECUCION}_bolsa_coordinador_${DIR_TIEMPO}.log"
 rm -f "${LOG_MASTER}"
 
 ############### COMPILAR JAR ########################################################
+echo -e "Version de MAVEN:" >> ${LOG_MASTER}
+mvn -version >> ${LOG_MASTER}
+
 echo -e "Compilando JAVA en un JAR..." >> ${LOG_MASTER}
 cd "${DIR_JAVA}" >> ${LOG_MASTER}
 rm -Rf "${DIR_JAVA}target/" >> ${LOG_MASTER}
+echo "JAVA_HOME contiene este valor: ${JAVA_HOME}" >> ${LOG_MASTER}
+
 mvn clean compile assembly:single >> ${LOG_MASTER}
+
+if [ -f "$PATH_JAR" ]; then
+    echo "El siguiente JAR se ha generado bien: ${PATH_JAR}"
+else 
+    echo "El siguiente JAR no se ha generado bien: ${PATH_JAR}   Saliendo..."
+	exit -1
+fi
+
 
 ################################################################################################
 echo -e $( date '+%Y%m%d_%H%M%S' )" -------- Capa 1: DATOS BRUTOS -------------" >> ${LOG_MASTER}
