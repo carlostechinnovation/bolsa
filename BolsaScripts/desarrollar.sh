@@ -21,7 +21,7 @@ echo -e "Abriendo SmartGIT..." >> ${LOG_DESA}
 
 echo -e "Abriendo terminal Linux..." >> ${LOG_DESA}
 gnome-terminal /bolsa/logs/ &
-gnome-terminal /home/carloslinux/Desktop/GIT_BOLSA/BolsaScripts/ &
+#gnome-terminal /home/carloslinux/Desktop/GIT_BOLSA/BolsaScripts/ &
 
 echo -e "Abriendo GitExtensions..." >> ${LOG_DESA}
 ${DIR_PROGRAMAS}GitExtensions/GitExtensions.exe &
