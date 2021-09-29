@@ -425,9 +425,7 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
     if modoTiempo == "pasado":
         # Con el "normalizador COMPLEJO" solucionamos este bug: https://github.com/scikit-learn/scikit-learn/issues/14959  --> Aplicar los cambios indicados a:_/home/carloslinux/Desktop/PROGRAMAS/anaconda3/envs/BolsaPython/lib/python3.7/site-packages/sklearn/preprocessing/_data.py
         modelo_normalizador = make_pipeline(MinMaxScaler(),
-                                            PowerTransformer(method='yeo-johnson', standardize=True,
-                                                             copy=True), ).fit(
-            featuresFichero)  # COMPLEJO
+            PowerTransformer(method='yeo-johnson', standardize=True, copy=True), ).fit(featuresFichero)  # COMPLEJO
         # modelo_normalizador = PowerTransformer(method='yeo-johnson', standardize=True, copy=True).fit(featuresFichero)
         pickle.dump(modelo_normalizador, open(path_modelo_normalizador, 'wb'))
 
@@ -625,7 +623,7 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         print((datetime.datetime.now()).strftime("%Y%m%d_%H%M%S") + " Matriz de correlaciones (PASADO):")
         matrizCorr = ift_juntas.corr().abs()
         # print(matrizCorr.to_string())
-        upper = matrizCorr.where(np.triu(np.ones(matrizCorr.shape), k=1).astype(np.bool))
+        upper = matrizCorr.where(np.triu(np.ones(matrizCorr.shape), k=1).astype(bool))
         # print(upper.to_string())
         print("Eliminamos las features muy correladas (umbral = " + str(umbralFeaturesCorrelacionadas) + "):")
         to_drop = [column for column in upper.columns if any(upper[column] > umbralFeaturesCorrelacionadas)]
@@ -698,7 +696,7 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
             resample = SMOTETomek()
             print("SMOTE antes (mayoritaria + minoritaria): %d" % ds_train_f.shape[0])
             print("SMOTE fit...")
-            ds_train_f, ds_train_t = resample.fit_sample(ds_train_f, ds_train_t)
+            ds_train_f, ds_train_t = resample.fit_resample(ds_train_f, ds_train_t)
             print("SMOTE después (mayoritaria + minoritaria): %d" % ds_train_f.shape[0])
 
         ift_mayoritaria_entrada_modelos = ds_train_t[ds_train_t == False]  # En este caso los mayoritarios son los False

@@ -31,8 +31,8 @@ subgrupo|descripcion
 30|Ratio SMA50 vs Precio es muy alto
 31|Ratio SMA50 vs Precio es desconocido (bajo o alto)
 32|China
-33|Estados Unidos
-34|India
+33|Israel
+34|Europe
 35|Otros paises
 36|Pais desconocido (EEUU, Asia, Africa...)
 37|Porcentaje de participación institucional (fondos) bajo

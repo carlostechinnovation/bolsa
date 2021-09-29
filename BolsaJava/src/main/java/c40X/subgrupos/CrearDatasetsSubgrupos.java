@@ -219,7 +219,7 @@ public class CrearDatasetsSubgrupos implements Serializable {
 		// Tipos de empresa segun geografia
 		ArrayList<String> pathEmpresasTipo32 = new ArrayList<String>(); // china
 		ArrayList<String> pathEmpresasTipo33 = new ArrayList<String>(); // USA
-		ArrayList<String> pathEmpresasTipo34 = new ArrayList<String>(); // India
+		ArrayList<String> pathEmpresasTipo34 = new ArrayList<String>(); // Europe
 		ArrayList<String> pathEmpresasTipo35 = new ArrayList<String>(); // resto explicito
 		ArrayList<String> pathEmpresasTipo36 = new ArrayList<String>(); // desconocido
 
@@ -380,7 +380,6 @@ public class CrearDatasetsSubgrupos implements Serializable {
 					&& (recomAnalistasDesconocido || analistasRecomiendanComprar)
 					&& (ratioPERDesconocido || ratioPERRazonable);
 
-			
 			String empresaCumpleCriteriosComunesStr = empresaCumpleCriteriosComunes ? "ENTRA" : "DESCARTADA";
 
 			MY_LOGGER.info("EMPRESA: " + empresa + " ==> " + empresaCumpleCriteriosComunesStr + " ==>"
@@ -564,11 +563,11 @@ public class CrearDatasetsSubgrupos implements Serializable {
 
 						if (geoStr != null && !geoStr.isEmpty() && !"-".equals(geoStr)) {
 
-							if (geoStr.equalsIgnoreCase("china")) {
+							if (geoStr.equalsIgnoreCase("China")) {
 								pathEmpresasTipo32.add(ficheroGestionado.getAbsolutePath());
-							} else if (geoStr.equalsIgnoreCase("USA")) {
+							} else if (geoStr.equalsIgnoreCase("Israel")) {
 								pathEmpresasTipo33.add(ficheroGestionado.getAbsolutePath());
-							} else if (geoStr.equalsIgnoreCase("India")) {
+							} else if (esUnionEuropeaSeria(geoStr)) {
 								pathEmpresasTipo34.add(ficheroGestionado.getAbsolutePath());
 							} else {
 								pathEmpresasTipo35.add(ficheroGestionado.getAbsolutePath());
@@ -1006,6 +1005,27 @@ public class CrearDatasetsSubgrupos implements Serializable {
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * Indica si es un pais serio de la UE (se excluyen los poco serios, como los
+	 * soviéticos o Grecia o los minúsculos como Islandia). Se incluye a España por
+	 * ser grande, aunque poco serio.
+	 * 
+	 * @param geoStr Nombre del pais que aparece en cada empresa en FINVIZ
+	 * @return True si pertenece a la UE
+	 */
+	public static boolean esUnionEuropeaSeria(String geoStr) {
+
+		return geoStr != null && !geoStr.isEmpty() && (
+
+		geoStr.equalsIgnoreCase("belgium") || geoStr.equalsIgnoreCase("benelux") || geoStr.equalsIgnoreCase("denmark")
+				|| geoStr.equalsIgnoreCase("finland") || geoStr.equalsIgnoreCase("france")
+				|| geoStr.equalsIgnoreCase("germany") || geoStr.equalsIgnoreCase("ireland")
+				|| geoStr.equalsIgnoreCase("italy") || geoStr.equalsIgnoreCase("luxembourg")
+				|| geoStr.equalsIgnoreCase("netherlands") || geoStr.equalsIgnoreCase("norway")
+				|| geoStr.equalsIgnoreCase("portugal") || geoStr.equalsIgnoreCase("spain")
+				|| geoStr.equalsIgnoreCase("sweden") || geoStr.equalsIgnoreCase("unitedkingdom"));
 	}
 
 }
