@@ -86,7 +86,7 @@ print("modoTiempo = %s" % modoTiempo)
 print("maxFeatReducidas = %s" % maxFeatReducidas)
 print("maxFilasEntrada = %s" % maxFilasEntrada)
 
-varianza = 0.92  # Variacion acumulada de las features PCA sobre el target
+varianza = 0.95  # Variacion acumulada de las features PCA sobre el target
 compatibleParaMuchasEmpresas = False  # Si hay muchas empresas, debo hacer ya el undersampling (en vez de capa 6)
 global modoDebug;
 modoDebug = False  # VARIABLE GLOBAL: En modo debug se pintan los dibujos. En otro caso, se evita calculo innecesario
@@ -116,6 +116,7 @@ balancear = False  # No usar este balanceo, sino el de Luis (capa 6), que solo a
 
 print("pathCsvCompleto = %s" % pathCsvCompleto)
 print("dir_subgrupo_img = %s" % dir_subgrupo_img)
+print("pathCsvIntermedio = %s" % pathCsvIntermedio)
 print("pathCsvReducido = %s" % pathCsvReducido)
 print("pathModeloOutliers = %s" % pathModeloOutliers)
 print("path_modelo_normalizador = %s" % path_modelo_normalizador)
@@ -133,12 +134,11 @@ with warnings.catch_warnings():
 np.random.seed(12345)
 
 print("\n" + (datetime.datetime.now()).strftime(
-    "%Y%m%d_%H%M%S") + " **** CAPA 6 - Crear almacenar y evaluar varios modelos (para cada subgrupo) ****")
+    "%Y%m%d_%H%M%S") + " **** CAPAS 5 y 6 - Crear almacenar y evaluar varios modelos (para cada subgrupo) ****")
 print("Tipo de problema: CLASIFICACION DICOTOMICA (target es boolean)")
 
 print("PARAMETROS: ")
 pathFeaturesSeleccionadas = dir_subgrupo + "FEATURES_SELECCIONADAS.csv"
-modoDebug = False  # En modo debug se pintan los dibujos. En otro caso, se evita calculo innecesario
 umbralCasosSuficientesClasePositiva = 50
 granProbTargetUno = 50  # De todos los target=1, nos quedaremos con los granProbTargetUno (en tanto por cien) MAS probables. Un valor de 100 o mayor anula este parámetro
 balancearConSmoteSoloTrain = True
@@ -199,6 +199,7 @@ def comprobarPrecisionManualmente(targetsNdArray1, targetsNdArray2, etiqueta, id
     else:
         print(id_subgrupo + " " + etiqueta + " --> Positivos predichos = " + str(len(df2a)))
 
+    return mensajeAlerta
 
 
 ################## MAIN ###########################################################
@@ -217,7 +218,7 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
     entradaFeaturesYTarget.sort_index(
         inplace=True)  # Reordenando segun el indice (para facilitar el testIntegracion)
     entradaFeaturesYTarget.to_csv(pathCsvIntermedio + ".entrada", index=True,
-                                  sep='|')  # NO BORRAR: UTIL para testIntegracion
+                                  sep='|', float_format='%.4f')  # NO BORRAR: UTIL para testIntegracion
 
     if int(maxFilasEntrada) < entradaFeaturesYTarget.shape[0]:
         print("entradaFeaturesYTarget (APLICANDO MAXIMO): " + str(entradaFeaturesYTarget.shape[0]) + " x " + str(
@@ -239,8 +240,7 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
     print("MISSING VALUES (COLUMNAS) - Borramos las columnas (features) que sean siempre NaN...")
     entradaFeaturesYTarget2 = entradaFeaturesYTarget.dropna(axis=1,
                                                             how='all')  # Borrar COLUMNA si TODOS sus valores tienen NaN
-    print(
-        "entradaFeaturesYTarget2 (columnas nulas borradas): " + str(entradaFeaturesYTarget2.shape[0]) + " x " + str(
+    print("entradaFeaturesYTarget2 (columnas nulas borradas): " + str(entradaFeaturesYTarget2.shape[0]) + " x " + str(
             entradaFeaturesYTarget2.shape[1]))
     # entradaFeaturesYTarget2.to_csv(path_csv_completo + "_TEMP01", index=True, sep='|')  # UTIL para testIntegracion
 
@@ -272,9 +272,8 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
         'anio', axis=1).drop('mes', axis=1).drop('dia', axis=1).drop('hora', axis=1).drop('minuto', axis=1)
 
     print("Borrar columnas dinamicas que no aportan nada: volumen | high | low | close | open ...")
-    entradaFeaturesYTarget2 = entradaFeaturesYTarget2.drop('volumen', axis=1).drop('high', axis=1).drop('low',
-                                                                                                        axis=1).drop(
-        'close', axis=1).drop('open', axis=1)
+    entradaFeaturesYTarget2 = entradaFeaturesYTarget2.drop('volumen', axis=1).drop('high', axis=1)\
+        .drop('low', axis=1).drop('close', axis=1).drop('open', axis=1)
 
     # entradaFeaturesYTarget2.to_csv(path_csv_completo + "_TEMP02", index=True, sep='|')  # UTIL para testIntegracion
 
@@ -283,8 +282,7 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
     # print(entradaFeaturesYTarget2.head())
 
     if modoTiempo == "pasado":
-        print(
-            "MISSING VALUES (FILAS) - Borramos las FILAS que tengan 1 o mas valores NaN porque son huecos que no deberían estar...")
+        print("MISSING VALUES (FILAS) - Borramos las FILAS que tengan 1 o mas valores NaN porque son huecos que no deberían estar...")
         entradaFeaturesYTarget3 = entradaFeaturesYTarget2.dropna(axis=0,
                                                                  how='any')  # Borrar FILA si ALGUNO sus valores tienen NaN
 
@@ -301,7 +299,9 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
 
     print("entradaFeaturesYTarget3 (filas con algun nulo borradas):" + str(
         entradaFeaturesYTarget3.shape[0]) + " x " + str(entradaFeaturesYTarget3.shape[1]))
-    # entradaFeaturesYTarget3.to_csv(path_csv_completo + "_TEMP03", index=True, sep='|')  # UTIL para testIntegracion
+
+    entradaFeaturesYTarget3.to_csv(pathCsvIntermedio + ".sololascompletas.csv", index=True, sep='|')  # NO BORRAR: UTIL para testIntegracion
+    entradaFeaturesYTarget3.to_csv(pathCsvIntermedio + ".sololascompletas_INDICES.csv", columns=[])  # NO BORRAR: UTIL para testIntegracion
 
     # Limpiar OUTLIERS
     # URL: https://scikit-learn.org/stable/modules/outlier_detection.html
@@ -332,7 +332,8 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
 
     print("entradaFeaturesYTarget4 (sin outliers):" + str(entradaFeaturesYTarget4.shape[0]) + " x " + str(
         entradaFeaturesYTarget4.shape[1]))
-    # entradaFeaturesYTarget4.to_csv(path_csv_completo + "_TEMP04", index=True, sep='|')  # UTIL para testIntegracion
+    entradaFeaturesYTarget3.to_csv(pathCsvIntermedio + ".sinoutliers.csv", index=True, sep='|')  # NO BORRAR: UTIL para testIntegracion
+    entradaFeaturesYTarget3.to_csv(pathCsvIntermedio + ".sinoutliers_INDICES.csv", columns=[])  # NO BORRAR: UTIL para testIntegracion
 
     # ENTRADA: features (+ target)
 
@@ -439,7 +440,7 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
 
     print("featuresFicheroNorm:" + str(featuresFicheroNorm.shape[0]) + " x " + str(featuresFicheroNorm.shape[1]))
     featuresFicheroNorm.to_csv(pathCsvIntermedio + ".normalizado.csv", index=True,
-                               sep='|')  # UTIL para testIntegracion
+                               sep='|', float_format='%.4f')  # UTIL para testIntegracion
 
     if modoDebug and modoTiempo == "pasado":
         print("FUNCIONES DE DENSIDAD (normalizadas):")
@@ -488,26 +489,23 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
         print("modoTiempo: " + modoTiempo)
         print("maxFeatReducidas: " + maxFeatReducidas)
 
-
         ######################## SIN RFECV ###############################
         featuresFichero3Elegidas=featuresFichero3
         columnasSeleccionadas = featuresFichero3.columns
         ####################### FIN SIN RFECV ###############################
 
         print("Features seleccionadas (tras el paso de RFECV, cuya aplicacion es opcional) escritas en: " + pathCsvFeaturesElegidas)
-        featuresFichero3Elegidas.head(1).to_csv(pathCsvFeaturesElegidas, index=False, sep='|')
-
+        featuresFichero3Elegidas.head(1).to_csv(pathCsvFeaturesElegidas, index=False, sep='|', float_format='%.4f')
 
         ########### PCA: base de funciones ortogonales (con combinaciones de features) ########
-
         print("** PCA (Principal Components Algorithm) **")
 
         if modoTiempo == "pasado":
             print(
                 "Usando PCA, creamos una NUEVA BASE DE FEATURES ORTOGONALES y cogemos las que tengan un impacto agregado sobre el X% de la varianza del target. Descartamos el resto.")
-            #varianza=0.99
-            #modelo_pca_subgrupo = PCA(n_components=varianza, svd_solver='full')  # Variaza acumulada sobre el target
-            modelo_pca_subgrupo = PCA(n_components='mle', svd_solver='full')  # Metodo "MLE de Minka": https://vismod.media.mit.edu/tech-reports/TR-514.pdf
+
+            modelo_pca_subgrupo = PCA(n_components=varianza, svd_solver='full')  # Variaza acumulada sobre el target
+            #modelo_pca_subgrupo = PCA(n_components='mle', svd_solver='full')  # Metodo "MLE de Minka": https://vismod.media.mit.edu/tech-reports/TR-514.pdf
             # modelo_pca_subgrupo = TSNE(n_components=2, perplexity=30.0, early_exaggeration=12.0, learning_rate=200.0,
             #                            n_iter=1000, n_iter_without_progress=300, min_grad_norm=1e-07,
             #                            metric='euclidean', init='random', verbose=0, random_state=None,
@@ -527,8 +525,7 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
         print("Dimensiones del dataframe tras PCA: " + str(featuresFichero3_pca.shape[0]) + " x " + str(
             featuresFichero3_pca.shape[1]))
 
-        print(
-            "Las features están ya normalizadas, reducidas y en base ortogonal PCA. DESCRIBIMOS lo que hemos hecho y GUARDAMOS el dataset.")
+        print("Las features están ya normalizadas, reducidas y en base ortogonal PCA. DESCRIBIMOS lo que hemos hecho y GUARDAMOS el dataset.")
         num_columnas_pca = featuresFichero3_pca.shape[1]
         columnas_pca = ["pca_" + f"{i:0>2}" for i in
                         range(num_columnas_pca)]  # Hacemos left padding con la funcion f-strings
@@ -542,7 +539,7 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
         pcaMatriz.columns = columnasSeleccionadas
         columnas_pca_df = pd.DataFrame(columnas_pca)
         pcaMatriz = pd.concat([columnas_pca_df, pcaMatriz], axis=1)
-        pcaMatriz.to_csv(path_pesos_pca, index=False, sep='|')
+        pcaMatriz.to_csv(path_pesos_pca, index=False, sep='|', float_format='%.4f')
 
         ### Guardar a fichero
         # print("Muestro las features + targets antes de juntarlas...")
@@ -561,7 +558,7 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
         # print(featuresytargets.head())
         print("Justo antes de guardar, featuresytargets: " + str(featuresytargets.shape[0]) + " x " + str(
             featuresytargets.shape[1]))
-        featuresytargets.to_csv(pathCsvReducido, index=True, sep='|')
+        featuresytargets.to_csv(pathCsvReducido, index=True, sep='|', float_format='%.4f')
 
         ####################################################################
 
@@ -585,8 +582,7 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
 
     print("BALANCEAR los casos positivos y negativos, haciendo downsampling de la clase mayoritaria...")
     print("URL: https://elitedatascience.com/imbalanced-classes")
-    ift_mayoritaria = inputFeaturesyTarget[
-        inputFeaturesyTarget.TARGET == False]  # En este caso los mayoritarios son los False
+    ift_mayoritaria = inputFeaturesyTarget[inputFeaturesyTarget.TARGET == False]  # En este caso los mayoritarios son los False
     ift_minoritaria = inputFeaturesyTarget[inputFeaturesyTarget.TARGET == True]
     print("ift_mayoritaria:" + str(ift_mayoritaria.shape[0]) + " x " + str(ift_mayoritaria.shape[1]))
     print("ift_minoritaria:" + str(ift_minoritaria.shape[0]) + " x " + str(ift_minoritaria.shape[1]))
@@ -602,12 +598,16 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
             umbralCasosSuficientesClasePositiva) + "). Así que abandonamos este dataset y seguimos")
 
     else:
+        print("En el dataframe se coloca primero todas las mayoritarias y despues todas las minoritarias")
         ift_juntas = pd.concat([ift_mayoritaria.reset_index(drop=True), ift_minoritaria.reset_index(drop=True)],
                                axis=0)  # Row bind
         indices_juntos = ift_mayoritaria.index.append(ift_minoritaria.index)  # Row bind
         ift_juntas.set_index(indices_juntos, inplace=True)
         print("Las clases juntas son:")
         print("ift_juntas:" + str(ift_juntas.shape[0]) + " x " + str(ift_juntas.shape[1]))
+
+        ift_juntas.to_csv(pathCsvIntermedio + ".trasbalancearclases.csv", index=True, sep='|', float_format='%.4f')  # NO BORRAR: UTIL para testIntegracion
+        ift_juntas.to_csv(pathCsvIntermedio + ".trasbalancearclases_INDICES.csv", columns=[])  # NO BORRAR: UTIL para testIntegracion
 
         ############ PANDAS PROFILING ###########
         if modoDebug:
@@ -765,14 +765,14 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         clf1 = SVC(class_weight='balanced',  # penalize
                      probability=True)
         #clf2 = RandomForestClassifier(class_weight='balanced') # Rendimiento: 0.45
-        clf2=MLPClassifier() # Rendimiento: 0.46
+        clf2 = MLPClassifier()  # Rendimiento: 0.46
         eclf = VotingClassifier(estimators=[('m1', clf1), ('m2', clf2)],
                         voting='soft')
         params = {}
         grid = GridSearchCV(estimator=eclf, param_grid=params, cv=cv_todos, scoring='precision', n_jobs=-1)
 
         # fit ensemble model to training data
-        modelo=grid.fit(ds_train_f, ds_train_t)  # test our model on the test data
+        modelo = grid.fit(ds_train_f, ds_train_t)  # test our model on the test data
         nombreModelo = "ensemble"
 
         print("Fin de Ensemble")
@@ -904,6 +904,10 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         train_t_predicho = modelo.predict(ds_train_f)
         precision_train = precision_score(ds_train_t, train_t_predicho)
         print("PRECISIÓN EN TRAIN = " + '{0:0.2f}'.format(precision_train))
+        pd.DataFrame(ds_train_t).to_csv(pathCsvIntermedio + ".ds_train_t.csv", index=True, sep='|', float_format='%.4f')  # NO BORRAR: UTIL para testIntegracion
+        pd.DataFrame(train_t_predicho).to_csv(pathCsvIntermedio + ".train_t_predicho.csv", index=True, sep='|',
+                          float_format='%.4f')  # NO BORRAR: UTIL para testIntegracion
+
         test_t_predicho = ds_test_t_pred
         validac_t_predicho = modelo.predict(ds_validac_f)
         precision_test = precision_score(ds_test_t, test_t_predicho)
@@ -914,6 +918,13 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         precision_avg_media = (precision_avg_test + precision_avg_validation) / 2
         print("PRECISIÓN EN TEST = " + '{0:0.2f}'.format(precision_test))
         print("PRECISIÓN EN VALIDACION = " + '{0:0.2f}'.format(precision_validation))
+
+        # NO BORRAR: UTIL para testIntegracion
+        pd.DataFrame(ds_test_t).to_csv(pathCsvIntermedio + ".ds_test_t.csv", index=True, sep='|', float_format='%.4f')
+        pd.DataFrame(test_t_predicho).to_csv(pathCsvIntermedio + ".test_t_predicho.csv", index=True, sep='|', float_format='%.4f')
+        pd.DataFrame(ds_validac_t).to_csv(pathCsvIntermedio + ".ds_validac_t.csv", index=True, sep='|', float_format='%.4f')
+        pd.DataFrame(validac_t_predicho).to_csv(pathCsvIntermedio + ".validac_t_predicho.csv", index=True, sep='|', float_format='%.4f')
+
         print(id_subgrupo + " " + nombreModelo + " -> Precision = " + '{0:0.2f}'.format(
             precision_media) + " (average precision = " + '{0:0.2f}'.format(precision_avg_media) + ")")
         if precision_media > ganador_metrica:
@@ -927,8 +938,8 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         ######################################################################################################################
 
         print("********* GANADOR de subgrupo *************")
-        num_positivos_test = len(ds_test_t[ds_test_t == True])
-        num_positivos_validac = len(ds_validac_t[ds_validac_t == True])
+        num_positivos_test = len(ds_test_t[ds_test_t is True])
+        num_positivos_validac = len(ds_validac_t[ds_validac_t is True])
         print("PASADO -> " + id_subgrupo + " (num features = " + str(
             ds_train_f.shape[1]) + ")" + " -> Modelo ganador = " + ganador_nombreModelo + " --> METRICA = " + str(
             round(ganador_metrica, 4)) + " (avg_precision = " + str(round(ganador_metrica_avg, 4)) + ")")
@@ -1030,7 +1041,7 @@ elif (modoTiempo == "futuro" and pathCsvReducido.endswith('.csv') and os.path.is
         print("Guardando targets PREDICHOS en: " + pathCsvPredichos)
         df_predichos = targets_predichosCorregidos.to_frame()
         df_predichos.columns = ['TARGET_PREDICHO']
-        df_predichos.to_csv(pathCsvPredichos, index=False, sep='|')  # Capa 6 - Salida (para el validador, sin indice)
+        df_predichos.to_csv(pathCsvPredichos, index=False, sep='|', float_format='%.4f')  # Capa 6 - Salida (para el validador, sin indice)
 
         df_predichos_probs = targets_predichosCorregidos_probs.to_frame()
         df_predichos_probs.columns = ['TARGET_PREDICHO_PROB']
@@ -1053,7 +1064,7 @@ elif (modoTiempo == "futuro" and pathCsvReducido.endswith('.csv') and os.path.is
             'Int64')  # Convertir de boolean a int64, manteniendo los nulos
 
         print("Guardando: " + pathCsvFinalFuturo)
-        df_juntos_2.to_csv(pathCsvFinalFuturo, index=False, sep='|')
+        df_juntos_2.to_csv(pathCsvFinalFuturo, index=False, sep='|', float_format='%.4f')
 
 
     else:
