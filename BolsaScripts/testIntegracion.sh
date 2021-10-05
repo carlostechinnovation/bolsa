@@ -266,17 +266,19 @@ cat "/bolsa/logs/${file_log_pasado_mas_reciente}" | grep reales | grep predichos
 echo -e "<br>" >> ${INFORME_OUT}
 cat "/bolsa/logs/${file_log_pasado_mas_reciente}" | grep reales | grep predichos | grep SG_${SG_ANALIZADO} | grep 'VALID' >> ${INFORME_OUT}
 echo -e "<br>" >> ${INFORME_OUT}
+echo -e "<h3>¡¡¡ Un sistema aleatorio/tonto acertaría un 50% de los casos, simplemente diciendo siempre false (o true) !!!</h3>" >> ${INFORME_OUT}
+echo -e "<h3>RECORDAR: Solo miramos la precisión sobre los positivos predichos, porque es donde ponemos el DINERO REAL. No miramos los positivos no predichos ni los negativos predichos.</h3>" >> ${INFORME_OUT}
 
 
+echo -e "<br>" >> ${INFORME_OUT}
 
+echo -e "<br>" >> ${INFORME_OUT}
 
 
 #######################################################################################################
 #######################################################################################################
 echo -e "<h2>******************* COMPROBACIONES del FUTURO2 ********************</h2>" >> ${INFORME_OUT}
 echo -e "<br><br><br><br><br>" >> ${INFORME_OUT}
-
-
 
 
 

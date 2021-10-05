@@ -176,7 +176,10 @@ print("umbralFeaturesCorrelacionadas = " + str(umbralFeaturesCorrelacionadas))
 
 
 # PRECISION: de los pocos casos que predigamos TRUE, queremos que todos sean aciertos.
-def comprobarPrecisionManualmente(targetsNdArray1, targetsNdArray2, etiqueta, id_subgrupo):
+def comprobarPrecisionManualmente(targetsNdArray1, targetsNdArray2, etiqueta, id_subgrupo, dfConIndex):
+
+    print(id_subgrupo + " " + etiqueta + " Comprobación de la precisión --> dfConIndex: " + str(dfConIndex.shape[0]) + " x " + str(
+        dfConIndex.shape[1]) + ". Se comparan: array1=" + str(targetsNdArray1.size) + " y array2=" + str(targetsNdArray2.size))
 
     df1 = pd.DataFrame(targetsNdArray1, columns=['target'])
     df2 = pd.DataFrame(targetsNdArray2, columns=['target'])
@@ -184,18 +187,25 @@ def comprobarPrecisionManualmente(targetsNdArray1, targetsNdArray2, etiqueta, id
     df1['targetpredicho'] = df2['target']
     df1['iguales'] = np.where(df1['target'] == df1['targetpredicho'], True, False)
 
-    df1a = df1[df1.target == True]; df1b = df1a[df1a.iguales == True]
+    #Solo nos interesan los PREDICHOS True, porque es donde pondremos dinero real
+    df1a = df1[df1.target == True]
+    df1b = df1a[df1a.iguales == True]
     df2a = df1[df1.targetpredicho == True]
-    mensajeAlerta=""
 
-    if(len(df2a) > 0):
+    mensajeAlerta = ""
+    if len(df2a) > 0:
         precision = (100 * len(df1b) / len(df2a))
-
         if precision >= 25 and len(df2a) >= 10:
             mensajeAlerta=" ==> INTERESANTE"
 
         print(id_subgrupo + " " + etiqueta + " --> Positivos reales = " + str(len(df1a)) + ". Positivos predichos = " + str(len(df2a)) +". De estos ultimos, los ACIERTOS son: " + str(
             len(df1b)) + " ==> Precision = TP/(TP+FP) = " + str(round(precision, 1)) + " %" + mensajeAlerta)
+
+        if etiqueta == "TEST" or etiqueta == "VALIDACION":
+            print(id_subgrupo + " " + etiqueta + " --> ESTUDIAR Detalle de las empresas para las que se ha predicho True y lo real ha sido True (TP) o False (FP):")
+            dfEmpresasPredichasTrue = pd.merge(df2a, dfConIndex, left_index=True, right_index=True)
+            dfEmpresasPredichasTrueLoInteresante = dfEmpresasPredichasTrue[["empresa", "antiguedad", "target", "targetpredicho", "anio", "mes", "dia", "hora", "volumen"]]
+            print(dfEmpresasPredichasTrueLoInteresante)
     else:
         print(id_subgrupo + " " + etiqueta + " --> Positivos predichos = " + str(len(df2a)))
 
@@ -652,12 +662,21 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         print((datetime.datetime.now()).strftime(
             "%Y%m%d_%H%M%S") + " DIVIDIR EL DATASET DE ENTRADA EN 3 PARTES: TRAIN (" + str(
             fraccion_train) + "), TEST (" + str(fraccion_test) + "), VALIDACION (" + str(fraccion_valid) + ")")
-        ds_train, ds_test, ds_validacion = np.split(ift_juntas.sample(frac=1).reset_index(drop=True),
+
+
+        dfAntesDeSplit = ift_juntas.sample(frac=1)
+        indicesAntesDeSplit = dfAntesDeSplit.index
+        dfAntesDeSplitIndexReset = dfAntesDeSplit.reset_index(drop=True)
+        indicesAntesDeSplitReset = dfAntesDeSplitIndexReset.index
+        ds_train, ds_test, ds_validacion = np.split(dfAntesDeSplitIndexReset,
                                                     [int(fraccion_train * len(ift_juntas)),
                                                      int((fraccion_train + fraccion_test) * len(ift_juntas))])
         print("TRAIN = " + str(ds_train.shape[0]) + " x " + str(ds_train.shape[1]) + "  " + "TEST --> " + str(
             ds_test.shape[0]) + " x " + str(ds_test.shape[1]) + "  " + "VALIDACION --> " + str(
             ds_validacion.shape[0]) + " x " + str(ds_validacion.shape[1]))
+
+        #Indices originales de los dataframes de TRAIN, TEST y VALID
+        ds_train_conindex, ds_test_conindex, ds_validacion_conindex = np.split(dfAntesDeSplit,[int(fraccion_train * len(ift_juntas)), int((fraccion_train + fraccion_test) * len(ift_juntas))])
 
         # Con las siguientes 3 líneas dejo sólo 1 true y lo demás false en el dataframe de test. Asi en la matriz de confusion validamos si el sistema no añade falsos positivos
         # aux = ds_test[ds_test.TARGET == True]
@@ -895,13 +914,13 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
 
         ############################# PREDICCIÓN #################################
         print("INICIO de PREDICCIÓN de test")
-        ds_test_t_pred = modelo_loaded.predict(
-            ds_test_f)  # PREDICCION de los targets de TEST (los compararemos con los que tenemos)
+        # PREDICCION de los targets de TEST (los compararemos con los que tenemos)
+        ds_test_t_pred = modelo_loaded.predict(ds_test_f)
         print("FIN de PREDICCIÓN de test")
 
         ############################## ANÁLISIS DE RESULTADOS ####################
         print("Inicio de ANÁLISIS DE RESULTADOS - train vs test vs validación")
-        train_t_predicho = modelo.predict(ds_train_f)
+        train_t_predicho = modelo_loaded.predict(ds_train_f)
         precision_train = precision_score(ds_train_t, train_t_predicho)
         print("PRECISIÓN EN TRAIN = " + '{0:0.2f}'.format(precision_train))
         pd.DataFrame(ds_train_t).to_csv(pathCsvIntermedio + ".ds_train_t.csv", index=True, sep='|', float_format='%.4f')  # NO BORRAR: UTIL para testIntegracion
@@ -909,7 +928,7 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
                           float_format='%.4f')  # NO BORRAR: UTIL para testIntegracion
 
         test_t_predicho = ds_test_t_pred
-        validac_t_predicho = modelo.predict(ds_validac_f)
+        validac_t_predicho = modelo_loaded.predict(ds_validac_f)
         precision_test = precision_score(ds_test_t, test_t_predicho)
         precision_avg_test = average_precision_score(ds_test_t, test_t_predicho)
         precision_validation = precision_score(ds_validac_t, validac_t_predicho)
@@ -953,9 +972,14 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
 
 
         ############### COMPROBACIÓN MANUAL DE LA PRECISIÓN ######################################
-        comprobarPrecisionManualmente(ds_train_t, train_t_predicho, "TRAIN (forzado)", id_subgrupo)
-        comprobarPrecisionManualmente(ds_test_t, test_t_predicho, "TEST", id_subgrupo)
-        comprobarPrecisionManualmente(ds_validac_t, validac_t_predicho, "VALIDACION", id_subgrupo)
+        # Cruce por indice para sacar los nombres de las empresas de cada fila
+        df_train_empresas_index = pd.merge(entradaFeaturesYTarget, ds_train_conindex, left_index=True, right_index=True)
+        df_test_empresas_index = pd.merge(entradaFeaturesYTarget, ds_test_conindex, left_index=True, right_index=True)
+        df_valid_empresas_index = pd.merge(entradaFeaturesYTarget, ds_validacion_conindex, left_index=True, right_index=True)
+
+        comprobarPrecisionManualmente(ds_train_t, train_t_predicho, "TRAIN (forzado)", id_subgrupo, df_train_empresas_index)
+        comprobarPrecisionManualmente(ds_test_t, test_t_predicho, "TEST", id_subgrupo, df_test_empresas_index)
+        comprobarPrecisionManualmente(ds_validac_t, validac_t_predicho, "VALIDACION", id_subgrupo, df_valid_empresas_index)
         ######################################################################################################################
 
 elif (modoTiempo == "futuro" and pathCsvReducido.endswith('.csv') and os.path.isfile(pathCsvReducido) and os.stat(
