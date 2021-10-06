@@ -66,6 +66,7 @@ import datetime
 from sklearn.manifold import TSNE
 from sklearn.decomposition import PCA, TruncatedSVD
 import matplotlib.patches as mpatches
+from xgboost import XGBClassifier
 
 
 print((datetime.datetime.now()).strftime(
@@ -86,7 +87,7 @@ print("modoTiempo = %s" % modoTiempo)
 print("maxFeatReducidas = %s" % maxFeatReducidas)
 print("maxFilasEntrada = %s" % maxFilasEntrada)
 
-varianza = 0.95  # Variacion acumulada de las features PCA sobre el target
+varianza = 0.90  # Variacion acumulada de las features PCA sobre el target
 compatibleParaMuchasEmpresas = False  # Si hay muchas empresas, debo hacer ya el undersampling (en vez de capa 6)
 global modoDebug;
 modoDebug = False  # VARIABLE GLOBAL: En modo debug se pintan los dibujos. En otro caso, se evita calculo innecesario
@@ -144,9 +145,9 @@ granProbTargetUno = 50  # De todos los target=1, nos quedaremos con los granProb
 balancearConSmoteSoloTrain = True
 umbralFeaturesCorrelacionadas = 0.96  # Umbral aplicado para descartar features cuya correlacion sea mayor que él
 umbralNecesarioCompensarDesbalanceo = 1  # Umbral de desbalanceo clase positiva/negativa. Si se supera, es necesario hacer oversampling de minoritaria (SMOTE) o undersampling de mayoritaria (borrar filas)
-cv_todos = 5  # CROSS_VALIDATION: número de iteraciones. Sirve para evitar el overfitting
-fraccion_train = 0.50  # Fracción de datos usada para entrenar
-fraccion_test = 0.25  # Fracción de datos usada para testear (no es validación)
+cv_todos = 10  # CROSS_VALIDATION: número de iteraciones. Sirve para evitar el overfitting
+fraccion_train = 0.60  # Fracción de datos usada para entrenar
+fraccion_test = 0.20  # Fracción de datos usada para testear (no es validación)
 fraccion_valid = 1.00 - (fraccion_train + fraccion_test)
 
 ######### ID de subgrupo #######
@@ -182,15 +183,16 @@ def comprobarPrecisionManualmente(targetsNdArray1, targetsNdArray2, etiqueta, id
         dfConIndex.shape[1]) + ". Se comparan: array1=" + str(targetsNdArray1.size) + " y array2=" + str(targetsNdArray2.size))
 
     df1 = pd.DataFrame(targetsNdArray1, columns=['target'])
+    df1.index =dfConIndex.index  #fijamos el indice del DF grande
     df2 = pd.DataFrame(targetsNdArray2, columns=['target'])
+    df2.index =dfConIndex.index  # fijamos el indice del DF grande
 
     df1['targetpredicho'] = df2['target']
     df1['iguales'] = np.where(df1['target'] == df1['targetpredicho'], True, False)
 
     #Solo nos interesan los PREDICHOS True, porque es donde pondremos dinero real
-    df1a = df1[df1.target == True]
-    df1b = df1a[df1a.iguales == True]
-    df2a = df1[df1.targetpredicho == True]
+    df1a = df1[df1.target == True];  df1b = df1a[df1a.iguales == True]  #Solo los True Positives
+    df2a = df1[df1.targetpredicho == True]  #donde ponemos el dinero real (True Positives y False Positives)
 
     mensajeAlerta = ""
     if len(df2a) > 0:
@@ -203,9 +205,10 @@ def comprobarPrecisionManualmente(targetsNdArray1, targetsNdArray2, etiqueta, id
 
         if etiqueta == "TEST" or etiqueta == "VALIDACION":
             print(id_subgrupo + " " + etiqueta + " --> ESTUDIAR Detalle de las empresas para las que se ha predicho True y lo real ha sido True (TP) o False (FP):")
-            dfEmpresasPredichasTrue = pd.merge(df2a, dfConIndex, left_index=True, right_index=True)
+            #PENDIENTE
+            dfEmpresasPredichasTrue = pd.merge(dfConIndex, df2a, how="inner", left_index=True, right_index=True)
             dfEmpresasPredichasTrueLoInteresante = dfEmpresasPredichasTrue[["empresa", "antiguedad", "target", "targetpredicho", "anio", "mes", "dia", "hora", "volumen"]]
-            print(dfEmpresasPredichasTrueLoInteresante)
+            #print(dfEmpresasPredichasTrueLoInteresante)
     else:
         print(id_subgrupo + " " + etiqueta + " --> Positivos predichos = " + str(len(df2a)))
 
@@ -342,8 +345,8 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
 
     print("entradaFeaturesYTarget4 (sin outliers):" + str(entradaFeaturesYTarget4.shape[0]) + " x " + str(
         entradaFeaturesYTarget4.shape[1]))
-    entradaFeaturesYTarget3.to_csv(pathCsvIntermedio + ".sinoutliers.csv", index=True, sep='|')  # NO BORRAR: UTIL para testIntegracion
-    entradaFeaturesYTarget3.to_csv(pathCsvIntermedio + ".sinoutliers_INDICES.csv", columns=[])  # NO BORRAR: UTIL para testIntegracion
+    entradaFeaturesYTarget4.to_csv(pathCsvIntermedio + ".sinoutliers.csv", index=True, sep='|')  # NO BORRAR: UTIL para testIntegracion
+    entradaFeaturesYTarget4.to_csv(pathCsvIntermedio + ".sinoutliers_INDICES.csv", columns=[])  # NO BORRAR: UTIL para testIntegracion
 
     # ENTRADA: features (+ target)
 
@@ -664,8 +667,8 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
             fraccion_train) + "), TEST (" + str(fraccion_test) + "), VALIDACION (" + str(fraccion_valid) + ")")
 
 
-        dfAntesDeSplit = ift_juntas.sample(frac=1)
-        indicesAntesDeSplit = dfAntesDeSplit.index
+        dfAntesDeSplit = entradaFeaturesYTarget4.sample(frac=1)
+        indicesAntesDeSplit = entradaFeaturesYTarget4.index
         dfAntesDeSplitIndexReset = dfAntesDeSplit.reset_index(drop=True)
         indicesAntesDeSplitReset = dfAntesDeSplitIndexReset.index
         ds_train, ds_test, ds_validacion = np.split(dfAntesDeSplitIndexReset,
@@ -676,7 +679,7 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
             ds_validacion.shape[0]) + " x " + str(ds_validacion.shape[1]))
 
         #Indices originales de los dataframes de TRAIN, TEST y VALID
-        ds_train_conindex, ds_test_conindex, ds_validacion_conindex = np.split(dfAntesDeSplit,[int(fraccion_train * len(ift_juntas)), int((fraccion_train + fraccion_test) * len(ift_juntas))])
+        ds_train_conindex_YCONSMOTE, ds_test_conindex, ds_validacion_conindex = np.split(entradaFeaturesYTarget4, [int(fraccion_train * len(ift_juntas)), int((fraccion_train + fraccion_test) * len(ift_juntas))])
 
         # Con las siguientes 3 líneas dejo sólo 1 true y lo demás false en el dataframe de test. Asi en la matriz de confusion validamos si el sistema no añade falsos positivos
         # aux = ds_test[ds_test.TARGET == True]
@@ -706,6 +709,9 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
 
         balancearConSmoteSoloTrain = (
                 tasaDesbalanceoAntes > umbralNecesarioCompensarDesbalanceo)  # Condicion para decidir si hacer SMOTE
+        ds_train_sinsmote = ds_train  #NO TOCAR
+        ds_train_f_sinsmote = ds_train_f  #NO TOCAR
+        ds_train_t_sinsmote = ds_train_t  #NO TOCAR
         if balancearConSmoteSoloTrain == True:
             print((datetime.datetime.now()).strftime(
                 "%Y%m%d_%H%M%S") + " ---------------- RESAMPLING con SMOTE (porque supera umbral = " + str(
@@ -713,9 +719,9 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
             print("Resampling con SMOTE del vector de TRAINING (pero no a TEST ni a VALIDATION) según: "
                 + "https://machinelearningmastery.com/combine-oversampling-and-undersampling-for-imbalanced-classification/")
             resample = SMOTETomek()
-            print("SMOTE antes (mayoritaria + minoritaria): %d" % ds_train_f.shape[0])
+            print("SMOTE antes (mayoritaria + minoritaria): %d" % ds_train_f_sinsmote.shape[0])
             print("SMOTE fit...")
-            ds_train_f, ds_train_t = resample.fit_resample(ds_train_f, ds_train_t)
+            ds_train_f, ds_train_t = resample.fit_resample(ds_train_f_sinsmote, ds_train_t_sinsmote)
             print("SMOTE después (mayoritaria + minoritaria): %d" % ds_train_f.shape[0])
 
         ift_mayoritaria_entrada_modelos = ds_train_t[ds_train_t == False]  # En este caso los mayoritarios son los False
@@ -780,21 +786,21 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         ########################## INICIO DE ENSEMBLE #########################################################
 
         # Se calcula ENSEMBLE (mezcla de modelos)
-        print("Inicio de Ensemble")
-        clf1 = SVC(class_weight='balanced',  # penalize
-                     probability=True)
-        #clf2 = RandomForestClassifier(class_weight='balanced') # Rendimiento: 0.45
-        clf2 = MLPClassifier()  # Rendimiento: 0.46
-        eclf = VotingClassifier(estimators=[('m1', clf1), ('m2', clf2)],
-                        voting='soft')
-        params = {}
-        grid = GridSearchCV(estimator=eclf, param_grid=params, cv=cv_todos, scoring='precision', n_jobs=-1)
+        # print("Inicio de Ensemble")
+        # clf1 = SVC(class_weight='balanced',  # penalize
+        #              probability=True)
+        # #clf2 = RandomForestClassifier(class_weight='balanced') # Rendimiento: 0.45
+        # clf2 = MLPClassifier()  # Rendimiento: 0.46
+        # eclf = VotingClassifier(estimators=[('m1', clf1), ('m2', clf2)],
+        #                 voting='soft')
+        # params = {}
+        # grid = GridSearchCV(estimator=eclf, param_grid=params, cv=cv_todos, scoring='precision', n_jobs=-1)
+        #
+        # # fit ensemble model to training data
+        # modelo = grid.fit(ds_train_f, ds_train_t)  # test our model on the test data
+        # nombreModelo = "ensemble"
 
-        # fit ensemble model to training data
-        modelo = grid.fit(ds_train_f, ds_train_t)  # test our model on the test data
-        nombreModelo = "ensemble"
-
-        print("Fin de Ensemble")
+        # print("Fin de Ensemble")
 
         ########################## FIN DE ENSEMBLE #########################################################
 
@@ -803,92 +809,94 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         #
         #
         #     #################### OPTIMIZACION DE PARAMETROS DE XGBOOST ###############################################################
-        #
-        # # Parametros por defecto de los modelos que usan árboles de decisión
-        # ARBOLES_n_estimators = 80
-        # ARBOLES_max_depth = 11
-        # ARBOLES_min_samples_leaf = 20
-        # ARBOLES_max_features = "auto"
-        # ARBOLES_min_samples_split = 3
-        # ARBOLES_max_leaf_nodes = None
-        # ARBOLES_min_impurity_decrease = 0.001
-        #
-        # seed = 112  # Random seed
-        #
-        # # Descomentar para obtener los parámetros con optimización Bayesiana
-        # # IMPORTANTE: se debe instalar el paquete de bayes en Conda: conda install -c conda-forge bayesian-optimization
-        # # Se imprimirán en el log, pero debo luego meterlos manualmente en el modelo
-        # # IMPORTANTE: DEBEN RELLENARSE 2 VALORES POR CADA ATRIBUTO DE PBOUND
-        # # https://ayguno.github.io/curious/portfolio/bayesian_optimization.html
-        #
-        # print("Inicio del optimizador de parametros de XGBOOST...")
-        #
-        # pbounds = {
-        #     'max_depth': (5, 20),
-        #     'learning_rate': (0, 1),
-        #     'n_estimators': (10, 100),
-        #     'reg_alpha': (0, 1),
-        #     'min_child_weight': (1, 20),
-        #     'colsample_bytree': (0.1, 1),
-        #     'gamma': (0, 10)
-        # }
-        #
-        # hyperparameter_space = {
-        # }
-        #
-        # def xgboost_hyper_param(max_depth, learning_rate, n_estimators, reg_alpha, min_child_weight, colsample_bytree,
-        #                         gamma):
-        #     """Crea un modelo XGBOOST con los parametros indicados en la entrada. Aplica el numero de iteraciones de cross-validation indicado
-        #         """
-        #     clf = XGBClassifier(max_depth=int(max_depth), learning_rate=learning_rate, n_estimators=int(n_estimators),
-        #                         reg_alpha=reg_alpha, min_child_weight=int(min_child_weight),
-        #                         colsample_bytree=colsample_bytree, gamma=gamma,
-        #                         nthread=-1, objective='binary:logistic', seed=seed)
-        #     return np.mean(cross_val_score(clf, ds_train_f, ds_train_t, cv=cv_todos, scoring='f1'))
-        #
-        # # alpha is a parameter for the gaussian process
-        # # Note that this is itself a hyperparameter that can be optimized.
-        # gp_params = {"alpha": 1e-10}
-        #
-        # # Añadir carpeta dinámicamente: https://stackoverflow.com/questions/4383571/importing-files-from-different-folder
-        # sys.path.append('/bayes_opt')
-        # from bayes_opt import BayesianOptimization
-        #
-        # optimizer = BayesianOptimization(f=xgboost_hyper_param, pbounds=pbounds, random_state=1,
-        #                                  verbose=10)
-        # optimizer.maximize(init_points=3, n_iter=10, acq='ucb', kappa=3, **gp_params)
-        # valoresOptimizados = optimizer.max
-        # print(valoresOptimizados)
-        # print("Fin del optimizador")
-        #     ###################################################################################
-        #
-        # print("Inicio de XGBOOST")
-        # nombreModelo = "xgboost"
-        # pathModelo = dir_subgrupo + nombreModelo + ".modelo"
-        # # Parametros: https://xgboost.readthedocs.io/en/latest/parameter.html
-        # # Instalación en Conda: conda install -c anaconda py-xgboost
-        # # Instalación en Python básico: pip install xgboost
-        #
-        # # MODELO LUIS AUTOOPTIMIZADO PARA CADA SUBGRUPO
-        # max_depth = int(valoresOptimizados.get("params").get("max_depth"))
-        # learning_rate = valoresOptimizados.get("params").get("learning_rate")
-        # n_estimators = int(valoresOptimizados.get("params").get("n_estimators"))
-        # reg_alpha = valoresOptimizados.get("params").get("reg_alpha")
-        # min_child_weight = int(valoresOptimizados.get("params").get("min_child_weight"))
-        # colsample_bytree = valoresOptimizados.get("params").get("colsample_bytree")
-        # gamma = valoresOptimizados.get("params").get("gamma")
-        # nthread = -1
-        # objective = 'binary:logistic'
-        # seed = seed
-        #
-        # modelo = XGBClassifier(max_depth=max_depth, learning_rate=learning_rate, n_estimators=n_estimators,
-        #                        reg_alpha=reg_alpha, min_child_weight=min_child_weight,
-        #                        colsample_bytree=colsample_bytree, gamma=gamma,
-        #                        nthread=nthread, objective=objective, seed=seed)
-        #
-        # eval_set = [(ds_train_f, ds_train_t), (ds_test_f, ds_test_t)]
-        # modelo = modelo.fit(ds_train_f, ds_train_t, eval_metric=["map"], early_stopping_rounds=4, eval_set=eval_set, verbose=False)  # ENTRENAMIENTO (TRAIN)
-        #
+
+        # Parametros por defecto de los modelos que usan árboles de decisión
+        ARBOLES_n_estimators = 80
+        ARBOLES_max_depth = 11
+        ARBOLES_min_samples_leaf = 20
+        ARBOLES_max_features = "auto"
+        ARBOLES_min_samples_split = 3
+        ARBOLES_max_leaf_nodes = None
+        ARBOLES_min_impurity_decrease = 0.001
+
+        seed = 112  # Random seed
+
+        # Descomentar para obtener los parámetros con optimización Bayesiana
+        # IMPORTANTE: se debe instalar el paquete de bayes en Conda: conda install -c conda-forge bayesian-optimization
+        # Se imprimirán en el log, pero debo luego meterlos manualmente en el modelo
+        # IMPORTANTE: DEBEN RELLENARSE 2 VALORES POR CADA ATRIBUTO DE PBOUND
+        # https://ayguno.github.io/curious/portfolio/bayesian_optimization.html
+
+        print("Inicio del optimizador de parametros de XGBOOST...")
+
+        pbounds = {
+            'max_depth': (3, 20),
+            'learning_rate': (0, 0.5),
+            'n_estimators': (10, 100),
+            'reg_alpha': (0, 1),
+            'min_child_weight': (5, 20),
+            'colsample_bytree': (0.1, 1),
+            'gamma': (0, 10)
+        }
+
+        hyperparameter_space = {
+        }
+
+        def xgboost_hyper_param(max_depth, learning_rate, n_estimators, reg_alpha, min_child_weight, colsample_bytree,
+                                gamma):
+            """Crea un modelo XGBOOST con los parametros indicados en la entrada. Aplica el numero de iteraciones de cross-validation indicado
+                """
+            clf = XGBClassifier(max_depth=int(max_depth), learning_rate=learning_rate, n_estimators=int(n_estimators),
+                                reg_alpha=reg_alpha, min_child_weight=int(min_child_weight),
+                                colsample_bytree=colsample_bytree, gamma=gamma,
+                                nthread=-1, objective='binary:logistic', seed=seed, use_label_encoder=False)
+            return np.mean(cross_val_score(clf, ds_train_f, ds_train_t, cv=cv_todos, scoring='f1'))
+
+
+        # alpha is a parameter for the gaussian process
+        # Note that this is itself a hyperparameter that can be optimized.
+        gp_params = {"alpha": 1e-10}
+
+        # Añadir carpeta dinámicamente: https://stackoverflow.com/questions/4383571/importing-files-from-different-folder
+        sys.path.append('/bayes_opt')
+        from bayes_opt import BayesianOptimization
+
+        optimizer = BayesianOptimization(f=xgboost_hyper_param, pbounds=pbounds, random_state=1,
+                                         verbose=10)
+        optimizer.maximize(init_points=3, n_iter=10, acq='ucb', kappa=3, **gp_params)
+        valoresOptimizados = optimizer.max
+        print(valoresOptimizados)
+        print("Fin del optimizador")
+        ###################################################################################
+
+        print("Inicio de XGBOOST")
+        nombreModelo = "xgboost"
+        pathModelo = dir_subgrupo + nombreModelo + ".modelo"
+        # Parametros: https://xgboost.readthedocs.io/en/latest/parameter.html
+        # Instalación en Conda: conda install -c anaconda py-xgboost
+        # Instalación en Python básico: pip install xgboost
+
+        # MODELO LUIS AUTOOPTIMIZADO PARA CADA SUBGRUPO
+        max_depth = int(valoresOptimizados.get("params").get("max_depth"))
+        learning_rate = valoresOptimizados.get("params").get("learning_rate")
+        n_estimators = int(valoresOptimizados.get("params").get("n_estimators"))
+        reg_alpha = valoresOptimizados.get("params").get("reg_alpha")
+        min_child_weight = int(valoresOptimizados.get("params").get("min_child_weight"))
+        colsample_bytree = valoresOptimizados.get("params").get("colsample_bytree")
+        gamma = valoresOptimizados.get("params").get("gamma")
+        nthread = -1
+        objective = 'binary:logistic'
+        seed = seed
+
+        modelo = XGBClassifier(max_depth=max_depth, learning_rate=learning_rate, n_estimators=n_estimators,
+                               reg_alpha=reg_alpha, min_child_weight=min_child_weight,
+                               colsample_bytree=colsample_bytree, gamma=gamma,
+                               nthread=nthread, objective=objective, seed=seed)
+
+        eval_set = [(ds_train_f, ds_train_t), (ds_test_f, ds_test_t)]
+        modelo = modelo.fit(ds_train_f, ds_train_t, eval_metric=["map"], early_stopping_rounds=4, eval_set=eval_set,
+                            verbose=False)  # ENTRENAMIENTO (TRAIN)
+
         # ########################## FIN DE XGBOOST OPTIMIZADO ########################################################
 
 
@@ -920,13 +928,18 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
 
         ############################## ANÁLISIS DE RESULTADOS ####################
         print("Inicio de ANÁLISIS DE RESULTADOS - train vs test vs validación")
-        train_t_predicho = modelo_loaded.predict(ds_train_f)
-        precision_train = precision_score(ds_train_t, train_t_predicho)
+
+        #En TRAIN usamos el DF con indice y sin SMOTE: ds_train_f_sinsmote
+        print("ds_train_f_sinsmote: " + str(ds_train_f_sinsmote.shape[0]) + " x " + str(ds_train_f_sinsmote.shape[1]))
+        train_t_predicho = modelo_loaded.predict(ds_train_f_sinsmote)  #con SMOTE (si cumple la condicion de SMOTE)
+        precision_train = precision_score(ds_train_t_sinsmote, train_t_predicho)
         print("PRECISIÓN EN TRAIN = " + '{0:0.2f}'.format(precision_train))
-        pd.DataFrame(ds_train_t).to_csv(pathCsvIntermedio + ".ds_train_t.csv", index=True, sep='|', float_format='%.4f')  # NO BORRAR: UTIL para testIntegracion
+        pd.DataFrame(ds_train_t_sinsmote).to_csv(pathCsvIntermedio + ".ds_train_t.csv", index=True, sep='|', float_format='%.4f')  # NO BORRAR: UTIL para testIntegracion
         pd.DataFrame(train_t_predicho).to_csv(pathCsvIntermedio + ".train_t_predicho.csv", index=True, sep='|',
                           float_format='%.4f')  # NO BORRAR: UTIL para testIntegracion
 
+        print("ds_validac_f: " + str(ds_validac_f.shape[0]) + " x " + str(ds_validac_f.shape[1]))
+        print("ds_validac_f: " + str(ds_validac_f.shape[0]) + " x " + str(ds_validac_f.shape[1]))
         test_t_predicho = ds_test_t_pred
         validac_t_predicho = modelo_loaded.predict(ds_validac_f)
         precision_test = precision_score(ds_test_t, test_t_predicho)
@@ -973,11 +986,11 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
 
         ############### COMPROBACIÓN MANUAL DE LA PRECISIÓN ######################################
         # Cruce por indice para sacar los nombres de las empresas de cada fila
-        df_train_empresas_index = pd.merge(entradaFeaturesYTarget, ds_train_conindex, left_index=True, right_index=True)
+        df_train_empresas_index = pd.merge(entradaFeaturesYTarget, ds_train_sinsmote, left_index=True, right_index=True)
         df_test_empresas_index = pd.merge(entradaFeaturesYTarget, ds_test_conindex, left_index=True, right_index=True)
         df_valid_empresas_index = pd.merge(entradaFeaturesYTarget, ds_validacion_conindex, left_index=True, right_index=True)
 
-        comprobarPrecisionManualmente(ds_train_t, train_t_predicho, "TRAIN (forzado)", id_subgrupo, df_train_empresas_index)
+        comprobarPrecisionManualmente(ds_train_t_sinsmote, train_t_predicho, "TRAIN (forzado)", id_subgrupo, df_train_empresas_index)
         comprobarPrecisionManualmente(ds_test_t, test_t_predicho, "TEST", id_subgrupo, df_test_empresas_index)
         comprobarPrecisionManualmente(ds_validac_t, validac_t_predicho, "VALIDACION", id_subgrupo, df_valid_empresas_index)
         ######################################################################################################################

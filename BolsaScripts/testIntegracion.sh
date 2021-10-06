@@ -101,8 +101,8 @@ ELABORADO="/bolsa/pasado/elaborados/NASDAQ_${empresa}.csv"
 echo -e "Elaborado: <a href=\"${ELABORADO}\">${ELABORADO}</a> --> Tamanio (bytes) = "$(stat -c%s "$ELABORADO")" con "$(wc -l $ELABORADO | cut -d\  -f 1)" filas<br><br>" >> ${INFORME_OUT}
 echo -e "Viendo la columna TARGET, este es el numero de casos de cada tipo: " >> ${INFORME_OUT}
 echo -e "--> NULL = "$(cat /bolsa/pasado/elaborados/NASDAQ_AMRS.csv | grep '|null$' | wc -l) >> ${INFORME_OUT}
-echo -e "  True ="$(cat /bolsa/pasado/elaborados/NASDAQ_AMRS.csv | grep '|True$' | wc -l) >> ${INFORME_OUT}
-echo -e "  False = "$(cat /bolsa/pasado/elaborados/NASDAQ_AMRS.csv | grep '|False$' | wc -l) >> ${INFORME_OUT}
+echo -e "  True ="$(cat /bolsa/pasado/elaborados/NASDAQ_AMRS.csv | grep '|1$' | wc -l) >> ${INFORME_OUT}
+echo -e "  False = "$(cat /bolsa/pasado/elaborados/NASDAQ_AMRS.csv | grep '|0$' | wc -l) >> ${INFORME_OUT}
 head -n 10 ${ELABORADO}  > "/tmp/entrada.csv"
 java -jar ${PATH_JAR} --class "coordinador.Principal" "testIntegracion.ParserCsvEnTablaHtml" "/tmp/entrada.csv" "${INFORME_OUT}" "\\|" "append"
 
@@ -267,7 +267,7 @@ echo -e "<br>" >> ${INFORME_OUT}
 cat "/bolsa/logs/${file_log_pasado_mas_reciente}" | grep reales | grep predichos | grep SG_${SG_ANALIZADO} | grep 'VALID' >> ${INFORME_OUT}
 echo -e "<br>" >> ${INFORME_OUT}
 echo -e "<h3>¡¡¡ Un sistema aleatorio/tonto acertaría un 50% de los casos, simplemente diciendo siempre false (o true) !!!</h3>" >> ${INFORME_OUT}
-echo -e "<h3>RECORDAR: Solo miramos la precisión sobre los positivos predichos, porque es donde ponemos el DINERO REAL. No miramos los positivos no predichos ni los negativos predichos.</h3>" >> ${INFORME_OUT}
+echo -e "<h3>RECORDAR: Solo miramos la precisión sobre los positivos predichos, porque es donde ponemos el DINERO REAL. No miramos los positivos NO predichos ni los negativos predichos.</h3>" >> ${INFORME_OUT}
 
 
 echo -e "<br>" >> ${INFORME_OUT}
