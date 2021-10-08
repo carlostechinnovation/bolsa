@@ -217,7 +217,7 @@ def comprobarPrecisionManualmente(targetsNdArray1, targetsNdArray2, etiqueta, id
                 id_subgrupo + " " + etiqueta +
                 " --> Casos con predicción True y lo real ha sido True (TP, deseados): " + str(casosTP.shape[0]) +
                 " pero tambien hay False (FP, no deseados): " + str(casosFP.shape[0]) + " que son: "  +
-                casosFP.index.sort_index(inplace=True).ravel())
+                casosFP.index.ravel())
 
 
 
