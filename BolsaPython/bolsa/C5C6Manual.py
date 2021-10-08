@@ -67,6 +67,7 @@ from sklearn.manifold import TSNE
 from sklearn.decomposition import PCA, TruncatedSVD
 import matplotlib.patches as mpatches
 from xgboost import XGBClassifier
+from tabulate import tabulate
 
 
 print((datetime.datetime.now()).strftime(
@@ -87,7 +88,7 @@ print("modoTiempo = %s" % modoTiempo)
 print("maxFeatReducidas = %s" % maxFeatReducidas)
 print("maxFilasEntrada = %s" % maxFilasEntrada)
 
-varianza = 0.90  # Variacion acumulada de las features PCA sobre el target
+varianza = 0.85  # Variacion acumulada de las features PCA sobre el target
 compatibleParaMuchasEmpresas = False  # Si hay muchas empresas, debo hacer ya el undersampling (en vez de capa 6)
 global modoDebug;
 modoDebug = False  # VARIABLE GLOBAL: En modo debug se pintan los dibujos. En otro caso, se evita calculo innecesario
@@ -183,9 +184,9 @@ def comprobarPrecisionManualmente(targetsNdArray1, targetsNdArray2, etiqueta, id
         dfConIndex.shape[1]) + ". Se comparan: array1=" + str(targetsNdArray1.size) + " y array2=" + str(targetsNdArray2.size))
 
     df1 = pd.DataFrame(targetsNdArray1, columns=['target'])
-    df1.index =dfConIndex.index  #fijamos el indice del DF grande
+    df1.index = dfConIndex.index  #fijamos el indice del DF grande
     df2 = pd.DataFrame(targetsNdArray2, columns=['target'])
-    df2.index =dfConIndex.index  # fijamos el indice del DF grande
+    df2.index = dfConIndex.index  # fijamos el indice del DF grande
 
     df1['targetpredicho'] = df2['target']
     df1['iguales'] = np.where(df1['target'] == df1['targetpredicho'], True, False)
@@ -204,11 +205,22 @@ def comprobarPrecisionManualmente(targetsNdArray1, targetsNdArray2, etiqueta, id
             len(df1b)) + " ==> Precision = TP/(TP+FP) = " + str(round(precision, 1)) + " %" + mensajeAlerta)
 
         if etiqueta == "TEST" or etiqueta == "VALIDACION":
-            print(id_subgrupo + " " + etiqueta + " --> ESTUDIAR Detalle de las empresas para las que se ha predicho True y lo real ha sido True (TP) o False (FP):")
-            #PENDIENTE
             dfEmpresasPredichasTrue = pd.merge(dfConIndex, df2a, how="inner", left_index=True, right_index=True)
             dfEmpresasPredichasTrueLoInteresante = dfEmpresasPredichasTrue[["empresa", "antiguedad", "target", "targetpredicho", "anio", "mes", "dia", "hora", "volumen"]]
-            #print(dfEmpresasPredichasTrueLoInteresante)
+
+            print(tabulate(dfEmpresasPredichasTrueLoInteresante, headers='keys', tablefmt='psql'))
+
+            casosTP = dfEmpresasPredichasTrueLoInteresante[dfEmpresasPredichasTrueLoInteresante['target'] == True]  #los BUENOS
+            casosFP = dfEmpresasPredichasTrueLoInteresante[dfEmpresasPredichasTrueLoInteresante['target'] == False]  #Los MALOS que debemos estudiar y reducir
+
+            print(
+                id_subgrupo + " " + etiqueta +
+                " --> Casos con predicción True y lo real ha sido True (TP, deseados): " + str(casosTP.shape[0]) +
+                " pero tambien hay False (FP, no deseados): " + str(casosFP.shape[0]) + " que son: "  +
+                casosFP.index.sort_index(inplace=True).ravel())
+
+
+
     else:
         print(id_subgrupo + " " + etiqueta + " --> Positivos predichos = " + str(len(df2a)))
 
@@ -228,6 +240,13 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
     entradaFeaturesYTarget = pd.read_csv(filepath_or_buffer=pathCsvCompleto, sep='|')
     print("entradaFeaturesYTarget (LEIDO): " + str(entradaFeaturesYTarget.shape[0]) + " x " + str(
         entradaFeaturesYTarget.shape[1]))
+
+    ############# MUY IMPORTANTE: creamos el IDENTIFICADOR UNICO DE FILA, que será el indice!!
+    nuevoindice = entradaFeaturesYTarget["empresa"].astype(str) + entradaFeaturesYTarget["antiguedad"].astype(str)
+    entradaFeaturesYTarget = entradaFeaturesYTarget.reset_index().set_index(nuevoindice, drop=True)
+    entradaFeaturesYTarget = entradaFeaturesYTarget.drop('index', axis=1)  #columna index no util ya
+    ###########################################################################
+
     entradaFeaturesYTarget.sort_index(
         inplace=True)  # Reordenando segun el indice (para facilitar el testIntegracion)
     entradaFeaturesYTarget.to_csv(pathCsvIntermedio + ".entrada", index=True,
@@ -349,6 +368,12 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
     entradaFeaturesYTarget4.to_csv(pathCsvIntermedio + ".sinoutliers_INDICES.csv", columns=[])  # NO BORRAR: UTIL para testIntegracion
 
     # ENTRADA: features (+ target)
+    if modoTiempo == "pasado":
+        featuresFichero = entradaFeaturesYTarget4.drop('TARGET', axis=1)  # default
+        targetsFichero = (entradaFeaturesYTarget4[['TARGET']] == 1)  # default
+    else:
+        featuresFichero = entradaFeaturesYTarget4
+
 
     # Si hay POCAS empresas
     if compatibleParaMuchasEmpresas is False or modoTiempo == "futuro":
@@ -400,6 +425,11 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
         featuresFichero = entradaFeaturesYTarget5.drop('TARGET', axis=1)
         targetsFichero = entradaFeaturesYTarget5[['TARGET']]
         targetsFichero = (targetsFichero[['TARGET']] == 1)  # Convierto de int a boolean
+
+        print("entradaFeaturesYTarget5 (sin outliers):" + str(entradaFeaturesYTarget5.shape[0]) + " x " + str(
+            entradaFeaturesYTarget5.shape[1]))
+
+
 
     ##################################################
 
@@ -667,8 +697,9 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
             fraccion_train) + "), TEST (" + str(fraccion_test) + "), VALIDACION (" + str(fraccion_valid) + ")")
 
 
-        dfAntesDeSplit = entradaFeaturesYTarget4.sample(frac=1)
-        indicesAntesDeSplit = entradaFeaturesYTarget4.index
+
+        dfAntesDeSplit = ift_juntas.sample(frac=1)
+        indicesAntesDeSplit = ift_juntas.index
         dfAntesDeSplitIndexReset = dfAntesDeSplit.reset_index(drop=True)
         indicesAntesDeSplitReset = dfAntesDeSplitIndexReset.index
         ds_train, ds_test, ds_validacion = np.split(dfAntesDeSplitIndexReset,
@@ -709,7 +740,7 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
 
         balancearConSmoteSoloTrain = (
                 tasaDesbalanceoAntes > umbralNecesarioCompensarDesbalanceo)  # Condicion para decidir si hacer SMOTE
-        ds_train_sinsmote = ds_train  #NO TOCAR
+        ds_train_sinsmote = ds_train.reset_index().set_index(ds_train_conindex_YCONSMOTE.index, drop=True)  #NO TOCAR
         ds_train_f_sinsmote = ds_train_f  #NO TOCAR
         ds_train_t_sinsmote = ds_train_t  #NO TOCAR
         if balancearConSmoteSoloTrain == True:
@@ -849,7 +880,8 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
             clf = XGBClassifier(max_depth=int(max_depth), learning_rate=learning_rate, n_estimators=int(n_estimators),
                                 reg_alpha=reg_alpha, min_child_weight=int(min_child_weight),
                                 colsample_bytree=colsample_bytree, gamma=gamma,
-                                nthread=-1, objective='binary:logistic', seed=seed, use_label_encoder=False)
+                                nthread=-1, objective='binary:logistic', seed=seed, use_label_encoder=False,
+                                eval_metric = 'error@0.6')
             return np.mean(cross_val_score(clf, ds_train_f, ds_train_t, cv=cv_todos, scoring='f1'))
 
 
