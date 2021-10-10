@@ -147,8 +147,8 @@ balancearConSmoteSoloTrain = True
 umbralFeaturesCorrelacionadas = 0.96  # Umbral aplicado para descartar features cuya correlacion sea mayor que él
 umbralNecesarioCompensarDesbalanceo = 1  # Umbral de desbalanceo clase positiva/negativa. Si se supera, es necesario hacer oversampling de minoritaria (SMOTE) o undersampling de mayoritaria (borrar filas)
 cv_todos = 20  # CROSS_VALIDATION: número de iteraciones. Sirve para evitar el overfitting
-fraccion_train = 0.50  # Fracción de datos usada para entrenar
-fraccion_test = 0.25  # Fracción de datos usada para testear (no es validación)
+fraccion_train = 0.60  # Fracción de datos usada para entrenar
+fraccion_test = 0.20  # Fracción de datos usada para testear (no es validación)
 fraccion_valid = 1.00 - (fraccion_train + fraccion_test)
 
 ######### ID de subgrupo #######
@@ -854,8 +854,8 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         pbounds = {
             'colsample_bytree': (0.1, 1),
             'gamma': (0, 10),
-            'learning_rate': (0, 0.5),
-            'max_depth': (3, 10),
+            'learning_rate': (0, 0.8),
+            'max_depth': (3, 12),
             'min_child_weight': (5, 20),
             'n_estimators': (10, 50),
             'reg_alpha': (0, 1)

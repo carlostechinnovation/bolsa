@@ -214,11 +214,12 @@ public class CrearDatasetsSubgrupos implements Serializable {
 		ArrayList<String> pathEmpresasTipo28 = new ArrayList<String>(); // medio
 		ArrayList<String> pathEmpresasTipo29 = new ArrayList<String>(); // alto
 		ArrayList<String> pathEmpresasTipo30 = new ArrayList<String>(); // muy alto
-		ArrayList<String> pathEmpresasTipo31 = new ArrayList<String>(); // desconocido
+		
 
 		// Tipos de empresa segun geografia
-		ArrayList<String> pathEmpresasTipo32 = new ArrayList<String>(); // china
-		ArrayList<String> pathEmpresasTipo33 = new ArrayList<String>(); // USA
+		ArrayList<String> pathEmpresasTipo31 = new ArrayList<String>(); // BeNeLux
+		ArrayList<String> pathEmpresasTipo32 = new ArrayList<String>(); // China
+		ArrayList<String> pathEmpresasTipo33 = new ArrayList<String>(); // Israel
 		ArrayList<String> pathEmpresasTipo34 = new ArrayList<String>(); // Europe
 		ArrayList<String> pathEmpresasTipo35 = new ArrayList<String>(); // resto explicito
 		ArrayList<String> pathEmpresasTipo36 = new ArrayList<String>(); // desconocido
@@ -553,7 +554,9 @@ public class CrearDatasetsSubgrupos implements Serializable {
 							}
 
 						} else {
-							pathEmpresasTipo31.add(ficheroGestionado.getAbsolutePath());
+
+							//Empresa con ratio desconocido (alto o bajo) --> No la usamos 
+
 							// MY_LOGGER.warn("Empresa = " + empresa + " con RATIO_SMA_50_PRECIO = " +
 							// ratioSMA50PrecioStr);
 						}
@@ -562,8 +565,12 @@ public class CrearDatasetsSubgrupos implements Serializable {
 						String geoStr = parametros.get("geo");
 
 						if (geoStr != null && !geoStr.isEmpty() && !"-".equals(geoStr)) {
-
-							if (geoStr.equalsIgnoreCase("China")) {
+							
+							
+							if (geoStr.contains("Netherlands") || geoStr.contains("BeNeLux")|| geoStr.contains("Belgium")
+									|| geoStr.contains("Luxembourg")) {
+								pathEmpresasTipo31.add(ficheroGestionado.getAbsolutePath());
+							}else 							if (geoStr.equalsIgnoreCase("China")) {
 								pathEmpresasTipo32.add(ficheroGestionado.getAbsolutePath());
 							} else if (geoStr.equalsIgnoreCase("Israel")) {
 								pathEmpresasTipo33.add(ficheroGestionado.getAbsolutePath());

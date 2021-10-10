@@ -29,7 +29,7 @@ subgrupo|descripcion
 28|Ratio SMA50 vs Precio es medio
 29|Ratio SMA50 vs Precio es alto
 30|Ratio SMA50 vs Precio es muy alto
-31|Ratio SMA50 vs Precio es desconocido (bajo o alto)
+31|BeNeLux
 32|China
 33|Israel
 34|Europe

@@ -13,6 +13,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -42,6 +43,7 @@ public class YahooFinance02Parsear implements Serializable {
 
 	static Logger MY_LOGGER = Logger.getLogger(YahooFinance02Parsear.class);
 	static DateFormat df = new SimpleDateFormat("yyyy|MM|dd|HH|mm");
+	static DecimalFormat decFormat = new DecimalFormat("#.##");
 
 	static Double UMBRAL_RATIO_ANOMALIAS = 2.0D;
 
@@ -630,10 +632,12 @@ public class YahooFinance02Parsear implements Serializable {
 
 						if (ratioDeCambio >= UMBRAL_RATIO_ANOMALIAS) {
 							detectado = true;
+
 							MY_LOGGER.warn("Empresa=" + empresa
 									+ " Tiene anomalia gigante (posible split o contraSplit) al pasar de vela = "
-									+ (i - 1) + " a vela = " + i + " con ratio de cambio = " + ratioDeCambio
-									+ " (ratio umbral = " + UMBRAL_RATIO_ANOMALIAS + ")");
+									+ (i - 1) + " con precio CLOSE=" + decFormat.format(close0) + " a vela = " + i
+									+ " con precio OPEN=" + decFormat.format(open1) + " El ratio de cambio es "
+									+ decFormat.format(ratioDeCambio) + " (ratio umbral = " + UMBRAL_RATIO_ANOMALIAS + ")");
 						}
 
 					}
