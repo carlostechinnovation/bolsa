@@ -88,7 +88,7 @@ print("modoTiempo = %s" % modoTiempo)
 print("maxFeatReducidas = %s" % maxFeatReducidas)
 print("maxFilasEntrada = %s" % maxFilasEntrada)
 
-varianza = 0.85  # Variacion acumulada de las features PCA sobre el target
+varianza = 0.80  # Variacion acumulada de las features PCA sobre el target
 compatibleParaMuchasEmpresas = False  # Si hay muchas empresas, debo hacer ya el undersampling (en vez de capa 6)
 global modoDebug;
 modoDebug = False  # VARIABLE GLOBAL: En modo debug se pintan los dibujos. En otro caso, se evita calculo innecesario
@@ -147,8 +147,8 @@ balancearConSmoteSoloTrain = True
 umbralFeaturesCorrelacionadas = 0.96  # Umbral aplicado para descartar features cuya correlacion sea mayor que él
 umbralNecesarioCompensarDesbalanceo = 1  # Umbral de desbalanceo clase positiva/negativa. Si se supera, es necesario hacer oversampling de minoritaria (SMOTE) o undersampling de mayoritaria (borrar filas)
 cv_todos = 20  # CROSS_VALIDATION: número de iteraciones. Sirve para evitar el overfitting
-fraccion_train = 0.60  # Fracción de datos usada para entrenar
-fraccion_test = 0.20  # Fracción de datos usada para testear (no es validación)
+fraccion_train = 0.50  # Fracción de datos usada para entrenar
+fraccion_test = 0.25  # Fracción de datos usada para testear (no es validación)
 fraccion_valid = 1.00 - (fraccion_train + fraccion_test)
 
 ######### ID de subgrupo #######
@@ -852,13 +852,13 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         print("Inicio del optimizador de parametros de XGBOOST...")
 
         pbounds = {
-            'colsample_bytree': (0.1, 1),
-            'gamma': (0, 10),
-            'learning_rate': (0, 0.8),
-            'max_depth': (3, 12),
-            'min_child_weight': (5, 20),
+            'colsample_bytree': (0.1, 0.5),
+            'gamma': (3, 10),
+            'learning_rate': (0.3, 0.9),
+            'max_depth': (4, 10),
+            'min_child_weight': (3, 20),
             'n_estimators': (10, 50),
-            'reg_alpha': (0, 1)
+            'reg_alpha': (0.1, 0.9)
         }
 
         hyperparameter_space = {
@@ -868,14 +868,14 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
                                 gamma):
             """Crea un modelo XGBOOST con los parametros indicados en la entrada. Aplica el numero de iteraciones de cross-validation indicado
                 """
-            clf = XGBClassifier(max_depth=int(max_depth), learning_rate=learning_rate, n_estimators=int(n_estimators),
-                                reg_alpha=reg_alpha, min_child_weight=int(min_child_weight),
-                                colsample_bytree=colsample_bytree, gamma=gamma,
+            clf = XGBClassifier(colsample_bytree=colsample_bytree, gamma=gamma, learning_rate=learning_rate,
+                                max_depth=int(max_depth), min_child_weight=int(min_child_weight),
+                                n_estimators=int(n_estimators), reg_alpha=reg_alpha,
                                 nthread=-1, objective='binary:logistic', seed=seed, use_label_encoder=False,
                                 eval_metric='logloss')
 
             # Explicacion: https://scikit-learn.org/stable/modules/model_evaluation.html#scoring-parameter
-            return np.mean(cross_val_score(clf, ds_train_f, ds_train_t, cv=cv_todos, scoring='balanced_accuracy'))
+            return np.mean(cross_val_score(clf, ds_train_f, ds_train_t, cv=cv_todos, scoring='accuracy'))
 
 
         # alpha is a parameter for the gaussian process
@@ -919,7 +919,7 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
                                nthread=nthread, objective=objective, seed=seed, use_label_encoder=False)
 
         eval_set = [(ds_train_f.to_numpy(), ds_train_t.to_numpy().ravel()), (ds_test_f, ds_test_t)]
-        modelo = modelo.fit(ds_train_f.to_numpy(), ds_train_t.to_numpy().ravel(), eval_metric=["map"], early_stopping_rounds=4, eval_set=eval_set,
+        modelo = modelo.fit(ds_train_f.to_numpy(), ds_train_t.to_numpy().ravel(), eval_metric=["map"], early_stopping_rounds=3, eval_set=eval_set,
                             verbose=False)  # ENTRENAMIENTO (TRAIN)
 
         # ########################## FIN DE XGBOOST OPTIMIZADO ########################################################
