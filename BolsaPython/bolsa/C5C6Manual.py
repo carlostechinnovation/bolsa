@@ -146,9 +146,9 @@ granProbTargetUno = 50  # De todos los target=1, nos quedaremos con los granProb
 balancearConSmoteSoloTrain = True
 umbralFeaturesCorrelacionadas = 0.96  # Umbral aplicado para descartar features cuya correlacion sea mayor que él
 umbralNecesarioCompensarDesbalanceo = 1  # Umbral de desbalanceo clase positiva/negativa. Si se supera, es necesario hacer oversampling de minoritaria (SMOTE) o undersampling de mayoritaria (borrar filas)
-cv_todos = 10  # CROSS_VALIDATION: número de iteraciones. Sirve para evitar el overfitting
-fraccion_train = 0.60  # Fracción de datos usada para entrenar
-fraccion_test = 0.20  # Fracción de datos usada para testear (no es validación)
+cv_todos = 20  # CROSS_VALIDATION: número de iteraciones. Sirve para evitar el overfitting
+fraccion_train = 0.50  # Fracción de datos usada para entrenar
+fraccion_test = 0.25  # Fracción de datos usada para testear (no es validación)
 fraccion_valid = 1.00 - (fraccion_train + fraccion_test)
 
 ######### ID de subgrupo #######
@@ -178,7 +178,7 @@ print("umbralFeaturesCorrelacionadas = " + str(umbralFeaturesCorrelacionadas))
 
 
 # PRECISION: de los pocos casos que predigamos TRUE, queremos que todos sean aciertos.
-def comprobarPrecisionManualmente(targetsNdArray1, targetsNdArray2, etiqueta, id_subgrupo, dfConIndex):
+def comprobarPrecisionManualmente(targetsNdArray1, targetsNdArray2, etiqueta, id_subgrupo, dfConIndex, dir_subgrupo):
 
     print(id_subgrupo + " " + etiqueta + " Comprobación de la precisión --> dfConIndex: " + str(dfConIndex.shape[0]) + " x " + str(
         dfConIndex.shape[1]) + ". Se comparan: array1=" + str(targetsNdArray1.size) + " y array2=" + str(targetsNdArray2.size))
@@ -207,19 +207,19 @@ def comprobarPrecisionManualmente(targetsNdArray1, targetsNdArray2, etiqueta, id
         if etiqueta == "TEST" or etiqueta == "VALIDACION":
             dfEmpresasPredichasTrue = pd.merge(dfConIndex, df2a, how="inner", left_index=True, right_index=True)
             dfEmpresasPredichasTrueLoInteresante = dfEmpresasPredichasTrue[["empresa", "antiguedad", "target", "targetpredicho", "anio", "mes", "dia", "hora", "volumen"]]
-
-            print(tabulate(dfEmpresasPredichasTrueLoInteresante, headers='keys', tablefmt='psql'))
+            #print(tabulate(dfEmpresasPredichasTrueLoInteresante, headers='keys', tablefmt='psql'))
 
             casosTP = dfEmpresasPredichasTrueLoInteresante[dfEmpresasPredichasTrueLoInteresante['target'] == True]  #los BUENOS
             casosFP = dfEmpresasPredichasTrueLoInteresante[dfEmpresasPredichasTrueLoInteresante['target'] == False]  #Los MALOS que debemos estudiar y reducir
 
-            print(
-                id_subgrupo + " " + etiqueta +
+            # FALSOS POSITIVOS:
+            print(id_subgrupo + " " + etiqueta +
                 " --> Casos con predicción True y lo real ha sido True (TP, deseados): " + str(casosTP.shape[0]) +
-                " pero tambien hay False (FP, no deseados): " + str(casosFP.shape[0]) + " que son: "  +
-                casosFP.index.ravel())
-
-
+                " pero tambien hay False (FP, no deseados): " + str(casosFP.shape[0]) + " que son: " )
+            falsosPositivosArray = id_subgrupo + "|" + etiqueta + "|" + casosFP.sort_index().index.values
+            pathFP = dir_subgrupo + "falsospositivos_" + etiqueta + ".csv"
+            print("Guardando lista de falsos positivos en: " + pathFP)
+            falsosPositivosArray.tofile(pathFP, sep='\n', format='%s')
 
     else:
         print(id_subgrupo + " " + etiqueta + " --> Positivos predichos = " + str(len(df2a)))
@@ -242,7 +242,8 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
         entradaFeaturesYTarget.shape[1]))
 
     ############# MUY IMPORTANTE: creamos el IDENTIFICADOR UNICO DE FILA, que será el indice!!
-    nuevoindice = entradaFeaturesYTarget["empresa"].astype(str) + entradaFeaturesYTarget["antiguedad"].astype(str)
+    nuevoindice = entradaFeaturesYTarget["empresa"].astype(str) + "_" + entradaFeaturesYTarget["anio"].astype(str) \
+                  + "_" + entradaFeaturesYTarget["mes"].astype(str)+ "_" + entradaFeaturesYTarget["dia"].astype(str)
     entradaFeaturesYTarget = entradaFeaturesYTarget.reset_index().set_index(nuevoindice, drop=True)
     entradaFeaturesYTarget = entradaFeaturesYTarget.drop('index', axis=1)  #columna index no util ya
     ###########################################################################
@@ -696,26 +697,13 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
             "%Y%m%d_%H%M%S") + " DIVIDIR EL DATASET DE ENTRADA EN 3 PARTES: TRAIN (" + str(
             fraccion_train) + "), TEST (" + str(fraccion_test) + "), VALIDACION (" + str(fraccion_valid) + ")")
 
-
-
-        dfAntesDeSplit = ift_juntas.sample(frac=1)
-        indicesAntesDeSplit = ift_juntas.index
-        dfAntesDeSplitIndexReset = dfAntesDeSplit.reset_index(drop=True)
-        indicesAntesDeSplitReset = dfAntesDeSplitIndexReset.index
-        ds_train, ds_test, ds_validacion = np.split(dfAntesDeSplitIndexReset,
+        dfBarajado = ift_juntas.sample(frac=1)  #Los indices aparecen bien
+        ds_train, ds_test, ds_validacion = np.split(dfBarajado,
                                                     [int(fraccion_train * len(ift_juntas)),
                                                      int((fraccion_train + fraccion_test) * len(ift_juntas))])
         print("TRAIN = " + str(ds_train.shape[0]) + " x " + str(ds_train.shape[1]) + "  " + "TEST --> " + str(
             ds_test.shape[0]) + " x " + str(ds_test.shape[1]) + "  " + "VALIDACION --> " + str(
             ds_validacion.shape[0]) + " x " + str(ds_validacion.shape[1]))
-
-        #Indices originales de los dataframes de TRAIN, TEST y VALID
-        ds_train_conindex_YCONSMOTE, ds_test_conindex, ds_validacion_conindex = np.split(entradaFeaturesYTarget4, [int(fraccion_train * len(ift_juntas)), int((fraccion_train + fraccion_test) * len(ift_juntas))])
-
-        # Con las siguientes 3 líneas dejo sólo 1 true y lo demás false en el dataframe de test. Asi en la matriz de confusion validamos si el sistema no añade falsos positivos
-        # aux = ds_test[ds_test.TARGET == True]
-        # ds_test = ds_test[ds_test.TARGET == False]
-        # ds_test=ds_test.append(aux.iloc[0])
 
         print("Separamos FEATURES y TARGETS, de los 3 dataframes...")
         ds_train_f = ds_train.drop('TARGET', axis=1).to_numpy()
@@ -740,7 +728,7 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
 
         balancearConSmoteSoloTrain = (
                 tasaDesbalanceoAntes > umbralNecesarioCompensarDesbalanceo)  # Condicion para decidir si hacer SMOTE
-        ds_train_sinsmote = ds_train.reset_index().set_index(ds_train_conindex_YCONSMOTE.index, drop=True)  #NO TOCAR
+        ds_train_sinsmote = ds_train  #NO TOCAR
         ds_train_f_sinsmote = ds_train_f  #NO TOCAR
         ds_train_t_sinsmote = ds_train_t  #NO TOCAR
         if balancearConSmoteSoloTrain == True:
@@ -753,6 +741,9 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
             print("SMOTE antes (mayoritaria + minoritaria): %d" % ds_train_f_sinsmote.shape[0])
             print("SMOTE fit...")
             ds_train_f, ds_train_t = resample.fit_resample(ds_train_f_sinsmote, ds_train_t_sinsmote)
+            columnas_f = ds_train_sinsmote.drop('TARGET', axis=1).columns
+            ds_train_f = pd.DataFrame(ds_train_f, columns=columnas_f)  #restablecer nombres de columnas
+            ds_train_t = pd.DataFrame(ds_train_t, columns=['TARGET'])  #restablecer nombres de columnas
             print("SMOTE después (mayoritaria + minoritaria): %d" % ds_train_f.shape[0])
 
         ift_mayoritaria_entrada_modelos = ds_train_t[ds_train_t == False]  # En este caso los mayoritarios son los False
@@ -861,13 +852,13 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         print("Inicio del optimizador de parametros de XGBOOST...")
 
         pbounds = {
-            'max_depth': (3, 20),
-            'learning_rate': (0, 0.5),
-            'n_estimators': (10, 100),
-            'reg_alpha': (0, 1),
-            'min_child_weight': (5, 20),
             'colsample_bytree': (0.1, 1),
-            'gamma': (0, 10)
+            'gamma': (0, 10),
+            'learning_rate': (0, 0.5),
+            'max_depth': (3, 10),
+            'min_child_weight': (5, 20),
+            'n_estimators': (10, 50),
+            'reg_alpha': (0, 1)
         }
 
         hyperparameter_space = {
@@ -881,8 +872,10 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
                                 reg_alpha=reg_alpha, min_child_weight=int(min_child_weight),
                                 colsample_bytree=colsample_bytree, gamma=gamma,
                                 nthread=-1, objective='binary:logistic', seed=seed, use_label_encoder=False,
-                                eval_metric = 'error@0.6')
-            return np.mean(cross_val_score(clf, ds_train_f, ds_train_t, cv=cv_todos, scoring='f1'))
+                                eval_metric='logloss')
+
+            # Explicacion: https://scikit-learn.org/stable/modules/model_evaluation.html#scoring-parameter
+            return np.mean(cross_val_score(clf, ds_train_f, ds_train_t, cv=cv_todos, scoring='balanced_accuracy'))
 
 
         # alpha is a parameter for the gaussian process
@@ -923,10 +916,10 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         modelo = XGBClassifier(max_depth=max_depth, learning_rate=learning_rate, n_estimators=n_estimators,
                                reg_alpha=reg_alpha, min_child_weight=min_child_weight,
                                colsample_bytree=colsample_bytree, gamma=gamma,
-                               nthread=nthread, objective=objective, seed=seed)
+                               nthread=nthread, objective=objective, seed=seed, use_label_encoder=False)
 
-        eval_set = [(ds_train_f, ds_train_t), (ds_test_f, ds_test_t)]
-        modelo = modelo.fit(ds_train_f, ds_train_t, eval_metric=["map"], early_stopping_rounds=4, eval_set=eval_set,
+        eval_set = [(ds_train_f.to_numpy(), ds_train_t.to_numpy().ravel()), (ds_test_f, ds_test_t)]
+        modelo = modelo.fit(ds_train_f.to_numpy(), ds_train_t.to_numpy().ravel(), eval_metric=["map"], early_stopping_rounds=4, eval_set=eval_set,
                             verbose=False)  # ENTRENAMIENTO (TRAIN)
 
         # ########################## FIN DE XGBOOST OPTIMIZADO ########################################################
@@ -949,29 +942,22 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         pickle.dump(modelo, open(pathModelo, 'wb'))
 
         ############################## APERTURA DE MODELO #########################
-
         modelo_loaded = pickle.load(open(pathModelo, 'rb'))
 
-        ############################# PREDICCIÓN #################################
-        print("INICIO de PREDICCIÓN de test")
-        # PREDICCION de los targets de TEST (los compararemos con los que tenemos)
-        ds_test_t_pred = modelo_loaded.predict(ds_test_f)
-        print("FIN de PREDICCIÓN de test")
-
-        ############################## ANÁLISIS DE RESULTADOS ####################
+        ############################## PREDICCION y CALCULO DE LAS METRICAS EN TEST Y VALID ####################
         print("Inicio de ANÁLISIS DE RESULTADOS - train vs test vs validación")
 
-        #En TRAIN usamos el DF con indice y sin SMOTE: ds_train_f_sinsmote
         print("ds_train_f_sinsmote: " + str(ds_train_f_sinsmote.shape[0]) + " x " + str(ds_train_f_sinsmote.shape[1]))
-        train_t_predicho = modelo_loaded.predict(ds_train_f_sinsmote)  #con SMOTE (si cumple la condicion de SMOTE)
+        train_t_predicho = modelo_loaded.predict(ds_train_f_sinsmote)  # con SMOTE (si cumple la condicion de SMOTE)
         precision_train = precision_score(ds_train_t_sinsmote, train_t_predicho)
         print("PRECISIÓN EN TRAIN = " + '{0:0.2f}'.format(precision_train))
-        pd.DataFrame(ds_train_t_sinsmote).to_csv(pathCsvIntermedio + ".ds_train_t.csv", index=True, sep='|', float_format='%.4f')  # NO BORRAR: UTIL para testIntegracion
+        pd.DataFrame(ds_train_t).to_csv(pathCsvIntermedio + ".ds_train_t_sinsmote.csv", index=True, sep='|', float_format='%.4f')  # NO BORRAR: UTIL para testIntegracion
         pd.DataFrame(train_t_predicho).to_csv(pathCsvIntermedio + ".train_t_predicho.csv", index=True, sep='|',
                           float_format='%.4f')  # NO BORRAR: UTIL para testIntegracion
 
         print("ds_validac_f: " + str(ds_validac_f.shape[0]) + " x " + str(ds_validac_f.shape[1]))
         print("ds_validac_f: " + str(ds_validac_f.shape[0]) + " x " + str(ds_validac_f.shape[1]))
+        ds_test_t_pred = modelo_loaded.predict(ds_test_f)
         test_t_predicho = ds_test_t_pred
         validac_t_predicho = modelo_loaded.predict(ds_validac_f)
         precision_test = precision_score(ds_test_t, test_t_predicho)
@@ -1018,13 +1004,16 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
 
         ############### COMPROBACIÓN MANUAL DE LA PRECISIÓN ######################################
         # Cruce por indice para sacar los nombres de las empresas de cada fila
-        df_train_empresas_index = pd.merge(entradaFeaturesYTarget, ds_train_sinsmote, left_index=True, right_index=True)
-        df_test_empresas_index = pd.merge(entradaFeaturesYTarget, ds_test_conindex, left_index=True, right_index=True)
-        df_valid_empresas_index = pd.merge(entradaFeaturesYTarget, ds_validacion_conindex, left_index=True, right_index=True)
+        df_train_empresas_index = pd.merge(entradaFeaturesYTarget, ds_train, left_index=True, right_index=True)
+        df_test_empresas_index = pd.merge(entradaFeaturesYTarget, ds_test, left_index=True, right_index=True)
+        df_valid_empresas_index = pd.merge(entradaFeaturesYTarget, ds_validacion, left_index=True, right_index=True)
 
-        comprobarPrecisionManualmente(ds_train_t_sinsmote, train_t_predicho, "TRAIN (forzado)", id_subgrupo, df_train_empresas_index)
-        comprobarPrecisionManualmente(ds_test_t, test_t_predicho, "TEST", id_subgrupo, df_test_empresas_index)
-        comprobarPrecisionManualmente(ds_validac_t, validac_t_predicho, "VALIDACION", id_subgrupo, df_valid_empresas_index)
+        ds_train_f_temp = ds_train.drop('TARGET', axis=1)
+        df_train_f_sinsmote = pd.DataFrame(ds_train_f_sinsmote, columns=ds_train_f_temp.columns, index=ds_train_f_temp.index) #Indice que tenia antes de SMOTE
+
+        comprobarPrecisionManualmente(ds_train_t_sinsmote, train_t_predicho, "TRAIN (forzado)", id_subgrupo, df_train_f_sinsmote, dir_subgrupo)  #ds_train_t tiene SMOTE!!!
+        comprobarPrecisionManualmente(ds_test_t, test_t_predicho, "TEST", id_subgrupo, df_test_empresas_index, dir_subgrupo)
+        comprobarPrecisionManualmente(ds_validac_t, validac_t_predicho, "VALIDACION", id_subgrupo, df_valid_empresas_index, dir_subgrupo)
         ######################################################################################################################
 
 elif (modoTiempo == "futuro" and pathCsvReducido.endswith('.csv') and os.path.isfile(pathCsvReducido) and os.stat(
@@ -1041,18 +1030,16 @@ elif (modoTiempo == "futuro" and pathCsvReducido.endswith('.csv') and os.path.is
         inputFeaturesyTarget.drop(columnasCorreladas, axis=1, inplace=True)
         print(columnasCorreladas)
 
-    print("Matriz de correlaciones corregida (FUTURO):")
+    # print("Matriz de correlaciones corregida (FUTURO):")
     matrizCorr = inputFeaturesyTarget.corr()
-    print(matrizCorr)
+    # print(matrizCorr)
 
-    print(
-        "La columna TARGET que haya en el CSV de entrada no la queremos (es un NULL o False, por defecto), porque la vamos a PREDECIR...")
+    #print("La columna TARGET que haya en el CSV de entrada no la queremos (es un NULL o False, por defecto), porque la vamos a PREDECIR...")
     inputFeatures = inputFeaturesyTarget.drop('TARGET', axis=1)
-    print(inputFeatures.head())
+    #print(inputFeatures.head())
     print("inputFeatures: " + str(inputFeatures.shape[0]) + " x " + str(inputFeatures.shape[1]))
 
-    print(
-        "MISSING VALUES (FILAS) - Borramos las FILAS que tengan 1 o mas valores NaN porque son huecos que no deberían estar...")
+    print("MISSING VALUES (FILAS) - Borramos las FILAS que tengan 1 o mas valores NaN porque son huecos que no deberían estar...")
     inputFeatures_sinnulos = inputFeatures.dropna(axis=0, how='any')  # Borrar FILA si ALGUNO sus valores tienen NaN
 
     dir_modelo_predictor_ganador = dir_subgrupo.replace("futuro",
@@ -1067,8 +1054,8 @@ elif (modoTiempo == "futuro" and pathCsvReducido.endswith('.csv') and os.path.is
 
         modelo_predictor_ganador = pickle.load(open(path_modelo_predictor_ganador, 'rb'))
 
-        print("Predecir:")
-        targets_predichos = modelo_predictor_ganador.predict(inputFeatures_sinnulos)
+        print("Prediciendo...")
+        targets_predichos = modelo_predictor_ganador.predict(inputFeatures_sinnulos.to_numpy())
         num_targets_predichos = len(targets_predichos)
         print("Numero de targets_predichos: " + str(num_targets_predichos) + " con numero de TRUEs = " + str(
             np.sum(targets_predichos, where=["True"])))
@@ -1092,20 +1079,16 @@ elif (modoTiempo == "futuro" and pathCsvReducido.endswith('.csv') and os.path.is
         # print(probabilidadesEnTargetUnoPeq3)
 
         probabilidadesEnTargetUnoPeq4 = probabilidadesEnTargetUnoPeq3.sort_values(ascending=False)  # descendente
-        print(
-            "El DF llamado probabilidadesEnTargetUnoPeq4 contiene los indices y probabilidades, tras aplicar umbral INFERIOR: " + str(
-                umbralProbTargetTrue) + ". Son:")
-        print(probabilidadesEnTargetUnoPeq4)
+        # print("El DF llamado probabilidadesEnTargetUnoPeq4 contiene los indices y probabilidades, tras aplicar umbral INFERIOR: " + str(umbralProbTargetTrue) + ". Son:")
+        # print(probabilidadesEnTargetUnoPeq4)
 
         numfilasSeleccionadas = int(granProbTargetUno * probabilidadesEnTargetUnoPeq4.shape[
             0] / 100)  # Como están ordenadas en descendente, cojo estas NUM primeras filas
         print("numfilasSeleccionadas: " + str(numfilasSeleccionadas))
         targets_predichosCorregidos_probs = probabilidadesEnTargetUnoPeq4[0:numfilasSeleccionadas]
         targets_predichosCorregidos = targets_predichosCorregidos_probs.apply(lambda x: 1)
-        print(
-            "El DF llamado targets_predichosCorregidos contiene los indices y probabilidades, tras aplicar umbral SUPERIOR: top " + str(
-                granProbTargetUno) + " % de muestras. Son:")
-        print(targets_predichosCorregidos)
+        # print("El DF llamado targets_predichosCorregidos contiene los indices y probabilidades, tras aplicar umbral SUPERIOR: top " + str(granProbTargetUno) + " % de muestras. Son:")
+        # print(targets_predichosCorregidos)
 
         print("Guardando targets PREDICHOS en: " + pathCsvPredichos)
         df_predichos = targets_predichosCorregidos.to_frame()

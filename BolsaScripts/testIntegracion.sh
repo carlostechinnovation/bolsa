@@ -206,10 +206,10 @@ java -jar ${PATH_JAR} --class "coordinador.Principal" "testIntegracion.ParserCsv
 
 
 #####
-SG_PRECISION_TRAIN_TARGETS_REALES="${DIR_SUBGRUPOS}SG_${SG_ANALIZADO}/intermedio.csv.ds_train_t.csv"
-echo -e "<br>Dataset TRAIN - Targets reales: <a href=\"${SG_PRECISION_TRAIN_TARGETS_REALES}\">${SG_PRECISION_TRAIN_TARGETS_REALES}</a> --> "$(wc -l $SG_PRECISION_TRAIN_TARGETS_REALES | cut -d\  -f 1)" filas ("$(cat $SG_PRECISION_TRAIN_TARGETS_REALES  | grep 'True' |wc -l)" positivos)<br>" >> ${INFORME_OUT}
+SG_PRECISION_TRAIN_TARGETS_REALES="${DIR_SUBGRUPOS}SG_${SG_ANALIZADO}/intermedio.csv.ds_train_t_sinsmote.csv"
+echo -e "<br>Dataset TRAIN - Targets reales (SIN SMOTE): <a href=\"${SG_PRECISION_TRAIN_TARGETS_REALES}\">${SG_PRECISION_TRAIN_TARGETS_REALES}</a> --> "$(wc -l $SG_PRECISION_TRAIN_TARGETS_REALES | cut -d\  -f 1)" filas ("$(cat $SG_PRECISION_TRAIN_TARGETS_REALES  | grep 'True' |wc -l)" positivos)<br>" >> ${INFORME_OUT}
 
-echo -e "<br>Ejemplos <b>(train - targets reales)</b>:<br><br>" >> ${INFORME_OUT}
+echo -e "<br>Ejemplos <b>(train - targets reales SIN SMOTE)</b>:<br><br>" >> ${INFORME_OUT}
 head -n 10 ${SG_PRECISION_TRAIN_TARGETS_REALES}  > "/tmp/entrada.csv"
 java -jar ${PATH_JAR} --class "coordinador.Principal" "testIntegracion.ParserCsvEnTablaHtml" "/tmp/entrada.csv" "${INFORME_OUT}" "\\|" "append"
 
