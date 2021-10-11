@@ -51,7 +51,35 @@ else
 fi
 
 PYTHON_SCRIPTS="${DIR_CODIGOS}BolsaPython/"
+
 ################## FUNCIONES #############################################################
+
+function buscarEmpresaEnSubgrupos () {
+	dirSubgrupos="${1}"
+	empresa="${2}"
+	ficheroLog="${3}"
+	cadena=""
+	for nombreSubg in $(ls ${dirSubgrupos})
+	do
+		pathEmpresasDeSg="/bolsa/pasado/subgrupos/${nombreSubg}/EMPRESAS.txt"
+		
+		if [ -f "$pathEmpresasDeSg" ]; then
+			echo "Analizando si la empresa ${empresa} esta en el fichero ${pathEmpresasDeSg} ..."
+			pattern="_${empresa}\."
+			encontrado=$(cat ${pathEmpresasDeSg} | grep "$pattern")
+			if [ -z "${encontrado}" ];then
+				echo "$encontrado is empty"
+			else
+				echo "$encontrado is NOT empty"
+				cadena="${cadena} ${nombreSubg}"
+			fi
+		fi
+		
+		
+	done
+	
+	echo "La empresa aparece en estos subgrupos: ${cadena}" >> "${ficheroLog}"
+}
 
 ############### COMPILAR JAR ########################################################
 DIR_JAVA="${DIR_CODIGOS}BolsaJava/"
@@ -77,9 +105,6 @@ BRUTO_YF="/bolsa/pasado/brutos/YF_NASDAQ_${empresa}.txt"
 BRUTO_FZ="/bolsa/pasado/brutos/FZ_NASDAQ_${empresa}.html"
 echo -e "Bruto - YahooFinance: <a href=\"${BRUTO_YF}\">${BRUTO_YF}</a> --> Tamanio (bytes) = "$(stat -c%s "$BRUTO_YF") >> ${INFORME_OUT}
 echo -e "<br>Bruto - Finviz - Datos estáticos: <a href=\"${BRUTO_FZ}\">${BRUTO_FZ}</a> --> Tamanio (bytes) = "$(stat -c%s "$BRUTO_FZ") >> ${INFORME_OUT}
-
-
-
 
 #####
 echo -e "<br><h3>Capa 1.2 (brutos estructurados)</h3>" >> ${INFORME_OUT}
@@ -109,9 +134,7 @@ java -jar ${PATH_JAR} --class "coordinador.Principal" "testIntegracion.ParserCsv
 #####
 echo -e "<br><h3>Capa 4 (subgrupos)</h3>" >> ${INFORME_OUT}
 DIR_SUBGRUPOS="/bolsa/pasado/subgrupos/"
-echo -e "Subgrupos creados (los que superan suficientes requisitos): <br>"$(ls $DIR_SUBGRUPOS)"<br>" >> ${INFORME_OUT}
-SG_EMPRESAS="${DIR_SUBGRUPOS}SG_${SG_ANALIZADO}/EMPRESAS.txt"
-
+buscarEmpresaEnSubgrupos "${DIR_SUBGRUPOS}" "${empresa}" "${INFORME_OUT}"
 
 
 #####
@@ -269,20 +292,70 @@ echo -e "<br>" >> ${INFORME_OUT}
 echo -e "<h3>¡¡¡ Un sistema aleatorio/tonto acertaría un 50% de los casos, simplemente diciendo siempre false (o true) !!!</h3>" >> ${INFORME_OUT}
 echo -e "<h3>RECORDAR: Solo miramos la precisión sobre los positivos predichos, porque es donde ponemos el DINERO REAL. No miramos los positivos NO predichos ni los negativos predichos.</h3>" >> ${INFORME_OUT}
 
+echo -e "<br><br>" >> ${INFORME_OUT}
 
-echo -e "<br>" >> ${INFORME_OUT}
-
-echo -e "<br>" >> ${INFORME_OUT}
 
 
 #######################################################################################################
 #######################################################################################################
 echo -e "<h2>******************* COMPROBACIONES del FUTURO2 ********************</h2>" >> ${INFORME_OUT}
-echo -e "<br><br><br><br><br>" >> ${INFORME_OUT}
+echo -e "<br>" >> ${INFORME_OUT}
 
+#####
+echo -e "<br><h3>Capa 1.1 (brutos desestructurados)</h3>" >> ${INFORME_OUT}
+BRUTO_YF="/bolsa/futuro/brutos/YF_NASDAQ_${empresa}.txt"
+BRUTO_FZ="/bolsa/futuro/brutos/FZ_NASDAQ_${empresa}.html"
+echo -e "Bruto - YahooFinance: <a href=\"${BRUTO_YF}\">${BRUTO_YF}</a> --> Tamanio (bytes) = "$(stat -c%s "$BRUTO_YF") >> ${INFORME_OUT}
+echo -e "<br>Bruto - Finviz - Datos estáticos: <a href=\"${BRUTO_FZ}\">${BRUTO_FZ}</a> --> Tamanio (bytes) = "$(stat -c%s "$BRUTO_FZ") >> ${INFORME_OUT}
+
+#####
+echo -e "<br><h3>Capa 1.2 (brutos estructurados)</h3>" >> ${INFORME_OUT}
+BRUTO_CSV="/bolsa/futuro/brutos_csv/NASDAQ_${empresa}.csv"
+echo -e "Bruto CSV: <a href=\"${BRUTO_CSV}\">${BRUTO_CSV}</a> --> Tamanio (bytes) = "$(stat -c%s "$BRUTO_CSV")" con "$(wc -l $BRUTO_CSV | cut -d\  -f 1)" filas<br><br>" >> ${INFORME_OUT}
+head -n 10 ${BRUTO_CSV} > "/tmp/entrada.csv"
+java -jar ${PATH_JAR} --class "coordinador.Principal" "testIntegracion.ParserCsvEnTablaHtml" "/tmp/entrada.csv" "${INFORME_OUT}" "\\|" "append"
+
+#####
+echo -e "<br><h3>Capa 2 (limpios)</h3>" >> ${INFORME_OUT}
+LIMPIO="/bolsa/futuro/limpios/NASDAQ_${empresa}.csv"
+echo -e "Limpio: <a href=\"${LIMPIO}\">${LIMPIO}</a> --> Tamanio (bytes) = "$(stat -c%s "$LIMPIO")" con "$(wc -l $LIMPIO | cut -d\  -f 1)" filas<br><br>" >> ${INFORME_OUT}
+head -n 5 ${LIMPIO}  > "/tmp/entrada.csv"
+java -jar ${PATH_JAR} --class "coordinador.Principal" "testIntegracion.ParserCsvEnTablaHtml" "/tmp/entrada.csv" "${INFORME_OUT}" "\\|" "append"
+
+#####
+echo -e "<br><h3>Capa 3 (elaboradas)</h3>" >> ${INFORME_OUT}
+ELABORADO="/bolsa/futuro/elaborados/NASDAQ_${empresa}.csv"
+echo -e "Elaborado: <a href=\"${ELABORADO}\">${ELABORADO}</a> --> Tamanio (bytes) = "$(stat -c%s "$ELABORADO")" con "$(wc -l $ELABORADO | cut -d\  -f 1)" filas<br><br>" >> ${INFORME_OUT}
+echo -e "Viendo la columna TARGET, este es el numero de casos de cada tipo: " >> ${INFORME_OUT}
+echo -e "--> NULL = "$(cat /bolsa/futuro/elaborados/NASDAQ_AMRS.csv | grep '|null$' | wc -l) >> ${INFORME_OUT}
+echo -e "  True ="$(cat /bolsa/futuro/elaborados/NASDAQ_AMRS.csv | grep '|1$' | wc -l) >> ${INFORME_OUT}
+echo -e "  False = "$(cat /bolsa/futuro/elaborados/NASDAQ_AMRS.csv | grep '|0$' | wc -l) >> ${INFORME_OUT}
+head -n 10 ${ELABORADO}  > "/tmp/entrada.csv"
+java -jar ${PATH_JAR} --class "coordinador.Principal" "testIntegracion.ParserCsvEnTablaHtml" "/tmp/entrada.csv" "${INFORME_OUT}" "\\|" "append"
+
+#####
+echo -e "<br><h3>Capa 4 (subgrupos)</h3>" >> ${INFORME_OUT}
+DIR_SUBGRUPOS="/bolsa/futuro/subgrupos/"
+buscarEmpresaEnSubgrupos "${DIR_SUBGRUPOS}" "${empresa}" "${INFORME_OUT}"
+
+
+#####
+echo -e "<br><h3>Capa 5 (reducir, normalizar, etc) ...</h3><br>" >> ${INFORME_OUT}
+
+
+#####
+echo -e "<br><h3>Capa 6 (PREDICCION)</h3><br>" >> ${INFORME_OUT}
+
+SG_TARGETS_PREDICHOS="${DIR_SUBGRUPOS}SG_${SG_ANALIZADO}/TARGETS_PREDICHOS.csv_humano"
+echo -e "<br>Dataset FUTURO - Targets predichos: <a href=\"${SG_TARGETS_PREDICHOS}\">${SG_TARGETS_PREDICHOS}</a> --> "$(wc -l $SG_TARGETS_PREDICHOS | cut -d\  -f 1)" filas ("$(cat $SG_TARGETS_PREDICHOS  | grep 'True' |wc -l)" positivos)<br>" >> ${INFORME_OUT}
+
+echo -e "<br>Ejemplos <b>(train - targets predichos)</b>:<br><br>" >> ${INFORME_OUT}
+head -n 10 ${SG_TARGETS_PREDICHOS}  > "/tmp/entrada.csv"
+java -jar ${PATH_JAR} --class "coordinador.Principal" "testIntegracion.ParserCsvEnTablaHtml" "/tmp/entrada.csv" "${INFORME_OUT}" "\\|" "append"
 
 
 
 echo -e "</body></html>"  >> ${INFORME_OUT}
 echo -e "TEST INTEGRACION - FIN: "$( date "+%Y%m%d%H%M%S" )
 
+echo -e "<br><br>" >> ${INFORME_OUT}
