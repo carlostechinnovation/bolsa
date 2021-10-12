@@ -259,6 +259,9 @@ echo -e "Actualizando informe HTML de uso de FEATURES (mirando el pasado)..." >>
 DIR_SUBGRUPOS_PASADO=$(echo ${DIR_SUBGRUPOS} | sed -e "s/futuro/pasado/g")
 $PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/FeaturesAnalisisPosteriori.py" "${DIR_SUBGRUPOS_PASADO}" "${DIR_BASE}pasado/matriz_features_antes_de_pca.html" "${DIR_BASE}pasado/matriz_features.html" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 
+if [ "$DIR_TIEMPO" = "pasado" ];  then 
+	$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/AnalisisFalsosPositivos.py"
+fi
 
 echo -e "MASTER - FIN: "$( date "+%Y%m%d%H%M%S" )
 echo -e "******** FIN de master**************" >> ${LOG_MASTER}
