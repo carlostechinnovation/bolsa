@@ -1110,9 +1110,22 @@ elif (modoTiempo == "futuro" and pathCsvReducido.endswith('.csv') and os.path.is
         print("df_predichos: " + str(df_predichos.shape[0]) + " x " + str(df_predichos.shape[1]))
         print("df_predichos_probs: " + str(df_predichos_probs.shape[0]) + " x " + str(df_predichos_probs.shape[1]))
 
+        #Predichos con columnas: empresa anio mes dia
+        indiceDFPredichos = df_predichos.index.values
+        df_predichos.insert(0, column="indiceColumna", value=indiceDFPredichos)
+        df_predichos[['empresa', 'anio', 'mes', 'dia']] = df_predichos['indiceColumna'].str.split('_', 4, expand=True)
+        df_predichos = df_predichos.drop('indiceColumna', axis=1)
+        df_predichos = df_predichos.astype({"anio": int, "mes": int, "dia": int})
+
+        indiceDFPredichos = df_predichos_probs.index.values
+        df_predichos_probs.insert(0, column="indiceColumna", value=indiceDFPredichos)
+        df_predichos_probs[['empresa', 'anio', 'mes', 'dia']] = df_predichos_probs['indiceColumna'].str.split('_', 4, expand=True)
+        df_predichos_probs = df_predichos_probs.drop('indiceColumna', axis=1)
+        df_predichos_probs = df_predichos_probs.astype({"anio": int, "mes": int, "dia": int})
+
         print("Juntar COMPLETO con TARGETS PREDICHOS... ")
-        df_juntos_1 = pd.concat([df_completo, df_predichos], axis=1)
-        df_juntos_2 = pd.concat([df_juntos_1, df_predichos_probs], axis=1)
+        df_juntos_1 = pd.merge(df_completo, df_predichos, on=["empresa", "anio", "mes", "dia"])
+        df_juntos_2 = pd.merge(df_juntos_1, df_predichos_probs, on=["empresa", "anio", "mes", "dia"])
 
         df_juntos_2['TARGET_PREDICHO'] = (df_juntos_2['TARGET_PREDICHO'] * 1).astype(
             'Int64')  # Convertir de boolean a int64, manteniendo los nulos

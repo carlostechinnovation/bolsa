@@ -16,7 +16,7 @@ print("antiguedad = " + antiguedad)
 print("dirSalida = " + dirSalida)
 print("sufijoFicheroSalida = " + sufijoFicheroSalida)
 
-datosEntrada = pd.read_csv(filepath_or_buffer=pathFicheroEntrada, sep='|')
+datosEntrada = pd.read_csv(filepath_or_buffer=pathFicheroEntrada, sep='|', low_memory=False)
 
 print("Quitamos COLUMNAS que ya nos estorban...")
 datosEntrada = datosEntrada.drop(datosEntrada.filter(regex='PENDIENTE').columns, axis=1)
@@ -25,8 +25,9 @@ datosEntrada = datosEntrada.drop(datosEntrada.filter(regex='CURTOSIS').columns, 
 datosEntrada = datosEntrada.drop(datosEntrada.filter(regex='SKEWNESS').columns, axis=1)
 
 print("Cogemos solo las FILAS con la antiguedad indicada y con TARGET PREDICHO=1...")
-antiguedad_int = int(antiguedad)
-filasFiltradas = datosEntrada[datosEntrada['antiguedad'] == antiguedad_int]
+antiguedad_num = float(antiguedad)
+datosEntrada['antiguedad'] = datosEntrada['antiguedad'].astype('float64')
+filasFiltradas = datosEntrada[datosEntrada['antiguedad'] == antiguedad_num]
 filasFiltradas = filasFiltradas[filasFiltradas['TARGET_PREDICHO'] == 1]
 
 num_filas = filasFiltradas.shape[0]
