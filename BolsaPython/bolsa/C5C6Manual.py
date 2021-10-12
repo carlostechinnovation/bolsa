@@ -889,6 +889,8 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         optimizer = BayesianOptimization(f=xgboost_hyper_param, pbounds=pbounds, random_state=1,
                                          verbose=10)
         optimizer.maximize(init_points=3, n_iter=10, acq='ucb', kappa=3, **gp_params)
+        #KAPPA: Parameter to indicate how closed are the next parameters sampled
+
         valoresOptimizados = optimizer.max
         print(valoresOptimizados)
         print("Fin del optimizador")
