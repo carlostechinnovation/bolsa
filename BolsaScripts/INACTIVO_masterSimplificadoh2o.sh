@@ -7,8 +7,13 @@ echo -e "MASTER - INICIO: "$( date "+%Y%m%d%H%M%S" )
 #################### DIRECTORIOS ###############################################################
 DIR_BASE="/bolsa/"
 DIR_CODIGOS_CARLOS="/home/carloslinux/Desktop/GIT_BOLSA/"
-DIR_CODIGOS_LUIS="/home/t151521${DIR_BASE}"
+<<<<<<< HEAD:BolsaScripts/INACTIVO_masterSimplificadoh2o.sh
+DIR_CODIGOS_LUIS="/home/t151521/bolsa/"
 PYTHON_MOTOR_CARLOS="/home/carloslinux/anaconda3/envs/BolsaPython38/bin/python"
+=======
+DIR_CODIGOS_LUIS="/home/t151521${DIR_BASE}"
+PYTHON_MOTOR_CARLOS="/home/carloslinux/Desktop/PROGRAMAS/anaconda3/envs/BolsaPython/bin/python"
+>>>>>>> aa783591 (simplificación de scripts):BolsaScripts/masterSimplificadoh2o.sh
 PYTHON_MOTOR_LUIS="/home/t151521/anaconda3/envs/BolsaPython/bin/python"
 
 usuario=$(whoami)
@@ -140,22 +145,20 @@ if [ "$ACTIVAR_SG_Y_PREDICCION" = "S" ];  then
 			
 			path_dir_pasado=$( echo ${dir_subgrupo} | sed "s/futuro/pasado/" )
 			echo "$path_dir_pasado"
-			path_normalizador_pasado="${path_dir_pasado}NORMALIZADOR.tool"
-			echo "$path_normalizador_pasado"
+			path_leaderboard="${path_dir_pasado}aml_leaderboard.h2o"
+			echo "$path_leaderboard"
 		
-			if [ "$DIR_TIEMPO" = "pasado" ] || { [ "$DIR_TIEMPO" = "futuro" ] && [ -f "$path_normalizador_pasado" ]; };  then 
+			if [ "$DIR_TIEMPO" = "pasado" ] || { [ "$DIR_TIEMPO" = "futuro" ] && [ -f "$path_leaderboard" ]; };  then 
 			
-# AQUÍ NO SE VACIARÁ LA CARPETA SI YA EXISTE
-				crearCarpetaSiNoExistePeroNoVaciar  "${dir_subgrupo}${DIR_IMG}"
-				crearCarpetaSiNoExistePeroNoVaciar  "${dir_subgrupo}${DIR_TRAMIF}"
+				crearCarpetaSiNoExisteYVaciar  "${dir_subgrupo}${DIR_IMG}"
+				crearCarpetaSiNoExisteYVaciar  "${dir_subgrupo}${DIR_TRAMIF}"
 				
-				echo -e $( date '+%Y%m%d_%H%M%S' )" ##################### Capas 5 y 6 #####################" >> ${LOG_MASTER}
-				echo -e $( date '+%Y%m%d_%H%M%S' )" Se elimina MISSING VALUES (NA en columnas y filas), elimina OUTLIERS, balancea clases (undersampling de mayoritaria), calcula IMG funciones de densidad, NORMALIZA las features, comprueba suficientes casos en clase minoritaria, REDUCCION de FEATURES y guarda el CSV REDUCIDO..." >> ${LOG_MASTER}
-				echo -e $( date '+%Y%m%d_%H%M%S' )" PASADO ó FUTURO: se balancean las clases (aunque ya se hizo en capa 5), se divide dataset de entrada (entrenamiento, test, validación), se CREA MODELOS (con hyperparámetros)  los evalúa. Guarda el modelo GANADOR de cada subgrupo..." >> ${LOG_MASTER}
-				$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/C5C6Manual.py" "${dir_subgrupo}/" "${DIR_TIEMPO}" "${MAX_NUM_FEAT_REDUCIDAS}" "${CAPA5_MAX_FILAS_ENTRADA}" "${DESPLAZAMIENTO_ANTIGUEDAD}" >> ${LOG_MASTER}
+				echo -e $( date '+%Y%m%d_%H%M%S' )" ##################### Capa 5 y 6 con H2O #####################" >> ${LOG_MASTER}
+				echo -e $( date '+%Y%m%d_%H%M%S' )" PASADO ó FUTURO: Se aplica AutoML de H2O para generar el mejor modelo de cada subgrupo. Guarda el modelo GANADOR de cada subgrupo..." >> ${LOG_MASTER}
+				$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/C5C6H2O.py" "${dir_subgrupo}/" "${DIR_TIEMPO}" "${DESPLAZAMIENTO_ANTIGUEDAD}"  >> ${LOG_MASTER}
 				
 			else
-				echo "Al evaluar el subgrupo cuyo directorio es $dir_subgrupo para el tiempo $DIR_TIEMPO vemos que no existe entrenamiento en el pasado, asi que no existe $path_normalizador_pasado" >> ${LOG_MASTER}
+				echo "Al evaluar el subgrupo cuyo directorio es $dir_subgrupo para el tiempo $DIR_TIEMPO vemos que no existe entrenamiento en el pasado, asi que no existe $path_leaderboard" >> ${LOG_MASTER}
 			fi
 		fi
 	done

@@ -17,7 +17,7 @@
 #Se tomarán los ficheros *_GRANDE_0_SG_0_* generados, o que ya se tienen de ejecuciones antiguas, para usarlo como base de información futura.
 ANTIGUEDAD_MAXIMA="150"
 ANTIGUEDAD_MINIMA="0" # Se puede usar cualquier valor
-NUM_EMPRESAS_TRAIN="1000" # Número de empresas de entrenamiento, NO para los días posteriores (que estarán en el fichero de parámetros). Se recomienda dejar 1000 siempre.
+NUM_EMPRESAS_TRAIN="2000" # Número de empresas de entrenamiento, NO para los días posteriores (que estarán en el fichero de parámetros). Se recomienda dejar 1000 siempre.
 
 echo -e "INVERSION - INICIO: "$( date "+%Y%m%d%H%M%S" )
 
@@ -28,13 +28,13 @@ echo -e "INVERSION - INICIO: "$( date "+%Y%m%d%H%M%S" )
 DIR_BASE="/bolsa/"
 DIR_DROPBOX_REPO="/BOLSA_PREDICTOR/"
 DIR_CODIGOS_CARLOS="/home/carloslinux/Desktop/GIT_BOLSA/"
-<<<<<<< HEAD
+<<<<<<< HEAD:BolsaScripts/INACTIVO_inversionHistoricaSoloFuturoh2o.sh
 DIR_CODIGOS_LUIS="/home/t151521/bolsa/"
 PYTHON_MOTOR_CARLOS="/home/carloslinux/anaconda3/envs/BolsaPython38/bin/python"
 =======
 DIR_CODIGOS_LUIS="/home/t151521${DIR_BASE}"
 PYTHON_MOTOR_CARLOS="/home/carloslinux/Desktop/PROGRAMAS/anaconda3/envs/BolsaPython/bin/python"
->>>>>>> aa783591 (simplificación de scripts)
+>>>>>>> aa783591 (simplificación de scripts):BolsaScripts/inversionHistoricaSoloFuturoh2o.sh
 PYTHON_MOTOR_LUIS="/home/t151521/anaconda3/envs/BolsaPython/bin/python"
 DIR_DROPBOX_CARLOS="/home/carloslinux/Dropbox${DIR_DROPBOX_REPO}"
 DIR_DROPBOX_LUIS="/home/t151521/Dropbox${DIR_DROPBOX_REPO}"
@@ -103,7 +103,7 @@ do
 	echo -e $( date '+%Y%m%d_%H%M%S' )" Ejecución del futuro (para velas de antiguedad=${ANTIGUEDAD}) con TODAS LAS EMPRESAS (lista DIRECTA ó INVERSA, ya da igual, no estamos mirando overfitting)..." >>${LOG_INVERSION}
 	MIN_COBERTURA_CLUSTER=0    # Para predecir, cojo lo que haya, sin minimos. El modelo ya lo hemos entrenado
 	MIN_EMPRESAS_POR_CLUSTER=1   # Para predecir, cojo lo que haya, sin minimos. El modelo ya lo hemos entrenado
-	${PATH_SCRIPTS}master.sh "futuro" "${ANTIGUEDAD}" "0" "${ACTIVAR_DESCARGAS}" "S" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" "${NUM_EMPRESAS_INVERSION}" "${UMBRAL_SUBIDA_POR_VELA}" "${UMBRAL_MINIMO_GRAN_VELA}" "${MIN_COBERTURA_CLUSTER}" "${MIN_EMPRESAS_POR_CLUSTER}" "20001111" "20991111" "${MAX_NUM_FEAT_REDUCIDAS}" "${CAPA5_MAX_FILAS_ENTRADA}" "${DINAMICA1}" "${DINAMICA2}" 2>>${LOG_INVERSION} 1>>${LOG_INVERSION}
+	${PATH_SCRIPTS}masterh2o.sh "futuro" "${ANTIGUEDAD}" "0" "${ACTIVAR_DESCARGAS}" "S" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" "${NUM_EMPRESAS_INVERSION}" "${UMBRAL_SUBIDA_POR_VELA}" "${UMBRAL_MINIMO_GRAN_VELA}" "${MIN_COBERTURA_CLUSTER}" "${MIN_EMPRESAS_POR_CLUSTER}" "20001111" "20991111" "${MAX_NUM_FEAT_REDUCIDAS}" "${CAPA5_MAX_FILAS_ENTRADA}" "${DINAMICA1}" "${DINAMICA2}" 2>>${LOG_INVERSION} 1>>${LOG_INVERSION}
 	
 	while IFS= read -r -d '' -u 9
 	do

@@ -5,9 +5,8 @@
 echo -e "MASTER - INICIO: "$( date "+%Y%m%d%H%M%S" )
 
 #################### DIRECTORIOS ###############################################################
-DIR_BASE="/bolsa/"
 DIR_CODIGOS_CARLOS="/home/carloslinux/Desktop/GIT_BOLSA/"
-DIR_CODIGOS_LUIS="/home/t151521${DIR_BASE}"
+DIR_CODIGOS_LUIS="/home/t151521/bolsa/"
 PYTHON_MOTOR_CARLOS="/home/carloslinux/anaconda3/envs/BolsaPython38/bin/python"
 PYTHON_MOTOR_LUIS="/home/t151521/anaconda3/envs/BolsaPython/bin/python"
 
@@ -101,6 +100,7 @@ PYTHON_SCRIPTS="${DIR_CODIGOS}BolsaPython/"
 DIR_JAVA="${DIR_CODIGOS}BolsaJava/"
 PATH_JAR="${DIR_JAVA}target/bolsajava-1.0-jar-with-dependencies.jar"
 
+DIR_BASE="/bolsa/"
 DIR_LOGS="${DIR_BASE}logs/"
 DIR_BRUTOS="${DIR_BASE}${DIR_TIEMPO}/brutos/"
 DIR_BRUTOS_CSV="${DIR_BASE}${DIR_TIEMPO}/brutos_csv/"
@@ -149,10 +149,13 @@ if [ "$ACTIVAR_SG_Y_PREDICCION" = "S" ];  then
 				crearCarpetaSiNoExistePeroNoVaciar  "${dir_subgrupo}${DIR_IMG}"
 				crearCarpetaSiNoExistePeroNoVaciar  "${dir_subgrupo}${DIR_TRAMIF}"
 				
-				echo -e $( date '+%Y%m%d_%H%M%S' )" ##################### Capas 5 y 6 #####################" >> ${LOG_MASTER}
+				echo -e $( date '+%Y%m%d_%H%M%S' )" ##################### Capa 5 #####################" >> ${LOG_MASTER}
 				echo -e $( date '+%Y%m%d_%H%M%S' )" Se elimina MISSING VALUES (NA en columnas y filas), elimina OUTLIERS, balancea clases (undersampling de mayoritaria), calcula IMG funciones de densidad, NORMALIZA las features, comprueba suficientes casos en clase minoritaria, REDUCCION de FEATURES y guarda el CSV REDUCIDO..." >> ${LOG_MASTER}
+				$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/C5NormalizarYReducirDatasetSubgrupo.py" "${dir_subgrupo}/" "${DIR_TIEMPO}" "${MAX_NUM_FEAT_REDUCIDAS}" "${CAPA5_MAX_FILAS_ENTRADA}" >> ${LOG_MASTER}
+				
+				echo -e $( date '+%Y%m%d_%H%M%S' )" ##################### Capa 6 #####################" >> ${LOG_MASTER}
 				echo -e $( date '+%Y%m%d_%H%M%S' )" PASADO ó FUTURO: se balancean las clases (aunque ya se hizo en capa 5), se divide dataset de entrada (entrenamiento, test, validación), se CREA MODELOS (con hyperparámetros)  los evalúa. Guarda el modelo GANADOR de cada subgrupo..." >> ${LOG_MASTER}
-				$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/C5C6Manual.py" "${dir_subgrupo}/" "${DIR_TIEMPO}" "${MAX_NUM_FEAT_REDUCIDAS}" "${CAPA5_MAX_FILAS_ENTRADA}" "${DESPLAZAMIENTO_ANTIGUEDAD}" >> ${LOG_MASTER}
+				$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/C6CreadorModelosDeSubgrupo.py" "${dir_subgrupo}/" "${DIR_TIEMPO}" "${DESPLAZAMIENTO_ANTIGUEDAD}"  >> ${LOG_MASTER}
 				
 			else
 				echo "Al evaluar el subgrupo cuyo directorio es $dir_subgrupo para el tiempo $DIR_TIEMPO vemos que no existe entrenamiento en el pasado, asi que no existe $path_normalizador_pasado" >> ${LOG_MASTER}
@@ -168,7 +171,7 @@ java -jar ${PATH_JAR} --class "coordinador.Principal" "c70X.validacion.Generador
 
 echo -e "Actualizando informe HTML de uso de FEATURES (mirando el pasado)..." >> ${LOG_MASTER}
 DIR_SUBGRUPOS_PASADO=$(echo ${DIR_SUBGRUPOS} | sed -e "s/futuro/pasado/g")
-$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/FeaturesAnalisisPosteriori.py" "${DIR_SUBGRUPOS_PASADO}" "${DIR_BASE}pasado/matriz_features_antes_de_pca.html" "${DIR_BASE}pasado/matriz_features.html" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
+$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/FeaturesAnalisisPosteriori.py" "${DIR_SUBGRUPOS_PASADO}" "/bolsa/pasado/matriz_features_antes_de_pca.html" "/bolsa/pasado/matriz_features.html" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 
 
 echo -e "MASTER - FIN: "$( date "+%Y%m%d%H%M%S" )

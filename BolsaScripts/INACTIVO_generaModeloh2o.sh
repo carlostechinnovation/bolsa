@@ -5,8 +5,13 @@ echo -e "VALIDACION - INICIO: "$( date "+%Y%m%d%H%M%S" )
 #################### DIRECTORIOS ###############################################################
 DIR_BASE="/bolsa/"
 DIR_CODIGOS_CARLOS="/home/carloslinux/Desktop/GIT_BOLSA/"
-DIR_CODIGOS_LUIS="/home/t151521${DIR_BASE}"
+<<<<<<< HEAD:BolsaScripts/INACTIVO_generaModeloh2o.sh
+DIR_CODIGOS_LUIS="/home/t151521/bolsa/"
 PYTHON_MOTOR_CARLOS="/home/carloslinux/anaconda3/envs/BolsaPython38/bin/python"
+=======
+DIR_CODIGOS_LUIS="/home/t151521${DIR_BASE}"
+PYTHON_MOTOR_CARLOS="/home/carloslinux/Desktop/PROGRAMAS/anaconda3/envs/BolsaPython/bin/python"
+>>>>>>> aa783591 (simplificación de scripts):BolsaScripts/generaModeloh2o.sh
 PYTHON_MOTOR_LUIS="/home/t151521/anaconda3/envs/BolsaPython/bin/python"
 
 usuario=$(whoami)
@@ -47,7 +52,7 @@ source ${PARAMS_CONFIG}
 VELAS_RETROCESO="$((${X}+${M}+2))" #INSTANTE ANALIZADO (T1). Su antiguedad debe ser mayor o igual que X+M, para poder ver esas X+M velas del futuro
 
 #Instantes de las descargas
-PASADO_t1="50"
+PASADO_t1="150"
 FUTURO1_t1="${VELAS_RETROCESO}" #No tocar. Se usa en el validador
 FUTURO2_t1="$((${VELAS_RETROCESO}-${X}-${M}))" #No tocar. Se usa en el validador
 
@@ -84,12 +89,7 @@ if [ "${ACTIVAR_DESCARGAS}" = "N" ];  then
 fi;
 
 echo -e $( date '+%Y%m%d_%H%M%S' )" Ejecución del PASADO (para entrenar los modelos a dia de HOY con la lista normal de empresas)..." >>${LOG_VALIDADOR}
-
-echo -e "EL MODELO SE ESTÁ GENERANDO EN EL PASADO DE HACE ${PASADO_t1} VELAS." 
-echo -e "EL MODELO SE ESTÁ GENERANDO EN EL PASADO DE HACE ${PASADO_t1} VELAS." >>${LOG_VALIDADOR}
-
-
-${PATH_SCRIPTS}master.sh "pasado" "${PASADO_t1}" "0" "${ACTIVAR_DESCARGAS}" "S" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" "${NUM_EMPRESAS}" "${UMBRAL_SUBIDA_POR_VELA}" "${UMBRAL_MINIMO_GRAN_VELA}" "${MIN_COBERTURA_CLUSTER}" "${MIN_EMPRESAS_POR_CLUSTER}" "${P_INICIO}" "${P_FIN}" "${MAX_NUM_FEAT_REDUCIDAS}" "${CAPA5_MAX_FILAS_ENTRADA}" "${DINAMICA1}" "${DINAMICA2}" 2>>${LOG_VALIDADOR} 1>>${LOG_VALIDADOR}
+${PATH_SCRIPTS}masterh2o.sh "pasado" "${PASADO_t1}" "0" "${ACTIVAR_DESCARGAS}" "S" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" "${NUM_EMPRESAS}" "${UMBRAL_SUBIDA_POR_VELA}" "${UMBRAL_MINIMO_GRAN_VELA}" "${MIN_COBERTURA_CLUSTER}" "${MIN_EMPRESAS_POR_CLUSTER}" "${P_INICIO}" "${P_FIN}" "${MAX_NUM_FEAT_REDUCIDAS}" "${CAPA5_MAX_FILAS_ENTRADA}" "${DINAMICA1}" "${DINAMICA2}" 2>>${LOG_VALIDADOR} 1>>${LOG_VALIDADOR}
 
 dir_val_pasado="${DIR_BASE}validacion/E${NUM_EMPRESAS}_VR${VELAS_RETROCESO}_S${S}_X${X}_R${R}_M${M}_F${F}_B${B}_pasado/"
 rm -Rf $dir_val_pasado

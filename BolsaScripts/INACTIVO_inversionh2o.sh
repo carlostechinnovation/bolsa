@@ -5,16 +5,15 @@
 echo -e "INVERSION - INICIO: "$( date "+%Y%m%d%H%M%S" )
 
 #################### DIRECTORIOS ###############################################################
-DIR_BASE="/bolsa/"
 DIR_DROPBOX_REPO="/BOLSA_PREDICTOR/"
 DIR_CODIGOS_CARLOS="/home/carloslinux/Desktop/GIT_BOLSA/"
-<<<<<<< HEAD
+<<<<<<< HEAD:BolsaScripts/INACTIVO_inversionh2o.sh
 DIR_CODIGOS_LUIS="/home/t151521/bolsa/"
 PYTHON_MOTOR_CARLOS="/home/carloslinux/anaconda3/envs/BolsaPython38/bin/python"
 =======
 DIR_CODIGOS_LUIS="/home/t151521${DIR_BASE}"
 PYTHON_MOTOR_CARLOS="/home/carloslinux/Desktop/PROGRAMAS/anaconda3/envs/BolsaPython/bin/python"
->>>>>>> aa783591 (simplificación de scripts)
+>>>>>>> aa783591 (simplificación de scripts):BolsaScripts/inversionh2o.sh
 PYTHON_MOTOR_LUIS="/home/t151521/anaconda3/envs/BolsaPython/bin/python"
 DIR_DROPBOX_CARLOS="/home/carloslinux/Dropbox${DIR_DROPBOX_REPO}"
 DIR_DROPBOX_LUIS="/home/t151521/Dropbox${DIR_DROPBOX_REPO}"
@@ -74,16 +73,6 @@ crearCarpetaSiNoExiste "${DIR_INVERSION}"
 rm -f "${DIR_LOGS}log4j.log"
 rm -f "${LOG_INVERSION}"
 
-############### COMPILAR JAR ########################################################
-echo -e "Comprobando que JAVA tenga su JAR aunque no lo usemos en este script..." >> ${LOG_INVERSION}
-
-if [ -f "$PATH_JAR" ]; then
-    echo "El siguiente JAR se ha generado bien: ${PATH_JAR}"
-else 
-    echo "El siguiente JAR no se ha generado bien: ${PATH_JAR}   Saliendo..."
-	exit -1
-fi
-
 ################################################################################################
 
 #En esta ejecucion, nos situamos en HOY MISMO y PREDECIMOS el futuro. Guardaremos esa predicción para meter dinero REAL.
@@ -94,7 +83,7 @@ crearCarpetaSiNoExiste "${DIR_FUT_SUBGRUPOS}"
 echo -e $( date '+%Y%m%d_%H%M%S' )" Ejecución del futuro (para velas de antiguedad=0) con TODAS LAS EMPRESAS (lista DIRECTA ó INVERSA, ya da igual, no estamos mirando overfitting)..." >>${LOG_INVERSION}
 MIN_COBERTURA_CLUSTER=0    # Para predecir, cojo lo que haya, sin minimos. EL modelo ya lo hemos entrenado
 MIN_EMPRESAS_POR_CLUSTER=1   # Para predecir, cojo lo que haya, sin minimos. EL modelo ya lo hemos entrenado
-${PATH_SCRIPTS}master.sh "futuro" "${FUTURO_INVERSION}" "0" "S" "S" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" "${NUM_EMPRESAS_INVERSION}" "${UMBRAL_SUBIDA_POR_VELA}" "${UMBRAL_MINIMO_GRAN_VELA}" "${MIN_COBERTURA_CLUSTER}" "${MIN_EMPRESAS_POR_CLUSTER}" "20001111" "20991111" "${MAX_NUM_FEAT_REDUCIDAS}" "${CAPA5_MAX_FILAS_ENTRADA}" "${DINAMICA1}" "${DINAMICA2}" 2>>${LOG_INVERSION} 1>>${LOG_INVERSION}
+${PATH_SCRIPTS}masterh2o.sh "futuro" "${FUTURO_INVERSION}" "0" "S" "S" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" "${NUM_EMPRESAS_INVERSION}" "${UMBRAL_SUBIDA_POR_VELA}" "${UMBRAL_MINIMO_GRAN_VELA}" "${MIN_COBERTURA_CLUSTER}" "${MIN_EMPRESAS_POR_CLUSTER}" "20001111" "20991111" "${MAX_NUM_FEAT_REDUCIDAS}" "${CAPA5_MAX_FILAS_ENTRADA}" "${DINAMICA1}" "${DINAMICA2}" 2>>${LOG_INVERSION} 1>>${LOG_INVERSION}
 
 echo -e "Guardamos la prediccion del FUTURO de todos los SUBGRUPOS en la carpeta de INVERSION, para apostar dinero REAL..." >>${LOG_INVERSION}
 

@@ -7,8 +7,13 @@ echo -e "MASTER - INICIO: "$( date "+%Y%m%d%H%M%S" )
 #################### DIRECTORIOS ###############################################################
 DIR_BASE="/bolsa/"
 DIR_CODIGOS_CARLOS="/home/carloslinux/Desktop/GIT_BOLSA/"
-DIR_CODIGOS_LUIS="/home/t151521${DIR_BASE}"
+<<<<<<< HEAD:BolsaScripts/INACTIVO_inversionHistoricaSoloFuturoSimplificadoh2o.sh
+DIR_CODIGOS_LUIS="/home/t151521/bolsa/"
 PYTHON_MOTOR_CARLOS="/home/carloslinux/anaconda3/envs/BolsaPython38/bin/python"
+=======
+DIR_CODIGOS_LUIS="/home/t151521${DIR_BASE}"
+PYTHON_MOTOR_CARLOS="/home/carloslinux/Desktop/PROGRAMAS/anaconda3/envs/BolsaPython/bin/python"
+>>>>>>> aa783591 (simplificación de scripts):BolsaScripts/master_obsoleto20210705.sh
 PYTHON_MOTOR_LUIS="/home/t151521/anaconda3/envs/BolsaPython/bin/python"
 
 usuario=$(whoami)
@@ -112,23 +117,10 @@ LOG_MASTER="${DIR_LOGS}${ID_EJECUCION}_bolsa_coordinador_${DIR_TIEMPO}.log"
 rm -f "${LOG_MASTER}"
 
 ############### COMPILAR JAR ########################################################
-echo -e "Version de MAVEN:" >> ${LOG_MASTER}
-mvn -version >> ${LOG_MASTER}
-
 echo -e "Compilando JAVA en un JAR..." >> ${LOG_MASTER}
 cd "${DIR_JAVA}" >> ${LOG_MASTER}
 rm -Rf "${DIR_JAVA}target/" >> ${LOG_MASTER}
-echo "JAVA_HOME contiene este valor: ${JAVA_HOME}" >> ${LOG_MASTER}
-
 mvn clean compile assembly:single >> ${LOG_MASTER}
-
-if [ -f "$PATH_JAR" ]; then
-    echo "El siguiente JAR se ha generado bien: ${PATH_JAR}"
-else 
-    echo "El siguiente JAR no se ha generado bien: ${PATH_JAR}   Saliendo..."
-	exit -1
-fi
-
 
 ################################################################################################
 echo -e $( date '+%Y%m%d_%H%M%S' )" -------- Capa 1: DATOS BRUTOS -------------" >> ${LOG_MASTER}
@@ -238,10 +230,13 @@ if [ "$ACTIVAR_SG_Y_PREDICCION" = "S" ];  then
 				crearCarpetaSiNoExisteYVaciar  "${dir_subgrupo}${DIR_IMG}"
 				crearCarpetaSiNoExisteYVaciar  "${dir_subgrupo}${DIR_TRAMIF}"
 				
-				echo -e $( date '+%Y%m%d_%H%M%S' )" ##################### Capa 5 y 6 #####################" >> ${LOG_MASTER}
+				echo -e $( date '+%Y%m%d_%H%M%S' )" ##################### Capa 5 #####################" >> ${LOG_MASTER}
 				echo -e $( date '+%Y%m%d_%H%M%S' )" Se elimina MISSING VALUES (NA en columnas y filas), elimina OUTLIERS, balancea clases (undersampling de mayoritaria), calcula IMG funciones de densidad, NORMALIZA las features, comprueba suficientes casos en clase minoritaria, REDUCCION de FEATURES y guarda el CSV REDUCIDO..." >> ${LOG_MASTER}
+				$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/C5NormalizarYReducirDatasetSubgrupo.py" "${dir_subgrupo}/" "${DIR_TIEMPO}" "${MAX_NUM_FEAT_REDUCIDAS}" "${CAPA5_MAX_FILAS_ENTRADA}" >> ${LOG_MASTER}
+				
+				echo -e $( date '+%Y%m%d_%H%M%S' )" ##################### Capa 6 #####################" >> ${LOG_MASTER}
 				echo -e $( date '+%Y%m%d_%H%M%S' )" PASADO ó FUTURO: se balancean las clases (aunque ya se hizo en capa 5), se divide dataset de entrada (entrenamiento, test, validación), se CREA MODELOS (con hyperparámetros)  los evalúa. Guarda el modelo GANADOR de cada subgrupo..." >> ${LOG_MASTER}
-				$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/C5C6Manual.py" "${dir_subgrupo}/" "${DIR_TIEMPO}" "${MAX_NUM_FEAT_REDUCIDAS}" "${CAPA5_MAX_FILAS_ENTRADA}" "${DESPLAZAMIENTO_ANTIGUEDAD}" >> ${LOG_MASTER}
+				$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/C6CreadorModelosDeSubgrupo.py" "${dir_subgrupo}/" "${DIR_TIEMPO}" "${DESPLAZAMIENTO_ANTIGUEDAD}"  >> ${LOG_MASTER}
 				
 			else
 				echo "Al evaluar el subgrupo cuyo directorio es $dir_subgrupo para el tiempo $DIR_TIEMPO vemos que no existe entrenamiento en el pasado, asi que no existe $path_normalizador_pasado" >> ${LOG_MASTER}
@@ -259,9 +254,6 @@ echo -e "Actualizando informe HTML de uso de FEATURES (mirando el pasado)..." >>
 DIR_SUBGRUPOS_PASADO=$(echo ${DIR_SUBGRUPOS} | sed -e "s/futuro/pasado/g")
 $PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/FeaturesAnalisisPosteriori.py" "${DIR_SUBGRUPOS_PASADO}" "${DIR_BASE}pasado/matriz_features_antes_de_pca.html" "${DIR_BASE}pasado/matriz_features.html" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 
-if [ "$DIR_TIEMPO" = "pasado" ];  then 
-	$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/AnalisisFalsosPositivos.py"
-fi
 
 echo -e "MASTER - FIN: "$( date "+%Y%m%d%H%M%S" )
 echo -e "******** FIN de master**************" >> ${LOG_MASTER}
