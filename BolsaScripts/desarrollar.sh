@@ -1,8 +1,7 @@
 #!/bin/bash
 
 ################ PROGRAMAS DE DESARROLLO (solo Linux) #############################################
-DIR_BASE="/bolsa/"
-LOG_DESA="${DIR_BASE}logs/desarrollar.log"
+LOG_DESA="/bolsa/logs/desarrollar.log"
 DIR_PROGRAMAS="/home/carloslinux/Desktop/PROGRAMAS/"
 
 echo -e "Abriendo Eclipse..." >> ${LOG_DESA}

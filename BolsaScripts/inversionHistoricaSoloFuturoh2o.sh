@@ -25,15 +25,13 @@ echo -e "INVERSION - INICIO: "$( date "+%Y%m%d%H%M%S" )
 #sudo service cron  stop
 
 #################### DIRECTORIOS ###############################################################
-DIR_BASE="/bolsa/"
-DIR_DROPBOX_REPO="/BOLSA_PREDICTOR/"
 DIR_CODIGOS_CARLOS="/home/carloslinux/Desktop/GIT_BOLSA/"
-DIR_CODIGOS_LUIS="/home/t151521${DIR_BASE}"
+DIR_CODIGOS_LUIS="/home/t151521/bolsa/"
 PYTHON_MOTOR_CARLOS="/home/carloslinux/Desktop/PROGRAMAS/anaconda3/envs/BolsaPython/bin/python"
 PYTHON_MOTOR_LUIS="/home/t151521/anaconda3/envs/BolsaPython/bin/python"
-DIR_DROPBOX_CARLOS="/home/carloslinux/Dropbox${DIR_DROPBOX_REPO}"
-DIR_DROPBOX_LUIS="/home/t151521/Dropbox${DIR_DROPBOX_REPO}"
-PATH_ANALISIS_LUIS="/home/t151521${DIR_BASE}BolsaScripts/inversionAnalisis.sh"
+DIR_DROPBOX_CARLOS="/home/carloslinux/Dropbox/BOLSA_PREDICTOR/"
+DIR_DROPBOX_LUIS="/home/t151521/Dropbox/BOLSA_PREDICTOR/"
+PATH_ANALISIS_LUIS="/home/t151521/bolsa/BolsaScripts/inversionAnalisis.sh"
 PATH_ANALISIS_CARLOS="/home/carloslinux/Desktop/GIT_BOLSA/BolsaScripts/inversionAnalisis.sh"
 
 usuario=$(whoami)
@@ -75,6 +73,7 @@ PARAMS_CONFIG="${PATH_SCRIPTS}parametros.config"
 echo -e "Importando parametros generales..."
 source ${PARAMS_CONFIG}
 
+DIR_BASE="/bolsa/"
 DIR_LOGS="${DIR_BASE}logs/"
 LOG_INVERSION="${DIR_LOGS}inversion.log"
 DIR_FUT_SUBGRUPOS="${DIR_BASE}futuro/subgrupos/"
