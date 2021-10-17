@@ -116,16 +116,19 @@ public class CrearDatasetsSubgrupos implements Serializable {
 		String modoTiempo = BrutosUtils.PASADO; // DEFAULT
 		Integer filtroDinamico1 = ElaboradosUtils.DINAMICA1; // DEFAULT
 		Integer filtroDinamico2 = ElaboradosUtils.DINAMICA2; // DEFAULT
+		String realimentacion = SubgruposUtils.REALIMENTACION; // DEFAULT
 
 		if (args.length == 0) {
 			MY_LOGGER.info("Sin parametros de entrada. Rellenamos los DEFAULT...");
-		} else if (args.length != 7) {
+
+		} else if (args.length != 8) {
 			MY_LOGGER.error("Total Parametros de entrada: " + args.length);
 			MY_LOGGER.error("Parametros de entrada incorrectos!!");
 			for (String param : args) {
 				MY_LOGGER.info("Param: " + param);
 			}
 			System.exit(-1);
+
 		} else {
 			directorioIn = args[0];
 			directorioOut = args[1];
@@ -134,10 +137,11 @@ public class CrearDatasetsSubgrupos implements Serializable {
 			modoTiempo = args[4];
 			filtroDinamico1 = Integer.valueOf(args[5]);
 			filtroDinamico2 = Integer.valueOf(args[6]);
+			realimentacion = args[7];
 		}
 
 		crearSubgruposYNormalizar(directorioIn, directorioOut, coberturaMinima, minEmpresasPorCluster, modoTiempo,
-				filtroDinamico1, filtroDinamico2);
+				filtroDinamico1, filtroDinamico2, realimentacion);
 
 		MY_LOGGER.info("FIN");
 	}
@@ -153,8 +157,8 @@ public class CrearDatasetsSubgrupos implements Serializable {
 	 * @throws Exception
 	 */
 	public static void crearSubgruposYNormalizar(String directorioIn, String directorioOut, String coberturaMinima,
-			String minEmpresasPorCluster, String modoTiempo, Integer filtroDinamico1, Integer filtroDinamico2)
-			throws Exception {
+			String minEmpresasPorCluster, String modoTiempo, Integer filtroDinamico1, Integer filtroDinamico2,
+			String realimentacion) throws Exception {
 
 		// Debo leer el parámetro que me interese: de momento el market cap. En el
 		// futuro sería conveniente separar por sector y liquidez (volumen medio de 6
@@ -214,7 +218,6 @@ public class CrearDatasetsSubgrupos implements Serializable {
 		ArrayList<String> pathEmpresasTipo28 = new ArrayList<String>(); // medio
 		ArrayList<String> pathEmpresasTipo29 = new ArrayList<String>(); // alto
 		ArrayList<String> pathEmpresasTipo30 = new ArrayList<String>(); // muy alto
-		
 
 		// Tipos de empresa segun geografia
 		ArrayList<String> pathEmpresasTipo31 = new ArrayList<String>(); // BeNeLux
@@ -555,7 +558,7 @@ public class CrearDatasetsSubgrupos implements Serializable {
 
 						} else {
 
-							//Empresa con ratio desconocido (alto o bajo) --> No la usamos 
+							// Empresa con ratio desconocido (alto o bajo) --> No la usamos
 
 							// MY_LOGGER.warn("Empresa = " + empresa + " con RATIO_SMA_50_PRECIO = " +
 							// ratioSMA50PrecioStr);
@@ -565,12 +568,11 @@ public class CrearDatasetsSubgrupos implements Serializable {
 						String geoStr = parametros.get("geo");
 
 						if (geoStr != null && !geoStr.isEmpty() && !"-".equals(geoStr)) {
-							
-							
-							if (geoStr.contains("Netherlands") || geoStr.contains("BeNeLux")|| geoStr.contains("Belgium")
-									|| geoStr.contains("Luxembourg")) {
+
+							if (geoStr.contains("Netherlands") || geoStr.contains("BeNeLux")
+									|| geoStr.contains("Belgium") || geoStr.contains("Luxembourg")) {
 								pathEmpresasTipo31.add(ficheroGestionado.getAbsolutePath());
-							}else 							if (geoStr.equalsIgnoreCase("China")) {
+							} else if (geoStr.equalsIgnoreCase("China")) {
 								pathEmpresasTipo32.add(ficheroGestionado.getAbsolutePath());
 							} else if (geoStr.equalsIgnoreCase("Israel")) {
 								pathEmpresasTipo33.add(ficheroGestionado.getAbsolutePath());
@@ -727,6 +729,8 @@ public class CrearDatasetsSubgrupos implements Serializable {
 				+ pathEmpresasTipo0.size() + " empresas");
 		MY_LOGGER.info("=================================================================");
 
+		// ----------------- SUBGRUPOS CON DEMASIADOS FALSOS POSITIVOS ----
+
 		// Almacenamiento del tipo de empresa en la lista
 		empresasPorTipo = new HashMap<Integer, ArrayList<String>>();
 		// Para el subgrupo 0 siempre se añade
@@ -734,64 +738,55 @@ public class CrearDatasetsSubgrupos implements Serializable {
 		// QUE CONTIENE TODOS
 		empresasPorTipo.put(0, pathEmpresasTipo0);
 
-		empresasPorTipo.put(1, pathEmpresasTipo1);
-		empresasPorTipo.put(2, pathEmpresasTipo2);
-		empresasPorTipo.put(3, pathEmpresasTipo3);
-		empresasPorTipo.put(4, pathEmpresasTipo4);
-		empresasPorTipo.put(5, pathEmpresasTipo5);
-		empresasPorTipo.put(6, pathEmpresasTipo6);
-
-		empresasPorTipo.put(7, pathEmpresasTipo7);
-		empresasPorTipo.put(8, pathEmpresasTipo8);
-		empresasPorTipo.put(9, pathEmpresasTipo9);
-		empresasPorTipo.put(10, pathEmpresasTipo10);
-		empresasPorTipo.put(11, pathEmpresasTipo11);
-		empresasPorTipo.put(12, pathEmpresasTipo12);
-		empresasPorTipo.put(13, pathEmpresasTipo13);
-		empresasPorTipo.put(14, pathEmpresasTipo14);
-		empresasPorTipo.put(15, pathEmpresasTipo15);
-		empresasPorTipo.put(16, pathEmpresasTipo16);
-
-		empresasPorTipo.put(17, pathEmpresasTipo17);
-		empresasPorTipo.put(18, pathEmpresasTipo18);
-		empresasPorTipo.put(19, pathEmpresasTipo19);
-		empresasPorTipo.put(20, pathEmpresasTipo20);
-		empresasPorTipo.put(21, pathEmpresasTipo21);
-
-		empresasPorTipo.put(22, pathEmpresasTipo22);
-		empresasPorTipo.put(23, pathEmpresasTipo23);
-		empresasPorTipo.put(24, pathEmpresasTipo24);
-		empresasPorTipo.put(25, pathEmpresasTipo25);
-		empresasPorTipo.put(26, pathEmpresasTipo26);
-
-		empresasPorTipo.put(27, pathEmpresasTipo27);
-		empresasPorTipo.put(28, pathEmpresasTipo28);
-		empresasPorTipo.put(29, pathEmpresasTipo29);
-		empresasPorTipo.put(30, pathEmpresasTipo30);
-		empresasPorTipo.put(31, pathEmpresasTipo31);
-
-		empresasPorTipo.put(32, pathEmpresasTipo32);
-		empresasPorTipo.put(33, pathEmpresasTipo33);
-		empresasPorTipo.put(34, pathEmpresasTipo34);
-		empresasPorTipo.put(35, pathEmpresasTipo35);
-		empresasPorTipo.put(36, pathEmpresasTipo36);
-
-		empresasPorTipo.put(37, pathEmpresasTipo37);
-		empresasPorTipo.put(38, pathEmpresasTipo38);
-		empresasPorTipo.put(39, pathEmpresasTipo39);
-		empresasPorTipo.put(40, pathEmpresasTipo40);
-
-		empresasPorTipo.put(41, pathEmpresasTipo41);
-		empresasPorTipo.put(42, pathEmpresasTipo42);
-
-		empresasPorTipo.put(43, pathEmpresasTipo43);
-		empresasPorTipo.put(44, pathEmpresasTipo44);
-		empresasPorTipo.put(45, pathEmpresasTipo45);
-
-		empresasPorTipo.put(46, pathEmpresasTipo46);
-		empresasPorTipo.put(47, pathEmpresasTipo47);
-		empresasPorTipo.put(48, pathEmpresasTipo48);
-		empresasPorTipo.put(49, pathEmpresasTipo49);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 1, pathEmpresasTipo1, realimentacion);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 2, pathEmpresasTipo2, realimentacion);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 3, pathEmpresasTipo3, realimentacion);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 4, pathEmpresasTipo4, realimentacion);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 5, pathEmpresasTipo5, realimentacion);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 6, pathEmpresasTipo6, realimentacion);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 7, pathEmpresasTipo7, realimentacion);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 8, pathEmpresasTipo8, realimentacion);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 9, pathEmpresasTipo9, realimentacion);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 10, pathEmpresasTipo10, realimentacion);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 11, pathEmpresasTipo11, realimentacion);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 12, pathEmpresasTipo12, realimentacion);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 13, pathEmpresasTipo13, realimentacion);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 14, pathEmpresasTipo14, realimentacion);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 15, pathEmpresasTipo15, realimentacion);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 16, pathEmpresasTipo16, realimentacion);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 17, pathEmpresasTipo17, realimentacion);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 18, pathEmpresasTipo18, realimentacion);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 19, pathEmpresasTipo19, realimentacion);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 20, pathEmpresasTipo20, realimentacion);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 21, pathEmpresasTipo21, realimentacion);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 22, pathEmpresasTipo22, realimentacion);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 23, pathEmpresasTipo23, realimentacion);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 24, pathEmpresasTipo24, realimentacion);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 25, pathEmpresasTipo25, realimentacion);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 26, pathEmpresasTipo26, realimentacion);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 27, pathEmpresasTipo27, realimentacion);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 28, pathEmpresasTipo28, realimentacion);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 29, pathEmpresasTipo29, realimentacion);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 30, pathEmpresasTipo30, realimentacion);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 31, pathEmpresasTipo31, realimentacion);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 32, pathEmpresasTipo32, realimentacion);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 33, pathEmpresasTipo33, realimentacion);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 34, pathEmpresasTipo34, realimentacion);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 35, pathEmpresasTipo35, realimentacion);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 36, pathEmpresasTipo36, realimentacion);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 37, pathEmpresasTipo37, realimentacion);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 38, pathEmpresasTipo38, realimentacion);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 39, pathEmpresasTipo39, realimentacion);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 40, pathEmpresasTipo40, realimentacion);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 41, pathEmpresasTipo41, realimentacion);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 42, pathEmpresasTipo42, realimentacion);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 43, pathEmpresasTipo43, realimentacion);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 44, pathEmpresasTipo44, realimentacion);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 45, pathEmpresasTipo45, realimentacion);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 46, pathEmpresasTipo46, realimentacion);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 47, pathEmpresasTipo47, realimentacion);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 48, pathEmpresasTipo48, realimentacion);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 49, pathEmpresasTipo49, realimentacion);
 
 		// Se crea un CSV para cada subgrupo
 		Set<Integer> tipos = empresasPorTipo.keySet();
@@ -1033,6 +1028,51 @@ public class CrearDatasetsSubgrupos implements Serializable {
 				|| geoStr.equalsIgnoreCase("netherlands") || geoStr.equalsIgnoreCase("norway")
 				|| geoStr.equalsIgnoreCase("portugal") || geoStr.equalsIgnoreCase("spain")
 				|| geoStr.equalsIgnoreCase("sweden") || geoStr.equalsIgnoreCase("unitedkingdom"));
+	}
+
+	/**
+	 * Decide si ese subgrupo es válido para poder invertir. Descarta los que ya
+	 * sabemos que tienen demasiados falsos positivos (encima de un umbral).
+	 * 
+	 * @param empresasPorTipo
+	 * @param subgrupoId
+	 * @param pathEmpresasTipo
+	 * @param realimentacion
+	 * @throws IOException
+	 */
+	public static void decidirSiMeterSubgrupoEnLista(HashMap<Integer, ArrayList<String>> empresasPorTipo,
+			Integer subgrupoId, ArrayList<String> pathEmpresasTipo, String realimentacion) throws IOException {
+
+		List<FalsosPositivosSubgrupo> listaSubgruposConDemasiadosFP = InterpreteFalsosPositivosSubgrupos
+				.extraerSubgruposConDemasiadosFP();
+
+		FalsosPositivosSubgrupo fps = null;
+		for (FalsosPositivosSubgrupo item : listaSubgruposConDemasiadosFP) {
+			if (item.subgrupoId.equals(subgrupoId)) {
+				fps = item;
+			}
+		}
+
+		if (realimentacion.equals("N")) {
+			System.out.println("Realimentacion no activa. Metemos siempre el SUBGRUPO: " + subgrupoId);
+			empresasPorTipo.put(subgrupoId, pathEmpresasTipo);
+
+		} else if (realimentacion.equals("S") && fps == null) {
+			System.out.println("El SUBGRUPO " + subgrupoId
+					+ " no está en la lista de subgrupos analizados previamente. Si no tenemos info de falsos positivos, sí procesamos el subgrupo.");
+			empresasPorTipo.put(subgrupoId, pathEmpresasTipo);
+
+		} else if (realimentacion.equals("S")
+				&& fps.ratioFalsosPositivos <= InterpreteFalsosPositivosSubgrupos.UMBRAL_MAX_RATIO_FP) {
+			System.out.println("SUBGRUPO conocido y debajo del umbral ==> Lo queremos. Subgrupo: " + subgrupoId);
+			empresasPorTipo.put(subgrupoId, pathEmpresasTipo);
+
+		} else if (realimentacion.equals("S")
+				&& fps.ratioFalsosPositivos > InterpreteFalsosPositivosSubgrupos.UMBRAL_MAX_RATIO_FP) {
+			System.out.println("SUBGRUPO con DEMASIADOS falsos positivos (ratio=" + fps.ratioFalsosPositivos
+					+ " %). No añadimos el subgrupo: " + subgrupoId);
+		}
+
 	}
 
 }

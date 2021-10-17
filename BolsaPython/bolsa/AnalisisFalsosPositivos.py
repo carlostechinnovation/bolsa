@@ -46,7 +46,10 @@ velasFP['fecha'] = pd.to_datetime(velasFP.rename(columns={'anio': 'year', 'mes':
 velasFP['diaensemana'] = pd.DatetimeIndex(velasFP['fecha']).day_name()
 # print("Ejemplos:"); print(velasFP.head())
 
-########## NUMERO DE PREDICCIONES CALCULADAS (TEST + VALIDACION) EN CADA SUBGRUPO #############
+
+##################################################################################################
+# NUMERO DE PREDICCIONES CALCULADAS (TEST + VALIDACION) EN CADA SUBGRUPO
+##################################################################################################
 pathFilesPrediccionesTestYValid = []
 for filename in glob.iglob(dirPasadoSubgrupos + '**/intermedio.csv.test_t_predicho.csv', recursive=True):
     pathFilesPrediccionesTestYValid.append(filename)
@@ -56,31 +59,70 @@ for filename in glob.iglob(dirPasadoSubgrupos + '**/intermedio.csv.validac_t_pre
 prediccionesTV = pd.DataFrame([], columns=["subgrupo", "numeroPredicciones"])
 prediccionesTV_temp = pd.DataFrame([], columns=["indice", "targetpredicho"])
 for ficheroPredTV in pathFilesPrediccionesTestYValid:
-    sgExtraido = ficheroPredTV.split("/")[4]
+    sgExtraido = ficheroPredTV.split("/")[4]  #subgrupo
     if os.path.exists(ficheroPredTV):
         prediccionesTV_temp = pd.read_csv(ficheroPredTV, sep="|")
         if prediccionesTV_temp.size > 0:
-            prediccionesTV_temp.columns = ["indice", "targetpredicho"]
+            prediccionesTV_temp.columns = ["indice", "targetpredicho"]  #porque viene sin cabecera
             numFilasTmp = prediccionesTV_temp.shape[0]
             nuevafila = {'subgrupo': sgExtraido, 'numeroPredicciones': numFilasTmp}
             prediccionesTV = prediccionesTV.append(nuevafila, ignore_index=True)
 
-# Sumando los subtotales de Test y validacion
+# Sumando los subtotales de Test y validacion por SUBGRUPO
 prediccionesTV = prediccionesTV.groupby('subgrupo').sum()
 
 
+##########################################################################################################
+# NUMERO DE PREDICCIONES CALCULADAS (TEST + VALIDACION) EN CADA EMPRESA (de todos los subgrupos
+# considerados como un conjunto unico)
+##########################################################################################################
+pathFilesPrediccionesTestYValidPorEmpresa = []
+for filename in glob.iglob(dirPasadoSubgrupos + '**/todaslaspredicciones_TEST.csv', recursive=True):
+    pathFilesPrediccionesTestYValidPorEmpresa.append(filename)
+for filename in glob.iglob(dirPasadoSubgrupos + '**/todaslaspredicciones_VALIDACION.csv', recursive=True):
+    pathFilesPrediccionesTestYValidPorEmpresa.append(filename)
+
+prediccionesTodasTV = pd.DataFrame([], columns=["numeroPredicciones", "empresa"])
+prediccionesTodasTV_temp = pd.DataFrame([], columns=["subgrupo", "modo", "indice"])
+for ficheroPredTV in pathFilesPrediccionesTestYValidPorEmpresa:
+    # sgExtraido = ficheroPredTV.split("/")[4]  #subgrupo --> NO LO USAMOS AQUI
+    if os.path.exists(ficheroPredTV):
+        prediccionesTodasTV_temp = pd.read_csv(ficheroPredTV, sep="|", header=None)
+        if prediccionesTodasTV_temp.size > 0:
+            prediccionesTodasTV_temp.columns = ["subgrupo", "modo", "indice"]  # porque viene sin cabecera
+            prediccionesTodasTV_temp[['empresa', 'anio', 'mes', 'dia']] = prediccionesTodasTV_temp['indice'].str.split('_', 4, expand=True)
+
+            nuevasFilas = prediccionesTodasTV_temp.groupby(['empresa']).size()
+            nuevasFilasDF = nuevasFilas.to_frame()
+            nuevasFilasDF['empresa'] = nuevasFilasDF.index
+            nuevasFilasDF.columns = ["numeroPredicciones", "empresa"]
+            prediccionesTodasTV = prediccionesTodasTV.append(nuevasFilasDF, ignore_index=True)
+
+# Sumando los subtotales de Test y validacion por SUBGRUPO
+prediccionesTodasTV = prediccionesTodasTV.groupby('empresa').sum()
+prediccionesTodasTV['empresa'] = prediccionesTodasTV.index
+
+
+##########################################################################################################
 ##### ANALISIS ########
 print("Ficheros CSV leidos (test y validation): " + str(ficherosFPContador))
 print("Velas leidas (falsos positivos): " + str(velasFP.shape[0]))
 print("Numero de empresas, anios, meses, etc distintos analizados: ")
 print(tabulate(velasFP.nunique().to_frame().transpose(), headers='keys', tablefmt='psql'))
 
-print("Top EMPRESAS con MAS falsos positivos (para no invertir en ellas):")
+print("Top RATIO-EMPRESAS con MAS falsos positivos (para no invertir en ellas):")
 data1 = velasFP.groupby('empresa')['dia'].count().to_frame().sort_values(by=['dia'], ascending=False)
 data1.rename(columns={'dia': 'numvelasfp'}, inplace=True)
+data1['empresa'] = data1.index
+data1.reset_index(drop=True, inplace=True)
+prediccionesTodasTV.reset_index(drop=True, inplace=True)
+data2 = data1.merge(prediccionesTodasTV, how='inner', on='empresa')
+data2['ratioFalsosPositivos'] = 100 * data2['numvelasfp'] / data2['numeroPredicciones']
+data2 = data2.sort_values(by=['ratioFalsosPositivos'], ascending=True).round(1)
+data2.reset_index(drop=True, inplace=True)
 print("FALSOSPOSITIVOS - EMPRESAS - Path: " + dirLogs + "falsospositivos_empresas.csv")
-data1.to_csv(dirLogs + "falsospositivos_empresas.csv", index=True, sep='|', float_format='%.4f')
-print(tabulate(data1.head(20).transpose(), headers='keys', tablefmt='psql'))
+data2.to_csv(dirLogs + "falsospositivos_empresas.csv", index=True, sep='|', float_format='%.4f')
+print(tabulate(data2.head(20).transpose(), headers='keys', tablefmt='psql'))
 
 print("Top MESES con MENOS falsos positivos:")
 data1 = velasFP.groupby('mes')['dia'].count().to_frame().sort_values(by=['dia'], ascending=True)
@@ -97,9 +139,9 @@ data1.to_csv(dirLogs + "falsospositivos_diaensemana.csv", index=True, sep='|', f
 print(tabulate(data1.head(20).transpose(), headers='keys', tablefmt='psql'))
 
 
-print("Top SUBGRUPOS con MENOS falsos positivos (relativo):")
+print("Top RATIO-SUBGRUPOS con MENOS falsos positivos:")
 data1 = velasFP.groupby('subgrupo')['dia'].count().to_frame().sort_values(by=['dia'], ascending=True)
-data1 = data1.rename(columns={"dia":"numvelasfp"})
+data1 = data1.rename(columns={"dia": "numvelasfp"})
 # print(tabulate(data1.transpose(), headers='keys', tablefmt='psql'))
 data2 = prediccionesTV.sort_values(by=['subgrupo'], ascending=True)
 # print(tabulate(data2.transpose(), headers='keys', tablefmt='psql'))

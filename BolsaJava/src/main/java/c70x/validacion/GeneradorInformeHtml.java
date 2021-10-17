@@ -214,6 +214,7 @@ public class GeneradorInformeHtml implements Serializable {
 	public static String generarCuerpoSubgruposHtml(String dirTiempo) throws IOException {
 
 		StringBuilder outSB = new StringBuilder();
+		String out = "";
 		boolean esFuturo = dirTiempo.contains("uturo");
 
 		outSB.append("<table><tr><th>Subgrupo</th><th>COMPLETO.csv</th><th>REDUCIDO.csv</th>");
@@ -224,43 +225,53 @@ public class GeneradorInformeHtml implements Serializable {
 		List<String> carpetasSubgrupos = Files.walk(Paths.get(dirTiempo + "subgrupos")).map(x -> x.toString())
 				.filter(f -> f.contains("/SG_") && StringUtils.countMatches(f, "/") == 4).collect(Collectors.toList());
 
-		List<String> carpetasSubgruposOrdenadas = ordenarCarpetasSubgrupos(carpetasSubgrupos);
+		if (carpetasSubgrupos != null && !carpetasSubgrupos.isEmpty()) {
 
-		for (String carpetaSubgrupo : carpetasSubgruposOrdenadas) {
+			List<String> carpetasSubgruposOrdenadas = ordenarCarpetasSubgrupos(carpetasSubgrupos);
 
-			String tamCompletoStr = analizarCsv(carpetaSubgrupo + "/COMPLETO.csv");
-			Long numFilasCompleto = tamCompletoStr.contains("x") ? Long.valueOf(tamCompletoStr.split("x")[0].trim())
-					: 0L;
-			String tamReducidoStr = analizarCsv(carpetaSubgrupo + "/REDUCIDO.csv");
-			Long numFilasReducido = tamReducidoStr.contains("x") ? Long.valueOf(tamReducidoStr.split("x")[0].trim())
-					: 0L;
-			Float ratioReduccion = 100.0F - (100.0F * numFilasReducido / numFilasCompleto);
-			String ratioReduccionStr = numFilasReducido > 0 ? String.format("%.0f", ratioReduccion) : "-";
+			for (String carpetaSubgrupo : carpetasSubgruposOrdenadas) {
 
-			String ratioReduccionColor = "white";
-			if (numFilasReducido > 0 && ratioReduccion >= 40 && ratioReduccion < 70) {
-				ratioReduccionColor = "yellow";
-			} else if (numFilasReducido > 0 && ratioReduccion >= 70) {
-				ratioReduccionColor = "orange";
-			} else {
-				ratioReduccionColor = "white";
+				String tamCompletoStr = analizarCsv(carpetaSubgrupo + "/COMPLETO.csv");
+				Long numFilasCompleto = tamCompletoStr.contains("x") ? Long.valueOf(tamCompletoStr.split("x")[0].trim())
+						: 0L;
+				String tamReducidoStr = analizarCsv(carpetaSubgrupo + "/REDUCIDO.csv");
+				Long numFilasReducido = tamReducidoStr.contains("x") ? Long.valueOf(tamReducidoStr.split("x")[0].trim())
+						: 0L;
+				Float ratioReduccion = 100.0F - (100.0F * numFilasReducido / numFilasCompleto);
+				String ratioReduccionStr = numFilasReducido > 0 ? String.format("%.0f", ratioReduccion) : "-";
+
+				String ratioReduccionColor = "white";
+				if (numFilasReducido > 0 && ratioReduccion >= 40 && ratioReduccion < 70) {
+					ratioReduccionColor = "yellow";
+				} else if (numFilasReducido > 0 && ratioReduccion >= 70) {
+					ratioReduccionColor = "orange";
+				} else {
+					ratioReduccionColor = "white";
+				}
+
+				outSB.append("<tr>");
+
+				outSB.append("<td>" + carpetaSubgrupo.split("/")[4] + "</td>");
+				outSB.append("<td>" + tamCompletoStr + "</td>");
+				outSB.append("<td>" + tamReducidoStr + "</td>");
+				outSB.append("<td bgcolor=\"" + ratioReduccionColor + "\">" + ratioReduccionStr + " %" + "</td>");
+				outSB.append(
+						esFuturo ? ("<td>" + analizarCsv(carpetaSubgrupo + "/TARGETS_PREDICHOS.csv_humano") + "</td>")
+								: "");
+
+				outSB.append("</tr>");
 			}
 
-			outSB.append("<tr>");
+			outSB.append("</table>");
 
-			outSB.append("<td>" + carpetaSubgrupo.split("/")[4] + "</td>");
-			outSB.append("<td>" + tamCompletoStr + "</td>");
-			outSB.append("<td>" + tamReducidoStr + "</td>");
-			outSB.append("<td bgcolor=\"" + ratioReduccionColor + "\">" + ratioReduccionStr + " %" + "</td>");
-			outSB.append(esFuturo ? ("<td>" + analizarCsv(carpetaSubgrupo + "/TARGETS_PREDICHOS.csv_humano") + "</td>")
-					: "");
+			out = outSB.toString();
 
-			outSB.append("</tr>");
+		} else {
+			System.out.println("La carpeta " + dirTiempo + "subgrupos/" + "  no tiene ningun subgupo dentro!!");
+			System.exit(-1);
 		}
 
-		outSB.append("</table>");
-
-		return outSB.toString();
+		return out;
 	}
 
 	/**

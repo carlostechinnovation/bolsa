@@ -6,6 +6,7 @@ public class SubgruposUtils {
 	// Cobertura mínima en tanto por 100
 	public static final String MIN_COBERTURA_CLUSTER = "30";
 	public static final String MIN_EMPRESAS_POR_CLUSTER = "10";
+	public static final String REALIMENTACION = "S";
 
 	/**
 	 * 
