@@ -8,24 +8,26 @@ import java.util.List;
 
 import c20X.limpios.LimpiosUtils;
 
-public class InterpreteFalsosPositivosSubgrupos implements Serializable {
+public class InterpreteFalsosPositivos implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	// En tanto por ciento: por encima de este umbral descartamos subgrupo
-	public static final Float UMBRAL_MAX_RATIO_FP = 20.0F;
+	// FALSOS POSITIVOS: por encima de este umbral (%) descartamos subgrupo
+	public static final Float UMBRAL_MAX_RATIOSUBGRUPO_FP = 25.0F;
+	// FALSOS POSITIVOS: por encima de este umbral (%) descartamos empresa
+	public static final Float UMBRAL_MAX_RATIOEMPRESA_FP = 85.0F;
 
 	public static final String PATH_FP_SUBGRUPOS = "/bolsa/logs/falsospositivos_subgrupos.csv";
 
-	private static InterpreteFalsosPositivosSubgrupos instancia = null;
+	private static InterpreteFalsosPositivos instancia = null;
 
-	private InterpreteFalsosPositivosSubgrupos() {
+	private InterpreteFalsosPositivos() {
 		super();
 	}
 
-	public static InterpreteFalsosPositivosSubgrupos getInstance() {
+	public static InterpreteFalsosPositivos getInstance() {
 		if (instancia == null)
-			instancia = new InterpreteFalsosPositivosSubgrupos();
+			instancia = new InterpreteFalsosPositivos();
 
 		return instancia;
 	}
@@ -36,7 +38,7 @@ public class InterpreteFalsosPositivosSubgrupos implements Serializable {
 	 */
 	public static void main(String[] args) throws IOException {
 
-		InterpreteFalsosPositivosSubgrupos instancia = getInstance();
+		InterpreteFalsosPositivos instancia = getInstance();
 		instancia.extraerSubgruposConDemasiadosFP();
 
 	}

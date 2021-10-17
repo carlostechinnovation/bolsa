@@ -252,8 +252,8 @@ if [ "$ACTIVAR_SG_Y_PREDICCION" = "S" ];  then
 fi
 
 ######################### ANALISIS DE FALSOS POSITIVOS (solo en modo pasado) #################################
-if [ "$DIR_TIEMPO" = "pasado" ];  then 
-	$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/AnalisisFalsosPositivos.py" >> ${LOG_MASTER}
+if [ "$DIR_TIEMPO" = "pasado" ];  then
+	$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/AnalisisFalsosPositivos.py" "${DIR_JAVA}realimentacion/" >> ${LOG_MASTER}
 fi
 
 

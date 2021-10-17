@@ -1043,7 +1043,7 @@ public class CrearDatasetsSubgrupos implements Serializable {
 	public static void decidirSiMeterSubgrupoEnLista(HashMap<Integer, ArrayList<String>> empresasPorTipo,
 			Integer subgrupoId, ArrayList<String> pathEmpresasTipo, String realimentacion) throws IOException {
 
-		List<FalsosPositivosSubgrupo> listaSubgruposConDemasiadosFP = InterpreteFalsosPositivosSubgrupos
+		List<FalsosPositivosSubgrupo> listaSubgruposConDemasiadosFP = InterpreteFalsosPositivos
 				.extraerSubgruposConDemasiadosFP();
 
 		FalsosPositivosSubgrupo fps = null;
@@ -1063,12 +1063,12 @@ public class CrearDatasetsSubgrupos implements Serializable {
 			empresasPorTipo.put(subgrupoId, pathEmpresasTipo);
 
 		} else if (realimentacion.equals("S")
-				&& fps.ratioFalsosPositivos <= InterpreteFalsosPositivosSubgrupos.UMBRAL_MAX_RATIO_FP) {
+				&& fps.ratioFalsosPositivos <= InterpreteFalsosPositivos.UMBRAL_MAX_RATIOSUBGRUPO_FP) {
 			System.out.println("SUBGRUPO conocido y debajo del umbral ==> Lo queremos. Subgrupo: " + subgrupoId);
 			empresasPorTipo.put(subgrupoId, pathEmpresasTipo);
 
 		} else if (realimentacion.equals("S")
-				&& fps.ratioFalsosPositivos > InterpreteFalsosPositivosSubgrupos.UMBRAL_MAX_RATIO_FP) {
+				&& fps.ratioFalsosPositivos > InterpreteFalsosPositivos.UMBRAL_MAX_RATIOSUBGRUPO_FP) {
 			System.out.println("SUBGRUPO con DEMASIADOS falsos positivos (ratio=" + fps.ratioFalsosPositivos
 					+ " %). No añadimos el subgrupo: " + subgrupoId);
 		}

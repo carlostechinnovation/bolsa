@@ -27,6 +27,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import c40X.subgrupos.InterpreteFalsosPositivos;
 import coordinador.Principal;
 
 /**
@@ -100,14 +101,12 @@ public class EstaticosNasdaqDescargarYParsear implements Serializable {
 	}
 
 	/**
-	 * NASDAQ - ESTATICOS-1: datos cargados desde un fichero local.
+	 * Carga la lista de empresas de las que no conocemos datos de Finviz y/o Yahoo
+	 * Finance, para que no volvamos a intentar descargarlas desde Internet.
 	 * 
-	 * @param entornoDeValidacion
-	 * @return Lista de empresas del NASDAQ con algunos datos ESTATICOS
+	 * @return Lista de tickers de las empresas deconocidas.
 	 */
-	public static List<EstaticoNasdaqModelo> descargarNasdaqEstaticosSoloLocal1(final Integer entornoDeValidacion) {
-
-		MY_LOGGER.info("descargarNasdaqEstaticos1...");
+	public static List<String> cargarEmpresasDesconocidas() {
 
 		List<String> desconocidos = new ArrayList<String>();
 		try {
@@ -129,6 +128,71 @@ public class EstaticosNasdaqDescargarYParsear implements Serializable {
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		}
+
+		return desconocidos;
+	}
+
+	/**
+	 * Carga la lista de empresas de las que sabemos que generan muchos falsos
+	 * positivos, para no usarlas nunca.
+	 * 
+	 * @return Lista de tickers de las empresas que provocan muchso falsos
+	 *         positivos.
+	 */
+	public static List<String> cargarEmpresasConMuchosFalsosPositivos() {
+
+		List<String> empresasFp = new ArrayList<String>();
+		String fileEmpresasFP = "realimentacion/falsospositivos_empresas.csv";
+		try {
+			File file = new File(fileEmpresasFP);
+			if (file.exists()) {
+				FileReader fr = new FileReader(file);
+				BufferedReader br = new BufferedReader(fr);
+
+				String linea = "";
+				boolean primeraLineaCabecera = true;
+
+				while ((linea = br.readLine()) != null) {
+					if (primeraLineaCabecera == false && linea != null && !linea.isEmpty()) {
+						if (!linea.isEmpty() && !linea.isBlank()) {
+							String[] partes = linea.split("\\|");
+							Float ratio = Float.valueOf(partes[4]);
+							if (ratio > InterpreteFalsosPositivos.UMBRAL_MAX_RATIOEMPRESA_FP) {
+								empresasFp.add(partes[2]);
+							}
+						}
+					}
+					primeraLineaCabecera = false;
+				}
+				br.close();
+			} else {
+				MY_LOGGER.info("No existe fichero de falsos positivos de empresas: " + fileEmpresasFP);
+			}
+
+			MY_LOGGER.info(
+					"EMPRESAS descartadas porque sabemos que provocan muchos falsos positivos: " + empresasFp.size());
+
+		} catch (
+
+		IOException ioe) {
+			ioe.printStackTrace();
+		}
+
+		return empresasFp;
+	}
+
+	/**
+	 * NASDAQ - ESTATICOS-1: datos cargados desde un fichero local.
+	 * 
+	 * @param entornoDeValidacion
+	 * @return Lista de empresas del NASDAQ con algunos datos ESTATICOS
+	 */
+	public static List<EstaticoNasdaqModelo> descargarNasdaqEstaticosSoloLocal1(final Integer entornoDeValidacion) {
+
+		MY_LOGGER.info("descargarNasdaqEstaticos1...");
+
+		List<String> desconocidos = cargarEmpresasDesconocidas();
+		List<String> empresasFP = cargarEmpresasConMuchosFalsosPositivos();
 
 		String pathTickers;
 
@@ -170,6 +234,7 @@ public class EstaticosNasdaqDescargarYParsear implements Serializable {
 
 					// Lista acumulada de desconocidos:
 					boolean empresaEnListaDesconocidos = desconocidos.contains(tempArr[0]);
+					boolean empresaConMuchosFalsosPositivos = empresasFP.contains(tempArr[0]);
 					boolean empresaEnRangoDeLetrasPermitido = letraEstaPermitida(ALFABETO, tempArr[0],
 							LETRA_INICIO_LISTA_DIRECTA);
 					// Si ya la hemos descargado, evitamos volver a traerla:
@@ -181,6 +246,11 @@ public class EstaticosNasdaqDescargarYParsear implements Serializable {
 						MY_LOGGER.info("Empresa de la que sabemos que desconocemos datos en alguna de las fuentes: "
 								+ tempArr[0]);
 
+					} else if (empresaConMuchosFalsosPositivos) {
+						MY_LOGGER.info(
+								"Empresa que sabemos que otras veces ha provocado muchos falsos positivos (entonces ya no la usamos): "
+										+ tempArr[0]);
+
 					} else if (!empresaYaDescargada && empresaEnRangoDeLetrasPermitido) {
 
 						if (sinURLnasdaqOld) {
@@ -189,7 +259,6 @@ public class EstaticosNasdaqDescargarYParsear implements Serializable {
 							empresasDescargables.add(tempArr[0]);
 
 						} else {
-
 							out.add(new EstaticoNasdaqModelo(tempArr[0], tempArr[1], tempArr[2], tempArr[3], tempArr[4],
 									tempArr[5], tempArr[6], tempArr[7]));
 							empresasDescargables.add(tempArr[0]);
@@ -216,6 +285,11 @@ public class EstaticosNasdaqDescargarYParsear implements Serializable {
 		return colocar(outActivas, entornoDeValidacion);
 	}
 
+	/**
+	 * @param lista
+	 * @param pathActivas
+	 * @return
+	 */
 	public static List<EstaticoNasdaqModelo> seleccionarSoloLasActivas(List<EstaticoNasdaqModelo> lista,
 			String pathActivas) {
 

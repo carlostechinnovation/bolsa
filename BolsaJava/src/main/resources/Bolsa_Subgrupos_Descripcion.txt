@@ -1,4 +1,5 @@
 subgrupo|descripcion
+0|Todas las empresas sin aplicar filtros
 1|Capitalizacion MEGA
 2|Capitalizacion GRANDE
 3|Capitalizacion MID
