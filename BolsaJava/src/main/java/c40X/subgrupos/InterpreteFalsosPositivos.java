@@ -13,11 +13,12 @@ public class InterpreteFalsosPositivos implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	// FALSOS POSITIVOS: por encima de este umbral (%) descartamos subgrupo
-	public static final Float UMBRAL_MAX_RATIOSUBGRUPO_FP = 25.0F;
+	public static final Float UMBRAL_MAX_RATIOSUBGRUPO_FP = 24.0F;
 	// FALSOS POSITIVOS: por encima de este umbral (%) descartamos empresa
 	public static final Float UMBRAL_MAX_RATIOEMPRESA_FP = 85.0F;
 
-	public static final String PATH_FP_SUBGRUPOS = "/bolsa/logs/falsospositivos_subgrupos.csv";
+	public static final String PATH_FP_SUBGRUPOS = "realimentacion/falsospositivos_subgrupos.csv";
+	public static final String PATH_FP_EMPRESAS = "realimentacion/falsospositivos_empresas.csv";
 
 	private static InterpreteFalsosPositivos instancia = null;
 

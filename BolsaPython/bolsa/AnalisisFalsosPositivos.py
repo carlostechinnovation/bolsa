@@ -140,7 +140,10 @@ prediccionesTodasTV = prediccionesTodasTV.merge(empresasYsusSubgrupos, how='inne
 print("Ficheros CSV leidos (test y validation): " + str(ficherosFPContador))
 print("Velas leidas (falsos positivos): " + str(velasFP.shape[0]))
 print("Numero de empresas, anios, meses, etc distintos analizados: ")
-print(tabulate(velasFP.nunique().to_frame().transpose(), headers='keys', tablefmt='psql'))
+velasFPunicos = velasFP.nunique().to_frame()
+print(tabulate(velasFPunicos.transpose(), headers='keys', tablefmt='psql'))
+
+numEmpresasAnalizadas = velasFPunicos.filter(items=['empresa'], axis=0)[0][0]
 
 print("Top RATIO-EMPRESAS con MAS falsos positivos (para no invertir en ellas):")
 data1 = velasFP.groupby('empresa')['dia'].count().to_frame().sort_values(by=['dia'], ascending=False)
@@ -204,12 +207,18 @@ def acumularInteligencia(dirLogs, dir_realimentacion, nombrefichero, clave):
     #   juntos = pd.concat([previaDF, actualDF])
     # else:  # pone la info actual
     shutil.copyfile(pathOrigen, pathDestino)
-    # print(tabulate(juntos.head().nunique().to_frame().transpose(), headers='keys', tablefmt='psql'))
+    # print(tabulate(juntos.head().to_frame().transpose(), headers='keys', tablefmt='psql'))
 
 
-acumularInteligencia(dirLogs, dir_realimentacion, "falsospositivos_subgrupos.csv", "subgrupo")
-acumularInteligencia(dirLogs, dir_realimentacion, "falsospositivos_meses.csv", "mes")
-acumularInteligencia(dirLogs, dir_realimentacion, "falsospositivos_empresas.csv", "empresa")
-acumularInteligencia(dirLogs, dir_realimentacion, "falsospositivos_diaensemana.csv", "diaensemana")
+if numEmpresasAnalizadas > 500:
+    print("Se han procesado suficientes empresas: " + str(
+        numEmpresasAnalizadas) + "  Por tanto, se puede acumular conocimiento.")
+    acumularInteligencia(dirLogs, dir_realimentacion, "falsospositivos_subgrupos.csv", "subgrupo")
+    acumularInteligencia(dirLogs, dir_realimentacion, "falsospositivos_meses.csv", "mes")
+    acumularInteligencia(dirLogs, dir_realimentacion, "falsospositivos_empresas.csv", "empresa")
+    acumularInteligencia(dirLogs, dir_realimentacion, "falsospositivos_diaensemana.csv", "diaensemana")
+else:
+    print("No se han procesado suficientes empresas: " + str(
+        numEmpresasAnalizadas) + "  Por tanto, NO se puede acumular conocimiento.")
 
 print("============================================")

@@ -142,9 +142,8 @@ public class EstaticosNasdaqDescargarYParsear implements Serializable {
 	public static List<String> cargarEmpresasConMuchosFalsosPositivos() {
 
 		List<String> empresasFp = new ArrayList<String>();
-		String fileEmpresasFP = "realimentacion/falsospositivos_empresas.csv";
 		try {
-			File file = new File(fileEmpresasFP);
+			File file = new File(InterpreteFalsosPositivos.PATH_FP_EMPRESAS);
 			if (file.exists()) {
 				FileReader fr = new FileReader(file);
 				BufferedReader br = new BufferedReader(fr);
@@ -166,7 +165,8 @@ public class EstaticosNasdaqDescargarYParsear implements Serializable {
 				}
 				br.close();
 			} else {
-				MY_LOGGER.info("No existe fichero de falsos positivos de empresas: " + fileEmpresasFP);
+				MY_LOGGER.info("No existe fichero de falsos positivos de empresas: "
+						+ InterpreteFalsosPositivos.PATH_FP_EMPRESAS);
 			}
 
 			MY_LOGGER.info(
@@ -251,6 +251,10 @@ public class EstaticosNasdaqDescargarYParsear implements Serializable {
 								"Empresa que sabemos que otras veces ha provocado muchos falsos positivos (entonces ya no la usamos): "
 										+ tempArr[0]);
 
+						if (tempArr[0].equals("ZLAB")) {
+							int y = 0;
+						}
+
 					} else if (!empresaYaDescargada && empresaEnRangoDeLetrasPermitido) {
 
 						if (sinURLnasdaqOld) {
@@ -282,7 +286,16 @@ public class EstaticosNasdaqDescargarYParsear implements Serializable {
 				"NASDAQ-TICKERS leidos son " + out.size() + ", pero de esas solo son ACTIVAS: " + outActivas.size());
 
 		// Colocar a la empresa de referencia la primera!!
-		return colocar(outActivas, entornoDeValidacion);
+		List<EstaticoNasdaqModelo> listaSalida = colocar(outActivas, entornoDeValidacion);
+
+		for (EstaticoNasdaqModelo item : listaSalida) {
+			System.out.println(item.symbol);
+			if (item.symbol.equalsIgnoreCase("ZLAB")) {
+				int x = 0;
+			}
+		}
+
+		return listaSalida;
 	}
 
 	/**
