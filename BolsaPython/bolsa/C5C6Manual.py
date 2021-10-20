@@ -12,7 +12,6 @@ import seaborn as sns
 import sklearn
 from imblearn.combine import SMOTETomek
 from pandas import DataFrame
-from pandas_profiling import ProfileReport
 from sklearn.decomposition import PCA
 from sklearn.ensemble import IsolationForest
 from sklearn.metrics import average_precision_score
@@ -602,15 +601,6 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         ift_juntas.to_csv(pathCsvIntermedio + ".trasbalancearclases_INDICES.csv",
                           columns=[])  # NO BORRAR: UTIL para testIntegracion
 
-        ############ PANDAS PROFILING ###########
-        if modoDebug:
-            print("REDUCIDO - Profiling...")
-            if len(ift_juntas) > 2000:
-                prof = ProfileReport(ift_juntas.drop(columns=['TARGET']).sample(n=2000))
-            else:
-                prof = ProfileReport(ift_juntas.drop(columns=['TARGET']))
-
-            prof.to_file(output_file=dir_subgrupo + "REDUCIDO_profiling.html")
 
         ###################### Matriz de correlaciones y quitar features correladas ###################
         print((datetime.datetime.now()).strftime("%Y%m%d_%H%M%S") + " Matriz de correlaciones (PASADO):")
