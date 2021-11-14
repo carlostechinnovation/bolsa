@@ -141,7 +141,7 @@ print("Tipo de problema: CLASIFICACION DICOTOMICA (target es boolean)")
 
 print("PARAMETROS: ")
 pathFeaturesSeleccionadas = dir_subgrupo + "FEATURES_SELECCIONADAS.csv"
-umbralCasosSuficientesClasePositiva = 50
+umbralCasosSuficientesClasePositiva = 10
 granProbTargetUno = 50  # De todos los target=1, nos quedaremos con los granProbTargetUno (en tanto por cien) MAS probables. Un valor de 100 o mayor anula este parámetro
 balancearConSmoteSoloTrain = True
 umbralFeaturesCorrelacionadas = 0.96  # Umbral aplicado para descartar features cuya correlacion sea mayor que él
@@ -852,13 +852,13 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         print("Inicio del optimizador de parametros de XGBOOST...")
 
         pbounds = {
-            'colsample_bytree': (0.1, 0.5),
-            'gamma': (3, 10),
-            'learning_rate': (0.3, 0.9),
-            'max_depth': (4, 10),
+            'colsample_bytree': (0.1, 1),
+            'gamma': (1, 10),
+            'learning_rate': (0.05, 0.9),
+            'max_depth': (5, 50),
             'min_child_weight': (3, 20),
             'n_estimators': (10, 50),
-            'reg_alpha': (0.1, 0.9)
+            'reg_alpha': (0.01, 0.9)
         }
 
         hyperparameter_space = {
@@ -929,7 +929,7 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
 
         # ########################## INICIO DE XGBOOST SIN OPTIMIZAR ########################################################
         #
-        # nombreModelo = "xgboost_noopt"
+        # nombreModelo = "xgbooFEATURES_ELEGIDAS_RFECVst_noopt"
         #
         # modelo = XGBClassifier()
         #
@@ -1124,8 +1124,8 @@ elif (modoTiempo == "futuro" and pathCsvReducido.endswith('.csv') and os.path.is
         df_predichos_probs = df_predichos_probs.astype({"anio": int, "mes": int, "dia": int})
 
         print("Juntar COMPLETO con TARGETS PREDICHOS... ")
-        df_juntos_1 = pd.merge(df_completo, df_predichos, on=["empresa", "anio", "mes", "dia"])
-        df_juntos_2 = pd.merge(df_juntos_1, df_predichos_probs, on=["empresa", "anio", "mes", "dia"])
+        df_juntos_1 = pd.merge(df_completo, df_predichos, on=["empresa", "anio", "mes", "dia"], how='left')
+        df_juntos_2 = pd.merge(df_juntos_1, df_predichos_probs, on=["empresa", "anio", "mes", "dia"], how='left')
 
         df_juntos_2['TARGET_PREDICHO'] = (df_juntos_2['TARGET_PREDICHO'] * 1).astype(
             'Int64')  # Convertir de boolean a int64, manteniendo los nulos

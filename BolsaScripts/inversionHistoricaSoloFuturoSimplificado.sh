@@ -19,7 +19,7 @@
 #Instantes de las descargas
 #Se analizará el tramo de antiguedad desde máxima hasta minima
 #Se tomarán los ficheros *_GRANDE_0_SG_0_* generados, o que ya se tienen de ejecuciones antiguas, para usarlo como base de información futura.
-ANTIGUEDAD_MAXIMA="50"
+ANTIGUEDAD_MAXIMA="100"
 ANTIGUEDAD_MINIMA="0" # Se puede usar cualquier valor
 NUM_EMPRESAS_TRAIN="1000" # Número de empresas de entrenamiento, NO para los días posteriores (que estarán en el fichero de parámetros). Se recomienda dejar 1000 siempre.
 
@@ -34,7 +34,7 @@ DIR_DROPBOX_REPO="/BOLSA_PREDICTOR/"
 DIR_CODIGOS_CARLOS="/home/carloslinux/Desktop/GIT_BOLSA/"
 DIR_CODIGOS_LUIS="/home/t151521${DIR_BASE}"
 PYTHON_MOTOR_CARLOS="/home/carloslinux/anaconda3/envs/BolsaPython38/bin/python"
-PYTHON_MOTOR_LUIS="/home/t151521/anaconda3/envs/BolsaPython/bin/python"
+PYTHON_MOTOR_LUIS="/usr/bin/python3.8"
 DIR_DROPBOX_CARLOS="/home/carloslinux/Dropbox${DIR_DROPBOX_REPO}"
 DIR_DROPBOX_LUIS="/home/t151521/Dropbox${DIR_DROPBOX_REPO}"
 PATH_ANALISIS_LUIS="/home/t151521${DIR_BASE}BolsaScripts/inversionAnalisis.sh"
