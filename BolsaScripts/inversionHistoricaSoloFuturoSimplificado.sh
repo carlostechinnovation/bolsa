@@ -4,7 +4,7 @@
 
 #################### DESCRIPCIÓN Y PARÁMETROS FUNDAMENTALES ###############################
 # Permite sacar las predicciones en un rango de tiempos del pasado. 
-# Se coge rel modelo de la matigüedad máxima (no lo genera este script). Luego se predice el futuro de la antigüedad mínima, y
+# Se coge el modelo de la antigüedad máxima (no lo genera este script). Luego se predice el futuro de la antigüedad mínima, y
 # se calcula también el de las antigüedades intermedias en base a lo ya descargado para la antigüedad mínima (fichero COMPLETO.csv), 
 # borrando previamente los días necesarios en le fichero COMPLETO y prediciendo el futuro sin redescargar.
 # El modelo predictor NO SERÁ el usado en 
@@ -23,7 +23,7 @@ ANTIGUEDAD_MAXIMA="100"
 ANTIGUEDAD_MINIMA="0" # Se puede usar cualquier valor
 NUM_EMPRESAS_TRAIN="1000" # Número de empresas de entrenamiento, NO para los días posteriores (que estarán en el fichero de parámetros). Se recomienda dejar 1000 siempre.
 
-echo -e "INVERSION - INICIO: "$( date "+%Y%m%d%H%M%S" )
+echo -e "INVERSION HISTORICA SOLO FUTURO SIMPLIFICADO - INICIO: "$( date "+%Y%m%d%H%M%S" )
 
 #echo -e "Parando cron..."
 #sudo service cron  stop
@@ -115,7 +115,7 @@ do
                 # Se evita descargar COMPLETO.csv
 		DESCARGAR="N"
 
-                # Se eliminan ficheros de anitguas predicciones (en TODOS los subgrupos)
+                # Se eliminan ficheros de antiguas predicciones (en TODOS los subgrupos)
                 while IFS= read -r -d '' -u 9
 		do
 			if [[ $REPLY == *"COMPLETO_PREDICCION"* ]]; then
@@ -167,5 +167,5 @@ do
 done
 
 
-echo -e "INVERSION - FIN: "$( date "+%Y%m%d%H%M%S" )
+echo -e "INVERSION HISTORICA SOLO FUTURO SIMPLIFICADO - FIN: "$( date "+%Y%m%d%H%M%S" )
 

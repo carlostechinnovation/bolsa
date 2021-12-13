@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo -e "VALIDACION - INICIO: "$( date "+%Y%m%d%H%M%S" )
+echo -e "GENERA MODELO - INICIO: "$( date "+%Y%m%d%H%M%S" )
 
 #################### DIRECTORIOS ###############################################################
 DIR_BASE="/bolsa/"

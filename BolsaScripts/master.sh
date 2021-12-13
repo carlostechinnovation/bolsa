@@ -251,7 +251,13 @@ if [ "$ACTIVAR_SG_Y_PREDICCION" = "S" ];  then
 
 fi
 
-################################################################################################
+######################### ANALISIS DE FALSOS POSITIVOS (solo en modo pasado) #################################
+if [ "$DIR_TIEMPO" = "pasado" ];  then
+	$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/AnalisisFalsosPositivos.py" "${DIR_JAVA}realimentacion/" >> ${LOG_MASTER}
+fi
+
+
+######################### ANALISIS DE DATOS PROCESADOS #################################################
 echo -e "Actualizando informe HTML de uso de DATOS..." >> ${LOG_MASTER}
 java -jar ${PATH_JAR} --class "coordinador.Principal" "c70X.validacion.GeneradorInformeHtml" "${DIR_BASE}${DIR_TIEMPO}/" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 
@@ -259,11 +265,21 @@ echo -e "Actualizando informe HTML de uso de FEATURES (mirando el pasado)..." >>
 DIR_SUBGRUPOS_PASADO=$(echo ${DIR_SUBGRUPOS} | sed -e "s/futuro/pasado/g")
 $PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/FeaturesAnalisisPosteriori.py" "${DIR_SUBGRUPOS_PASADO}" "${DIR_BASE}pasado/matriz_features_antes_de_pca.html" "${DIR_BASE}pasado/matriz_features.html" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 
-if [ "$DIR_TIEMPO" = "pasado" ];  then 
-	$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/AnalisisFalsosPositivos.py"
+
+######################### ANALISIS DE METRICAS Y RENTABILIDADES #################################################
+if [ "$DIR_TIEMPO" = "pasado" ];  then
+	echo -e "Informe entregable HTML sobre metricas y rentabilidades" >> ${LOG_MASTER}
+	PATH_MET_RENTAB_ENTRADA="${DIR_LOGS}pasado_metricas_y_rentabilidades_entrada.csv"
+	HTML_MET_RENTAB_SALIDA="${DIR_LOGS}pasado_metricas_y_rentabilidades.html"
+	cat "${LOG_MASTER}" | grep "ENTREGABLEPRECISIONESPASADO"  > "${PATH_MET_RENTAB_ENTRADA}"
+	echo "" > "${HTML_MET_RENTAB_SALIDA}"  # reset
+	$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/PintarMetricasyRentabilidades.py" "${PATH_MET_RENTAB_ENTRADA}" "${HTML_MET_RENTAB_SALIDA}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 fi
+#################################################
 
 echo -e "MASTER - FIN: "$( date "+%Y%m%d%H%M%S" )
 echo -e "******** FIN de master**************" >> ${LOG_MASTER}
+
+
 
 

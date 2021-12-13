@@ -1,15 +1,32 @@
 #!/bin/bash
-DIR_BASE="/bolsa/"
 
-ACTIVAR_DESCARGA="${1}" #S o N
-if [ "${ACTIVAR_DESCARGA}" = "S" ];  then
-	echo "dentro"
-fi
+function buscarEmpresaEnSubgrupos () {
+	dirSubgrupos="${1}"
+	empresa="${2}"
+	ficheroLog="${3}"
+	cadena=""
+	for nombreSubg in $(ls ${dirSubgrupos})
+	do
+		pathEmpresasDeSg="/bolsa/pasado/subgrupos/${nombreSubg}/EMPRESAS.txt"
+		echo "Analizando si la empresa ${empresa} esta en el fichero ${pathEmpresasDeSg} ..."
+		pattern="_${empresa}\."
+		encontrado=$(cat ${pathEmpresasDeSg} | grep "$pattern")
+		if [ -z "${encontrado}" ];then
+			echo "$encontrado is empty"
+		else
+			echo "$encontrado is NOT empty"
+			cadena="${cadena} ${nombreSubg}"
+		fi
+	done
+	
+	echo "La empresa aparece en estos subgrupos: ${cadena}"
+}
 
 
-tamanioorigen=$(du -s "${DIR_BASE}validacion/pasado_brutos_csv/" | cut -f1)
-echo "${tamanioorigen}"
-if [ ${tamanioorigen} > 0 ]; then
-	echo "Hay datos"
-fi
+buscarEmpresaEnSubgrupos "/bolsa/pasado/subgrupos/" "AMRS" "./prueba.txt"
+
+
+
+
+
 
