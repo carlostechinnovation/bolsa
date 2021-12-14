@@ -321,6 +321,11 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
         df3aux = entradaFeaturesYTarget3  # FUTURO
 
     # Pasado y futuro:
+    print("Comprobando que el dataframe de entrada tenga datos...")
+    num_filas = df3aux.shape[0]
+    if (num_filas == 0):
+        raise RuntimeError("Hay 0 filas en el dataframe de entrada. Salimos...")
+
     print("Cargando modelo detector de outliers: " + pathModeloOutliers)
     detector_outliers = pickle.load(open(pathModeloOutliers, 'rb'))
     flagAnomaliasDf = pd.DataFrame(

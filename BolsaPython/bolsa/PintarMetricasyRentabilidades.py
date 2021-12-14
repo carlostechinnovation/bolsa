@@ -49,8 +49,9 @@ metricasEntrada = metricasEntrada.applymap(
 metricasEntradaHtml = metricasEntrada.style.applymap(color_negative_red).render()
 
 # metricasEntradaHtml = metricasEntrada.to_html(header=True, index=False)
-print(metricasEntradaHtml)
+# print(metricasEntradaHtml)
 
+print("Limpio:")
 print(tabulate(metricasEntrada.head(), headers='keys', tablefmt='psql'))
 f.write(metricasEntradaHtml)
 

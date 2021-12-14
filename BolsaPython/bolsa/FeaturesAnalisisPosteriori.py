@@ -246,6 +246,9 @@ filaEspecial=matrizDFtraspuesta.filter(like="Numero de features usadas", axis=0)
 matrizDFtraspuesta=matrizDFtraspuesta.drop("Numero de features usadas")
 matrizDFtraspuesta=matrizDFtraspuesta.append(filaEspecial)  # la ponemos al final
 
+print("Convirtiendo todo a Strings para que quede bonito...")
+matrizDFtraspuesta = matrizDFtraspuesta.applymap(lambda x: int(round(x, 1)) if isinstance(x, (int, float)) else x)
+
 print("matrizDFtraspuesta: " + str(matrizDFtraspuesta.shape[0]) + " x " + str(matrizDFtraspuesta.shape[1]))
 # matrizDFtraspuesta.to_csv(pathSalida, index=False, sep='|')
 

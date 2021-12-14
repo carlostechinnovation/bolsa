@@ -2,55 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="22edbd2f-b3d9-42f0-a7dd-659033ab601a" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/main/java/c10X/brutos/EstaticoNasdaqModelo.java.orig" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/main/java/c10X/brutos/EstaticosNasdaqDescargarYParsear.java.orig" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/main/java/c10X/brutos/JuntarEstaticosYDinamicosCSVunico.java.orig" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/main/java/c10X/brutos/YahooFinance01Descargar.java.orig" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/main/java/c30x/elaborados/construir/ConstructorElaborados.java.orig" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/main/java/c30x/elaborados/construir/ElaboradosUtils.java.orig" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/main/java/c30x/elaborados/construir/Estadisticas.java.orig" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/main/java/c40X/subgrupos/CrearDatasetsSubgrupos.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/main/java/c40X/subgrupos/CrearDatasetsSubgrupos.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/main/java/c40X/subgrupos/CrearDatasetsSubgrupos.java.orig" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/main/java/c40X/subgrupos/SubgruposUtils.java.orig" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/main/java/c70x/validacion/GeneradorInformeHtml.java.orig" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/main/resources/Bolsa_Subgrupos_Descripcion.txt.orig" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../BolsaJava/src/main/resources/desconocidos.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/main/resources/desconocidos.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/main/resources/desconocidos.csv.orig" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/main/resources/nasdaq_tickers_invertidos_v2.csv.orig" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/main/resources/nasdaq_tickers_v2.csv.orig" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/test/java/c30x/elaborados/construir/ConstructorElaboradosTest.java.orig" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/test/java/c30x/elaborados/construir/EstadisticasTest.java.orig" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/test/resources/elaborados_test1.txt.orig" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/BolsaPython.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/BolsaPython.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bolsa/AnalisisFalsosPositivos.py.orig" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bolsa/AnalizarFeaturesVsTarget.py.orig" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/bolsa/C5C6Manual.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/C5C6Manual.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaScripts/CARLOS_modelo_realimentado_invertir.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/CARLOS_modelo_realimentado_invertir.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaScripts/INACTIVO_generaModeloh2o.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/INACTIVO_generaModeloh2o.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaScripts/INACTIVO_inversionHistoricaSoloFuturoSimplificadoh2o.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/INACTIVO_inversionHistoricaSoloFuturoSimplificadoh2o.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaScripts/INACTIVO_inversionHistoricaSoloFuturoSimplificadoh2o2.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/INACTIVO_inversionHistoricaSoloFuturoSimplificadoh2o2.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaScripts/INACTIVO_inversionHistoricaSoloFuturoh2o.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/INACTIVO_inversionHistoricaSoloFuturoh2o.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaScripts/INACTIVO_inversionh2o.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/INACTIVO_inversionh2o.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaScripts/INACTIVO_masterSimplificado_obsoleto20210705.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/INACTIVO_masterSimplificado_obsoleto20210705.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaScripts/INACTIVO_masterSimplificadoh2o.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/INACTIVO_masterSimplificadoh2o.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaScripts/INACTIVO_masterh2o.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/INACTIVO_masterh2o.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaScripts/desarrollar.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/desarrollar.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaScripts/entrenarConPasadoValidarConFut1Fut2.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/entrenarConPasadoValidarConFut1Fut2.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaScripts/entrenarSoloPasado.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/entrenarSoloPasado.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaScripts/entrenarSoloPasadoYpredecirSoloFut1.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/entrenarSoloPasadoYpredecirSoloFut1.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaScripts/generaModelo.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/generaModelo.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaScripts/inversion.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/inversion.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaScripts/inversionAnalisis.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/inversionAnalisis.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaScripts/inversionHistorica.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/inversionHistorica.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaScripts/inversionHistoricaSoloFuturo.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/inversionHistoricaSoloFuturo.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaScripts/inversionHistoricaSoloFuturoSimplificado.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/inversionHistoricaSoloFuturoSimplificado.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaScripts/inversionHistoricaSoloFuturoSimplificadoh2o.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/inversionHistoricaSoloFuturoSimplificadoh2o.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bolsa/FeaturesAnalisisPosteriori.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/FeaturesAnalisisPosteriori.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bolsa/PintarMetricasyRentabilidades.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/PintarMetricasyRentabilidades.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../BolsaScripts/master.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/master.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaScripts/masterSimplificado.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/masterSimplificado.sh" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../BolsaScripts/parametros.config" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/parametros.config" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaScripts/testIntegracion.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/testIntegracion.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -114,7 +72,7 @@
       <recent name="C:\DATOS\GITHUB_REPOS\bolsa\BolsaPython\bolsa" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.C5C6Manual">
+  <component name="RunManager" selected="Python.FeaturesAnalisisPosteriori">
     <configuration name="06_redneuronal_lstm_2" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="BolsaPython" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -167,7 +125,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/bolsa/C5C6Manual.py" />
-      <option name="PARAMETERS" value="/bolsa/pasado/subgrupos/SG_47/ pasado 35 10000 0" />
+      <option name="PARAMETERS" value="/bolsa/futuro/subgrupos/SG_0/ futuro 35 5000 0" />
       <option name="SHOW_COMMAND_LINE" value="true" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -287,9 +245,9 @@
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="$USER_HOME$/PROGRAMAS/anaconda3/envs/BolsaPython/bin/python" />
+      <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/bolsa" />
-      <option name="IS_MODULE_SDK" value="false" />
+      <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/bolsa/FeaturesAnalisisPosteriori.py" />
@@ -364,6 +322,27 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="PintarMetricasyRentabilidades" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="BolsaPython" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/bolsa" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/bolsa/PintarMetricasyRentabilidades.py" />
+      <option name="PARAMETERS" value="/bolsa/logs/pasado_metricas_y_rentabilidades_entrada.csv /bolsa/logs/pasado_metricas_y_rentabilidades.html" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="TestIntegracionUtilidad1" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="BolsaPython" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -398,27 +377,6 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/bolsa/prueba.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="pruebaprofiling" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="BolsaPython" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/bolsa" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/ejemplos/pruebaprofiling.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -463,16 +421,16 @@
       <item itemvalue="Python.InversionJuntarPrediccionesDeUnDia" />
       <item itemvalue="Python.TestIntegracionUtilidad1" />
       <item itemvalue="Python.prueba" />
-      <item itemvalue="Python.pruebaprofiling" />
       <item itemvalue="Python.C5C6ManualTest" />
+      <item itemvalue="Python.PintarMetricasyRentabilidades" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.PintarMetricasyRentabilidades" />
         <item itemvalue="Python.C5C6ManualTest" />
         <item itemvalue="Python.InversionJuntarPrediccionesDeUnDia" />
         <item itemvalue="Python.TestIntegracionUtilidad1" />
         <item itemvalue="Python.prueba" />
-        <item itemvalue="Python.pruebaprofiling" />
       </list>
     </recent_temporary>
   </component>
@@ -549,7 +507,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/bolsa/C5C6Manual.py</url>
-          <line>1107</line>
+          <line>1112</line>
           <option name="timeStamp" value="44" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -571,6 +529,11 @@
           <url>file://$PROJECT_DIR$/bolsa/InversionUtilsPosteriori.py</url>
           <line>208</line>
           <option name="timeStamp" value="61" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/bolsa/FeaturesAnalisisPosteriori.py</url>
+          <line>255</line>
+          <option name="timeStamp" value="62" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
