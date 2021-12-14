@@ -364,32 +364,6 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
     # SOLO PARA EL PASADO Si hay MUCHAS empresas (UNDER-SAMPLING para reducir los datos -útil para miles de empresas, pero puede quedar sobreentrenado, si borro casi todas las minoritarias-)
     else:
 
-        if (balancear == True):
-            print("BALANCEAR los casos positivos y negativos, haciendo downsampling de la clase mayoritaria...")
-            print("URL: https://elitedatascience.com/imbalanced-classes")
-            ift_minoritaria = entradaFeaturesYTarget4[entradaFeaturesYTarget4.TARGET == True]
-            print("ift_minoritaria (original):" + str(ift_minoritaria.shape[0]) + " x " + str(
-                ift_minoritaria.shape[1]))
-            num_filas_azar = 5 * ift_minoritaria.shape[0]
-            print("num_filas_azar:" + str(num_filas_azar))
-            ift_mayoritaria = entradaFeaturesYTarget4.loc[
-                np.random.choice(entradaFeaturesYTarget4.index, num_filas_azar)]
-            ift_mayoritaria = ift_mayoritaria[ift_mayoritaria.TARGET == False]
-            print(
-                "ift_mayoritaria (se han borrado filas, pero no muchas):" + str(
-                    ift_mayoritaria.shape[0]) + " x " + str(
-                    ift_mayoritaria.shape[1]))
-            print("ift_minoritaria (con oversampling): " + str(ift_minoritaria.shape[0]) + " x " + str(
-                ift_minoritaria.shape[1]))
-            print("Tasa de desbalanceo entre clases = " + str(ift_mayoritaria.shape[0]) + "/" + str(
-                ift_minoritaria.shape[0]) + " = " + str(ift_mayoritaria.shape[0] / ift_minoritaria.shape[0]))
-            # Juntar ambas clases ya BALANCEADAS. Primero vacío el dataset
-            entradaFeaturesYTarget5 = ift_mayoritaria.append(ift_minoritaria)
-            print("Las clases ya están balanceadas:")
-            print("ift_balanceadas:" + str(entradaFeaturesYTarget5.shape[0]) + " x " + str(
-                entradaFeaturesYTarget5.shape[1]))
-
-        else:
         print("NO balanceamos clases en capa 5 (pero seguramente sí en capa 6 solo sobre dataset de TRAIN)!!!")
         ift_minoritaria = entradaFeaturesYTarget4[entradaFeaturesYTarget4.TARGET == True]
         ift_mayoritaria = entradaFeaturesYTarget4[entradaFeaturesYTarget4.TARGET == False]

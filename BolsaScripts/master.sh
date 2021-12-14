@@ -6,10 +6,10 @@ echo -e "MASTER - INICIO: "$( date "+%Y%m%d%H%M%S" )
 
 #################### DIRECTORIOS ###############################################################
 DIR_BASE="/bolsa/"
-DIR_CODIGOS_CARLOS="/home/carloslinux/Desktop/GIT_BOLSA/"
+DIR_CODIGOS_CARLOS="/home/carloslinux/Desktop/GIT_BOLSA/bolsa/"
 DIR_CODIGOS_LUIS="/home/t151521${DIR_BASE}"
 PYTHON_MOTOR_CARLOS="/home/carloslinux/anaconda3/envs/BolsaPython38/bin/python"
-PYTHON_MOTOR_LUIS="/usr/bin/python3.8"
+PYTHON_MOTOR_LUIS="/home/t151521/anaconda3/envs/BolsaPython/bin/python"
 
 usuario=$(whoami)
 if [ $usuario == "carloslinux" ]
@@ -115,9 +115,10 @@ rm -f "${LOG_MASTER}"
 echo -e "Version de MAVEN:" >> ${LOG_MASTER}
 mvn -version >> ${LOG_MASTER}
 
-echo -e "Compilando JAVA en un JAR..." >> ${LOG_MASTER}
+CARPETA_TARGET="${DIR_JAVA}target/"
+echo -e "Compilando JAVA en un JAR que se pondra aqui: ${CARPETA_TARGET}" >> ${LOG_MASTER}
 cd "${DIR_JAVA}" >> ${LOG_MASTER}
-rm -Rf "${DIR_JAVA}target/" >> ${LOG_MASTER}
+rm -Rf "${CARPETA_TARGET}" >> ${LOG_MASTER}
 echo "JAVA_HOME contiene este valor: ${JAVA_HOME}" >> ${LOG_MASTER}
 
 mvn clean compile assembly:single >> ${LOG_MASTER}
@@ -216,7 +217,7 @@ if [ "$ACTIVAR_SG_Y_PREDICCION" = "S" ];  then
 	
 	echo -e $( date '+%Y%m%d_%H%M%S' )" -------- Capa 4: SUBGRUPOS -------------" >> ${LOG_MASTER}
 	crearCarpetaSiNoExisteYVaciarRecursivo "${DIR_SUBGRUPOS}"
-	java -jar ${PATH_JAR} --class "coordinador.Principal" "c40X.subgrupos.CrearDatasetsSubgrupos" "${DIR_ELABORADOS}" "${DIR_SUBGRUPOS}" "${MIN_COBERTURA_CLUSTER}" "${MIN_EMPRESAS_POR_CLUSTER}" "${DIR_TIEMPO}" "${DINAMICA1}" "${DINAMICA2}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
+	java -jar ${PATH_JAR} --class "coordinador.Principal" "c40X.subgrupos.CrearDatasetsSubgrupos" "${DIR_ELABORADOS}" "${DIR_SUBGRUPOS}" "${MIN_COBERTURA_CLUSTER}" "${MIN_EMPRESAS_POR_CLUSTER}" "${DIR_TIEMPO}" "${DINAMICA1}" "${DINAMICA2}" "${REALIMENTACION}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 
 	############  PARA CADA SUBGRUPO ###############################################################
 	

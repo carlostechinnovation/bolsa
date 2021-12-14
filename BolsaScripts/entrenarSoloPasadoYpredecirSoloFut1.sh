@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #################### DIRECTORIOS ###############################################################
-DIR_CODIGOS_CARLOS="/home/carloslinux/Desktop/GIT_BOLSA/"
+DIR_CODIGOS_CARLOS="/home/carloslinux/Desktop/GIT_BOLSA/bolsa/"
 DIR_CODIGOS_LUIS="/home/t151521/bolsa/"
 PYTHON_MOTOR_CARLOS="/home/carloslinux/anaconda3/envs/BolsaPython38/bin/python"
 PYTHON_MOTOR_LUIS="/usr/bin/python3.8"
@@ -118,7 +118,7 @@ echo -e "--------------------------" >> ${LOG_VALIDADOR}
 ###############################################################################################
 ###############################################################################################
 
-/home/carloslinux/Desktop/GIT_BOLSA/BolsaScripts/inversion.sh
+/home/carloslinux/Desktop/GIT_BOLSA/bolsa/BolsaScripts/inversion.sh
 
 
 

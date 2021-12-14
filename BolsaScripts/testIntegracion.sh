@@ -22,7 +22,7 @@ elif [ $# -eq 2 ];  then
 	empresa="${2}"
 else
     echo "INSTRUCCIONES:   RUTA/script.sh  subgrupo empresa"
-	echo "EJEMPLO:    /home/carloslinux/Desktop/GIT_BOLSA/BolsaScripts/testIntegracion.sh  SG_49 AAPL"
+	echo "EJEMPLO:    /home/carloslinux/Desktop/GIT_BOLSA/bolsa/BolsaScripts/testIntegracion.sh  SG_49 AAPL"
 	echo "El número de parametros de entrada no es el esperado. Saliendo..."
 	exit -1
 fi
@@ -31,7 +31,7 @@ echo "PASADO - Subgrupo: ${SG_ANALIZADO}"
 echo "PASADO - Empresa: ${empresa}"
 
 #################### DIRECTORIOS ###############################################################
-DIR_CODIGOS_CARLOS="/home/carloslinux/Desktop/GIT_BOLSA/"
+DIR_CODIGOS_CARLOS="/home/carloslinux/Desktop/GIT_BOLSA/bolsa/"
 DIR_CODIGOS_LUIS="/home/t151521/bolsa/"
 PYTHON_MOTOR_CARLOS="/home/carloslinux/anaconda3/envs/BolsaPython38/bin/python"
 PYTHON_MOTOR_LUIS="/usr/bin/python3.8"
