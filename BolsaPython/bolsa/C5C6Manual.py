@@ -43,7 +43,7 @@ print("modoTiempo = %s" % modoTiempo)
 print("maxFeatReducidas = %s" % maxFeatReducidas)
 print("maxFilasEntrada = %s" % maxFilasEntrada)
 
-varianza = 0.90  # Variacion acumulada de las features PCA sobre el target
+varianza = 0.86  # Variacion acumulada de las features PCA sobre el target
 compatibleParaMuchasEmpresas = False  # Si hay muchas empresas, debo hacer ya el undersampling (en vez de capa 6)
 global modoDebug;
 modoDebug = False  # VARIABLE GLOBAL: En modo debug se pintan los dibujos. En otro caso, se evita calculo innecesario. Recomendable: False
@@ -907,7 +907,7 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         # print("Optimización de procesos bayesianos - Añadimos ESCENARIOS CONCRETOS para fijarlos (tuplas de parametros) que hayamos visto que tienen buenos resultados...")
         # optimizer.probe(params={"colsample_bytree": 0.4, "gamma": 2.0, "learning_rate": 0.4, "max_delta_step": 9.6, "max_depth": 7.0, "min_child_weight": 8.2, "n_estimators": 47, "reg_alpha": 0.1}, lazy=False)
 
-        optimizer.maximize(init_points=10, n_iter=30, acq='poi', kappa=10, **gp_params)
+        optimizer.maximize(init_points=5, n_iter=10, acq='poi', kappa=3, **gp_params)
         # KAPPA: Parameter to indicate how closed are the next parameters sampled
 
         valoresOptimizados = optimizer.max

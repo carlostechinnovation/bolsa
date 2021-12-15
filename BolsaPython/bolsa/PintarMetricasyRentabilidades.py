@@ -28,7 +28,7 @@ def color_negative_red(val):
 
 f = open(pathHtmlSalida, mode="w")  # Se abre fichero en modo overwrite
 
-f.write("<!DOCTYPE html><html><body>")  # HTML apertura
+f.write("<!DOCTYPE html><head><style></style></head><html><body>")  # HTML apertura
 f.write("<h2>PASADO - METRICA (precisión):</h2>")
 print("Cargar datos (CSV)...")
 metricasEntrada = pd.read_csv(filepath_or_buffer=pathMetricasPasadoEntrada, sep='|', header=None)
@@ -46,14 +46,22 @@ metricasEntrada = metricasEntrada.applymap(
 
 ######################################################
 
-metricasEntradaHtml = metricasEntrada.style.applymap(color_negative_red).render()
-
+metricasEntradaHtml = metricasEntrada.style.applymap(color_negative_red).render(index=False)
 # metricasEntradaHtml = metricasEntrada.to_html(header=True, index=False)
+metricasEntradaHtml = metricasEntradaHtml.replace("<table", "<table style=\"border: 1px solid black;\"")
+metricasEntradaHtml = metricasEntradaHtml.replace("<td", "<td style=\"border: 1px solid black;\"")
+metricasEntradaHtml = metricasEntradaHtml.replace("class=\"row_heading", "style=\"color:white\" class=\"row_heading")  # ocultar indices
+style="color:white"
+
 # print(metricasEntradaHtml)
 
 print("Limpio:")
 print(tabulate(metricasEntrada.head(), headers='keys', tablefmt='psql'))
 f.write(metricasEntradaHtml)
+
+
+f.write("<h2>PASADO - RENTABILIDADES (usando graficas y CALIDAD.csv):</h2>")
+f.write("<p>Pendiente...</p>")
 
 f.write("</body></html>")  # HTML cierre
 f.close()  # Se cierra fichero

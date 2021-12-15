@@ -18,10 +18,11 @@ entradaPathDirDropbox = sys.argv[1]
 entradaPathCalidad = sys.argv[2]
 entradaPathDescripcionSubgrupos = sys.argv[3]
 entradaFPempresas = sys.argv[4]
-targetPredichoProbUmbral = float(0.93)
+targetPredichoProbUmbral = float(0.80)
 print("entradaPathDirDropbox = " + entradaPathDirDropbox)
 print("entradaPathCalidad = " + entradaPathCalidad)
 print("entradaPathDescripcionSubgrupos = " + entradaPathDescripcionSubgrupos)
+print("entradaFPempresas = " + entradaFPempresas)
 print("targetPredichoProbUmbral = " + str(targetPredichoProbUmbral))
 
 manejablesCsv = []

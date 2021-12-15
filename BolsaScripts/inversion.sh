@@ -107,6 +107,15 @@ done 9< <( find ${DIR_FUT_SUBGRUPOS} -type f -exec printf '%s\0' {} + )
 $PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/InversionJuntarPrediccionesDeUnDia.py" "${DIR_DROPBOX}" "${DIR_DROPBOX}/ANALISIS/CALIDAD.csv" "${DIR_CODIGOS}BolsaJava/src/main/resources/Bolsa_Subgrupos_Descripcion.txt" "${DIR_CODIGOS}BolsaJava/realimentacion/falsospositivos_empresas.csv" >> ${LOG_INVERSION}
 
 
+# Crear CARPETA DIARIA DE ENTREGABLES y meterlos dentro
+CARPETA_ENTREGABLES="${DIR_DROPBOX}/"$(date '+%Y%m%d_%H%M%S')
+mkdir -p "${CARPETA_ENTREGABLES}"
+cp "${DIR_DROPBOX}/"$(date '+%Y%m%d')".html" "${CARPETA_ENTREGABLES}/"
+cp "${DIR_DROPBOX}/"$(date '+%Y%m%d')"_todas_las_empresas.html" "${CARPETA_ENTREGABLES}/"
+cp "/bolsa/logs/pasado_metricas_y_rentabilidades.html" "${CARPETA_ENTREGABLES}/"
+
+
+
 ################################## GITHUB: commit and push##############################################################
 #echo -e "Haciendo GIT COMMIT..." >>${LOG_INVERSION}
 #cd "${DIR_GITHUB_INVERSION}" >> ${LOG_INVERSION}
