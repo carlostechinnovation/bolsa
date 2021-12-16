@@ -113,6 +113,7 @@ mkdir -p "${CARPETA_ENTREGABLES}"
 cp "${DIR_DROPBOX}/"$(date '+%Y%m%d')".html" "${CARPETA_ENTREGABLES}/"
 cp "${DIR_DROPBOX}/"$(date '+%Y%m%d')"_todas_las_empresas.html" "${CARPETA_ENTREGABLES}/"
 cp "/bolsa/logs/pasado_metricas_y_rentabilidades.html" "${CARPETA_ENTREGABLES}/"
+cp "/bolsa/pasado/empresas_clustering_web.html" "${CARPETA_ENTREGABLES}/"
 
 
 

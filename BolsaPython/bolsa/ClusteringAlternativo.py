@@ -8,7 +8,7 @@ import glob
 print("CLUSTERING - INICIO")
 X = pd.DataFrame()
 contador = 0
-maximoDebug = 500000
+maximoDebug = 10000000
 for pathCsvCompleto in glob.iglob('/bolsa/pasado/elaborados/*.csv'):
     if contador < maximoDebug:
         contador = contador + 1
@@ -23,7 +23,7 @@ for pathCsvCompleto in glob.iglob('/bolsa/pasado/elaborados/*.csv'):
         #columnasEstaticas = ['industria', 'Insider Own', 'Quick Ratio', 'Current Ratio', 'P/E', 'Dividend %',
         #                     'Employees', 'Short Ratio', 'geo', 'Short Float', 'Debt/Eq', 'LT Debt/Eq', 'P/S',
         #                     'EPS next Y', 'Recom', 'sector', 'Inst Own', 'Market Cap']
-        columnasEstaticas = ['industria', 'geo', 'Insider Own']  # elijo solo 3 dimensiones (podria coger mas)
+        columnasEstaticas = ['sector', 'geo', 'Insider Own', 'Debt/Eq']  # elijo solo 3 dimensiones (podria coger mas)
         X1 = X1[columnasEstaticas].replace('-', -1, regex=False)
 
         X = X.append(X1)
@@ -57,8 +57,7 @@ import numpy as np
 from sklearn.cluster import MeanShift, estimate_bandwidth
 from sklearn.datasets import make_blobs
 
-# The following bandwidth can be automatically detected using
-bandwidth = estimate_bandwidth(X, quantile=0.8, n_samples=50)
+bandwidth = estimate_bandwidth(X, quantile=0.3, n_samples=None, random_state=0, n_jobs=-1)
 ms = MeanShift(bandwidth=bandwidth, bin_seeding=True)
 ms.fit(X)
 labels = ms.labels_
@@ -81,6 +80,7 @@ estadisticas = labelsDF.groupby(['etiqueta'])
 grupos = estadisticas.groups
 gruposDF = pd.DataFrame.from_dict(grupos, orient="index").reset_index()
 gruposDF=gruposDF.replace(to_replace = np.nan, value ='')  # valores None
+gruposDF=gruposDF.rename(columns={"index": "cluster"})
 # print(tabulate(gruposDF, headers='keys', tablefmt='psql', ))
 
 pathSalida="/bolsa/pasado/empresas_clustering.csv"
@@ -89,6 +89,6 @@ print("CLUSTERING - Escribiendo salida en: " + pathSalida)
 print("CLUSTERING - Escribiendo salida HTML en: " + pathSalidaHtml)
 print("CLUSTERING - El cluster gigante no debemos usarlo porque su análisis es demasiado laxo (se podria dividir aun mas)." + pathSalidaHtml)
 labelsDF.to_csv(pathSalida, index=True, sep='|')
-gruposDF.to_html(pathSalidaHtml)
+gruposDF.to_html(pathSalidaHtml, index=False)
 # #############################################################################
 print("CLUSTERING - FIN")

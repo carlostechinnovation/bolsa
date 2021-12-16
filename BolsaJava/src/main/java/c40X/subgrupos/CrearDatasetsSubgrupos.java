@@ -6,6 +6,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -408,7 +410,8 @@ public class CrearDatasetsSubgrupos implements Serializable {
 				pathEmpresasTipo0.add(ficheroGestionado.getAbsolutePath());
 
 				// Lista manual de empresas seleccionadas
-				List<String> listaSeleccionManual = leerListaManualEmpresasSeleccionadas();
+				// List<String> listaSeleccionManual = leerListaManualEmpresasSeleccionadas();
+				List<String> listaSeleccionManual = leerListaClusteringAlternativo("1");
 
 				String dinamica1Str = parametros.get("DINAMICA1");
 				String dinamica2Str = parametros.get("DINAMICA2");
@@ -1115,6 +1118,37 @@ public class CrearDatasetsSubgrupos implements Serializable {
 		// Quitar duplicados
 		List<String> listWithoutDuplicates = lista.stream().distinct().collect(Collectors.toList());
 
+		return listWithoutDuplicates;
+	}
+
+	/**
+	 * @return
+	 * @throws IOException
+	 */
+	public static List<String> leerListaClusteringAlternativo(String idSubgrupoAlternativoElegido) throws IOException {
+
+		String PATH_CSV_CLUSTERING_ALTERNATIVO = "/bolsa/pasado/empresas_clustering.csv";
+		List<String> lista = new ArrayList<String>();
+		if (!Files.exists(Paths.get(PATH_CSV_CLUSTERING_ALTERNATIVO))) {
+			MY_LOGGER.error("No hay fichero de clustering alternativo. Revisar si se ha ejecutado (ver master.sh).");
+
+		} else {
+			FileReader fr = new FileReader(PATH_CSV_CLUSTERING_ALTERNATIVO);
+			BufferedReader br = new BufferedReader(fr);
+			String actual;
+
+			while ((actual = br.readLine()) != null) {
+				if (actual != null && !actual.isEmpty() && actual.contains("|" + idSubgrupoAlternativoElegido)) {
+					lista.add(actual.split("\\|")[0]);
+				}
+			}
+
+		}
+
+		// Quitar duplicados
+		List<String> listWithoutDuplicates = lista.stream().distinct().collect(Collectors.toList());
+		MY_LOGGER.info("leerListaClusteringAlternativo --> Subgrupo alternativo usado: " + idSubgrupoAlternativoElegido
+				+ " --> " + listWithoutDuplicates.size() + " empresas");
 		return listWithoutDuplicates;
 	}
 
