@@ -211,6 +211,11 @@ fi
 
 comprobarQueDirectorioNoEstaVacio "${DIR_ELABORADOS}"
 
+if [ "$DIR_TIEMPO" = "pasado" ];  then
+	echo -e "Clustering alternativo..." >> ${LOG_MASTER}
+	$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/ClusteringAlternativo.py"  2>>${LOG_MASTER} 1>>${LOG_MASTER}
+fi
+
 ############## Calcular Subgrupos ####################################################################
 
 if [ "$ACTIVAR_SG_Y_PREDICCION" = "S" ];  then

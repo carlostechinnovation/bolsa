@@ -877,7 +877,7 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
                                 max_depth=int(max_depth), min_child_weight=int(min_child_weight),
                                 n_estimators=int(n_estimators), reg_alpha=reg_alpha,
                                 nthread=-1, objective='binary:logistic', seed=seed, use_label_encoder=False,
-                                eval_metric='logloss', max_delta_step=max_delta_step)
+                                eval_metric=["map"], max_delta_step=max_delta_step, scale_pos_weight=1) #'logloss'
 
             # Explicacion: https://scikit-learn.org/stable/modules/model_evaluation.html#scoring-parameter
             return np.mean(cross_val_score(clf, ds_train_f, ds_train_t, cv=cv_todos, scoring='accuracy'))
@@ -907,7 +907,8 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         # print("Optimización de procesos bayesianos - Añadimos ESCENARIOS CONCRETOS para fijarlos (tuplas de parametros) que hayamos visto que tienen buenos resultados...")
         # optimizer.probe(params={"colsample_bytree": 0.4, "gamma": 2.0, "learning_rate": 0.4, "max_delta_step": 9.6, "max_depth": 7.0, "min_child_weight": 8.2, "n_estimators": 47, "reg_alpha": 0.1}, lazy=False)
 
-        optimizer.maximize(init_points=5, n_iter=10, acq='poi', kappa=3, **gp_params)
+        optimizer.maximize(init_points=5, n_iter=20, acq='ucb', kappa=30, **gp_params)
+        #optimizer.maximize(init_points=5, n_iter=20, acq='poi', kappa=3, **gp_params)
         # KAPPA: Parameter to indicate how closed are the next parameters sampled
 
         valoresOptimizados = optimizer.max
@@ -939,7 +940,7 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
                                reg_alpha=reg_alpha, min_child_weight=min_child_weight,
                                colsample_bytree=colsample_bytree, gamma=gamma,
                                nthread=nthread, objective=objective, seed=seed, use_label_encoder=False,
-                               max_delta_step=max_delta_step)
+                               max_delta_step=max_delta_step, scale_pos_weight=1)
 
         eval_set = [(ds_train_f.to_numpy(), ds_train_t.to_numpy().ravel()), (ds_test_f, ds_test_t)]
         modelo = modelo.fit(ds_train_f.to_numpy(), ds_train_t.to_numpy().ravel(), eval_metric=["map"],
