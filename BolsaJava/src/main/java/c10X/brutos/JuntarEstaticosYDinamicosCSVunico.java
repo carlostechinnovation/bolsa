@@ -295,11 +295,17 @@ public class JuntarEstaticosYDinamicosCSVunico {
 				if (primeraLineai == false) {
 					String[] partes = actuali.split("\\|");
 
-					// TODO NO consideramos otros tipos de operaciones (Option Exercise) porque
+					// Es dificil parsear otros tipos de operaciones (Option Exercise) porque
 					// habría que descargar la URL de la SEC, que seguramente interprete las
-					// descargas masivas como un ataque:
+					// descargas masivas como un ataque.
 					if (partes[1].equalsIgnoreCase(OperacionInsiderFinvizModelo.COMPRA)
-							|| partes[1].equalsIgnoreCase(OperacionInsiderFinvizModelo.VENTA)) {
+							|| partes[1].equalsIgnoreCase(OperacionInsiderFinvizModelo.VENTA)
+
+					// Hemos comprobado que las OPTION_EXERCISE no pueden interpretarse como compras
+					// ni ventas. Requeriría entrar en la URL y ver su detalle
+					//// || partes[1].equalsIgnoreCase(OperacionInsiderFinvizModelo.OPTION_EXERCISE)
+
+					) {
 						insidersDatos.add(new OperacionInsiderFinvizModelo(partes[0], partes[1], partes[2]));
 					}
 

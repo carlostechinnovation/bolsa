@@ -211,10 +211,9 @@ fi
 
 comprobarQueDirectorioNoEstaVacio "${DIR_ELABORADOS}"
 
-if [ "$DIR_TIEMPO" = "pasado" ];  then
-	echo -e "Clustering alternativo..." >> ${LOG_MASTER}
-	$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/ClusteringAlternativo.py"  2>>${LOG_MASTER} 1>>${LOG_MASTER}
-fi
+echo -e "Clustering alternativo..." >> ${LOG_MASTER}
+$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/ClusteringAlternativo.py" "$DIR_TIEMPO"  2>>${LOG_MASTER} 1>>${LOG_MASTER}
+
 
 ############## Calcular Subgrupos ####################################################################
 

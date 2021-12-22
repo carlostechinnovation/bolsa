@@ -110,8 +110,9 @@ $PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/InversionJuntarPrediccionesDeUnDia.py" "${
 # Crear CARPETA DIARIA DE ENTREGABLES y meterlos dentro
 CARPETA_ENTREGABLES="${DIR_DROPBOX}/"$(date '+%Y%m%d_%H%M%S')
 mkdir -p "${CARPETA_ENTREGABLES}"
-cp "${DIR_DROPBOX}/"$(date '+%Y%m%d')".html" "${CARPETA_ENTREGABLES}/"
-cp "${DIR_DROPBOX}/"$(date '+%Y%m%d')"_todas_las_empresas.html" "${CARPETA_ENTREGABLES}/"
+PREFIJO_RECIEN_CALCULADOS=$(ls -t | grep GRANDE | grep SG_0_ | head -n 1 | awk -F "_" '{print $1}')  # no tiene que cogerse AAAAMMDD de ahora, sino de los CSV mas recientes encontrados
+cp "${DIR_DROPBOX}/${PREFIJO_RECIEN_CALCULADOS}.html" "${CARPETA_ENTREGABLES}/"
+cp "${DIR_DROPBOX}/${PREFIJO_RECIEN_CALCULADOS}_todas_las_empresas.html" "${CARPETA_ENTREGABLES}/"
 cp "/bolsa/logs/pasado_metricas_y_rentabilidades.html" "${CARPETA_ENTREGABLES}/"
 cp "/bolsa/pasado/empresas_clustering_web.html" "${CARPETA_ENTREGABLES}/"
 

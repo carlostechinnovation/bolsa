@@ -43,7 +43,7 @@ print("modoTiempo = %s" % modoTiempo)
 print("maxFeatReducidas = %s" % maxFeatReducidas)
 print("maxFilasEntrada = %s" % maxFilasEntrada)
 
-varianza = 0.86  # Variacion acumulada de las features PCA sobre el target
+varianza = 0.87  # Variacion acumulada de las features PCA sobre el target
 compatibleParaMuchasEmpresas = False  # Si hay muchas empresas, debo hacer ya el undersampling (en vez de capa 6)
 global modoDebug;
 modoDebug = False  # VARIABLE GLOBAL: En modo debug se pintan los dibujos. En otro caso, se evita calculo innecesario. Recomendable: False
@@ -1062,12 +1062,19 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         print("PRECISIÓN EN TEST = " + '{0:0.2f}'.format(precision_test))
         print("PRECISIÓN EN VALIDACION = " + '{0:0.2f}'.format(precision_validation))
 
+
+
         # NO BORRAR: UTIL para informe HTML entregable
+        precisionSistemaRandom = 1/tasaDesbalanceoAntes # Precision del sistema tonto
+        mejoraRespectoSistemaRandom=100*((precision_test+precision_validation)/2)/precisionSistemaRandom
         print("ENTREGABLEPRECISIONESPASADO"
               + "|id_subgrupo:" + str(id_subgrupo)
-              + "|precisionpasadotrain:" + str(round(precision_train, 3))
-              + "|precisionpasadotest:" + str(round(precision_test, 3))
-              + "|precisionpasadovalidacion:" + str(round(precision_validation, 3)))
+              + "|precisionpasadotrain:" + str(round(precision_train, 2))
+              + "|precisionpasadotest:" + str(round(precision_test, 2))
+              + "|precisionpasadovalidacion:" + str(round(precision_validation, 2))
+              + "|precisionsistemarandom:" + str(round(precisionSistemaRandom, 2))
+              + "|mejoraRespectoSistemaRandom:" + str(round(mejoraRespectoSistemaRandom, 0))+" %"
+              )
 
         # NO BORRAR: UTIL para testIntegracion
         pd.DataFrame(ds_test_t).to_csv(pathCsvIntermedio + ".ds_test_t.csv", index=True, sep='|', float_format='%.4f')

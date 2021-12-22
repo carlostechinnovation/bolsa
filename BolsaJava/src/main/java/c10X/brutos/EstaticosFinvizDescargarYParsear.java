@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -17,8 +18,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
@@ -201,7 +204,36 @@ public class EstaticosFinvizDescargarYParsear {
 			}
 		}
 
+		limpiarDuplicadosEnFicheroDesconocidos(BrutosUtils.DESCONOCIDOS_CSV, BrutosUtils.DESCONOCIDOS_CSV);
+
 		MY_LOGGER.info("FIN");
+	}
+
+	/**
+	 * Lee el fichero de empresas desconocidas y quita sus duplicados
+	 * 
+	 * @throws IOException
+	 */
+	public static int limpiarDuplicadosEnFicheroDesconocidos(String pathEntrada, String pathSalida) throws IOException {
+
+		BufferedReader reader = new BufferedReader(new FileReader(pathEntrada));
+		Set<String> lines = new HashSet<String>(10000);
+		String line;
+		while ((line = reader.readLine()) != null) {
+			lines.add(line);
+		}
+		reader.close();
+
+		int contador = 0;
+		BufferedWriter writer = new BufferedWriter(new FileWriter(pathSalida));
+		for (String unique : lines) {
+			writer.write(unique);
+			writer.newLine();
+			contador++;
+		}
+		writer.close();
+
+		return contador;
 	}
 
 	/**
@@ -302,7 +334,7 @@ public class EstaticosFinvizDescargarYParsear {
 
 		} catch (IOException e) {
 			MY_LOGGER.error("descargarPaginaFinviz() - ERROR: " + e.getMessage());
-			e.printStackTrace();
+			// e.printStackTrace();
 		}
 
 		return out;

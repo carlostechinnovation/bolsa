@@ -40,9 +40,7 @@ metricasEntrada.columns = ['tipo', 'id_subgrupo', 'precision pasado train', 'pre
                            'precision pasado validacion']
 metricasEntrada.drop("tipo", axis=1, inplace=True)
 metricasEntrada = metricasEntrada.applymap(
-    lambda a: a.replace('id_subgrupo:SG_', '').replace('precisionpasadotrain:', '').replace('precisionpasadotest:',
-                                                                                            '').replace(
-        'precisionpasadovalidacion:', ''))
+    lambda a: a.replace('id_subgrupo:SG_', '').replace('precisionpasadotrain:', '').replace('precisionpasadotest:', '').replace('precisionpasadovalidacion:', ''). replace('precisionsistemarandom:', ''))
 
 ######################################################
 
