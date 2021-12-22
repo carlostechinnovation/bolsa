@@ -75,6 +75,12 @@ umbralNecesarioCompensarDesbalanceo = 1  # Umbral de desbalanceo clase positiva/
 balancearConSmoteSoloTrain = True  # SMOTE sobre minoritaria y mayoritaria. Sólo aplicable a pasado-Train; no a test ni validacion ni a futuro.
 balancearUsandoDownsampling = False  # Downsampling de clase mayoritaria. Sólo aplicable a pasado-Train; no a test ni validacion ni a futuro.
 
+# Etiquetas Globales
+FORMATO_FECHA_SP500 = '%Y-%m-%d'
+ETIQUETA_FECHA_SP500 = "fecha"
+ETIQUETA_CLOSE_SP500 = "close"
+ETIQUETA_RENTA_SP500 = "rentaSP500"
+
 print("pathCsvCompleto = %s" % pathCsvCompleto)
 print("dir_subgrupo_img = %s" % dir_subgrupo_img)
 print("pathCsvIntermedio = %s" % pathCsvIntermedio)
@@ -215,6 +221,78 @@ def relative_strength_idx(df, n=14):
     return rsi
 
 
+##################### DESCARGA DEL SP500 ########################
+
+import requests
+from datetime import date
+from datetime import datetime as datetime2
+from datetime import timedelta
+
+
+def getSP500conRentaTrasXDias(X, fechaInicio, fechaFin):
+    # X: días futuros para el cálculo de renta, respecto al día del que se muestran datos (cada fila es distinta)
+    # fechaInicio y fechaFin, con formato "2019-01-01"
+    # Descarga del histórico del SP500
+    url = "https://fred.stlouisfed.org/graph/fredgraph.csv?bgcolor=%23e1e9f0&chart_type=line&drp=0&fo=open%20sans&" \
+          "graph_bgcolor=%23ffffff&height=450&mode=fred&recession_bars=on&txtcolor=%23444444&ts=12&tts=12&width=1168&" \
+          "nt=0&thu=0&trc=0&show_legend=yes&show_axis_titles=yes&show_tooltip=yes&id=SP500&scale=left&cosd=" + fechaInicio \
+          + "&coed=fechaFin&line_color=%234572a7&link_values=false&line_style=solid&mark_type=none&mw=3&lw=2&ost=-99999&" \
+            "oet=99999&mma=0&fml=a&fq=Daily%2C%20Close&fam=avg&fgst=lin&fgsnd=2010-04-12&line_index=1&transformation=lin&" \
+            "vintage_date=" + fechaFin + "&revision_date=2020-04-10&nd=2010-04-12"
+    print("URL: ", url)
+    destino = dir_subgrupo + "SP500.csv"
+    myfile = requests.get(url, allow_redirects=True)
+    open(destino, 'wb').write(myfile.content)
+
+    # Se guarda en dataframe
+    datosSP500 = pd.read_csv(filepath_or_buffer=destino, sep=',')
+
+    # Sólo me quedo con las filas cuyo precio sea numérico
+    datosSP500 = datosSP500.loc[~(datosSP500['SP500'] == '.')]
+    # resetting index
+    datosSP500.reset_index(inplace=True)
+
+    # La fecha se convierte a dato de fecha
+    dfSP500 = pd.DataFrame(columns=[ETIQUETA_FECHA_SP500, ETIQUETA_CLOSE_SP500, ETIQUETA_RENTA_SP500])
+    closeXDiasFuturos = 0
+    tamaniodfSP500 = len(datosSP500)
+    for index, fila in datosSP500.iterrows():
+        fecha = datetime2.strptime(fila['DATE'], FORMATO_FECHA_SP500)
+        if index < (tamaniodfSP500 - int(X)):
+            filaXDiasFuturos = datosSP500.iloc[index + int(X)]
+            closeXDiasFuturos = filaXDiasFuturos['SP500']
+            rentaSP500 = 100 * (float(closeXDiasFuturos) - float(fila['SP500'])) / float(closeXDiasFuturos)
+        else:
+            rentaSP500 = 0
+
+        nuevaFila = [
+            {ETIQUETA_FECHA_SP500: fecha, 'close': float(fila['SP500']), ETIQUETA_RENTA_SP500: float(rentaSP500)}]
+        dfSP500 = dfSP500.append(nuevaFila, ignore_index=True, sort=False)
+
+    return dfSP500
+
+
+def anadeComparacionSencillaSP500(sp500, x):
+    comparaSP500Ayer=-1000
+    fechaAhora = str(x.anio) + "-" + str(x.mes) + "-" + str(x.dia)
+    ahora_obj = datetime2.strptime(fechaAhora, FORMATO_FECHA_SP500)
+    a = pd.DataFrame()
+    # Se itera hacia atrás hasta que se encuentre algún día (laborable) con datos en SP500
+    while (a.empty):
+        days_to_subtract = 1
+        diasAntes_obj = ahora_obj - timedelta(days=days_to_subtract)
+        antes = diasAntes_obj.strftime(FORMATO_FECHA_SP500)
+        empresaRentaAhora = float(x.close) - float(x.open)
+        a=sp500[sp500[ETIQUETA_FECHA_SP500] == antes]
+        if(len(a.index)>0):
+            sp500RentaAyer = float(a[ETIQUETA_RENTA_SP500])
+            comparaSP500Ayer = int(empresaRentaAhora * sp500RentaAyer > 0)
+        else:
+            ahora_obj=diasAntes_obj
+
+    return comparaSP500Ayer
+
+
 ################## MAIN ###########################################################
 
 if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.stat(pathCsvCompleto).st_size > 0:
@@ -243,6 +321,70 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
 
     # Se crea un RSI-14 en python
     entradaFeaturesYTarget['RSI-python'] = relative_strength_idx(entradaFeaturesYTarget).fillna(0)
+
+
+    #####
+    # Variables dependientes de SP500
+
+    # Variable sencilla, que compara el rendimiento de la empresa hoy (close - open) respecto al SP500 de ayer
+    today = date.today()
+    fechaInicio = "2019-01-01"
+    fechaFin = today.strftime("%Y-%m-%d")
+    sp500 = getSP500conRentaTrasXDias(1, fechaInicio, fechaFin)
+    entradaFeaturesYTarget['COMPARA-SP500-AYER-BOOL'] = entradaFeaturesYTarget.apply(
+        lambda x: anadeComparacionSencillaSP500(sp500, x), axis=1)
+    a=0
+    #
+    # # # Variables complejas, que comparan periodos de la empresa con periodos del SP500
+    #
+    # # Se comparará con la empresa, en varios periodos.Se crearán nuevas variables
+    # # Se cogen todas las filas de la primera empresa, para buscar la menor y mayor antigüedad
+    # empresa = entradaFeaturesYTarget.iloc[0, 0]
+    # filasDeEmpresa = entradaFeaturesYTarget[entradaFeaturesYTarget['empresa'] == empresa]
+    # primeraFila = filasDeEmpresa.head(1).reset_index()
+    # ultimaFila = filasDeEmpresa.tail(1).reset_index()
+    # primeraYUltimaFilas = filasDeEmpresa.iloc[[0, -1]]
+    # fechaMasReciente = str(primeraFila.loc[0, 'anio']) + "-" + str(primeraFila.loc[0, 'mes']) + "-" + str(
+    #     primeraFila.loc[0, 'dia'])
+    # fechaMasAntigua = str(ultimaFila.loc[0, 'anio']) + "-" + str(ultimaFila.loc[0, 'mes']) + "-" + str(
+    #     ultimaFila.loc[0, 'dia'])
+    #
+    # # Se cargan los rangos del SP500 en dicha fecha
+    # sp500 = getSP500conRentaTrasXDias(1, fechaMasAntigua, fechaMasReciente)
+    #
+    # # En el dataframe final, para cada fila se compara la evolución del precio de la empresa vs la evolución del SP500.
+    # # IMPORTANTE: el rango del periodo debe estar dentro del rango completo de fechas de la empresa, para no saltar a
+    # # otra empresa. Se asume que todas las filas de una empresa están juntas y en orden cronológico, de más reciente
+    # # a más antigua.
+    # periodos = [1, 3]
+    # numFilas = len(entradaFeaturesYTarget.index)
+    # for periodo in periodos:
+    #     nombreNuevaFeature = "COINCIDE_CON_SP500_" + str(periodo)
+    #     for indexActual, row in entradaFeaturesYTarget.iterrows():
+    #         indexAntes = indexActual + periodo
+    #         if indexAntes < numFilas:
+    #             fechaAhora = str(row['anio']) + "-" + str(
+    #                 row['mes']) + "-" + str(row['dia'])
+    #             fechaAntes = str(entradaFeaturesYTarget.loc[indexAntes, 'anio']) + "-" + str(
+    #                 entradaFeaturesYTarget.loc[indexAntes, 'mes']) + "-" + str(
+    #                 entradaFeaturesYTarget.loc[indexAntes, 'dia'])
+    #             rentaEnPeriodoEmpresa = 100 * (float((row['close']) - float(
+    #                 entradaFeaturesYTarget.loc[indexAntes, 'close']))) / float(
+    #                 entradaFeaturesYTarget.loc[indexAntes, 'close'])
+    #
+    #             rentaAhoraSP500=float(sp500[sp500[ETIQUETA_FECHA_SP500] == fechaAhora][ETIQUETA_RENTA_SP500])
+    #             rentaAntesSP500 = float(sp500[sp500[ETIQUETA_FECHA_SP500] == fechaAntes][ETIQUETA_RENTA_SP500])
+    #             rentaEnPeriodoSP500=rentaAhoraSP500-rentaAntesSP500
+    #             # El nombre de la empresa debe coincidir. Si no, no tengo histórico suficiente
+    #             if row['empresa'] == entradaFeaturesYTarget.loc[indexAntes, 'empresa']:
+    #                 coincide = int((rentaEnPeriodoEmpresa * rentaEnPeriodoSP500) > 0)
+    #                 entradaFeaturesYTarget.loc[indexActual, nombreNuevaFeature] = coincide
+    #         else:
+    #             #serieFeature.add(np.nan)
+    #             a=1
+    #         c = 1
+    #
+    #         b = 1
 
     #########################
 

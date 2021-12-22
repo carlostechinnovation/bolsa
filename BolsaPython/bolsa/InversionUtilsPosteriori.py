@@ -240,7 +240,7 @@ def analizar(datosGrandes, datosManejables, X, dfSP500, descripcion):
         datosFuturo = pd.merge(datosGrandes, datosDesplazados, how='right', on=['empresa', 'aniomesdia'])
 
         datosAAnalizar = datosFuturo.loc[datosFuturo['TARGET_x'].isin(
-            ['1', '0'])]  # Son datos tan antiguos que sí tienen su resultado futuro (que es el REAL)
+            [1, 0])]  # Son datos tan antiguos que sí tienen su resultado futuro (que es el REAL)
 
         # CÁLCULO DE RENDIMIENTO MEDIO POR FECHA Y SUBGRUPO
         # En fecha_x está el futuro. En fecha_y está el dato predicho. Se genera una columna nueva que obtiene el rendimiento real

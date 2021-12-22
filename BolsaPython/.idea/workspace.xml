@@ -2,10 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="22edbd2f-b3d9-42f0-a7dd-659033ab601a" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/main/java/c10X/brutos/EstaticosNasdaqDescargarYParsear.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/main/java/c10X/brutos/EstaticosNasdaqDescargarYParsear.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/main/java/c30x/elaborados/construir/Estadisticas.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/main/java/c30x/elaborados/construir/Estadisticas.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/main/resources/desconocidos.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/main/resources/desconocidos.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bolsa/C5C6Manual.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/C5C6Manual.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bolsa/InversionUtilsPosteriori.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/InversionUtilsPosteriori.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BolsaScripts/inversionHistoricaSoloFuturoSimplificado.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/inversionHistoricaSoloFuturoSimplificado.sh" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../BolsaScripts/parametros.config" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/parametros.config" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -70,7 +71,7 @@
       <recent name="C:\DATOS\GITHUB_REPOS\bolsa\BolsaPython\bolsa" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.FeaturesAnalisisPosteriori">
+  <component name="RunManager" selected="Python.C5C6Manual">
     <configuration name="06_redneuronal_lstm_2" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="BolsaPython" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -306,16 +307,13 @@
       <module name="BolsaPython" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
       <option name="SDK_HOME" value="/usr/bin/python3.8" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/bolsa" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/bolsa/InversionUtilsPosteriori.py" />
-      <option name="PARAMETERS" value="$USER_HOME$/Dropbox/BOLSA_PREDICTOR/ $USER_HOME$/Dropbox/BOLSA_PREDICTOR/ANALISIS/ 20 20 5 1 5 10" />
+      <option name="PARAMETERS" value="$USER_HOME$/Dropbox/BOLSA_PREDICTOR/ $USER_HOME$/Dropbox/BOLSA_PREDICTOR/ANALISIS/ 20 20 5 1 5 5" />
       <option name="SHOW_COMMAND_LINE" value="true" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -410,20 +408,20 @@
     <list>
       <item itemvalue="Python.06_redneuronal_lstm_2" />
       <item itemvalue="Python.07_timeseries_weather_forecasting" />
-      <item itemvalue="Python.C5C6ManualTest" />
       <item itemvalue="Python.C5C6Manual" />
       <item itemvalue="Python.C5C6_simplon_pruebas" />
       <item itemvalue="Python.C5C6_simplon_pytorch" />
       <item itemvalue="Python.C5SeleccionDeVariablesDeSubgrupo" />
       <item itemvalue="Python.C6CreadorModelosDeSubgrupo" />
       <item itemvalue="Python.FeaturesAnalisisPosteriori" />
-      <item itemvalue="Python.InversionJuntarPrediccionesDeUnDia" />
       <item itemvalue="Python.InversionUtilsPosteriori" />
       <item itemvalue="Python.InversionUtils" />
+      <item itemvalue="Python.pruebas" />
+      <item itemvalue="Python.C5C6ManualTest" />
+      <item itemvalue="Python.InversionJuntarPrediccionesDeUnDia" />
       <item itemvalue="Python.PintarMetricasyRentabilidades" />
       <item itemvalue="Python.TestIntegracionUtilidad1" />
       <item itemvalue="Python.prueba" />
-      <item itemvalue="Python.pruebas" />
     </list>
     <recent_temporary>
       <list>
@@ -513,19 +511,44 @@
           <option name="timeStamp" value="52" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/bolsa/InversionUtilsPosteriori.py</url>
-          <line>257</line>
-          <option name="timeStamp" value="59" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/bolsa/InversionUtilsPosteriori.py</url>
-          <line>246</line>
-          <option name="timeStamp" value="61" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/bolsa/FeaturesAnalisisPosteriori.py</url>
           <line>258</line>
           <option name="timeStamp" value="62" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/bolsa/InversionUtilsPosteriori.py</url>
+          <line>413</line>
+          <option name="timeStamp" value="130" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/bolsa/InversionUtilsPosteriori.py</url>
+          <line>334</line>
+          <option name="timeStamp" value="131" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/bolsa/InversionUtilsPosteriori.py</url>
+          <line>337</line>
+          <option name="timeStamp" value="132" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/bolsa/InversionUtilsPosteriori.py</url>
+          <line>329</line>
+          <option name="timeStamp" value="133" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/bolsa/InversionUtilsPosteriori.py</url>
+          <line>257</line>
+          <option name="timeStamp" value="134" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/bolsa/InversionUtilsPosteriori.py</url>
+          <line>249</line>
+          <option name="timeStamp" value="135" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/bolsa/C5C6Manual.py</url>
+          <line>335</line>
+          <option name="timeStamp" value="137" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
