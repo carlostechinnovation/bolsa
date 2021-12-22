@@ -154,7 +154,7 @@ public class EstaticosNasdaqDescargarYParsear implements Serializable {
 
 				while ((linea = br.readLine()) != null) {
 					if (primeraLineaCabecera == false && linea != null && !linea.isEmpty()) {
-						if (!linea.isEmpty() && !linea.isBlank()) {
+						if (!linea.trim().isEmpty()) {
 							String[] partes = linea.split("\\|");
 							Float ratio = Float.valueOf(partes[4]);
 							if (ratio > InterpreteFalsosPositivos.UMBRAL_MAX_RATIOEMPRESA_FP) {

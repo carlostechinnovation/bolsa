@@ -167,13 +167,29 @@ public class CrearDatasetsSubgrupos implements Serializable {
 		// futuro sería conveniente separar por sector y liquidez (volumen medio de 6
 		// meses en dólares).
 		GestorFicheros gestorFicheros = new GestorFicheros();
-//		System.out.println(">>>>directorioIn: "+directorioIn);
+//		MY_LOGGER.info(">>>>directorioIn: "+directorioIn);
 		File directorioEntrada = new File(directorioIn);
 		HashMap<String, HashMap<Integer, HashMap<String, String>>> datosEntrada;
 		ArrayList<File> ficherosEntradaEmpresas = gestorFicheros.listaFicherosDeDirectorio(directorioEntrada);
 		Iterator<File> iterator = ficherosEntradaEmpresas.iterator();
 		File ficheroGestionado;
 		HashMap<String, String> parametros;
+
+		// Lista manual de empresas seleccionadas ("alcistas")
+		List<String> listaSeleccionManual = leerListaManualEmpresasSeleccionadas();
+
+		// Lista de empresas de subgrupos calculados con algortimo de CLUSTERING
+		// (descartamos subgrupo 0 que es gigante y poco refinado)
+		List<String> listaSeleccionClustering1 = leerListaClusteringAlternativo("1");
+		List<String> listaSeleccionClustering2 = leerListaClusteringAlternativo("2");
+		List<String> listaSeleccionClustering3 = leerListaClusteringAlternativo("3");
+		List<String> listaSeleccionClustering4 = leerListaClusteringAlternativo("4");
+		List<String> listaSeleccionClustering5 = leerListaClusteringAlternativo("5");
+		List<String> listaSeleccionClustering6 = leerListaClusteringAlternativo("6");
+		List<String> listaSeleccionClustering7 = leerListaClusteringAlternativo("7");
+		List<String> listaSeleccionClustering8 = leerListaClusteringAlternativo("8");
+		List<String> listaSeleccionClustering9 = leerListaClusteringAlternativo("9");
+		List<String> listaSeleccionClustering10 = leerListaClusteringAlternativo("10");
 
 		HashMap<Integer, HashMap<String, String>> datosEmpresaEntrada = new HashMap<Integer, HashMap<String, String>>();
 
@@ -253,6 +269,19 @@ public class CrearDatasetsSubgrupos implements Serializable {
 		ArrayList<String> pathEmpresasTipo48 = new ArrayList<String>();
 		ArrayList<String> pathEmpresasTipo49 = new ArrayList<String>();
 
+		// Subgrupos calculados con algoritmo clustering "alternativo" (automático)
+		// usando algunas de las variables estaticas
+		ArrayList<String> pathEmpresasTipo50 = new ArrayList<String>();
+		ArrayList<String> pathEmpresasTipo51 = new ArrayList<String>();
+		ArrayList<String> pathEmpresasTipo52 = new ArrayList<String>();
+		ArrayList<String> pathEmpresasTipo53 = new ArrayList<String>();
+		ArrayList<String> pathEmpresasTipo54 = new ArrayList<String>();
+		ArrayList<String> pathEmpresasTipo55 = new ArrayList<String>();
+		ArrayList<String> pathEmpresasTipo56 = new ArrayList<String>();
+		ArrayList<String> pathEmpresasTipo57 = new ArrayList<String>();
+		ArrayList<String> pathEmpresasTipo58 = new ArrayList<String>();
+		ArrayList<String> pathEmpresasTipo59 = new ArrayList<String>();
+
 		int contadorTotal = 0, contadorDescartadasPorEmpleados = 0, contadorDescartadasPorDeuda = 0,
 				contadorDescartadasPorQR = 0, contadorDescartadasPorRecom = 0, contadorDescartadasPorPER = 0;
 
@@ -265,7 +294,7 @@ public class CrearDatasetsSubgrupos implements Serializable {
 			datosEntrada = new HashMap<String, HashMap<Integer, HashMap<String, String>>>();
 			ficheroGestionado = iterator.next();
 			MY_LOGGER.debug("Fichero entrada: " + ficheroGestionado.getAbsolutePath());
-//			System.out.println(">>>>>>>>Fichero entrada: "+ ficheroGestionado.getAbsolutePath());
+//			MY_LOGGER.info(">>>>>>>>Fichero entrada: "+ ficheroGestionado.getAbsolutePath());
 			// Sólo leo la cabecera y la primera línea de datos, con antigüedad=0. Así
 			// optimizo la lectura
 			datosEntrada = gestorFicheros.leeTodosLosParametrosFicheroDeSoloUnaEmpresaYNFilasDeDatosRecientes(
@@ -285,7 +314,7 @@ public class CrearDatasetsSubgrupos implements Serializable {
 
 			// EXTRACCIÓN DE DATOS DE LA EMPRESA: sólo se usan los datos ESTATICOS, así que
 			// basta coger la PRIMERA fila de datos
-//			System.out.println(">>>>>empresa: "+empresa);
+//			MY_LOGGER.info(">>>>>empresa: "+empresa);
 			datosEmpresaEntrada = datosEntrada.get(empresa);
 
 			Set<Integer> a = datosEmpresaEntrada.keySet();
@@ -293,7 +322,7 @@ public class CrearDatasetsSubgrupos implements Serializable {
 			if (a.iterator().hasNext()) {
 				indicePrimeraFilaDeDatos = a.iterator().next();
 			}
-//			System.out.println(">>>>>indicePrimeraFilaDeDatos: "+indicePrimeraFilaDeDatos);
+//			MY_LOGGER.info(">>>>>indicePrimeraFilaDeDatos: "+indicePrimeraFilaDeDatos);
 			parametros = datosEmpresaEntrada.get(indicePrimeraFilaDeDatos); // PRIMERA FILA
 
 			boolean empleadosDesconocidos = false, suficientesEmpleados = false;
@@ -305,7 +334,7 @@ public class CrearDatasetsSubgrupos implements Serializable {
 			if (parametros != null) {
 
 //				for (String param : parametros.keySet()) {
-//					System.out.println(param + "->" + parametros.get(param));
+//					MY_LOGGER.info(param + "->" + parametros.get(param));
 //				}
 
 				String empleados = parametros.get("Employees");
@@ -409,10 +438,6 @@ public class CrearDatasetsSubgrupos implements Serializable {
 				// QUE CONTIENE TODO
 				pathEmpresasTipo0.add(ficheroGestionado.getAbsolutePath());
 
-				// Lista manual de empresas seleccionadas
-				// List<String> listaSeleccionManual = leerListaManualEmpresasSeleccionadas();
-				List<String> listaSeleccionManual = leerListaClusteringAlternativo("1");
-
 				String dinamica1Str = parametros.get("DINAMICA1");
 				String dinamica2Str = parametros.get("DINAMICA2");
 				Integer dinamica1 = 0;
@@ -422,7 +447,7 @@ public class CrearDatasetsSubgrupos implements Serializable {
 
 				Integer dinamica2 = 0;
 				if (isNumeric(dinamica2Str)) {
-//					System.out.println("dinamica2Str: " + dinamica2Str);
+//					MY_LOGGER.info("dinamica2Str: " + dinamica2Str);
 					dinamica2 = Integer.valueOf(dinamica2Str);
 				}
 
@@ -544,14 +569,12 @@ public class CrearDatasetsSubgrupos implements Serializable {
 							}
 
 						} else {
-							// pathEmpresasTipo26.add(ficheroGestionado.getAbsolutePath());
+							// pathEmpresasTipoXX.add(ficheroGestionado.getAbsolutePath());
 							// MY_LOGGER.warn("Empresa = " + empresa + " con Debt/Eq = " + debtEqStr);
 						}
 
 						// ----------- SUBGRUPO CON LISTA MANUAL DE EMPRESAS -----
 						if (listaSeleccionManual.contains(empresa)) {
-							MY_LOGGER.info("SUBGRUPO CON LISTA MANUAL DE EMPRESAS --> Empresa = " + empresa
-									+ " con Debt/Eq = " + debtEqStr);
 							pathEmpresasTipo26.add(ficheroGestionado.getAbsolutePath());
 						}
 
@@ -728,6 +751,39 @@ public class CrearDatasetsSubgrupos implements Serializable {
 						if (insiders5dias != null && !insiders5dias.isEmpty()) {
 							pathEmpresasTipo49.add(ficheroGestionado.getAbsolutePath());
 						}
+
+						// ---------- SUBGRUPOS CALCULADOS CON CLUSTERING ------
+						if (listaSeleccionClustering10.contains(empresa)) {
+							pathEmpresasTipo50.add(ficheroGestionado.getAbsolutePath());
+						}
+						if (listaSeleccionClustering1.contains(empresa)) {
+							pathEmpresasTipo51.add(ficheroGestionado.getAbsolutePath());
+						}
+						if (listaSeleccionClustering2.contains(empresa)) {
+							pathEmpresasTipo52.add(ficheroGestionado.getAbsolutePath());
+						}
+						if (listaSeleccionClustering3.contains(empresa)) {
+							pathEmpresasTipo53.add(ficheroGestionado.getAbsolutePath());
+						}
+						if (listaSeleccionClustering4.contains(empresa)) {
+							pathEmpresasTipo54.add(ficheroGestionado.getAbsolutePath());
+						}
+						if (listaSeleccionClustering5.contains(empresa)) {
+							pathEmpresasTipo55.add(ficheroGestionado.getAbsolutePath());
+						}
+						if (listaSeleccionClustering6.contains(empresa)) {
+							pathEmpresasTipo56.add(ficheroGestionado.getAbsolutePath());
+						}
+						if (listaSeleccionClustering7.contains(empresa)) {
+							pathEmpresasTipo57.add(ficheroGestionado.getAbsolutePath());
+						}
+						if (listaSeleccionClustering8.contains(empresa)) {
+							pathEmpresasTipo58.add(ficheroGestionado.getAbsolutePath());
+						}
+						if (listaSeleccionClustering9.contains(empresa)) {
+							pathEmpresasTipo59.add(ficheroGestionado.getAbsolutePath());
+						}
+
 					}
 				}
 				// ---------------------------------------------------------------------------------------
@@ -808,8 +864,18 @@ public class CrearDatasetsSubgrupos implements Serializable {
 		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 47, pathEmpresasTipo47, realimentacion);
 		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 48, pathEmpresasTipo48, realimentacion);
 		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 49, pathEmpresasTipo49, realimentacion);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 50, pathEmpresasTipo50, realimentacion);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 51, pathEmpresasTipo51, realimentacion);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 52, pathEmpresasTipo52, realimentacion);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 53, pathEmpresasTipo53, realimentacion);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 54, pathEmpresasTipo54, realimentacion);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 55, pathEmpresasTipo55, realimentacion);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 56, pathEmpresasTipo56, realimentacion);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 57, pathEmpresasTipo57, realimentacion);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 58, pathEmpresasTipo58, realimentacion);
+		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 59, pathEmpresasTipo59, realimentacion);
 
-		// Se crea un CSV para cada subgrupo
+		MY_LOGGER.info("Se crea un CSV para cada subgrupo...");
 		Set<Integer> tipos = empresasPorTipo.keySet();
 		List<Integer> tiposLista = new ArrayList<Integer>();
 		tiposLista.addAll(tipos);
@@ -836,6 +902,7 @@ public class CrearDatasetsSubgrupos implements Serializable {
 		HashMap<String, Boolean> empresasConTarget;
 		Iterator<String> itEmpresas;
 
+		MY_LOGGER.info("Iteracion para cada subgrupo (el subgrupo 0 es gigante y suele tardar cierto tiempo)...");
 		while (numSubgruposCreados > 0 && itTipos.hasNext()) {
 
 			tipo = itTipos.next();
@@ -1032,8 +1099,7 @@ public class CrearDatasetsSubgrupos implements Serializable {
 
 	/**
 	 * Indica si es un pais serio de la UE (se excluyen los poco serios, como los
-	 * soviéticos o Grecia o los minúsculos como Islandia). Se incluye a España por
-	 * ser grande, aunque poco serio.
+	 * soviéticos o Grecia o los minúsculos como Islandia). Se incluye a España.
 	 * 
 	 * @param geoStr Nombre del pais que aparece en cada empresa en FINVIZ
 	 * @return True si pertenece a la UE
@@ -1074,26 +1140,47 @@ public class CrearDatasetsSubgrupos implements Serializable {
 			}
 		}
 
-		if (realimentacion.equals("N")) {
-			System.out.println("Realimentacion no activa. Metemos siempre el SUBGRUPO: " + subgrupoId);
+		if (esSubgrupoListaManualoClusteringAuto(subgrupoId)) {
+			MY_LOGGER.info(
+					"Subgrupo especial (lista manual o calculado con algoritmo de clustering). Metemos siempre el SUBGRUPO: "
+							+ subgrupoId);
 			empresasPorTipo.put(subgrupoId, pathEmpresasTipo);
 
-		} else if (realimentacion.equals("S") && fps == null) {
-			System.out.println("El SUBGRUPO " + subgrupoId
-					+ " no está en la lista de subgrupos analizados previamente. Si no tenemos info de falsos positivos, sí procesamos el subgrupo.");
-			empresasPorTipo.put(subgrupoId, pathEmpresasTipo);
+		} else {
 
-		} else if (realimentacion.equals("S")
-				&& fps.ratioFalsosPositivos <= InterpreteFalsosPositivos.UMBRAL_MAX_RATIOSUBGRUPO_FP) {
-			System.out.println("SUBGRUPO conocido y debajo del umbral ==> Lo queremos. Subgrupo: " + subgrupoId);
-			empresasPorTipo.put(subgrupoId, pathEmpresasTipo);
+			if (realimentacion.equals("N")) {
+				MY_LOGGER.info("Realimentacion no activa. Metemos siempre el SUBGRUPO: " + subgrupoId);
+				empresasPorTipo.put(subgrupoId, pathEmpresasTipo);
 
-		} else if (realimentacion.equals("S")
-				&& fps.ratioFalsosPositivos > InterpreteFalsosPositivos.UMBRAL_MAX_RATIOSUBGRUPO_FP) {
-			System.out.println("SUBGRUPO con DEMASIADOS falsos positivos (ratio=" + fps.ratioFalsosPositivos
-					+ " %). No añadimos el subgrupo: " + subgrupoId);
+			} else if (realimentacion.equals("S") && fps == null) {
+				MY_LOGGER.info("El SUBGRUPO " + subgrupoId
+						+ " no está en la lista de subgrupos analizados previamente. Si no tenemos info de falsos positivos, sí procesamos el subgrupo.");
+				empresasPorTipo.put(subgrupoId, pathEmpresasTipo);
+
+			} else if (realimentacion.equals("S")
+					&& fps.ratioFalsosPositivos <= InterpreteFalsosPositivos.UMBRAL_MAX_RATIOSUBGRUPO_FP) {
+				MY_LOGGER.info("SUBGRUPO conocido y debajo del umbral ==> Lo queremos. Subgrupo: " + subgrupoId);
+				empresasPorTipo.put(subgrupoId, pathEmpresasTipo);
+
+			} else if (realimentacion.equals("S")
+					&& fps.ratioFalsosPositivos > InterpreteFalsosPositivos.UMBRAL_MAX_RATIOSUBGRUPO_FP) {
+				MY_LOGGER.info("SUBGRUPO con DEMASIADOS falsos positivos (ratio=" + fps.ratioFalsosPositivos
+						+ " %). No añadimos el subgrupo: " + subgrupoId);
+			}
 		}
 
+	}
+
+	/**
+	 * Analiza si es un grupo especial: lista manual o calculado con algoritmo de
+	 * clsutering
+	 * 
+	 * @param subgrupoId
+	 * @return True si es un subgrupo de lista manual o calculado con algoritmo de
+	 *         clustering. Devuelve false en otro caso.
+	 */
+	public static boolean esSubgrupoListaManualoClusteringAuto(Integer subgrupoId) {
+		return subgrupoId.intValue() == 26 || (subgrupoId.intValue() >= 50 && subgrupoId.intValue() <= 59);
 	}
 
 	/**
@@ -1138,8 +1225,11 @@ public class CrearDatasetsSubgrupos implements Serializable {
 			String actual;
 
 			while ((actual = br.readLine()) != null) {
-				if (actual != null && !actual.isEmpty() && actual.contains("|" + idSubgrupoAlternativoElegido)) {
-					lista.add(actual.split("\\|")[0]);
+
+				String[] partes = actual.split("\\|");
+
+				if (actual != null && !actual.isEmpty() && partes[1].equals(idSubgrupoAlternativoElegido)) {
+					lista.add(partes[0]);
 				}
 			}
 

@@ -35,7 +35,7 @@ public class Estadisticas extends DescriptiveStatistics {
 		STD_SMA_, PENDIENTE_1M_SMA_, RATIO_SMA_SEGUNDO_, RATIO_MAXRELATIVO_SEGUNDO_, PENDIENTE_SMA_SEGUNDO_,
 		PENDIENTE_1M_SMA_SEGUNDO_, PENDIENTE_2M_SMA_SEGUNDO_, MEDIA_SMA_, PENDIENTE_SMA_, PENDIENTE_2M_SMA_, RATIO_SMA_,
 		RATIO_MAXRELATIVO_, RATIO_MINRELATIVO_, RATIO_MINRELATIVO_SEGUNDO_, RATIO_U_SMA_, RATIO_U_MAXRELATIVO_,
-		RATIO_U_MINRELATIVO_, CURTOSIS_, SKEWNESS_, FASEWYCKOFF_, EMA_, MACD_;
+		RATIO_U_MINRELATIVO_, CURTOSIS_, SKEWNESS_, FASEWYCKOFF_, EMA_, MACD_, RSI14_;
 	}
 
 //	Otros menos útiles: 
@@ -83,6 +83,7 @@ public class Estadisticas extends DescriptiveStatistics {
 		System.out.println("e5.getVariacionRelativaMaxima(): " + e5.getVariacionRelativaMaxima());
 		System.out.println("e5.getRatioEMA(): " + e5.getRatioEMA());
 		System.out.println("e5.getRatioMACDMitadPeriodo(): " + e5.getRatioMACDMitadPeriodo());
+		System.out.println("e5.getRsi14(): " + e5.getRsi14());
 	}
 
 	/**
@@ -126,6 +127,7 @@ public class Estadisticas extends DescriptiveStatistics {
 		incluirParametroCebecera(ordenNombresParametrosElaborados, PREFIJOS_ELAB.FASEWYCKOFF_);
 		incluirParametroCebecera(ordenNombresParametrosElaborados, PREFIJOS_ELAB.EMA_);
 		incluirParametroCebecera(ordenNombresParametrosElaborados, PREFIJOS_ELAB.MACD_);
+		incluirParametroCebecera(ordenNombresParametrosElaborados, PREFIJOS_ELAB.RSI14_);
 
 		locale = new Locale("en", "UK");
 		df = (DecimalFormat) NumberFormat.getNumberInstance(locale);
@@ -409,6 +411,7 @@ public class Estadisticas extends DescriptiveStatistics {
 		System.out.println("faseWyckoff = " + getFaseWyckoff());
 		System.out.println("ema = " + getRatioEMA());
 		System.out.println("macd = " + getRatioMACDMitadPeriodo());
+		System.out.println("rsi14 = " + getRsi14());
 	}
 
 	/**
@@ -472,6 +475,8 @@ public class Estadisticas extends DescriptiveStatistics {
 				rellenarConInvalidos);
 		incluirParamValor(parametros, PREFIJOS_ELAB.MACD_, periodoString, finalNombreParametro,
 				getRatioMACDMitadPeriodo(), rellenarConInvalidos);
+		incluirParamValor(parametros, PREFIJOS_ELAB.RSI14_, periodoString, finalNombreParametro, getRsi14(),
+				rellenarConInvalidos);
 
 		return parametros;
 	}
@@ -676,4 +681,50 @@ public class Estadisticas extends DescriptiveStatistics {
 		return getRatioEMAPeriodo((int) Math.floor(this.getN() / 2)) - getRatioEMAPeriodo((int) this.getN());
 	}
 
+	/**
+	 * 
+	 * @return RSI de 14 elementos.
+	 */
+	public double getRsi14() {
+
+		int period = 14;
+		EMA ema = new EMA(2 * period - 1);
+
+		// fill 'up' and 'down' table - 'up' when today prize is bigger than yesterday,
+		// 'down' when today is lower than yesterday
+		final double[] up = new double[(int) getN() - 1];
+		final double[] down = new double[(int) getN() - 1];
+		for (int i = 0; i < (int) getN() - 1; i++) {
+			if (getElement(i) > getElement(i + 1)) {
+				up[i] = getElement(i) - getElement(i + 1);
+				down[i] = 0;
+			}
+			if (getElement(i) < getElement(i + 1)) {
+				down[i] = Math.abs(getElement(i) - getElement(i + 1));
+				up[i] = 0;
+			}
+		}
+
+		// count EMA for up and down tables
+		final int emaLength = (int) getN() - 2 * period;
+		double[] rsis = new double[0];
+		if (emaLength > 0) {
+			final double[] emus = new double[emaLength];
+			final double[] emds = new double[emaLength];
+			ema.count(up, 0, emus);
+			ema.count(down, 0, emds);
+
+			// count RSI with RSI recursive formula
+			rsis = new double[emaLength];
+			for (int i = 0; i < rsis.length; i++) {
+				rsis[i] = 100 - (100 / (double) (1 + emus[i] / emds[i]));
+			}
+		}
+
+		double salida = 0;
+		if (rsis.length > 0)
+			salida = rsis[rsis.length - 1];
+
+		return salida;
+	}
 }
