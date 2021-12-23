@@ -829,125 +829,146 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
 
         ########################## FIN DE ENSEMBLE #########################################################
 
-        # ########################## INICIO DE XGBOOST OPTIMIZADO ########################################################33
+        # # ########################## INICIO DE XGBOOST OPTIMIZADO ########################################################33
+        # #
+        # #
+        # #     #################### OPTIMIZACION DE PARAMETROS DE XGBOOST ###############################################################
+        #
+        # # Parametros por defecto de los modelos que usan árboles de decisión
+        # ARBOLES_n_estimators = 80
+        # ARBOLES_max_depth = 11
+        # ARBOLES_min_samples_leaf = 20
+        # ARBOLES_max_features = "auto"
+        # ARBOLES_min_samples_split = 3
+        # ARBOLES_max_leaf_nodes = None
+        # ARBOLES_min_impurity_decrease = 0.001
+        #
+        # seed = 112  # Random seed
+        #
+        # # Descomentar para obtener los parámetros con optimización Bayesiana
+        # # IMPORTANTE: se debe instalar el paquete de bayes en Conda: conda install -c conda-forge bayesian-optimization
+        # # Se imprimirán en el log, pero debo luego meterlos manualmente en el modelo
+        # # IMPORTANTE: DEBEN RELLENARSE 2 VALORES POR CADA ATRIBUTO DE PBOUND
+        # # https://ayguno.github.io/curious/portfolio/bayesian_optimization.html
+        #
+        # print("Inicio del optimizador de parametros de XGBOOST...")
+        #
+        # # Parametros ordenados ALFABETICAMENTE porque la liberia lo obliga
+        # pbounds = {
+        #     'colsample_bytree': (0.1, 0.4),
+        #     'gamma': (2, 10),
+        #     'learning_rate': (0.2, 0.4),
+        #     'max_delta_step': (0, 10),
+        #     'max_depth': (4, 7),
+        #     'min_child_weight': (2, 20),
+        #     'n_estimators': (10, 50),
+        #     'reg_alpha': (0.1, 0.8)
+        # }
+        #
+        # hyperparameter_space = {
+        # }
         #
         #
-        #     #################### OPTIMIZACION DE PARAMETROS DE XGBOOST ###############################################################
+        # def xgboost_hyper_param(max_depth, learning_rate, n_estimators, reg_alpha, min_child_weight, colsample_bytree,
+        #                         gamma, max_delta_step):
+        #     """Crea un modelo XGBOOST con los parametros indicados en la entrada. Aplica el numero de iteraciones de cross-validation indicado
+        #         """
+        #     clf = XGBClassifier(colsample_bytree=colsample_bytree, gamma=gamma, learning_rate=learning_rate,
+        #                         max_depth=int(max_depth), min_child_weight=int(min_child_weight),
+        #                         n_estimators=int(n_estimators), reg_alpha=reg_alpha,
+        #                         nthread=-1, objective='binary:logistic', seed=seed, use_label_encoder=False,
+        #                         eval_metric=["map"], max_delta_step=max_delta_step, scale_pos_weight=1) #'logloss'
+        #
+        #     # Explicacion: https://scikit-learn.org/stable/modules/model_evaluation.html#scoring-parameter
+        #     return np.mean(cross_val_score(clf, ds_train_f, ds_train_t, cv=cv_todos, scoring='accuracy'))
+        #
+        #
+        # # alpha is a parameter for the gaussian process
+        # # Note that this is itself a hyperparameter that can be optimized.
+        # gp_params = {"alpha": 1e-7}
+        #
+        # # LIBRERIA: https://github.com/fmfn/BayesianOptimization
+        # # Parametros: https://github.com/fmfn/BayesianOptimization/blob/master/bayes_opt/bayesian_optimization.py
+        # # Añadir carpeta dinámicamente: https://stackoverflow.com/questions/4383571/importing-files-from-different-folder
+        # sys.path.append('/bayes_opt')
+        # from bayes_opt import BayesianOptimization
+        #
+        # optimizer = BayesianOptimization(f=xgboost_hyper_param, pbounds=pbounds, random_state=1,
+        #                                  verbose=10)
+        #
+        # # Fichero de log JSON con los escenarios probados
+        # # optimizacion_bayesiana_escenarios = "./optimiz_bayes_escenarios.json"
+        # # bo_logger = JSONLogger(path=optimizacion_bayesiana_escenarios)
+        # # optimizer.subscribe(Events.OPTIMIZATION_STEP, bo_logger)
+        # # if os.path.isfile(optimizacion_bayesiana_escenarios):  # Si ya existe una lista de puntos previa, los precargo
+        # #     load_logs(optimizer, logs=[optimizacion_bayesiana_escenarios]);
+        # #     print("New optimizer is now aware of {} points.".format(len(optimizer.space)))
+        #
+        # # print("Optimización de procesos bayesianos - Añadimos ESCENARIOS CONCRETOS para fijarlos (tuplas de parametros) que hayamos visto que tienen buenos resultados...")
+        # # optimizer.probe(params={"colsample_bytree": 0.4, "gamma": 2.0, "learning_rate": 0.4, "max_delta_step": 9.6, "max_depth": 7.0, "min_child_weight": 8.2, "n_estimators": 47, "reg_alpha": 0.1}, lazy=False)
+        #
+        # optimizer.maximize(init_points=5, n_iter=20, acq='ucb', kappa=30, **gp_params)
+        # #optimizer.maximize(init_points=5, n_iter=20, acq='poi', kappa=3, **gp_params)
+        # # KAPPA: Parameter to indicate how closed are the next parameters sampled
+        #
+        # valoresOptimizados = optimizer.max
+        # print(valoresOptimizados)
+        # print("Fin del optimizador")
+        # ###################################################################################
+        #
+        # print("Inicio de XGBOOST")
+        # nombreModelo = "xgboost"
+        # pathModelo = dir_subgrupo + nombreModelo + ".modelo"
+        # # Parametros: https://xgboost.readthedocs.io/en/latest/parameter.html
+        # # Instalación en Conda: conda install -c anaconda py-xgboost
+        # # Instalación en Python básico: pip install xgboost
+        #
+        # # MODELO LUIS AUTOOPTIMIZADO PARA CADA SUBGRUPO
+        # max_depth = int(valoresOptimizados.get("params").get("max_depth"))
+        # learning_rate = valoresOptimizados.get("params").get("learning_rate")
+        # n_estimators = int(valoresOptimizados.get("params").get("n_estimators"))
+        # reg_alpha = valoresOptimizados.get("params").get("reg_alpha")
+        # min_child_weight = int(valoresOptimizados.get("params").get("min_child_weight"))
+        # colsample_bytree = valoresOptimizados.get("params").get("colsample_bytree")
+        # gamma = valoresOptimizados.get("params").get("gamma")
+        # max_delta_step = valoresOptimizados.get("params").get("max_delta_step")
+        # nthread = -1
+        # objective = 'binary:logistic'
+        # seed = seed
+        #
+        # modelo = XGBClassifier(max_depth=max_depth, learning_rate=learning_rate, n_estimators=n_estimators,
+        #                        reg_alpha=reg_alpha, min_child_weight=min_child_weight,
+        #                        colsample_bytree=colsample_bytree, gamma=gamma,
+        #                        nthread=nthread, objective=objective, seed=seed, use_label_encoder=False,
+        #                        max_delta_step=max_delta_step, scale_pos_weight=1)
+        #
+        # eval_set = [(ds_train_f.to_numpy(), ds_train_t.to_numpy().ravel()), (ds_test_f, ds_test_t)]
+        # modelo = modelo.fit(ds_train_f.to_numpy(), ds_train_t.to_numpy().ravel(), eval_metric=["map"],
+        #                     early_stopping_rounds=3, eval_set=eval_set,
+        #                     verbose=False)  # ENTRENAMIENTO (TRAIN)
+        #
+        # # ########################## FIN DE XGBOOST OPTIMIZADO ########################################################
 
-        # Parametros por defecto de los modelos que usan árboles de decisión
-        ARBOLES_n_estimators = 80
-        ARBOLES_max_depth = 11
-        ARBOLES_min_samples_leaf = 20
-        ARBOLES_max_features = "auto"
-        ARBOLES_min_samples_split = 3
-        ARBOLES_max_leaf_nodes = None
-        ARBOLES_min_impurity_decrease = 0.001
+        ###################### MODELO LGBM ######################
+        from sklearn.model_selection import GroupKFold, RepeatedStratifiedKFold, cross_validate, StratifiedShuffleSplit
+        from sklearn import metrics
+        import lightgbm as lgb
 
-        seed = 112  # Random seed
+        nombreModelo = "lgbm"
 
-        # Descomentar para obtener los parámetros con optimización Bayesiana
-        # IMPORTANTE: se debe instalar el paquete de bayes en Conda: conda install -c conda-forge bayesian-optimization
-        # Se imprimirán en el log, pero debo luego meterlos manualmente en el modelo
-        # IMPORTANTE: DEBEN RELLENARSE 2 VALORES POR CADA ATRIBUTO DE PBOUND
-        # https://ayguno.github.io/curious/portfolio/bayesian_optimization.html
-
-        print("Inicio del optimizador de parametros de XGBOOST...")
-
-        # Parametros ordenados ALFABETICAMENTE porque la liberia lo obliga
-        pbounds = {
-            'colsample_bytree': (0.1, 0.4),
-            'gamma': (2, 10),
-            'learning_rate': (0.2, 0.4),
-            'max_delta_step': (0, 10),
-            'max_depth': (4, 7),
-            'min_child_weight': (2, 20),
-            'n_estimators': (10, 50),
-            'reg_alpha': (0.1, 0.8)
-        }
-
-        hyperparameter_space = {
-        }
+        params = {'objective': 'binary',
+                  'learning_rate': 0.02,
+                  "boosting_type": "gbdt",
+                  "metric": 'precision',
+                  'n_jobs': -1,
+                  'min_data_in_leaf': 32,
+                  'num_leaves': 1024,
+                  }
+        modelo = lgb.LGBMClassifier(**params, n_estimators=50)
+        modelo.fit(ds_train_f, ds_train_t, eval_set=[(ds_train_f, ds_train_t), (ds_test_f, ds_test_t)])
+        #####################################################
 
 
-        def xgboost_hyper_param(max_depth, learning_rate, n_estimators, reg_alpha, min_child_weight, colsample_bytree,
-                                gamma, max_delta_step):
-            """Crea un modelo XGBOOST con los parametros indicados en la entrada. Aplica el numero de iteraciones de cross-validation indicado
-                """
-            clf = XGBClassifier(colsample_bytree=colsample_bytree, gamma=gamma, learning_rate=learning_rate,
-                                max_depth=int(max_depth), min_child_weight=int(min_child_weight),
-                                n_estimators=int(n_estimators), reg_alpha=reg_alpha,
-                                nthread=-1, objective='binary:logistic', seed=seed, use_label_encoder=False,
-                                eval_metric=["map"], max_delta_step=max_delta_step, scale_pos_weight=1) #'logloss'
-
-            # Explicacion: https://scikit-learn.org/stable/modules/model_evaluation.html#scoring-parameter
-            return np.mean(cross_val_score(clf, ds_train_f, ds_train_t, cv=cv_todos, scoring='accuracy'))
-
-
-        # alpha is a parameter for the gaussian process
-        # Note that this is itself a hyperparameter that can be optimized.
-        gp_params = {"alpha": 1e-7}
-
-        # LIBRERIA: https://github.com/fmfn/BayesianOptimization
-        # Parametros: https://github.com/fmfn/BayesianOptimization/blob/master/bayes_opt/bayesian_optimization.py
-        # Añadir carpeta dinámicamente: https://stackoverflow.com/questions/4383571/importing-files-from-different-folder
-        sys.path.append('/bayes_opt')
-        from bayes_opt import BayesianOptimization
-
-        optimizer = BayesianOptimization(f=xgboost_hyper_param, pbounds=pbounds, random_state=1,
-                                         verbose=10)
-
-        # Fichero de log JSON con los escenarios probados
-        # optimizacion_bayesiana_escenarios = "./optimiz_bayes_escenarios.json"
-        # bo_logger = JSONLogger(path=optimizacion_bayesiana_escenarios)
-        # optimizer.subscribe(Events.OPTIMIZATION_STEP, bo_logger)
-        # if os.path.isfile(optimizacion_bayesiana_escenarios):  # Si ya existe una lista de puntos previa, los precargo
-        #     load_logs(optimizer, logs=[optimizacion_bayesiana_escenarios]);
-        #     print("New optimizer is now aware of {} points.".format(len(optimizer.space)))
-
-        # print("Optimización de procesos bayesianos - Añadimos ESCENARIOS CONCRETOS para fijarlos (tuplas de parametros) que hayamos visto que tienen buenos resultados...")
-        # optimizer.probe(params={"colsample_bytree": 0.4, "gamma": 2.0, "learning_rate": 0.4, "max_delta_step": 9.6, "max_depth": 7.0, "min_child_weight": 8.2, "n_estimators": 47, "reg_alpha": 0.1}, lazy=False)
-
-        optimizer.maximize(init_points=5, n_iter=20, acq='ucb', kappa=30, **gp_params)
-        #optimizer.maximize(init_points=5, n_iter=20, acq='poi', kappa=3, **gp_params)
-        # KAPPA: Parameter to indicate how closed are the next parameters sampled
-
-        valoresOptimizados = optimizer.max
-        print(valoresOptimizados)
-        print("Fin del optimizador")
-        ###################################################################################
-
-        print("Inicio de XGBOOST")
-        nombreModelo = "xgboost"
-        pathModelo = dir_subgrupo + nombreModelo + ".modelo"
-        # Parametros: https://xgboost.readthedocs.io/en/latest/parameter.html
-        # Instalación en Conda: conda install -c anaconda py-xgboost
-        # Instalación en Python básico: pip install xgboost
-
-        # MODELO LUIS AUTOOPTIMIZADO PARA CADA SUBGRUPO
-        max_depth = int(valoresOptimizados.get("params").get("max_depth"))
-        learning_rate = valoresOptimizados.get("params").get("learning_rate")
-        n_estimators = int(valoresOptimizados.get("params").get("n_estimators"))
-        reg_alpha = valoresOptimizados.get("params").get("reg_alpha")
-        min_child_weight = int(valoresOptimizados.get("params").get("min_child_weight"))
-        colsample_bytree = valoresOptimizados.get("params").get("colsample_bytree")
-        gamma = valoresOptimizados.get("params").get("gamma")
-        max_delta_step = valoresOptimizados.get("params").get("max_delta_step")
-        nthread = -1
-        objective = 'binary:logistic'
-        seed = seed
-
-        modelo = XGBClassifier(max_depth=max_depth, learning_rate=learning_rate, n_estimators=n_estimators,
-                               reg_alpha=reg_alpha, min_child_weight=min_child_weight,
-                               colsample_bytree=colsample_bytree, gamma=gamma,
-                               nthread=nthread, objective=objective, seed=seed, use_label_encoder=False,
-                               max_delta_step=max_delta_step, scale_pos_weight=1)
-
-        eval_set = [(ds_train_f.to_numpy(), ds_train_t.to_numpy().ravel()), (ds_test_f, ds_test_t)]
-        modelo = modelo.fit(ds_train_f.to_numpy(), ds_train_t.to_numpy().ravel(), eval_metric=["map"],
-                            early_stopping_rounds=3, eval_set=eval_set,
-                            verbose=False)  # ENTRENAMIENTO (TRAIN)
-
-        # ########################## FIN DE XGBOOST OPTIMIZADO ########################################################
 
         # ########################## INICIO DE XGBOOST SIN OPTIMIZAR ########################################################
         #
