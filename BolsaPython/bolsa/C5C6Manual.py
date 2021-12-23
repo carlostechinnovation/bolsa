@@ -1007,7 +1007,7 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
 
         # NO BORRAR: UTIL para informe HTML entregable
         precisionSistemaRandom = 1/tasaDesbalanceoAntes # Precision del sistema tonto
-        mejoraRespectoSistemaRandom=100*((precision_test+precision_validation)/2)/precisionSistemaRandom
+        mejoraRespectoSistemaRandom= (-100 + 100*((precision_test+precision_validation)/2)/precisionSistemaRandom)
         print("ENTREGABLEPRECISIONESPASADO"
               + "|id_subgrupo:" + str(id_subgrupo)
               + "|precisionpasadotrain:" + str(round(precision_train, 2))

@@ -20,8 +20,11 @@ def color_negative_red(val):
         float_value = float(val)
     except ValueError:
         return None
-    color = 'red' if float(float_value) < 0.20 else 'green'
-    return 'color: %s' % color
+
+    condicion = (float(float_value) >= 0.20 and float(float_value) > 0 and float(float_value)<=1)
+    color = 'green' if condicion else 'black'
+    bgcolor = 'lightgreen' if condicion else 'white'
+    return 'color: %s; background-color: %s' % (color, bgcolor)
 
 
 ##################################################################################################
@@ -37,10 +40,9 @@ print(tabulate(metricasEntrada.head(), headers='keys', tablefmt='psql'))
 
 # limpieza
 metricasEntrada.columns = ['tipo', 'id_subgrupo', 'precision pasado train', 'precision pasado test',
-                           'precision pasado validacion']
+                           'precision pasado validacion', 'precision sistema random', 'mejora respecto sistema random']
 metricasEntrada.drop("tipo", axis=1, inplace=True)
-metricasEntrada = metricasEntrada.applymap(
-    lambda a: a.replace('id_subgrupo:SG_', '').replace('precisionpasadotrain:', '').replace('precisionpasadotest:', '').replace('precisionpasadovalidacion:', ''). replace('precisionsistemarandom:', ''))
+metricasEntrada = metricasEntrada.applymap(lambda a: a.replace('id_subgrupo:SG_', '').replace('precisionpasadotrain:', '').replace('precisionpasadotest:', '').replace('precisionpasadovalidacion:', ''). replace('precisionsistemarandom:', ''). replace('mejoraRespectoSistemaRandom:', ''))
 
 ######################################################
 
