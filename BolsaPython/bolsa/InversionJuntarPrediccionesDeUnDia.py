@@ -1,6 +1,6 @@
 import os
 import sys
-
+import numpy as np
 import pandas as pd
 from IPython.display import HTML
 
@@ -153,9 +153,15 @@ for file in manejablesCsv:
 todasEmpresasYProbabsDF = todasEmpresasYProbabsDF.sort_values(by=['empresa'], ascending=True).reset_index(
     drop=True)  # Ordenar filas
 todasEmpresasYProbabsDF = todasEmpresasYProbabsDF.fillna("")  # Sustituir NaN por cadena vacia para que quede bonito
-
 todasEmpresasYProbabsDF_aux = todasEmpresasYProbabsDF.drop(['empresa'], axis=1, inplace=False)
-import numpy as np
+
+######################################################################################
+print("REORDENAR COLUMNAS ALFABETICAMENTE...")
+todasEmpresasYProbabsDF_columnasSorted = todasEmpresasYProbabsDF_aux\
+    .reindex(sorted(todasEmpresasYProbabsDF_aux, key=lambda x: float(x[3:])), axis=1)
+todasEmpresasYProbabsDF_columnasSorted = pd.DataFrame(todasEmpresasYProbabsDF["empresa"]).join(todasEmpresasYProbabsDF_columnasSorted)
+todasEmpresasYProbabsDF = todasEmpresasYProbabsDF_columnasSorted
+######################################################################################
 
 todasEmpresasYProbabsDF_aux['prob_media'] = todasEmpresasYProbabsDF_aux.replace('', np.nan).astype(float).mean(
     skipna=True, numeric_only=True, axis=1)
@@ -163,6 +169,7 @@ todasEmpresasYProbabsDF['prob_media'] = todasEmpresasYProbabsDF_aux['prob_media'
 todasEmpresasYProbabsDF.sort_values(by=['prob_media'], ascending=False, inplace=True)
 
 # Operaciones de insiders (tambien son buen indicador, pero lo ponemos para evitar entrar a mirar en Finviz manualmente)
+print("Se incluyen columnas de operaciones con insiders...")
 if os.path.isfile("/bolsa/futuro/subgrupos/SG_46/COMPLETO.csv"):
     entradaSG46df = pd.read_csv("/bolsa/futuro/subgrupos/SG_46/COMPLETO.csv", sep="|")
     entradaSG46df = entradaSG46df[entradaSG46df['antiguedad'] == 0]
