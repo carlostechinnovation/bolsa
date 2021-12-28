@@ -2,23 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="22edbd2f-b3d9-42f0-a7dd-659033ab601a" name="Default Changelist" comment="Machine Learning - Ejemplo">
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/realimentacion/falsospositivos_diaensemana.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/realimentacion/falsospositivos_diaensemana.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/realimentacion/falsospositivos_empresas.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/realimentacion/falsospositivos_empresas.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/realimentacion/falsospositivos_meses.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/realimentacion/falsospositivos_meses.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/realimentacion/falsospositivos_subgrupos.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/realimentacion/falsospositivos_subgrupos.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/main/java/c10X/brutos/EstaticosFinvizDescargarYParsear.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/main/java/c10X/brutos/EstaticosFinvizDescargarYParsear.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/main/java/c10X/brutos/EstaticosNasdaqDescargarYParsear.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/main/java/c10X/brutos/EstaticosNasdaqDescargarYParsear.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/main/java/c10X/brutos/JuntarEstaticosYDinamicosCSVunico.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/main/java/c10X/brutos/JuntarEstaticosYDinamicosCSVunico.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/main/java/c10X/brutos/OperacionInsiderFinvizModelo.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/main/java/c10X/brutos/OperacionInsiderFinvizModelo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/main/java/c30x/elaborados/construir/Estadisticas.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/main/java/c30x/elaborados/construir/Estadisticas.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/main/java/c40X/subgrupos/CrearDatasetsSubgrupos.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/main/java/c40X/subgrupos/CrearDatasetsSubgrupos.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/main/resources/desconocidos.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/main/resources/desconocidos.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/main/java/c10X/brutos/YahooFinance02Parsear.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/main/java/c10X/brutos/YahooFinance02Parsear.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bolsa/C5C6Manual.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/C5C6Manual.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bolsa/C5C6Manual_bucle.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/C5C6Manual_bucle.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bolsa/ClusteringAlternativo.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/ClusteringAlternativo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bolsa/InversionJuntarPrediccionesDeUnDia.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/InversionJuntarPrediccionesDeUnDia.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bolsa/InversionUtilsPosteriori.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/InversionUtilsPosteriori.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bolsa/PintarMetricasyRentabilidades.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/PintarMetricasyRentabilidades.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaScripts/inversion.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/inversion.sh" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../BolsaScripts/parametros.config" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/parametros.config" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -65,6 +55,13 @@
     <property name="run.code.analysis.last.selected.profile" value="aDefault" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
+  <component name="PyConsoleOptionsProvider">
+    <option name="myPythonConsoleState">
+      <console-settings>
+        <option name="useSoftWraps" value="true" />
+      </console-settings>
+    </option>
+  </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/bolsa" />
@@ -76,7 +73,7 @@
       <recent name="C:\DATOS\GITHUB_REPOS\bolsa\BolsaPython\bolsa" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.ClusteringAlternativo">
+  <component name="RunManager" selected="Python.InversionJuntarPrediccionesDeUnDia">
     <configuration name="06_redneuronal_lstm_2" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="BolsaPython" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -132,8 +129,29 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/bolsa/C5C6Manual.py" />
-      <option name="PARAMETERS" value="/bolsa/pasado/subgrupos/SG_55/ pasado 35 15000 0" />
+      <option name="PARAMETERS" value="/bolsa/pasado/subgrupos/SG_11/ pasado 35 5000 0" />
       <option name="SHOW_COMMAND_LINE" value="true" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="C5C6ManualTest" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="BolsaPython" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tests/C5C6ManualTest.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
       <option name="REDIRECT_INPUT" value="false" />
@@ -245,27 +263,6 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="ClusteringAlternativo" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="BolsaPython" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/bolsa" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/bolsa/ClusteringAlternativo.py" />
-      <option name="PARAMETERS" value="pasado" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
     <configuration name="FeaturesAnalisisPosteriori" type="PythonConfigurationType" factoryName="Python">
       <module name="BolsaPython" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -342,7 +339,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/bolsa/InversionUtilsPosteriori.py" />
-      <option name="PARAMETERS" value="$USER_HOME$/Dropbox/BOLSA_PREDICTOR/ $USER_HOME$/Dropbox/BOLSA_PREDICTOR/ANALISIS/ 20 20 5 1 5 10" />
+      <option name="PARAMETERS" value="$USER_HOME$/Dropbox/BOLSA_PREDICTOR/ $USER_HOME$/Dropbox/BOLSA_PREDICTOR/ANALISIS/ 20 20 5 1 5 5" />
       <option name="SHOW_COMMAND_LINE" value="true" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -363,7 +360,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/bolsa/PintarMetricasyRentabilidades.py" />
-      <option name="PARAMETERS" value="/bolsa/logs/pasado_metricas_y_rentabilidades_entrada.csv /bolsa/logs/pasado_metricas_y_rentabilidades.html" />
+      <option name="PARAMETERS" value="/bolsa/logs/pasado_metricas_y_rentabilidades_entrada.csv /bolsa/logs/pasado_aciertos_entrada.csv /bolsa/logs/pasado_metricas_y_rentabilidades.html" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -371,7 +368,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="clustering_dbscan" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="TestIntegracionUtilidad1" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="BolsaPython" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -379,12 +376,12 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/ejemplos" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/bolsa" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/ejemplos/clustering_dbscan.py" />
-      <option name="PARAMETERS" value="" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/bolsa/TestIntegracionUtilidad1.py" />
+      <option name="PARAMETERS" value="&quot;/bolsa/pasado/subgrupos/SG_46/intermedio.csv.normalizado.csv&quot; &quot;/bolsa/pasado/subgrupos/SG_46/intermedio.csv.entrada_tras_maximo.csv&quot; &quot;ACAM&quot; &quot;/bolsa/pasado/subgrupos/SG_46/intermedio.csv.normalizado.csv.cruzado.csv&quot;" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -425,19 +422,19 @@
       <item itemvalue="Python.InversionUtilsPosteriori" />
       <item itemvalue="Python.InversionUtils" />
       <item itemvalue="Python.pruebas" />
+      <item itemvalue="Python.C5C6ManualTest" />
       <item itemvalue="Python.InversionJuntarPrediccionesDeUnDia" />
       <item itemvalue="Python.PintarMetricasyRentabilidades" />
-      <item itemvalue="Python.clustering_dbscan" />
-      <item itemvalue="Python.ClusteringAlternativo" />
+      <item itemvalue="Python.TestIntegracionUtilidad1" />
       <item itemvalue="Python.C5C6Manual_bucle" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.ClusteringAlternativo" />
-        <item itemvalue="Python.C5C6Manual_bucle" />
-        <item itemvalue="Python.PintarMetricasyRentabilidades" />
-        <item itemvalue="Python.clustering_dbscan" />
         <item itemvalue="Python.InversionJuntarPrediccionesDeUnDia" />
+        <item itemvalue="Python.PintarMetricasyRentabilidades" />
+        <item itemvalue="Python.C5C6Manual_bucle" />
+        <item itemvalue="Python.C5C6ManualTest" />
+        <item itemvalue="Python.TestIntegracionUtilidad1" />
       </list>
     </recent_temporary>
   </component>
@@ -503,49 +500,34 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/bolsa/C5C6_simplon_pytorch.py</url>
-          <line>328</line>
-          <option name="timeStamp" value="38" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/bolsa/InversionUtils.py</url>
           <line>18</line>
           <option name="timeStamp" value="43" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/bolsa/C5C6Manual.py</url>
-          <line>1116</line>
-          <option name="timeStamp" value="44" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/bolsa/InversionUtilsPosteriori.py</url>
-          <line>552</line>
-          <option name="timeStamp" value="51" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/bolsa/InversionUtilsPosteriori.py</url>
-          <line>364</line>
-          <option name="timeStamp" value="52" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/bolsa/InversionUtilsPosteriori.py</url>
-          <line>218</line>
-          <option name="timeStamp" value="59" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/bolsa/InversionUtilsPosteriori.py</url>
-          <line>208</line>
-          <option name="timeStamp" value="61" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/bolsa/FeaturesAnalisisPosteriori.py</url>
-          <line>255</line>
+          <line>258</line>
           <option name="timeStamp" value="62" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/ejemplos/clustering_dbscan.py</url>
-          <line>29</line>
-          <option name="timeStamp" value="63" />
+          <url>file://$PROJECT_DIR$/bolsa/C5C6Manual.py</url>
+          <line>1408</line>
+          <option name="timeStamp" value="136" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/bolsa/PintarMetricasyRentabilidades.py</url>
+          <line>108</line>
+          <option name="timeStamp" value="143" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/bolsa/InversionJuntarPrediccionesDeUnDia.py</url>
+          <line>175</line>
+          <option name="timeStamp" value="145" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/bolsa/InversionJuntarPrediccionesDeUnDia.py</url>
+          <line>169</line>
+          <option name="timeStamp" value="146" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>

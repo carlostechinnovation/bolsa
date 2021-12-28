@@ -44,10 +44,13 @@ print("maxFeatReducidas = %s" % maxFeatReducidas)
 print("maxFilasEntrada = %s" % maxFilasEntrada)
 
 varianza = 0.87  # Variacion acumulada de las features PCA sobre el target
+UMBRAL_VELASMUYANTIGUASELIMINABLES = (5 * 4.5 * 4)  # todas las velas con mas antiguedad que este umbral no se usan para train ni test ni valid. Recom: 54 (3 meses)
+UMBRAL_COLUMNAS_DEMASIADOS_NULOS = 0.25  # Porcentaje de nulos en cada columna. Si se supera, borramos toda la columna. Recomendable: 0.40
 compatibleParaMuchasEmpresas = False  # Si hay muchas empresas, debo hacer ya el undersampling (en vez de capa 6)
 global modoDebug;
 modoDebug = False  # VARIABLE GLOBAL: En modo debug se pintan los dibujos. En otro caso, se evita calculo innecesario. Recomendable: False
 evitarNormalizarNiTramificar = False  # VARIABLE GLOBAL: si se quiere no normalizar ni tramificar features. Recomendable: False
+limpiarOutliers = True
 global cv_todos;
 global rfecv_step;
 rfecv_step = 3  # Numero de features que va reduciendo en cada iteracion de RFE hasta encontrar el numero deseado
@@ -73,6 +76,12 @@ path_pesos_pca = (dir_subgrupo + "PCA_matriz.csv")
 umbralNecesarioCompensarDesbalanceo = 1  # Umbral de desbalanceo clase positiva/negativa. Si se supera, lo compensamos. Deshabilitado si vale 0
 balancearConSmoteSoloTrain = True  # SMOTE sobre minoritaria y mayoritaria. Sólo aplicable a pasado-Train; no a test ni validacion ni a futuro.
 balancearUsandoDownsampling = False  # Downsampling de clase mayoritaria. Sólo aplicable a pasado-Train; no a test ni validacion ni a futuro.
+
+# Etiquetas Globales
+FORMATO_FECHA_SP500 = '%Y-%m-%d'
+ETIQUETA_FECHA_SP500 = "fecha"
+ETIQUETA_CLOSE_SP500 = "close"
+ETIQUETA_RENTA_SP500 = "rentaSP500"
 
 print("pathCsvCompleto = %s" % pathCsvCompleto)
 print("dir_subgrupo_img = %s" % dir_subgrupo_img)
@@ -102,7 +111,7 @@ print("PARAMETROS: ")
 pathFeaturesSeleccionadas = dir_subgrupo + "FEATURES_SELECCIONADAS.csv"
 umbralCasosSuficientesClasePositiva = 30
 umbralProbTargetTrue = 0.50  # IMPORTANTE: umbral para decidir si el target es true o false
-granProbTargetUno = 90  # De todos los target=1, nos quedaremos con los granProbTargetUno (en tanto por cien) MAS probables. Un valor de 100 o mayor anula este parámetro
+granProbTargetUno = 100  # De todos los target=1, nos quedaremos con los granProbTargetUno (en tanto por cien) MAS probables. Un valor de 100 o mayor anula este parámetro
 umbralFeaturesCorrelacionadas = varianza  # Umbral aplicado para descartar features cuya correlacion sea mayor que él
 cv_todos = 25  # CROSS_VALIDATION: número de iteraciones. Sirve para evitar el overfitting
 fraccion_train = 0.60  # Fracción de datos usada para entrenar
@@ -165,6 +174,14 @@ def comprobarPrecisionManualmente(targetsNdArray1, targetsNdArray2, etiqueta, id
             len(df1a)) + ". Positivos predichos = " + str(len(df2a)) + ". De estos ultimos, los ACIERTOS son: " + str(
             len(df1b)) + " ==> Precision = TP/(TP+FP) = " + str(round(precision, 1)) + " %" + mensajeAlerta)
 
+        print("ENTREGABLEACIERTOSPASADO"
+              + "|id_subgrupo:" + str(id_subgrupo)
+              + "|escenario:" + etiqueta
+              + "|positivosreales:" + str(len(df1a))
+              + "|positivospredichos:" + str(len(df2a))
+              + "|aciertos:" + str(len(df1b))
+              )
+
         if etiqueta == "TEST" or etiqueta == "VALIDACION":
             dfEmpresasPredichasTrue = pd.merge(dfConIndex, df2a, how="inner", left_index=True, right_index=True)
             dfEmpresasPredichasTrueLoInteresante = dfEmpresasPredichasTrue[
@@ -198,6 +215,93 @@ def comprobarPrecisionManualmente(targetsNdArray1, targetsNdArray2, etiqueta, id
 
     return mensajeAlerta
 
+######33###### RSI ###################
+def relative_strength_idx(df, n=14):
+    close = df['close']
+    delta = close.diff()
+    delta = delta[1:]
+    pricesUp = delta.copy()
+    pricesDown = delta.copy()
+    pricesUp[pricesUp < 0] = 0
+    pricesDown[pricesDown > 0] = 0
+    rollUp = pricesUp.rolling(n).mean()
+    rollDown = pricesDown.abs().rolling(n).mean()
+    rs = rollUp / rollDown
+    rsi = 100.0 - (100.0 / (1.0 + rs))
+    return rsi
+
+
+##################### DESCARGA DEL SP500 ########################
+
+import requests
+from datetime import date
+from datetime import datetime as datetime2
+from datetime import timedelta
+
+
+def getSP500conRentaTrasXDias(X, fechaInicio, fechaFin):
+    # X: días futuros para el cálculo de renta, respecto al día del que se muestran datos (cada fila es distinta)
+    # fechaInicio y fechaFin, con formato "2019-01-01"
+    # Descarga del histórico del SP500
+    url = "https://fred.stlouisfed.org/graph/fredgraph.csv?bgcolor=%23e1e9f0&chart_type=line&drp=0&fo=open%20sans&" \
+          "graph_bgcolor=%23ffffff&height=450&mode=fred&recession_bars=on&txtcolor=%23444444&ts=12&tts=12&width=1168&" \
+          "nt=0&thu=0&trc=0&show_legend=yes&show_axis_titles=yes&show_tooltip=yes&id=SP500&scale=left&cosd=" + fechaInicio \
+          + "&coed=fechaFin&line_color=%234572a7&link_values=false&line_style=solid&mark_type=none&mw=3&lw=2&ost=-99999&" \
+            "oet=99999&mma=0&fml=a&fq=Daily%2C%20Close&fam=avg&fgst=lin&fgsnd=2010-04-12&line_index=1&transformation=lin&" \
+            "vintage_date=" + fechaFin + "&revision_date=2020-04-10&nd=2010-04-12"
+    print("URL: ", url)
+    destino = dir_subgrupo + "SP500.csv"
+    myfile = requests.get(url, allow_redirects=True)
+    open(destino, 'wb').write(myfile.content)
+
+    # Se guarda en dataframe
+    datosSP500 = pd.read_csv(filepath_or_buffer=destino, sep=',')
+
+    # Sólo me quedo con las filas cuyo precio sea numérico
+    datosSP500 = datosSP500.loc[~(datosSP500['SP500'] == '.')]
+    # resetting index
+    datosSP500.reset_index(inplace=True)
+
+    # La fecha se convierte a dato de fecha
+    dfSP500 = pd.DataFrame(columns=[ETIQUETA_FECHA_SP500, ETIQUETA_CLOSE_SP500, ETIQUETA_RENTA_SP500])
+    closeXDiasFuturos = 0
+    tamaniodfSP500 = len(datosSP500)
+    for index, fila in datosSP500.iterrows():
+        fecha = datetime2.strptime(fila['DATE'], FORMATO_FECHA_SP500)
+        if index < (tamaniodfSP500 - int(X)):
+            filaXDiasFuturos = datosSP500.iloc[index + int(X)]
+            closeXDiasFuturos = filaXDiasFuturos['SP500']
+            rentaSP500 = 100 * (float(closeXDiasFuturos) - float(fila['SP500'])) / float(closeXDiasFuturos)
+        else:
+            rentaSP500 = 0
+
+        nuevaFila = [
+            {ETIQUETA_FECHA_SP500: fecha, 'close': float(fila['SP500']), ETIQUETA_RENTA_SP500: float(rentaSP500)}]
+        dfSP500 = dfSP500.append(nuevaFila, ignore_index=True, sort=False)
+
+    return dfSP500
+
+
+def anadeComparacionSencillaSP500(sp500, x):
+    comparaSP500Ayer=-1000
+    fechaAhora = str(x.anio) + "-" + str(x.mes) + "-" + str(x.dia)
+    ahora_obj = datetime2.strptime(fechaAhora, FORMATO_FECHA_SP500)
+    a = pd.DataFrame()
+    # Se itera hacia atrás hasta que se encuentre algún día (laborable) con datos en SP500
+    while (a.empty):
+        days_to_subtract = 1
+        diasAntes_obj = ahora_obj - timedelta(days=days_to_subtract)
+        antes = diasAntes_obj.strftime(FORMATO_FECHA_SP500)
+        empresaRentaAhora = float(x.close) - float(x.open)
+        a=sp500[sp500[ETIQUETA_FECHA_SP500] == antes]
+        if(len(a.index)>0):
+            sp500RentaAyer = float(a[ETIQUETA_RENTA_SP500])
+            comparaSP500Ayer = int(empresaRentaAhora * sp500RentaAyer > 0)
+        else:
+            ahora_obj=diasAntes_obj
+
+    return comparaSP500Ayer
+
 
 ################## MAIN ###########################################################
 
@@ -212,6 +316,90 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
     entradaFeaturesYTarget = pd.read_csv(filepath_or_buffer=pathCsvCompleto, sep='|')
     print("entradaFeaturesYTarget (LEIDO): " + str(entradaFeaturesYTarget.shape[0]) + " x " + str(
         entradaFeaturesYTarget.shape[1]))
+
+
+    ### IMPORTANTE: entrenar quitando velas muy antiguas: las de hace mas de 4 meses (90 velas)
+    entradaFeaturesYTarget = entradaFeaturesYTarget[entradaFeaturesYTarget['antiguedad'] < UMBRAL_VELASMUYANTIGUASELIMINABLES]
+
+
+    ################### SE CREAN VARIABLES ADICIONALES #########################
+
+    # Se mete la variable dia_aux, mes_aux, low_aux, volume_aux, high_aux,
+    # ya que las originales se borran más adelante, pero son útiles
+    entradaFeaturesYTarget['dia_aux'] = entradaFeaturesYTarget['dia']
+    entradaFeaturesYTarget['mes_aux'] = entradaFeaturesYTarget['mes']
+    entradaFeaturesYTarget['low_aux'] = entradaFeaturesYTarget['low']
+    entradaFeaturesYTarget['volumen_aux'] = entradaFeaturesYTarget['volumen']
+    entradaFeaturesYTarget['high_aux'] = entradaFeaturesYTarget['high']
+
+    # Se crea un RSI-14 en python
+    entradaFeaturesYTarget['RSI-python'] = relative_strength_idx(entradaFeaturesYTarget).fillna(0)
+
+
+    #####
+    # Variables dependientes de SP500
+
+    # Variable sencilla, que compara el rendimiento de la empresa hoy (close - open) respecto al SP500 de ayer
+    today = date.today()
+    fechaInicio = "2019-01-01"
+    fechaFin = today.strftime("%Y-%m-%d")
+    sp500 = getSP500conRentaTrasXDias(1, fechaInicio, fechaFin)
+    entradaFeaturesYTarget['COMPARA-SP500-AYER-BOOL'] = entradaFeaturesYTarget.apply(
+        lambda x: anadeComparacionSencillaSP500(sp500, x), axis=1)
+
+    #
+    # # # Variables complejas, que comparan periodos de la empresa con periodos del SP500
+    #
+    # # Se comparará con la empresa, en varios periodos.Se crearán nuevas variables
+    # # Se cogen todas las filas de la primera empresa, para buscar la menor y mayor antigüedad
+    # empresa = entradaFeaturesYTarget.iloc[0, 0]
+    # filasDeEmpresa = entradaFeaturesYTarget[entradaFeaturesYTarget['empresa'] == empresa]
+    # primeraFila = filasDeEmpresa.head(1).reset_index()
+    # ultimaFila = filasDeEmpresa.tail(1).reset_index()
+    # primeraYUltimaFilas = filasDeEmpresa.iloc[[0, -1]]
+    # fechaMasReciente = str(primeraFila.loc[0, 'anio']) + "-" + str(primeraFila.loc[0, 'mes']) + "-" + str(
+    #     primeraFila.loc[0, 'dia'])
+    # fechaMasAntigua = str(ultimaFila.loc[0, 'anio']) + "-" + str(ultimaFila.loc[0, 'mes']) + "-" + str(
+    #     ultimaFila.loc[0, 'dia'])
+    #
+    # # Se cargan los rangos del SP500 en dicha fecha
+    # sp500 = getSP500conRentaTrasXDias(1, fechaMasAntigua, fechaMasReciente)
+    #
+    # # En el dataframe final, para cada fila se compara la evolución del precio de la empresa vs la evolución del SP500.
+    # # IMPORTANTE: el rango del periodo debe estar dentro del rango completo de fechas de la empresa, para no saltar a
+    # # otra empresa. Se asume que todas las filas de una empresa están juntas y en orden cronológico, de más reciente
+    # # a más antigua.
+    # periodos = [1, 3]
+    # numFilas = len(entradaFeaturesYTarget.index)
+    # for periodo in periodos:
+    #     nombreNuevaFeature = "COINCIDE_CON_SP500_" + str(periodo)
+    #     for indexActual, row in entradaFeaturesYTarget.iterrows():
+    #         indexAntes = indexActual + periodo
+    #         if indexAntes < numFilas:
+    #             fechaAhora = str(row['anio']) + "-" + str(
+    #                 row['mes']) + "-" + str(row['dia'])
+    #             fechaAntes = str(entradaFeaturesYTarget.loc[indexAntes, 'anio']) + "-" + str(
+    #                 entradaFeaturesYTarget.loc[indexAntes, 'mes']) + "-" + str(
+    #                 entradaFeaturesYTarget.loc[indexAntes, 'dia'])
+    #             rentaEnPeriodoEmpresa = 100 * (float((row['close']) - float(
+    #                 entradaFeaturesYTarget.loc[indexAntes, 'close']))) / float(
+    #                 entradaFeaturesYTarget.loc[indexAntes, 'close'])
+    #
+    #             rentaAhoraSP500=float(sp500[sp500[ETIQUETA_FECHA_SP500] == fechaAhora][ETIQUETA_RENTA_SP500])
+    #             rentaAntesSP500 = float(sp500[sp500[ETIQUETA_FECHA_SP500] == fechaAntes][ETIQUETA_RENTA_SP500])
+    #             rentaEnPeriodoSP500=rentaAhoraSP500-rentaAntesSP500
+    #             # El nombre de la empresa debe coincidir. Si no, no tengo histórico suficiente
+    #             if row['empresa'] == entradaFeaturesYTarget.loc[indexAntes, 'empresa']:
+    #                 coincide = int((rentaEnPeriodoEmpresa * rentaEnPeriodoSP500) > 0)
+    #                 entradaFeaturesYTarget.loc[indexActual, nombreNuevaFeature] = coincide
+    #         else:
+    #             #serieFeature.add(np.nan)
+    #             a=1
+    #         c = 1
+    #
+    #         b = 1
+
+    #########################
 
     ############# MUY IMPORTANTE: creamos el IDENTIFICADOR UNICO DE FILA, que será el indice!!
     nuevoindice = entradaFeaturesYTarget["empresa"].astype(str) + "_" + entradaFeaturesYTarget["anio"].astype(str) \
@@ -259,25 +447,35 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
             entradaFeaturesYTarget2.shape[1]))
         # print(entradaFeaturesYTarget2.head())
 
-    print("Porcentaje de MISSING VALUES en cada columna del dataframe de entrada (mostramos las que superen 20%):")
+    print("Porcentaje de MISSING VALUES en cada columna del dataframe de entrada (mostramos las que superen " + str(100 * UMBRAL_COLUMNAS_DEMASIADOS_NULOS) + "%):")
     missing = pd.DataFrame(entradaFeaturesYTarget2.isnull().sum()).rename(columns={0: 'total'})
     missing['percent'] = missing['total'] / len(entradaFeaturesYTarget2)  # Create a percentage missing
     missing_df = missing.sort_values('percent', ascending=False)
-    missing_df = missing_df[missing_df['percent'] > 0.20]
+    missing_df = missing_df[missing_df['percent'] > UMBRAL_COLUMNAS_DEMASIADOS_NULOS]
     print(tabulate(missing_df.head(), headers='keys', tablefmt='psql'))  # .drop('TARGET')
 
     # print("Pasado o Futuro: Transformacion en la que borro filas. Por tanto, guardo el indice...")
     indiceFilasFuturasTransformadas1 = entradaFeaturesYTarget2.index.values
 
     print(
-        "Borrar columnas especiales (idenficadoras de fila): empresa | antiguedad | mercado | anio | mes | dia | hora | minuto...")
+        "Borrar columnas especiales (idenficadores de fila): empresa | antiguedad | mercado | anio | mes | dia | hora | minuto...")
     entradaFeaturesYTarget2 = entradaFeaturesYTarget2.drop('empresa', axis=1).drop('antiguedad', axis=1) \
         .drop('mercado', axis=1).drop('anio', axis=1).drop('mes', axis=1).drop('dia', axis=1) \
-        .drop('hora', axis=1).drop('minuto', axis=1)
+        .drop('hora', axis=1).drop('minuto', axis=1) \
+        .drop('dia_aux', axis=1).drop('mes_aux', axis=1).drop('low_aux', axis=1).drop('volumen_aux', axis=1) \
+        .drop('high_aux', axis=1)
 
     print("Borrar columnas dinamicas que no aportan nada: volumen | high | low | close | open ...")
     entradaFeaturesYTarget2 = entradaFeaturesYTarget2.drop('volumen', axis=1).drop('high', axis=1) \
         .drop('low', axis=1).drop('close', axis=1).drop('open', axis=1)
+
+    print("Borrar COLUMNAS dinamicas con demasiados nulos (umbral = " + str(UMBRAL_COLUMNAS_DEMASIADOS_NULOS) + ")...")
+    # print(tabulate(entradaFeaturesYTarget2.head(n=1), headers='keys', tablefmt='psql'))
+    columnasDemasiadosNulos = missing_df.index.values
+    print("columnasDemasiadosNulos: " + columnasDemasiadosNulos)
+    columnasDemasiadosNulos = np.delete(columnasDemasiadosNulos, np.where(columnasDemasiadosNulos =="TARGET"))
+    entradaFeaturesYTarget2 = entradaFeaturesYTarget2.drop(columnasDemasiadosNulos, axis=1)
+    # print(tabulate(entradaFeaturesYTarget2.head(n=1), headers='keys', tablefmt='psql'))
 
     # entradaFeaturesYTarget2.to_csv(path_csv_completo + "_TEMP02", index=True, sep='|')  # UTIL para testIntegracion
 
@@ -331,16 +529,20 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
     flagAnomaliasDf = pd.DataFrame(
         {'marca_anomalia': detector_outliers.predict(df3aux)})  # vale -1 es un outlier; si es un 1, no lo es
 
-    indice3 = entradaFeaturesYTarget3.index  # lo guardo para pegarlo luego
-    entradaFeaturesYTarget3.reset_index(drop=True, inplace=True)
-    flagAnomaliasDf.reset_index(drop=True, inplace=True)
-    entradaFeaturesYTarget4 = pd.concat([entradaFeaturesYTarget3, flagAnomaliasDf],
-                                        axis=1)  # Column Bind, manteniendo el índice del DF izquierdo
-    entradaFeaturesYTarget4.set_index(indice3, inplace=True)  # ponemos el indice que tenia el DF de la izquierda
+    if limpiarOutliers is True:
+        indice3 = entradaFeaturesYTarget3.index  # lo guardo para pegarlo luego
+        entradaFeaturesYTarget3.reset_index(drop=True, inplace=True)
+        flagAnomaliasDf.reset_index(drop=True, inplace=True)
+        entradaFeaturesYTarget4 = pd.concat([entradaFeaturesYTarget3, flagAnomaliasDf],
+                                            axis=1)  # Column Bind, manteniendo el índice del DF izquierdo
+        entradaFeaturesYTarget4.set_index(indice3, inplace=True)  # ponemos el indice que tenia el DF de la izquierda
 
-    entradaFeaturesYTarget4 = entradaFeaturesYTarget4.loc[
-        entradaFeaturesYTarget4['marca_anomalia'] == 1]  # Cogemos solo las que no son anomalias
-    entradaFeaturesYTarget4 = entradaFeaturesYTarget4.drop('marca_anomalia', axis=1)  # Quitamos la columna auxiliar
+        entradaFeaturesYTarget4 = entradaFeaturesYTarget4.loc[
+            entradaFeaturesYTarget4['marca_anomalia'] == 1]  # Cogemos solo las que no son anomalias
+        entradaFeaturesYTarget4 = entradaFeaturesYTarget4.drop('marca_anomalia', axis=1)  # Quitamos la columna auxiliar
+
+    else:
+        entradaFeaturesYTarget4=entradaFeaturesYTarget3
 
     print("entradaFeaturesYTarget4 (sin outliers):" + str(entradaFeaturesYTarget4.shape[0]) + " x " + str(
         entradaFeaturesYTarget4.shape[1]))
@@ -415,47 +617,48 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
     print("pathCsvIntermedio: " + pathCsvIntermedio)
 
     ################################### NORMALIZACIÓN YEO-JOHNSON ####################################################
-    print("Normalizando cada feature...")
-    # Vamos a normalizar z-score (media 0, std_dvt=1), pero yeo-johnson tiene un bug (https://github.com/scipy/scipy/issues/10821) que se soluciona sumando una constante a toda la matriz, lo cual no afecta a la matriz normalizada
-    featuresFichero = featuresFichero + 1.015815
+    if evitarNormalizarNiTramificar is False:
+        print("Normalizando cada feature...")
+        # Vamos a normalizar z-score (media 0, std_dvt=1), pero yeo-johnson tiene un bug (https://github.com/scipy/scipy/issues/10821) que se soluciona sumando una constante a toda la matriz, lo cual no afecta a la matriz normalizada
+        featuresFichero = featuresFichero + 1.015815
 
-    if modoTiempo == "pasado":
-        # Con el "normalizador COMPLEJO" solucionamos este bug: https://github.com/scikit-learn/scikit-learn/issues/14959  --> Aplicar los cambios indicados a:_/home/carloslinux/Desktop/PROGRAMAS/anaconda3/envs/BolsaPython/lib/python3.7/site-packages/sklearn/preprocessing/_data.py
-        modelo_normalizador = make_pipeline(MinMaxScaler(),
-                                            PowerTransformer(method='yeo-johnson', standardize=True, copy=True), ).fit(
-            featuresFichero)  # COMPLEJO
-        # modelo_normalizador = PowerTransformer(method='yeo-johnson', standardize=True, copy=True).fit(featuresFichero)
-        pickle.dump(modelo_normalizador, open(path_modelo_normalizador, 'wb'))
+        if modoTiempo == "pasado":
+            # Con el "normalizador COMPLEJO" solucionamos este bug: https://github.com/scikit-learn/scikit-learn/issues/14959  --> Aplicar los cambios indicados a:_/home/carloslinux/Desktop/PROGRAMAS/anaconda3/envs/BolsaPython/lib/python3.7/site-packages/sklearn/preprocessing/_data.py
+            modelo_normalizador = make_pipeline(MinMaxScaler(),
+                                                PowerTransformer(method='yeo-johnson', standardize=True, copy=True), ).fit(
+                featuresFichero)  # COMPLEJO
+            # modelo_normalizador = PowerTransformer(method='yeo-johnson', standardize=True, copy=True).fit(featuresFichero)
+            pickle.dump(modelo_normalizador, open(path_modelo_normalizador, 'wb'))
 
-    # Pasado o futuro: Cargar normalizador
-    modelo_normalizador = pickle.load(open(path_modelo_normalizador, 'rb'))
+        # Pasado o futuro: Cargar normalizador
+        modelo_normalizador = pickle.load(open(path_modelo_normalizador, 'rb'))
 
-    print("Aplicando normalizacion, manteniendo indices y nombres de columnas...")
-    featuresFicheroNorm = pd.DataFrame(data=modelo_normalizador.transform(featuresFichero),
-                                       index=featuresFichero.index,
-                                       columns=featuresFichero.columns)
+        print("Aplicando normalizacion, manteniendo indices y nombres de columnas...")
+        featuresFicheroNorm = pd.DataFrame(data=modelo_normalizador.transform(featuresFichero),
+                                           index=featuresFichero.index,
+                                           columns=featuresFichero.columns)
 
-    print("featuresFicheroNorm:" + str(featuresFicheroNorm.shape[0]) + " x " + str(featuresFicheroNorm.shape[1]))
-    featuresFicheroNorm.to_csv(pathCsvIntermedio + ".normalizado.csv", index=True,
-                               sep='|', float_format='%.4f')  # UTIL para testIntegracion
+        print("featuresFicheroNorm:" + str(featuresFicheroNorm.shape[0]) + " x " + str(featuresFicheroNorm.shape[1]))
+        featuresFicheroNorm.to_csv(pathCsvIntermedio + ".normalizado.csv", index=True,
+                                   sep='|', float_format='%.4f')  # UTIL para testIntegracion
 
-    if modoDebug and modoTiempo == "pasado":
-        print("FUNCIONES DE DENSIDAD (normalizadas):")
-        for column in featuresFicheroNorm:
-            path_dibujo = dir_subgrupo_img + column + "_NORM.png"
-            print("Guardando distrib de col normalizada: " + column + " en fichero: " + path_dibujo)
-            datos_columna = featuresFicheroNorm[column]
-            sns.distplot(datos_columna, kde=False, color='red', bins=dibujoBins)
-            plt.title(column + " (NORM)", fontsize=10)
-            plt.savefig(path_dibujo, bbox_inches='tight')
-            plt.clf();
-            plt.cla();
-            plt.close()  # Limpiando dibujo
+        if modoDebug and modoTiempo == "pasado":
+            print("FUNCIONES DE DENSIDAD (normalizadas):")
+            for column in featuresFicheroNorm:
+                path_dibujo = dir_subgrupo_img + column + "_NORM.png"
+                print("Guardando distrib de col normalizada: " + column + " en fichero: " + path_dibujo)
+                datos_columna = featuresFicheroNorm[column]
+                sns.distplot(datos_columna, kde=False, color='red', bins=dibujoBins)
+                plt.title(column + " (NORM)", fontsize=10)
+                plt.savefig(path_dibujo, bbox_inches='tight')
+                plt.clf();
+                plt.cla();
+                plt.close()  # Limpiando dibujo
 
-    featuresFichero3 = featuresFicheroNorm
+        featuresFichero3 = featuresFicheroNorm
 
     ##############################################################################
-    if evitarNormalizarNiTramificar:
+    else:
         # NO NORMALIZAR y NO TRAMIFICAR
         featuresFichero3 = featuresFichero
     ##############################################################################
@@ -957,13 +1160,20 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         nombreModelo = "lgbm"
 
         params = {'objective': 'binary',
-                  'learning_rate': 0.02,
+                  'learning_rate': 0.20,
                   "boosting_type": "gbdt",
                   "metric": 'precision',
                   'n_jobs': -1,
-                  'min_data_in_leaf': 32,
-                  'num_leaves': 1024,
+                  'min_data_in_leaf': 3,
+                  'min_child_samples': 3,
+                  'num_leaves': 25,  # maximo numero de hojas
+                  'max_depth': 8,
+                  'random_state': 0,
+                  'importance_type': 'split',
+                  'min_split_gain': 0.0,
+                  # min_child_weight = 0.001,  subsample = 1.0, subsample_freq = 0, colsample_bytree = 1.0, reg_alpha = 0.0, reg_lambda = 0.0,
                   }
+
         modelo = lgb.LGBMClassifier(**params, n_estimators=50)
         modelo.fit(ds_train_f, ds_train_t, eval_set=[(ds_train_f, ds_train_t), (ds_test_f, ds_test_t)])
         #####################################################
@@ -1028,7 +1238,8 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
 
         # NO BORRAR: UTIL para informe HTML entregable
         precisionSistemaRandom = 1/tasaDesbalanceoAntes # Precision del sistema tonto
-        mejoraRespectoSistemaRandom= (-100 + 100*((precision_test+precision_validation)/2)/precisionSistemaRandom)
+        precisionMediaTestValid = (precision_test+precision_validation)/2
+        mejoraRespectoSistemaRandom = 100 * (precisionMediaTestValid - precisionSistemaRandom)/precisionSistemaRandom
         print("ENTREGABLEPRECISIONESPASADO"
               + "|id_subgrupo:" + str(id_subgrupo)
               + "|precisionpasadotrain:" + str(round(precision_train, 2))
@@ -1065,6 +1276,9 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         print("PASADO -> " + id_subgrupo + " (num features = " + str(
             ds_train_f.shape[1]) + ")" + " -> Modelo ganador = " + ganador_nombreModelo + " --> METRICA = " + str(
             round(ganador_metrica, 4)) + " (avg_precision = " + str(round(ganador_metrica_avg, 4)) + ")")
+
+        print("PASADO -> " + id_subgrupo + " TASA DE MEJORA DE PRECISION RESPECTO A RANDOM: ",
+              round(ganador_metrica / (1/(1+tasaDesbalanceoAntes)), 2))
 
         print("Hiperparametros:")
         print(ganador_grid_mejores_parametros)
@@ -1204,8 +1418,8 @@ elif (modoTiempo == "futuro" and pathCsvReducido.endswith('.csv') and os.path.is
         df_predichos_probs = df_predichos_probs.astype({"anio": int, "mes": int, "dia": int})
 
         print("Juntar COMPLETO con TARGETS PREDICHOS... ")
-        df_juntos_1 = pd.merge(df_completo, df_predichos, on=["empresa", "anio", "mes", "dia"])
-        df_juntos_2 = pd.merge(df_juntos_1, df_predichos_probs, on=["empresa", "anio", "mes", "dia"])
+        df_juntos_1 = pd.merge(df_completo, df_predichos, on=["empresa", "anio", "mes", "dia"], how='left')
+        df_juntos_2 = pd.merge(df_juntos_1, df_predichos_probs, on=["empresa", "anio", "mes", "dia"], how='left')
 
         df_juntos_2['TARGET_PREDICHO'] = (df_juntos_2['TARGET_PREDICHO'] * 1).astype(
             'Int64')  # Convertir de boolean a int64, manteniendo los nulos

@@ -9,6 +9,7 @@ from IPython.display import HTML
 # - Carpeta Dropbox: contiene varios CSV (predicciones MANEJABLES para cada subgrupo, excluyendo el SG_0 que no es util)
 # - Path al fichero CALIDAD.csv
 # - Path al CSV de falsos positivos segun empresas
+# - Path al fichero de FALSOS POSITIVOS agrupado por empresas
 # Salidas:
 # - Fichero llamado 202XMMDD.html en la carpeta de Dropbox que agrupa toda la info predicha para ese dia. Ademas, le añade columnas de CALIDAD.csv para poder entregarlo ordenado
 ###############################################################
@@ -166,6 +167,8 @@ todasEmpresasYProbabsDF = todasEmpresasYProbabsDF_columnasSorted
 todasEmpresasYProbabsDF_aux['prob_media'] = todasEmpresasYProbabsDF_aux.replace('', np.nan).astype(float).mean(
     skipna=True, numeric_only=True, axis=1)
 todasEmpresasYProbabsDF['prob_media'] = todasEmpresasYProbabsDF_aux['prob_media']
+todasEmpresasYProbabsDF_aux['num_sg'] = todasEmpresasYProbabsDF_aux.drop('prob_media', axis=1).replace('', np.nan).astype(float).count(axis=1)
+todasEmpresasYProbabsDF['num_sg'] = todasEmpresasYProbabsDF_aux['num_sg']
 todasEmpresasYProbabsDF.sort_values(by=['prob_media'], ascending=False, inplace=True)
 
 # Operaciones de insiders (tambien son buen indicador, pero lo ponemos para evitar entrar a mirar en Finviz manualmente)

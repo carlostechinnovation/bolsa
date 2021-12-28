@@ -305,7 +305,7 @@ public class YahooFinance02Parsear implements Serializable {
 
 				// Detectar anomalias gigantes (posibles Splits o contrasplits)
 				boolean tieneAnomalias = detectarAnomaliasGigantes(empresa, listaPreciosClose, listaPreciosOpen,
-						listaPreciosClose, "CLOSE");
+						listaPreciosClose, "OPEN");
 
 				if (tieneAnomalias == false) {
 
