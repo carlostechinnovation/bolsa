@@ -398,21 +398,21 @@ public class ConstructorElaborados implements Serializable {
 							auxOpen = parametros.get("open");
 
 							// Precio simple
-							estadisticasClose.addValue(new Double(auxClose));
-							estadisticasHigh.addValue(new Double(auxHigh));
-							estadisticasLow.addValue(new Double(auxLow));
-							estadisticasOpen.addValue(new Double(auxOpen));
+							estadisticasClose.addValue(Double.valueOf(auxClose));
+							estadisticasHigh.addValue(Double.valueOf(auxHigh));
+							estadisticasLow.addValue(Double.valueOf(auxLow));
+							estadisticasOpen.addValue(Double.valueOf(auxOpen));
 
 							// Precio complejo
-							estadisticasCloseOpen.addValue(new Double(auxClose) - new Double(auxOpen));
-//							estadisticasCloseHigh.addValue(new Double(auxClose) - new Double(auxHigh));
-//							estadisticasCloseLow.addValue(new Double(auxClose) - new Double(auxLow));
-							estadisticasOpenHigh.addValue(new Double(auxOpen) - new Double(auxHigh));
-//							estadisticasOpenLow.addValue(new Double(auxOpen) - new Double(auxLow));
-							estadisticasHighLow.addValue(new Double(auxHigh) - new Double(auxLow));
+							estadisticasCloseOpen.addValue(Double.valueOf(auxClose) - Double.valueOf(auxOpen));
+//							estadisticasCloseHigh.addValue( Double.valueOf(auxClose) -  Double.valueOf(auxHigh));
+//							estadisticasCloseLow.addValue( Double.valueOf(auxClose) -  Double.valueOf(auxLow));
+							estadisticasOpenHigh.addValue(Double.valueOf(auxOpen) - Double.valueOf(auxHigh));
+//							estadisticasOpenLow.addValue( Double.valueOf(auxOpen) -  Double.valueOf(auxLow));
+							estadisticasHighLow.addValue(Double.valueOf(auxHigh) - Double.valueOf(auxLow));
 
 							// Volumen
-							estadisticasVolumen.addValue(new Double(auxVolumen));
+							estadisticasVolumen.addValue(Double.valueOf(auxVolumen));
 
 							MY_LOGGER.debug("(antiguedad: " + antiguedad + ", periodo: " + periodo
 									+ ") Metido para estadísticas: " + auxClose);

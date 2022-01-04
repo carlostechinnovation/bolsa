@@ -98,8 +98,11 @@ public class LimpiarCSVBrutosTemporales {
 				boolean temporalFinviz = name.startsWith(BrutosUtils.FINVIZ_ESTATICOS + "_") && name.endsWith(".csv");
 				boolean temporalFinvizInsiders = name.startsWith(BrutosUtils.FINVIZ_INSIDERS + "_")
 						&& name.endsWith(".csv");
+				boolean temporalFinvizNoticias = name.startsWith(BrutosUtils.FINVIZ_NOTICIAS + "_")
+						&& name.endsWith(".csv");
 
-				if (temporalNasdaqOld || temporalYahoo || temporalFinviz || temporalFinvizInsiders) {
+				if (temporalNasdaqOld || temporalYahoo || temporalFinviz || temporalFinvizInsiders
+						|| temporalFinvizNoticias) {
 					return true;
 				}
 				return false;

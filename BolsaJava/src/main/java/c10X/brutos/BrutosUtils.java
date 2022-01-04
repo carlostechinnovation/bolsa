@@ -27,6 +27,7 @@ public class BrutosUtils implements Serializable {
 	public static final String YAHOOFINANCE = "YF";
 	public static final String FINVIZ_ESTATICOS = "FZ";
 	public static final String FINVIZ_INSIDERS = "FI";
+	public static final String FINVIZ_NOTICIAS = "FN";
 	public static final String BRUTO_FINAL = "BR"; // Prefijo del fichero final
 
 	public static final String MERCADO_NQ = "NASDAQ";

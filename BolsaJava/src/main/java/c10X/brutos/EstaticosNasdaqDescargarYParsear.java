@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
@@ -46,7 +48,7 @@ public class EstaticosNasdaqDescargarYParsear implements Serializable {
 	// En la lista DIRECTA de empresas, saltamos todas las empresas cuyo ticker
 	// empiece por una letra anterior a la indicada (orden alfabético).
 	// Ej: si letra=N, saltamos todas las empresas cuyo ticker empieza por A-N
-	private static String LETRA_INICIO_LISTA_DIRECTA = "A"; // Default= A
+	public static String LETRA_INICIO_LISTA_DIRECTA = "A"; // Default= A
 
 	private EstaticosNasdaqDescargarYParsear() {
 		super();
@@ -54,8 +56,14 @@ public class EstaticosNasdaqDescargarYParsear implements Serializable {
 
 	public static EstaticosNasdaqDescargarYParsear getInstance() {
 		MY_LOGGER.info("getInstance...");
-		if (instancia == null)
+		if (instancia == null) {
 			instancia = new EstaticosNasdaqDescargarYParsear();
+			Object appendersAcumulados = Logger.getRootLogger().getAllAppenders();
+			if (appendersAcumulados instanceof NullEnumeration) {
+				MY_LOGGER.addAppender(new ConsoleAppender(new PatternLayout(Principal.LOG_PATRON)));
+			}
+			MY_LOGGER.setLevel(Level.INFO);
+		}
 
 		return instancia;
 	}
@@ -77,6 +85,7 @@ public class EstaticosNasdaqDescargarYParsear implements Serializable {
 		Integer numMaxEmpresas = BrutosUtils.NUM_EMPRESAS_PRUEBAS; // DEFAULT
 		String dirBruto = BrutosUtils.DIR_BRUTOS; // DEFAULT
 		String dirBrutoCsv = BrutosUtils.DIR_BRUTOS_CSV; // DEFAULT
+		String letraInicioListaDirecta = EstaticosNasdaqDescargarYParsear.LETRA_INICIO_LISTA_DIRECTA; // DEFAULT
 		Integer entornoDeValidacion = 1; // DEFAULT
 
 		if (args.length != 0) {
@@ -86,16 +95,18 @@ public class EstaticosNasdaqDescargarYParsear implements Serializable {
 
 		if (args.length == 0) {
 			MY_LOGGER.info("Sin parametros de entrada. Rellenamos los DEFAULT...");
-		} else if (args.length != 3) {
+		} else if (args.length != 4) {
 			MY_LOGGER.error("Parametros de entrada incorrectos!!");
 			System.exit(-1);
 		} else {
 			numMaxEmpresas = Integer.valueOf(args[0]);
 			dirBruto = args[1];
 			dirBrutoCsv = args[2];
+			letraInicioListaDirecta = args[3];
 		}
 
-		List<EstaticoNasdaqModelo> nasdaqEstaticos1 = descargarNasdaqEstaticosSoloLocal1(entornoDeValidacion);
+		List<EstaticoNasdaqModelo> nasdaqEstaticos1 = descargarNasdaqEstaticosSoloLocal1(entornoDeValidacion,
+				letraInicioListaDirecta);
 		descargarYparsearNasdaqEstaticos2(nasdaqEstaticos1, dirBruto, dirBrutoCsv, numMaxEmpresas);
 
 		MY_LOGGER.info("FIN");
@@ -189,8 +200,8 @@ public class EstaticosNasdaqDescargarYParsear implements Serializable {
 	 * @return Lista de empresas del NASDAQ con algunos datos ESTATICOS
 	 * @throws IOException
 	 */
-	public static List<EstaticoNasdaqModelo> descargarNasdaqEstaticosSoloLocal1(final Integer entornoDeValidacion)
-			throws IOException {
+	public static List<EstaticoNasdaqModelo> descargarNasdaqEstaticosSoloLocal1(final Integer entornoDeValidacion,
+			final String letraInicioListaDirecta) throws IOException {
 
 		MY_LOGGER.info("descargarNasdaqEstaticos1...");
 
@@ -239,7 +250,7 @@ public class EstaticosNasdaqDescargarYParsear implements Serializable {
 					boolean empresaEnListaDesconocidos = desconocidos.contains(tempArr[0]);
 					boolean empresaConMuchosFalsosPositivos = empresasFP.contains(tempArr[0]);
 					boolean empresaEnRangoDeLetrasPermitido = letraEstaPermitida(ALFABETO, tempArr[0],
-							LETRA_INICIO_LISTA_DIRECTA);
+							letraInicioListaDirecta);
 					// Si ya la hemos descargado, evitamos volver a traerla:
 					boolean empresaYaDescargada = empresasDescargables.contains(tempArr[0]);
 
@@ -251,11 +262,11 @@ public class EstaticosNasdaqDescargarYParsear implements Serializable {
 							&& tempArr[8].trim().equals("1")) ? 1 : 0;
 
 					if (empresaEnListaDesconocidos) {
-						MY_LOGGER.info("Empresa de la que sabemos que desconocemos datos en alguna de las fuentes: "
+						MY_LOGGER.debug("Empresa de la que sabemos que desconocemos datos en alguna de las fuentes: "
 								+ tempArr[0]);
 
 					} else if (empresaConMuchosFalsosPositivos) {
-						MY_LOGGER.info(
+						MY_LOGGER.debug(
 								"Empresa que sabemos que otras veces ha provocado muchos falsos positivos (entonces ya no la usamos): "
 										+ tempArr[0]);
 
@@ -351,11 +362,14 @@ public class EstaticosNasdaqDescargarYParsear implements Serializable {
 					primeraLinea = false;
 
 				} else if (primeraLinea == false) {
-
 					String[] tempArr = line.split("\\|", -1); // El -1 indica coger las cadenas vacías!!
 					activasTickers.add(tempArr[0]);
 				}
 			}
+
+			// cerrar fichero
+			br.close();
+
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		}
@@ -574,6 +588,13 @@ public class EstaticosNasdaqDescargarYParsear implements Serializable {
 		return out;
 	}
 
+	public static String readStringFromURL(String requestURL) throws IOException {
+		try (Scanner scanner = new Scanner(new URL(requestURL).openStream(), StandardCharsets.UTF_8.toString())) {
+			scanner.useDelimiter("\\A");
+			return scanner.hasNext() ? scanner.next() : "";
+		}
+	}
+
 	/**
 	 * NASDAQ - ESTATICOS-2 - Parsear (nucleo)
 	 * 
@@ -776,7 +797,7 @@ public class EstaticosNasdaqDescargarYParsear implements Serializable {
 
 		char letraTickerAnalizada = ticker.charAt(0);
 
-		boolean letraInicioEncontrada = false, letraTickerAnalizadaEncontrada = false, permitida = false;
+		boolean letraInicioEncontrada = false, permitida = false;
 
 		for (char c : alfabeto) {
 			if (letraInicio.equalsIgnoreCase(String.valueOf(c))) {
@@ -791,10 +812,10 @@ public class EstaticosNasdaqDescargarYParsear implements Serializable {
 		}
 
 		if (ticker.equals(BrutosUtils.NASDAQ_REFERENCIA)) {
-			permitida = true; // La excepcion
+			permitida = true; // La empresa de referencia siempre entra
 		}
 
-		MY_LOGGER.info("letraEstaPermitida --> Letra_inicial=" + letraInicio + " --> ticker=" + ticker
+		MY_LOGGER.debug("letraEstaPermitida --> Letra_inicial=" + letraInicio + " --> ticker=" + ticker
 				+ " --> Permitida=" + permitida);
 
 		return permitida;

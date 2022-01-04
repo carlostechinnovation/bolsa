@@ -58,11 +58,12 @@ public class YahooFinance01Descargar implements Serializable {
 		String rango = BrutosUtils.RANGO_YF_1Y; // DEFAULT
 		String velaYF = BrutosUtils.VELA_YF_1D; // DEFAULT
 		Integer entornoDeValidacion = BrutosUtils.ES_ENTORNO_VALIDACION;// DEFAULT
+		String letraInicioListaDirecta = EstaticosNasdaqDescargarYParsear.LETRA_INICIO_LISTA_DIRECTA; // DEFAULT
 
 		if (args.length == 0) {
 			MY_LOGGER.info("Sin parametros de entrada. Rellenamos los DEFAULT...");
 
-		} else if (args.length != 6) {
+		} else if (args.length != 7) {
 			MY_LOGGER.error("Parametros de entrada incorrectos!!");
 			int numParams = args.length;
 			MY_LOGGER.info("Numero de parametros: " + numParams);
@@ -78,13 +79,14 @@ public class YahooFinance01Descargar implements Serializable {
 			rango = args[3];
 			velaYF = args[4];
 			entornoDeValidacion = Integer.valueOf(args[5]);
+			letraInicioListaDirecta = args[6];
 			MY_LOGGER.info("Parametros de entrada -> " + numMaxEmpresas + " | " + directorioOut + " | " + modo + "|"
-					+ rango + "|" + velaYF + "|" + entornoDeValidacion);
+					+ rango + "|" + velaYF + "|" + entornoDeValidacion + "|" + letraInicioListaDirecta);
 		}
 
 		EstaticosNasdaqDescargarYParsear.getInstance();
 		List<EstaticoNasdaqModelo> nasdaqEstaticos1 = EstaticosNasdaqDescargarYParsear
-				.descargarNasdaqEstaticosSoloLocal1(entornoDeValidacion);
+				.descargarNasdaqEstaticosSoloLocal1(entornoDeValidacion, letraInicioListaDirecta);
 		descargarNasdaqDinamicos01(nasdaqEstaticos1, numMaxEmpresas, directorioOut, modo, rango, velaYF);
 
 		MY_LOGGER.info("FIN");
@@ -123,9 +125,9 @@ public class YahooFinance01Descargar implements Serializable {
 				String pathOut = directorioOut + BrutosUtils.YAHOOFINANCE + "_" + mercado + "_" + ticker + ".txt";
 				String URL_yahoo_ticker = getUrlYahooFinance(ticker, modo, rango, velaYF);
 
-				if (i % 10 == 1) {
-					MY_LOGGER.info("Empresa numero = " + (i + 1) + " (" + ticker + ")");
-				}
+//				if (i % 10 == 1) {
+				MY_LOGGER.info("Empresa numero = " + (i + 1) + " (" + ticker + ")");
+//				}
 				MY_LOGGER.debug("pathOut=" + pathOut);
 				MY_LOGGER.debug("URL_yahoo_ticker=" + URL_yahoo_ticker);
 

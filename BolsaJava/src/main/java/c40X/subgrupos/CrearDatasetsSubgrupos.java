@@ -813,6 +813,7 @@ public class CrearDatasetsSubgrupos implements Serializable {
 		// Para el subgrupo 0 siempre se añade
 		// NO QUITAR, PARA QUE LAS GRÁFICAS FINALES SE PINTEN BASADAS EN ESTE GRUPO,
 		// QUE CONTIENE TODOS
+		MY_LOGGER.info("El SUBGRUPO 0 tiene " + pathEmpresasTipo0.size() + " empresas");
 		empresasPorTipo.put(0, pathEmpresasTipo0);
 
 		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 1, pathEmpresasTipo1, realimentacion);
@@ -1205,6 +1206,9 @@ public class CrearDatasetsSubgrupos implements Serializable {
 		// Quitar duplicados
 		List<String> listWithoutDuplicates = lista.stream().distinct().collect(Collectors.toList());
 
+		// cerrar fichero
+		br.close();
+
 		return listWithoutDuplicates;
 	}
 
@@ -1233,12 +1237,15 @@ public class CrearDatasetsSubgrupos implements Serializable {
 				}
 			}
 
+			// cerrar fichero
+			br.close();
 		}
 
 		// Quitar duplicados
 		List<String> listWithoutDuplicates = lista.stream().distinct().collect(Collectors.toList());
 		MY_LOGGER.info("leerListaClusteringAlternativo --> Subgrupo alternativo usado: " + idSubgrupoAlternativoElegido
 				+ " --> " + listWithoutDuplicates.size() + " empresas");
+
 		return listWithoutDuplicates;
 	}
 

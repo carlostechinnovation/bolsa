@@ -72,6 +72,19 @@ public class EstaticosFinvizDescargarYParsear {
 	public static EstaticosFinvizDescargarYParsear getInstance() {
 		if (instancia == null) {
 			instancia = new EstaticosFinvizDescargarYParsear();
+			// Poblar mapa
+			mapaFechasInsiders.put("Jan", "01");
+			mapaFechasInsiders.put("Feb", "02");
+			mapaFechasInsiders.put("Mar", "03");
+			mapaFechasInsiders.put("Apr", "04");
+			mapaFechasInsiders.put("May", "05");
+			mapaFechasInsiders.put("Jun", "06");
+			mapaFechasInsiders.put("Jul", "07");
+			mapaFechasInsiders.put("Aug", "08");
+			mapaFechasInsiders.put("Sep", "09");
+			mapaFechasInsiders.put("Oct", "10");
+			mapaFechasInsiders.put("Nov", "11");
+			mapaFechasInsiders.put("Dec", "12");
 		}
 
 		return instancia;
@@ -79,10 +92,9 @@ public class EstaticosFinvizDescargarYParsear {
 
 	/**
 	 * @param args
-	 * @throws IOException
-	 * @throws InterruptedException
+	 * @throws Exception
 	 */
-	public static void main(String[] args) throws IOException, InterruptedException {
+	public static void main(String[] args) throws Exception {
 
 		Object appendersAcumulados = Logger.getRootLogger().getAllAppenders();
 		if (appendersAcumulados instanceof NullEnumeration) {
@@ -95,25 +107,12 @@ public class EstaticosFinvizDescargarYParsear {
 		String dirBruto = BrutosUtils.DIR_BRUTOS; // DEFAULT
 		String dirBrutoCsv = BrutosUtils.DIR_BRUTOS_CSV; // DEFAULT
 		Integer entornoDeValidacion = BrutosUtils.ES_ENTORNO_VALIDACION;// DEFAULT
-
-		// Poblar mapa
-		mapaFechasInsiders.put("Jan", "01");
-		mapaFechasInsiders.put("Feb", "02");
-		mapaFechasInsiders.put("Mar", "03");
-		mapaFechasInsiders.put("Apr", "04");
-		mapaFechasInsiders.put("May", "05");
-		mapaFechasInsiders.put("Jun", "06");
-		mapaFechasInsiders.put("Jul", "07");
-		mapaFechasInsiders.put("Aug", "08");
-		mapaFechasInsiders.put("Sep", "09");
-		mapaFechasInsiders.put("Oct", "10");
-		mapaFechasInsiders.put("Nov", "11");
-		mapaFechasInsiders.put("Dec", "12");
+		String letraInicioListaDirecta = EstaticosNasdaqDescargarYParsear.LETRA_INICIO_LISTA_DIRECTA; // DEFAULT
 
 		if (args.length == 0) {
 			MY_LOGGER.info("Sin parametros de entrada. Rellenamos los DEFAULT...");
 
-		} else if (args.length != 4) {
+		} else if (args.length != 5) {
 			MY_LOGGER.error("Parametros de entrada incorrectos!! --> " + args.length);
 			int numParams = args.length;
 			MY_LOGGER.error("Numero de parametros: " + numParams);
@@ -128,16 +127,18 @@ public class EstaticosFinvizDescargarYParsear {
 			dirBruto = args[1];
 			dirBrutoCsv = args[2];
 			entornoDeValidacion = Integer.valueOf(args[3]);
+			letraInicioListaDirecta = args[4];
 			MY_LOGGER.debug("PARAMS -> " + numMaxEmpresas + " | " + dirBruto + " | " + dirBrutoCsv + "|"
-					+ entornoDeValidacion.toString());
+					+ entornoDeValidacion.toString() + "|" + letraInicioListaDirecta);
 		}
 
 		Map<String, String> mapaExtraidos = new HashMap<String, String>();
 		List<String> operacionesInsidersLimpias = new ArrayList<String>();
 		final String cabeceraFicheroOpsInsiders = "fecha|tipooperacion|importe";
+		FinvizNoticiasEmpresa noticias = null;
 
 		List<EstaticoNasdaqModelo> nasdaqEstaticos1 = EstaticosNasdaqDescargarYParsear
-				.descargarNasdaqEstaticosSoloLocal1(entornoDeValidacion);
+				.descargarNasdaqEstaticosSoloLocal1(entornoDeValidacion, letraInicioListaDirecta);
 
 		String rutaHtmlBruto;
 		long msegEspera = -1;
@@ -149,10 +150,11 @@ public class EstaticosFinvizDescargarYParsear {
 			operacionesInsidersLimpias.add(cabeceraFicheroOpsInsiders); // CABECERA
 
 			String empresa = nasdaqEstaticos1.get(i).symbol;
+			noticias = new FinvizNoticiasEmpresa(BrutosUtils.MERCADO_NQ, empresa);
 
-			if (i % 10 == 1) {
-				MY_LOGGER.info("Empresa numero = " + (i + 1) + " (" + empresa + ")");
-			}
+//			if (i % 10 == 1) {
+			MY_LOGGER.info("Empresa numero = " + (i + 1) + " (" + empresa + ")");
+//			}
 
 			String urlFinvizEmpresa = "https://finviz.com/quote.ashx?t=" + empresa;
 			rutaHtmlBruto = dirBruto + BrutosUtils.FINVIZ_ESTATICOS + "_" + BrutosUtils.MERCADO_NQ + "_" + empresa
@@ -165,7 +167,8 @@ public class EstaticosFinvizDescargarYParsear {
 			boolean descargaBien = descargarPaginaFinviz(rutaHtmlBruto, true, urlFinvizEmpresa);
 
 			if (descargaBien) {
-				parsearFinviz1(empresa, rutaHtmlBruto, mapaExtraidos, operacionesInsidersLimpias);
+				parsearFinviz1(BrutosUtils.MERCADO_NQ, empresa, rutaHtmlBruto, mapaExtraidos,
+						operacionesInsidersLimpias, noticias);
 
 				if (mapaExtraidos.size() > 0) {
 
@@ -174,6 +177,12 @@ public class EstaticosFinvizDescargarYParsear {
 							+ BrutosUtils.MERCADO_NQ + "_" + nasdaqEstaticos1.get(i).symbol + ".csv";
 					volcarDatosInsidersEnCSV(BrutosUtils.MERCADO_NQ, nasdaqEstaticos1.get(i).symbol,
 							operacionesInsidersLimpias, rutaInsidersCsvBruto);
+
+					// NOTICIAS (BRUTO): las vuelca en CSV con formato DIA->[noticia1, noticia2...]
+					String rutaNoticiasCsvBruto = dirBrutoCsv + BrutosUtils.FINVIZ_NOTICIAS + "_"
+							+ BrutosUtils.MERCADO_NQ + "_" + nasdaqEstaticos1.get(i).symbol + ".csv";
+					noticias.volcarDatosNoticiasEnCSV(BrutosUtils.MERCADO_NQ, nasdaqEstaticos1.get(i).symbol,
+							rutaNoticiasCsvBruto, MY_LOGGER);
 
 					// BRUTOS CSV: vuelca a CSV lo que haya en mapaExtraidos para cada empresa
 					String rutaCsvBruto = dirBrutoCsv + BrutosUtils.FINVIZ_ESTATICOS + "_" + BrutosUtils.MERCADO_NQ
@@ -343,13 +352,18 @@ public class EstaticosFinvizDescargarYParsear {
 	/**
 	 * NASDAQ - ESTATICOS-2 - Parsear (nucleo)
 	 * 
+	 * @param mercado
+	 * @param idEmpresa
 	 * @param rutaHtmlBruto
-	 * @param mapaExtraidos Lista de salida, que hay que rellenar con lo extraido.
-	 * @return
-	 * @throws IOException
+	 * @param mapaExtraidos              Lista de salida, que hay que rellenar con
+	 *                                   lo extraido.
+	 * @param operacionesInsidersLimpias
+	 * @param noticias
+	 * @throws Exception
 	 */
-	public static void parsearFinviz1(String idEmpresa, String rutaHtmlBruto, Map<String, String> mapaExtraidos,
-			List<String> operacionesInsidersLimpias) throws IOException {
+	public static void parsearFinviz1(String mercado, String idEmpresa, String rutaHtmlBruto,
+			Map<String, String> mapaExtraidos, List<String> operacionesInsidersLimpias, FinvizNoticiasEmpresa noticias)
+			throws Exception {
 
 		MY_LOGGER.debug("parsearNasdaqEstaticos2 --> " + idEmpresa + "|" + rutaHtmlBruto);
 
@@ -391,6 +405,11 @@ public class EstaticosFinvizDescargarYParsear {
 			// Price-to-Sales (ttm)
 			extraerInfoDeFila("P/S", t, mapaExtraidos, BrutosUtils.ESCALA_UNO, false);
 		}
+
+		// ------------ TABLA DE NOTICIAS -------------------
+
+		Element tablaNoticias = doc.getElementById("news-table");
+		extraerInfoDeNoticias(mercado, idEmpresa, tablaNoticias, noticias);
 
 		// ---------- TABLA DE COMPRAS/VENTAS DE INSIDERS --------------
 		Elements tablasInsidersAux = doc.getElementsByClass("body-table");
@@ -464,14 +483,92 @@ public class EstaticosFinvizDescargarYParsear {
 	}
 
 	/**
+	 * Parsea el HTML de titulares de noticias de una empresa en FINVIZ.
+	 * 
+	 * @param mercado
+	 * @param empresa
+	 * @param tablaNoticias Elemento HTML con datos de noticias (en bruto)
+	 * @param noticias      Un modelo para cada empresa. En cada modelo, hay un mapa
+	 *                      YYYYMMDD -> NOTICIAS
+	 */
+	private static void extraerInfoDeNoticias(String mercado, String empresa, Element tablaNoticias,
+			FinvizNoticiasEmpresa noticias) {
+
+		Integer ultimaFechaProcesada = null;
+
+		Elements filas = tablaNoticias.child(0).children();
+		for (int i = 0; i < filas.size(); i++) {
+			Element fila = filas.get(i);
+			ultimaFechaProcesada = procesarNoticiaHtml(mercado, empresa, fila, ultimaFechaProcesada, noticias);
+		}
+
+	}
+
+	/**
+	 * Procesa una noticia y la mete en el mapa.
+	 * 
+	 * @param mercado
+	 * @param empresa
+	 * @param fila                 Contenido HTML bruto. Pueden no tener día, pero
+	 *                             SIEMPRE tienen hora y minuto.
+	 * @param ultimaFechaProcesada Ultima fecha conocida YYYYMMDD, en un parseo
+	 *                             previo (arrastrada). Se entiende que es aplicable
+	 *                             a esta noticia si aparece sin fecha.
+	 * @param noticias             Modelo que explica las noticias de una empresa.
+	 * 
+	 * @return Fecha extraida tras parsear. Si no hay, devuelve el parametro
+	 *         ultimaFechaProcesada.
+	 */
+	private static Integer procesarNoticiaHtml(String mercado, String empresa, Element fila,
+			Integer ultimaFechaProcesada, FinvizNoticiasEmpresa noticias) {
+
+		String fecha1 = fila.child(0).text();
+
+		Element titularylink = fila.child(1).child(0).child(0).child(0);
+
+		// LINK a la descripcion de la noticia
+		String link = titularylink.attr("href");
+
+		// Titular de la noticia
+		String titular = titularylink.text().replace("|", "").trim();
+
+		if (titular != null && !titular.trim().isEmpty()) {
+
+			if (fecha1.contains(" ")) {
+				String[] amdfh = fecha1.split("\\s+");
+				String[] amd = amdfh[0].split("-");
+				String mesIn = getInstance().mapaFechasInsiders.get(amd[0]);
+				ultimaFechaProcesada = 10000 * (2000 + Integer.valueOf(amd[2])) + 100 * Integer.valueOf(mesIn)
+						+ Integer.valueOf(amd[1]);
+			}
+
+			if (noticias.mapa.containsKey(ultimaFechaProcesada)) {
+				// Si ya existe una fila para ese día en el modelo, se añade la noticia en el
+				// mapa, para el dia indicado
+				noticias.mapa.get(ultimaFechaProcesada).add(titular);
+
+			} else {
+				// Si no existen todavia noticias de ese dia
+				List<String> lista = new ArrayList<String>();
+				lista.add(titular);
+				noticias.mapa.put(ultimaFechaProcesada, lista);
+			}
+		}
+
+		return ultimaFechaProcesada;
+	}
+
+	/**
 	 * Parsea la tabla de compras/ventas de los insiders de FINVIZ.
 	 * 
 	 * @param t                          Tabla con datos de operaciones de los
 	 *                                   insiders
 	 * @param operacionesInsidersLimpias Lista donde se meten los datos encontrados
 	 *                                   (pensado para guardar en formato CSV)
+	 * @throws Exception
 	 */
-	private static void extraerInfoDeTablaInsiders(Element t, List<String> operacionesInsidersLimpias) {
+	private static void extraerInfoDeTablaInsiders(Element t, List<String> operacionesInsidersLimpias)
+			throws Exception {
 
 		Elements operacionesInsiders = t.child(0).children();
 		for (int i = 0; i < operacionesInsiders.size(); i++) {
@@ -592,13 +689,19 @@ public class EstaticosFinvizDescargarYParsear {
 	 * 
 	 * @param in Cadena con la fecha (SIN año)
 	 * @return Fecha AAAAMMDD
+	 * @throws Exception
 	 */
-	public static String interpretarFechaInsider(String in) {
+	public static String interpretarFechaInsider(String in) throws Exception {
 		String out = "";
+
+		if (getInstance().mapaFechasInsiders.isEmpty()) {
+			throw new Exception(
+					"mapaFechasInsiders esta vacio, pero deberia haberse poblado al iniciar la instancia. Saliendo...");
+		}
 
 		if (in != null && !in.isEmpty()) {
 			String[] partes = in.split("\\s+");
-			String mesIn = mapaFechasInsiders.get(partes[0]);
+			String mesIn = getInstance().mapaFechasInsiders.get(partes[0]);
 
 			int anioHoy = Calendar.getInstance().get(Calendar.YEAR);
 			String hoyStr = sdf.format(Calendar.getInstance().getTime());

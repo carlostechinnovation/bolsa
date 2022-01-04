@@ -2,14 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="22edbd2f-b3d9-42f0-a7dd-659033ab601a" name="Default Changelist" comment="Machine Learning - Ejemplo">
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/main/java/c10X/brutos/YahooFinance02Parsear.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/main/java/c10X/brutos/YahooFinance02Parsear.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BolsaJava/realimentacion/falsospositivos_diaensemana.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/realimentacion/falsospositivos_diaensemana.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BolsaJava/realimentacion/falsospositivos_empresas.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/realimentacion/falsospositivos_empresas.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BolsaJava/realimentacion/falsospositivos_meses.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/realimentacion/falsospositivos_meses.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BolsaJava/realimentacion/falsospositivos_subgrupos.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/realimentacion/falsospositivos_subgrupos.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bolsa/C5C6Manual.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/C5C6Manual.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bolsa/C5C6Manual_bucle.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/C5C6Manual_bucle.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bolsa/InversionJuntarPrediccionesDeUnDia.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/InversionJuntarPrediccionesDeUnDia.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bolsa/InversionUtilsPosteriori.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/InversionUtilsPosteriori.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bolsa/PintarMetricasyRentabilidades.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/PintarMetricasyRentabilidades.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaScripts/parametros.config" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/parametros.config" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -73,7 +72,7 @@
       <recent name="C:\DATOS\GITHUB_REPOS\bolsa\BolsaPython\bolsa" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.InversionJuntarPrediccionesDeUnDia">
+  <component name="RunManager" selected="Python.PintarMetricasyRentabilidades">
     <configuration name="06_redneuronal_lstm_2" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="BolsaPython" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -120,16 +119,13 @@
       <module name="BolsaPython" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
       <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/bolsa" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/bolsa/C5C6Manual.py" />
-      <option name="PARAMETERS" value="/bolsa/pasado/subgrupos/SG_11/ pasado 35 5000 0" />
+      <option name="PARAMETERS" value="/bolsa/pasado/subgrupos/SG_11/ pasado 35 25000 0" />
       <option name="SHOW_COMMAND_LINE" value="true" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -430,8 +426,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.InversionJuntarPrediccionesDeUnDia" />
         <item itemvalue="Python.PintarMetricasyRentabilidades" />
+        <item itemvalue="Python.InversionJuntarPrediccionesDeUnDia" />
         <item itemvalue="Python.C5C6Manual_bucle" />
         <item itemvalue="Python.C5C6ManualTest" />
         <item itemvalue="Python.TestIntegracionUtilidad1" />
@@ -511,13 +507,8 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/bolsa/C5C6Manual.py</url>
-          <line>1408</line>
+          <line>1409</line>
           <option name="timeStamp" value="136" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/bolsa/PintarMetricasyRentabilidades.py</url>
-          <line>108</line>
-          <option name="timeStamp" value="143" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/bolsa/InversionJuntarPrediccionesDeUnDia.py</url>

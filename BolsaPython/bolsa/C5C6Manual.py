@@ -43,8 +43,8 @@ print("modoTiempo = %s" % modoTiempo)
 print("maxFeatReducidas = %s" % maxFeatReducidas)
 print("maxFilasEntrada = %s" % maxFilasEntrada)
 
-varianza = 0.87  # Variacion acumulada de las features PCA sobre el target
-UMBRAL_VELASMUYANTIGUASELIMINABLES = (5 * 4.5 * 4)  # todas las velas con mas antiguedad que este umbral no se usan para train ni test ni valid. Recom: 54 (3 meses)
+varianza = 0.90  # Variacion acumulada de las features PCA sobre el target
+UMBRAL_VELASMUYANTIGUASELIMINABLES = (5 * 4.5 * 4)  # todas las velas con mas antiguedad que este umbral no se usan para train ni test ni valid. Recom: 90 (4 meses)
 UMBRAL_COLUMNAS_DEMASIADOS_NULOS = 0.25  # Porcentaje de nulos en cada columna. Si se supera, borramos toda la columna. Recomendable: 0.40
 compatibleParaMuchasEmpresas = False  # Si hay muchas empresas, debo hacer ya el undersampling (en vez de capa 6)
 global modoDebug;
@@ -109,7 +109,7 @@ print("Tipo de problema: CLASIFICACION DICOTOMICA (target es boolean)")
 
 print("PARAMETROS: ")
 pathFeaturesSeleccionadas = dir_subgrupo + "FEATURES_SELECCIONADAS.csv"
-umbralCasosSuficientesClasePositiva = 30
+umbralCasosSuficientesClasePositiva = 100
 umbralProbTargetTrue = 0.50  # IMPORTANTE: umbral para decidir si el target es true o false
 granProbTargetUno = 100  # De todos los target=1, nos quedaremos con los granProbTargetUno (en tanto por cien) MAS probables. Un valor de 100 o mayor anula este parámetro
 umbralFeaturesCorrelacionadas = varianza  # Umbral aplicado para descartar features cuya correlacion sea mayor que él
@@ -118,6 +118,7 @@ fraccion_train = 0.60  # Fracción de datos usada para entrenar
 fraccion_test = 0.20  # Fracción de datos usada para testear (no es validación)
 fraccion_valid = 1.00 - (fraccion_train + fraccion_test)
 
+print("umbralCasosSuficientesClasePositiva (positivos en pasado de train+test+valid) = " + str(umbralCasosSuficientesClasePositiva))
 print("umbralProbTargetTrue = " + str(umbralProbTargetTrue))
 print("granProbTargetUno = " + str(granProbTargetUno))
 
@@ -1237,9 +1238,9 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
 
 
         # NO BORRAR: UTIL para informe HTML entregable
-        precisionSistemaRandom = 1/tasaDesbalanceoAntes # Precision del sistema tonto
-        precisionMediaTestValid = (precision_test+precision_validation)/2
-        mejoraRespectoSistemaRandom = 100 * (precisionMediaTestValid - precisionSistemaRandom)/precisionSistemaRandom
+        precisionSistemaRandom = 1 / tasaDesbalanceoAntes # Precision del sistema tonto
+        precisionMediaTestValid = (precision_test + precision_validation) / 2
+        mejoraRespectoSistemaRandom = 100 * (precisionMediaTestValid - precisionSistemaRandom) / precisionSistemaRandom
         print("ENTREGABLEPRECISIONESPASADO"
               + "|id_subgrupo:" + str(id_subgrupo)
               + "|precisionpasadotrain:" + str(round(precision_train, 2))

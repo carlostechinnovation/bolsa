@@ -289,7 +289,7 @@ cat "/bolsa/logs/${file_log_pasado_mas_reciente}" | grep reales | grep predichos
 echo -e "<br>" >> ${INFORME_OUT}
 cat "/bolsa/logs/${file_log_pasado_mas_reciente}" | grep reales | grep predichos | grep ${SG_ANALIZADO} | grep 'VALID' >> ${INFORME_OUT}
 echo -e "<br>" >> ${INFORME_OUT}
-echo -e "<h3>¡¡¡ Un sistema aleatorio/tonto acertaría un 50% de los casos, simplemente diciendo siempre false (o true) !!!</h3>" >> ${INFORME_OUT}
+echo -e "<h3>¡¡¡ Un sistema aleatorio/tonto acertaría el INVERSO DE LA TASA DE DESBALANCEO, simplemente diciendo siempre false (o true) !!!</h3>" >> ${INFORME_OUT}
 echo -e "<h3>RECORDAR: Solo miramos la precisión sobre los positivos predichos, porque es donde ponemos el DINERO REAL. No miramos los positivos NO predichos ni los negativos predichos.</h3>" >> ${INFORME_OUT}
 
 echo -e "<br><br>" >> ${INFORME_OUT}

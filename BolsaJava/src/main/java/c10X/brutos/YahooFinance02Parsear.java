@@ -77,11 +77,12 @@ public class YahooFinance02Parsear implements Serializable {
 		String directorioOut = BrutosUtils.DIR_BRUTOS_CSV; // DEFAULT
 		String modo = BrutosUtils.FUTURO; // DEFAULT
 		Integer entornoDeValidacion = BrutosUtils.ES_ENTORNO_VALIDACION;// DEFAULT
+		String letraInicioListaDirecta = EstaticosNasdaqDescargarYParsear.LETRA_INICIO_LISTA_DIRECTA; // DEFAULT
 
 		if (args.length == 0) {
 			MY_LOGGER.info("Sin parametros de entrada. Rellenamos los DEFAULT...");
 
-		} else if (args.length != 4) {
+		} else if (args.length != 5) {
 			MY_LOGGER.error("Parametros de entrada incorrectos!!");
 			int numParams = args.length;
 			MY_LOGGER.info("Numero de parametros: " + numParams);
@@ -95,15 +96,16 @@ public class YahooFinance02Parsear implements Serializable {
 			directorioOut = args[1];
 			modo = args[2];
 			entornoDeValidacion = Integer.valueOf(args[3]);
+			letraInicioListaDirecta = args[4];
 		}
 
 		MY_LOGGER.info("Parametros de entrada -> " + directorioIn + " | " + directorioOut + " | " + modo + "|"
-				+ entornoDeValidacion);
+				+ entornoDeValidacion + " | " + letraInicioListaDirecta);
 
 		// EMPRESAS NASDAQ
 		MY_LOGGER.info("Cargando empresas del NASDAQ...");
 		List<EstaticoNasdaqModelo> nasdaqEstaticos1 = EstaticosNasdaqDescargarYParsear
-				.descargarNasdaqEstaticosSoloLocal1(entornoDeValidacion);
+				.descargarNasdaqEstaticosSoloLocal1(entornoDeValidacion, letraInicioListaDirecta);
 
 		// VELAS (tomando una empresa buena, que tendra todo relleno)
 		MY_LOGGER.info("Cargando VELAS de empresa de REFERENCIA...");
@@ -135,11 +137,14 @@ public class YahooFinance02Parsear implements Serializable {
 	public static void extraerVelasReferencia(Map<String, Integer> velas, String directorioIn, String directorioOut,
 			String modo) throws IOException {
 
+		MY_LOGGER.info("extraerVelasReferencia --> " + directorioIn + "|" + directorioOut + "|" + modo);
+
 		String mercadoReferencia = BrutosUtils.MERCADO_NQ;
 		String valorReferencia = BrutosUtils.NASDAQ_REFERENCIA;
 
 		String ficheroConVelasYTiempos = parsearDinamicosEmpresa01(mercadoReferencia, valorReferencia, directorioIn,
 				directorioOut, true, modo);
+		MY_LOGGER.info("extraerVelasReferencia --> ficheroConVelasYTiempos:" + ficheroConVelasYTiempos);
 
 		// --------- Leer fichero -------------
 		File file = new File(ficheroConVelasYTiempos);
@@ -160,7 +165,7 @@ public class YahooFinance02Parsear implements Serializable {
 		}
 		br.close();
 
-		MY_LOGGER.debug("Velas leidas: " + velas.size());
+		MY_LOGGER.info("extraerVelasReferencia --> " + "Velas leidas: " + velas.size());
 	}
 
 	/**
