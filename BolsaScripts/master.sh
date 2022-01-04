@@ -143,7 +143,7 @@ if [ "${ACTIVAR_DESCARGA}" = "S" ];  then
 	java -jar ${PATH_JAR} --class "coordinador.Principal" "c10X.brutos.YahooFinance01Descargar" "${NUM_MAX_EMPRESAS_DESCARGADAS}" "${DIR_BRUTOS}" "${DIR_TIEMPO}" "${RANGO_YF}" "${VELA_YF}" "${ES_ENTORNO_VALIDACION}" "${LETRA_INICIO_LISTA_DIRECTA}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 
 	echo -e "DINAMICOS - Limpieza de YAHOO FINANCE..." >> ${LOG_MASTER}
-	java -jar ${PATH_JAR} --class "coordinador.Principal" "c10X.brutos.YahooFinance02Parsear" "${DIR_BRUTOS}" "${DIR_BRUTOS_CSV}" "${DIR_TIEMPO}" "${ES_ENTORNO_VALIDACION}" "${ES_ENTORNO_VALIDACION}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
+	java -jar ${PATH_JAR} --class "coordinador.Principal" "c10X.brutos.YahooFinance02Parsear" "${DIR_BRUTOS}" "${DIR_BRUTOS_CSV}" "${DIR_TIEMPO}" "${ES_ENTORNO_VALIDACION}" "${LETRA_INICIO_LISTA_DIRECTA}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 	
 	#PENDIENTE DINAMICOS: YAHOO FINANCE (solo modo FUTURO) --> https://finance.yahoo.com/quote/AAPL?p=AAPL --> Campo: Earnings Date
 	#PENDIENTE DINAMICOS: NASDAQOLD_EARNINGS (solo modo PASADO) --> https://old.nasdaq.com/symbol/aapl/earnings-surprise --> tabla de fechas

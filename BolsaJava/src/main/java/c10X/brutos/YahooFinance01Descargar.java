@@ -84,7 +84,6 @@ public class YahooFinance01Descargar implements Serializable {
 					+ rango + "|" + velaYF + "|" + entornoDeValidacion + "|" + letraInicioListaDirecta);
 		}
 
-		EstaticosNasdaqDescargarYParsear.getInstance();
 		List<EstaticoNasdaqModelo> nasdaqEstaticos1 = EstaticosNasdaqDescargarYParsear
 				.descargarNasdaqEstaticosSoloLocal1(entornoDeValidacion, letraInicioListaDirecta);
 		descargarNasdaqDinamicos01(nasdaqEstaticos1, numMaxEmpresas, directorioOut, modo, rango, velaYF);
@@ -125,9 +124,9 @@ public class YahooFinance01Descargar implements Serializable {
 				String pathOut = directorioOut + BrutosUtils.YAHOOFINANCE + "_" + mercado + "_" + ticker + ".txt";
 				String URL_yahoo_ticker = getUrlYahooFinance(ticker, modo, rango, velaYF);
 
-//				if (i % 10 == 1) {
-				MY_LOGGER.info("Empresa numero = " + (i + 1) + " (" + ticker + ")");
-//				}
+				if (i % 10 == 1) {
+					MY_LOGGER.info("Empresa numero = " + (i + 1) + " (" + ticker + ")");
+				}
 				MY_LOGGER.debug("pathOut=" + pathOut);
 				MY_LOGGER.debug("URL_yahoo_ticker=" + URL_yahoo_ticker);
 

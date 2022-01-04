@@ -205,6 +205,9 @@ public class EstaticosNasdaqDescargarYParsear implements Serializable {
 
 		MY_LOGGER.info("descargarNasdaqEstaticos1...");
 
+		// por si acaso
+		getInstance();
+
 		List<String> desconocidos = cargarEmpresasDesconocidas();
 		List<String> empresasFP = cargarEmpresasConMuchosFalsosPositivos();
 

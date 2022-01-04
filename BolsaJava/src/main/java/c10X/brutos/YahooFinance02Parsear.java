@@ -75,7 +75,7 @@ public class YahooFinance02Parsear implements Serializable {
 
 		String directorioIn = BrutosUtils.DIR_BRUTOS; // DEFAULT
 		String directorioOut = BrutosUtils.DIR_BRUTOS_CSV; // DEFAULT
-		String modo = BrutosUtils.FUTURO; // DEFAULT
+		String modo = BrutosUtils.PASADO; // DEFAULT
 		Integer entornoDeValidacion = BrutosUtils.ES_ENTORNO_VALIDACION;// DEFAULT
 		String letraInicioListaDirecta = EstaticosNasdaqDescargarYParsear.LETRA_INICIO_LISTA_DIRECTA; // DEFAULT
 

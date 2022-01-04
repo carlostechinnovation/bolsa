@@ -122,20 +122,24 @@ public class JuntarEstaticosYDinamicosCSVunico {
 			String finvizEstaticos = dirBrutoCsv + BrutosUtils.FINVIZ_ESTATICOS + "_" + BrutosUtils.MERCADO_NQ + "_"
 					+ enm.symbol + ".csv";
 			File fileEstat = new File(finvizEstaticos);
+			MY_LOGGER.debug("Empresa: " + enm.symbol + " --> Obligatorio-Finviz-Estatico: " + finvizEstaticos);
 
 			String yahooFinanceDinamicos = dirBrutoCsv + BrutosUtils.YAHOOFINANCE + "_" + BrutosUtils.MERCADO_NQ + "_"
 					+ enm.symbol + ".csv";
 			File fileDin = new File(yahooFinanceDinamicos);
+			MY_LOGGER.debug("Empresa: " + enm.symbol + " --> Obligatorio-YF-Dinamico: " + yahooFinanceDinamicos);
 
 			// OPCIONAL: se conocen pocas operaciones de insiders
 			String finvizInsiders = dirBrutoCsv + BrutosUtils.FINVIZ_INSIDERS + "_" + BrutosUtils.MERCADO_NQ + "_"
 					+ enm.symbol + ".csv";
 			File fileInsiders = new File(finvizInsiders);
+			MY_LOGGER.debug("Empresa: " + enm.symbol + " --> Opcional-FI: " + finvizInsiders);
 
 			// OPCIONAL: se conocen pocas noticias
 			String finvizNoticias = dirBrutoCsv + BrutosUtils.FINVIZ_NOTICIAS + "_" + BrutosUtils.MERCADO_NQ + "_"
 					+ enm.symbol + ".csv";
 			File fileNoticias = new File(finvizNoticias);
+			MY_LOGGER.debug("Empresa: " + enm.symbol + " --> Opcional-FN: " + finvizNoticias);
 
 			// FLAGS
 			boolean obligatorioFZ = fileEstat.exists();
@@ -165,12 +169,12 @@ public class JuntarEstaticosYDinamicosCSVunico {
 			if (obligatorioFZ == true && obligatorioYF == true && opcionalFI == false && opcionalFN == false) {
 				// Muy habitual
 				MY_LOGGER.debug("Empresa: " + enm.symbol
-						+ " --> Conocemos ambos CSV: FZ (estatico) ni YF (dinamico). Sin datos opcionales (insiders o noticias)");
+						+ " --> Conocemos ambos CSV obligatorios, FZ (estatico) y YF (dinamico). Pero NO los datos opcionales (insiders o noticias)");
 			}
 			if (obligatorioFZ == true && obligatorioYF == true && (opcionalFI == true || opcionalFN == true)) {
 				// Habitual
 				MY_LOGGER.debug("Empresa: " + enm.symbol
-						+ " --> Conocemos ambos CSV: FZ (estatico) ni YF (dinamico). Con datos opcionales (insiders o noticias)");
+						+ " --> Conocemos ambos CSV: FZ (estatico) y YF (dinamico). Y tambien alguno de los datos opcionales (insiders y/o noticias)");
 			}
 
 			if (procesarEmpresa) {
@@ -341,7 +345,7 @@ public class JuntarEstaticosYDinamicosCSVunico {
 
 		// ---------- JUNTOS -----------------------
 		String juntos = dirBrutoCsv + BrutosUtils.MERCADO_NQ + "_" + enm.symbol + ".csv";
-		MY_LOGGER.debug("Escribiendo CSV juntos en: " + juntos);
+		MY_LOGGER.debug("Juntar ficheros CSV - Ruta fichero salida: " + juntos);
 		File fjuntos = new File(juntos);
 		if (fjuntos.exists()) {
 			PrintWriter writer = new PrintWriter(fjuntos);
