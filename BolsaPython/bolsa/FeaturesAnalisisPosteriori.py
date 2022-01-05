@@ -1,6 +1,6 @@
 import os
 import sys
-
+import numpy as np
 import pandas as pd
 import seaborn as sns
 
@@ -16,7 +16,9 @@ print("pathSalida: %s" % pathSalida)
 
 ##################### FUNCION - ESTILOS CSS ####################################
 def pintarColores(val):
-    if int(val) == 1:
+    if pd.isna(val):
+        color = ''
+    elif int(val) == 1:
         color = 'background-color: #64b41a99'
     elif 2 <= int(val) < 20:
         color = 'background-color: #f0f600b3'

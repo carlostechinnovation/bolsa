@@ -1,5 +1,5 @@
 import sys
-
+import os
 import pandas as pd
 from tabulate import tabulate
 
@@ -75,6 +75,9 @@ f = open(pathHtmlSalida, mode="w")  # Se abre fichero en modo overwrite
 f.write("<!DOCTYPE html><head><style></style></head><html><body>")  # HTML apertura
 f.write("<h2>PASADO - METRICA (precisión):</h2>")
 print("Cargar datos (CSV)...")
+if os.stat(pathMetricasPasadoEntrada).st_size == 0:
+    raise Exception("ERROR El fichero de entrada esta vacio: " + pathMetricasPasadoEntrada + " !!!! Hay algun error previo. Saliendo...")
+
 metricasEntrada = pd.read_csv(filepath_or_buffer=pathMetricasPasadoEntrada, sep='|', header=None)
 print("metricasEntrada (LEIDO): " + str(metricasEntrada.shape[0]) + " x " + str(metricasEntrada.shape[1]))
 print(tabulate(metricasEntrada.head(), headers='keys', tablefmt='psql'))

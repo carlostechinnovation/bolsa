@@ -2,15 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="22edbd2f-b3d9-42f0-a7dd-659033ab601a" name="Default Changelist" comment="Machine Learning - Ejemplo">
-      <change afterPath="$PROJECT_DIR$/bolsa/pruebatwitter.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/realimentacion/falsospositivos_diaensemana.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/realimentacion/falsospositivos_diaensemana.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/realimentacion/falsospositivos_empresas.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/realimentacion/falsospositivos_empresas.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/realimentacion/falsospositivos_meses.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/realimentacion/falsospositivos_meses.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/realimentacion/falsospositivos_subgrupos.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/realimentacion/falsospositivos_subgrupos.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/main/resources/desconocidos.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/main/resources/desconocidos.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bolsa/C5C6Manual.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/C5C6Manual.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bolsa/FeaturesAnalisisPosteriori.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/FeaturesAnalisisPosteriori.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bolsa/PintarMetricasyRentabilidades.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/PintarMetricasyRentabilidades.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../BolsaScripts/inversionHistoricaSoloFuturoSimplificado.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/inversionHistoricaSoloFuturoSimplificado.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BolsaScripts/master.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/master.sh" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../BolsaScripts/parametros.config" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/parametros.config" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -55,7 +52,7 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/bolsa/pruebatwitter.py" />
     <property name="run.code.analysis.last.selected.profile" value="aDefault" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="settings.editor.selected.configurable" value="copyright.filetypes.Python" />
   </component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
@@ -75,7 +72,7 @@
       <recent name="C:\DATOS\GITHUB_REPOS\bolsa\BolsaPython\bolsa" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.C5C6Manual">
+  <component name="RunManager" selected="Python.FeaturesAnalisisPosteriori">
     <configuration name="06_redneuronal_lstm_2" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="BolsaPython" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -122,6 +119,9 @@
       <module name="BolsaPython" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
       <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/bolsa" />
       <option name="IS_MODULE_SDK" value="true" />
@@ -528,7 +528,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/bolsa/FeaturesAnalisisPosteriori.py</url>
-          <line>258</line>
+          <line>260</line>
           <option name="timeStamp" value="62" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -548,17 +548,17 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/bolsa/C5C6Manual.py</url>
-          <line>631</line>
+          <line>642</line>
           <option name="timeStamp" value="161" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/bolsa/C5C6Manual.py</url>
-          <line>467</line>
+          <line>468</line>
           <option name="timeStamp" value="165" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/bolsa/C5C6Manual.py</url>
-          <line>613</line>
+          <line>629</line>
           <option name="timeStamp" value="190" />
         </line-breakpoint>
       </breakpoints>
