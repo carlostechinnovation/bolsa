@@ -494,14 +494,24 @@ public class EstaticosFinvizDescargarYParsear {
 	private static void extraerInfoDeNoticias(String mercado, String empresa, Element tablaNoticias,
 			FinvizNoticiasEmpresa noticias) {
 
-		Integer ultimaFechaProcesada = null;
+		try {
+			Integer ultimaFechaProcesada = null;
+			if (tablaNoticias.children() != null && tablaNoticias.children().size() > 0) {
+				Elements filas = tablaNoticias.child(0).children();
+				for (int i = 0; i < filas.size(); i++) {
+					Element fila = filas.get(i);
+					ultimaFechaProcesada = procesarNoticiaHtml(mercado, empresa, fila, ultimaFechaProcesada, noticias);
+				}
 
-		Elements filas = tablaNoticias.child(0).children();
-		for (int i = 0; i < filas.size(); i++) {
-			Element fila = filas.get(i);
-			ultimaFechaProcesada = procesarNoticiaHtml(mercado, empresa, fila, ultimaFechaProcesada, noticias);
+			} else {
+				MY_LOGGER.warn("extraerInfoDeNoticias() - WARN La empresa " + empresa
+						+ " no tiene noticias. Puede ser normal. Comprobarlo en la web de Finviz.");
+			}
+
+		} catch (Exception e) {
+			MY_LOGGER.error("extraerInfoDeNoticias() - ERROR al leer las noticias de la empresa: " + empresa
+					+ "   La traza del error es: " + e.getMessage());
 		}
-
 	}
 
 	/**
