@@ -280,7 +280,7 @@ if [ "$DIR_TIEMPO" = "pasado" ];  then
 	cat "${LOG_MASTER}" | grep "ENTREGABLEPRECISIONESPASADO"  > "${PATH_MET_RENTAB_ENTRADA}"
 	cat "${LOG_MASTER}" | grep "ENTREGABLEACIERTOSPASADO"  > "${PATH_ACI_RENTAB_ENTRADA}"
 	echo "" > "${HTML_MET_RENTAB_SALIDA}"  # reset
-	$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/PintarMetricasyRentabilidades.py" "${PATH_MET_RENTAB_ENTRADA}" "${PATH_ACI_RENTAB_ENTRADA}" "${HTML_MET_RENTAB_SALIDA}" # 2>>${LOG_MASTER} 1>>${LOG_MASTER}
+	$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/PintarMetricasyRentabilidades.py" "${PATH_MET_RENTAB_ENTRADA}" "${PATH_ACI_RENTAB_ENTRADA}" "${HTML_MET_RENTAB_SALIDA}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 fi
 #################################################
 

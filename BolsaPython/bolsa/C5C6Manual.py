@@ -25,6 +25,9 @@ from sklearn.utils import resample
 from tabulate import tabulate
 from xgboost import XGBClassifier
 
+import tweepy  # https://github.com/tweepy/tweepy
+import csv
+
 print((datetime.datetime.now()).strftime(
     "%Y%m%d_%H%M%S") + " **** CAPA 5  --> Selección de variables/ Reducción de dimensiones (para cada subgrupo) ****")
 # print("URL PCA: https://scikit-learn.org/stable/modules/unsupervised_reduction.html")
@@ -144,6 +147,19 @@ print("pathCsvReducido: %s" % pathCsvReducido)
 print("dir_subgrupo_img = %s" % dir_subgrupo_img)
 print("umbralFeaturesCorrelacionadas = " + str(umbralFeaturesCorrelacionadas))
 
+######################### PARÁMETROS TWITTER ########################
+
+pathClavesTwitter = "/bolsa/twitterapikeys/keys"
+pathDestinoTweets = "/bolsa/twitter"
+
+FORMATO_FECHA_TWITTER = '%Y-%m-%d'
+
+tuiterosRecomendacionAOjo = ["BagholderQuotes", "vintweeta", "Xiuying"]
+tuiterosGainers=["GetScanz"]
+tuiterosLosers=["GetScanz"]
+tuiterosGappers=["GetScanz"]
+
+#####################################################
 
 # PRECISION: de los pocos casos que predigamos TRUE, queremos que todos sean aciertos.
 def comprobarPrecisionManualmente(targetsNdArray1, targetsNdArray2, etiqueta, id_subgrupo, dfConIndex, dir_subgrupo):
@@ -304,6 +320,172 @@ def anadeComparacionSencillaSP500(sp500, x):
     return comparaSP500Ayer
 
 
+def descargaTuits(cuentas):
+    clavesTwitter = {}
+    with open(pathClavesTwitter) as myfile:
+        for line in myfile:
+            name, var = line.partition("=")[::2]
+            clavesTwitter[name.strip()] = var.rstrip()
+
+    # NO DESCOMENTAR, PORQUE SE VERÍAN LAS CLAVES EN EL LOG!!
+    # print(clavesTwitter)
+
+    # Twitter API credentials
+    api_key = clavesTwitter.get("apikey")
+    api_key_secret = clavesTwitter.get("apikeysecret")
+    access_token = clavesTwitter.get("accesstoken")
+    access_token_secret = clavesTwitter.get("accesstokensecret")
+
+    import os
+    import tweepy as tw
+    import pandas as pd
+
+    auth = tw.OAuthHandler(api_key, api_key_secret)
+    auth.set_access_token(access_token, access_token_secret)
+    api = tw.API(auth)
+
+    # USO
+    api = tweepy.API(auth)
+
+    # Verificación de la conexión
+    api.verify_credentials()
+
+    # Se descarga la info de todos los tuiteros
+    for cuenta in cuentas:
+        get_all_tweets(cuenta, api)
+
+
+def get_all_tweets(screen_name, api):
+    # Twitter only allows access to a users most recent 3240 tweets with this method
+
+    # Se asume que está ya autenticado
+
+    # initialize a list to hold all the tweepy Tweets
+    alltweets = []
+
+    # make initial request for most recent tweets (200 is the maximum allowed count)
+    new_tweets = api.user_timeline(screen_name=screen_name, count=200)
+
+    # save most recent tweets
+    alltweets.extend(new_tweets)
+
+    # save the id of the oldest tweet less one
+    oldest = alltweets[-1].id - 1
+
+    # keep grabbing tweets until there are no tweets left to grab
+    while len(new_tweets) > 0:
+        #print(f"getting tweets before {oldest}")
+
+        # all subsequent requests use the max_id param to prevent duplicates
+        new_tweets = api.user_timeline(screen_name=screen_name, count=200, max_id=oldest)
+
+        # save most recent tweets
+        alltweets.extend(new_tweets)
+
+        # update the id of the oldest tweet less one
+        oldest = alltweets[-1].id - 1
+
+        #print(f"...{len(alltweets)} tweets downloaded so far")
+
+    # transform the tweepy tweets into a 2D array that will populate the csv
+    outtweets = [[tweet.id_str, tweet.created_at, tweet.text] for tweet in alltweets]
+
+    # write the csv
+    with open(pathDestinoTweets + "/" + f'{screen_name}' + "_tweets.csv", 'w') as f:
+        writer = csv.writer(f)
+        writer.writerow(["id", "created_at", "text"])
+        writer.writerows(outtweets)
+
+    pass
+
+
+def vaciarCarpeta(folder):
+    import os, shutil
+    for filename in os.listdir(folder):
+        file_path = os.path.join(folder, filename)
+        try:
+            if os.path.isfile(file_path) or os.path.islink(file_path):
+                os.unlink(file_path)
+            elif os.path.isdir(file_path):
+                shutil.rmtree(file_path)
+        except Exception as e:
+            print('Failed to delete %s. Reason: %s' % (file_path, e))
+
+
+def anadeMencionesTwitterPorTuiteros(diasAntiguedad, tuits, x, stringABuscar):
+    numeroMencionesTotales = 0
+    fechaRowActual = str(x.anio) + "-" + str(x.mes) + "-" + str(x.dia)
+    fechaRowActual_obj= datetime2.strptime(fechaRowActual, FORMATO_FECHA_TWITTER)
+    fechaElegida_obj = fechaRowActual_obj - timedelta(days=diasAntiguedad)
+    fechaElegida = fechaElegida_obj.strftime(FORMATO_FECHA_TWITTER)
+
+    # Para optimizar recursos, se eliminan todos los tuits que no coincidan con la fecha indicada
+    tuits=tuits.loc[tuits["created_at"].str.startswith(fechaElegida, na=False)]
+
+    ficheros = os.listdir(pathDestinoTweets)
+    tuiteros=tuits.tuitero.unique()
+
+    for tuitero in tuiteros:
+        tuitsDeTuitero=tuits[tuits['tuitero'] == tuitero]
+        numeroMencionesPorElTuitero=0
+
+        tuitsDeTuitero = tuitsDeTuitero.loc[tuitsDeTuitero["text"].str.contains(stringABuscar)]
+
+        # Se comprueba si hay al menos 1 tuit
+        if tuitsDeTuitero.shape[0] > 0:
+            numeroMencionesTotales += 1
+            # print("El tuitero "+ tuitero + "ha escrito al menos un tuit de "+stringABuscar+
+            #       " en la fecha " + fechaElegida)
+
+    # print("Número de tuiteros que referencian al menos una vez a la empresa " + x.empresa + " en la fecha "
+    #       + fechaElegida+ " : "+numeroMencionesTotales)
+    return numeroMencionesTotales
+
+
+def anadeFeatureTwitter(entradaFeaturesYTarget, tituloNuevaFeature, pathDestinoTweets, cuentas,
+                                        antiguedadMaxima, stringOpcionalEnTuit):
+
+    # Se vacía la carpeta donde se guardarán los tuits, y se descargan los tuits de tuiteros
+    vaciarCarpeta(pathDestinoTweets)
+    descargaTuits(cuentas)
+
+    # Se acumulan los tuits en memoria, para optimizar velocidad
+    ficheros = os.listdir(pathDestinoTweets)
+    tuits = pd.DataFrame(columns=['id', 'created_at', 'text', 'tuitero'])
+    for fichero in ficheros:
+        pathFichero = os.path.join(pathDestinoTweets, fichero)
+        if os.path.isfile(pathFichero) and fichero.endswith('.csv'):
+            numeroMencionesPorElTuitero = 0
+            # Cada fichero pertenece a un tuitero
+            tuitero = fichero.split("_")[0]
+            # Se lee el fichero
+            tuitsDeFichero = pd.read_csv(filepath_or_buffer=pathFichero, sep=',')
+            # Para acelerar el proceso, se toman sólo las filas que contengan "$" en su columna text (mensaje),
+            # ya que siempre buscamos un ticker.
+            tuitsDeFichero=tuitsDeFichero[tuitsDeFichero['text'].str.contains("\$")]
+
+            # Se permite filtrar opcionalmente por un string, si no está vacío.
+            if not stringOpcionalEnTuit:
+                tuitsDeFichero = tuitsDeFichero[tuitsDeFichero['text'].str.contains(stringOpcionalEnTuit)]
+
+            # Se añade el nombre del tuitero en la primera columna de todas las filas del dataframe
+            tuitsDeFichero['tuitero'] = pd.Series([tuitero for x in range(len(tuitsDeFichero.index))])
+            # Es una chapuza, pero son pocos ficheros
+            tuits = tuits.append(tuitsDeFichero, ignore_index=True)
+
+        # Se sumarán las apariciones en todos los días del rango desde 0 a antiguedadMaxima. Por defecto serán 0
+        entradaFeaturesYTarget[tituloNuevaFeature] = 0
+        for i in range(0, antiguedadMaxima):
+            # print("Para crear la nueva feature "+tituloNuevaFeature+
+            #       " se añaden menciones en TWITTER de la empresa en el fichero "+fichero+
+            #       " con antigüedad "+str(i)+"...")
+            # Se busca una mención en el tuit a la empresa de cada fila manejada por nuestro dataframe
+            entradaFeaturesYTarget[tituloNuevaFeature] += entradaFeaturesYTarget.apply(
+                lambda x: anadeMencionesTwitterPorTuiteros(i, tuits, x, "\$" + x.empresa), axis=1)
+
+    return entradaFeaturesYTarget
+
+
 ################## MAIN ###########################################################
 
 if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.stat(pathCsvCompleto).st_size > 0:
@@ -337,19 +519,24 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
     entradaFeaturesYTarget['RSI-python'] = relative_strength_idx(entradaFeaturesYTarget).fillna(0)
 
 
-    #####
-    # Variables dependientes de SP500
-
-    # Variable sencilla, que compara el rendimiento de la empresa hoy (close - open) respecto al SP500 de ayer
-    today = date.today()
-    fechaInicio = "2019-01-01"
-    fechaFin = today.strftime("%Y-%m-%d")
-    sp500 = getSP500conRentaTrasXDias(1, fechaInicio, fechaFin)
-    entradaFeaturesYTarget['COMPARA-SP500-AYER-BOOL'] = entradaFeaturesYTarget.apply(
-        lambda x: anadeComparacionSencillaSP500(sp500, x), axis=1)
-
+    # #####
+    # # Variables dependientes de SP500
+    #
+    # # FEATURE:
+    # # DEFINICIÓN: compara el rendimiento de la empresa hoy (close - open) respecto al SP500 de ayer
+    # # SE QUITA PORQUE NO SE HA VISTO QUE SEA ÚTIL, Y REQUIERE MUCHA COMPUTACIÓN
+    # today = date.today()
+    # fechaInicio = "2019-01-01"
+    # fechaFin = today.strftime("%Y-%m-%d")
+    # sp500 = getSP500conRentaTrasXDias(1, fechaInicio, fechaFin)
+    # entradaFeaturesYTarget['COMPARA-SP500-AYER-BOOL'] = entradaFeaturesYTarget.apply(
+    #     lambda x: anadeComparacionSencillaSP500(sp500, x), axis=1)
+    #
+    # ######
     #
     # # # Variables complejas, que comparan periodos de la empresa con periodos del SP500
+    #
+    # ESTAS VARIABLES COMPLEJAS NUNCA SE HAN VALIDADO
     #
     # # Se comparará con la empresa, en varios periodos.Se crearán nuevas variables
     # # Se cogen todas las filas de la primera empresa, para buscar la menor y mayor antigüedad
@@ -399,6 +586,50 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
     #         c = 1
     #
     #         b = 1
+
+
+    # ##################### Variables de TWITTER ################
+    # SE QUITAN PORQUE PARA 100 EMPRESAS TARDA 10 MINUTOS POR SUBGRUPO, Y APENAS INFLUENCIA
+    #
+    # print((datetime.datetime.now()).strftime("%Y%m%d_%H%M%S") + " Se inicia el procesado de TWITTER...")
+    #
+    # # FEATURE: Número de menciones del ticker por un conjunto de tuiteros que recomiendan a ojo en un
+    # # rango de "antiguedadMaxima" días. Se sumará 1 por cada día y tuitero, si éste lo menciona los últimos x días.
+    # # DEFINICIÓN de FEATURE:
+    # # Para la empresa XXXX, la feature contará cuántos tuiteros mencionan el ticker $XXXX en el rango de días
+    # # El resultado será 0, 1, 2, 3...
+    # entradaFeaturesYTarget=anadeFeatureTwitter(entradaFeaturesYTarget, "MENCIONES-TWITTER-RANGO",
+    #                                                            pathDestinoTweets, tuiterosRecomendacionAOjo,
+    #                                                            3, "")
+    #
+    # # FEATURE: Número de menciones del ticker por un conjunto de tuiteros que nombran los Premarket Top Gainers.
+    # # Se sumará 1 por cada día y tuitero, si éste lo menciona x días antes.
+    # # DEFINICIÓN de FEATURE:
+    # # Para la empresa XXXX, la feature contará cuántos tuiteros mencionan el ticker $XXXX en el rango de días
+    # # El resultado será 0, 1, 2, 3...
+    # entradaFeaturesYTarget = anadeFeatureTwitter(entradaFeaturesYTarget, "MENCIONES-TWITTER-GAINERS",
+    #                                                              pathDestinoTweets, tuiterosGainers,
+    #                                                              2, "Gainers")
+    #
+    # # FEATURE: Número de menciones del ticker por un conjunto de tuiteros que nombran los Premarket Top Losers.
+    # # Se sumará 1 por cada día y tuitero, si éste lo menciona x días antes.
+    # # DEFINICIÓN de FEATURE:
+    # # Para la empresa XXXX, la feature contará cuántos tuiteros mencionan el ticker $XXXX en el rango de días
+    # # El resultado será 0, 1, 2, 3...
+    # entradaFeaturesYTarget = anadeFeatureTwitter(entradaFeaturesYTarget, "MENCIONES-TWITTER-LOSERS",
+    #                                                              pathDestinoTweets, tuiterosLosers,
+    #                                                              2, "Losers")
+    #
+    # # FEATURE: Número de menciones del ticker por un conjunto de tuiteros que nombran los Most Volatile Gappers.
+    # # Se sumará 1 por cada día y tuitero, si éste lo menciona x días antes.
+    # # DEFINICIÓN de FEATURE:
+    # # Para la empresa XXXX, la feature contará cuántos tuiteros mencionan el ticker $XXXX en el rango de días
+    # # El resultado será 0, 1, 2, 3...
+    # entradaFeaturesYTarget = anadeFeatureTwitter(entradaFeaturesYTarget, "MENCIONES-TWITTER-GAPPERS",
+    #                                              pathDestinoTweets, tuiterosGappers,
+    #                                              2, "Gappers")
+    #
+    # print((datetime.datetime.now()).strftime("%Y%m%d_%H%M%S") + " ... se finaliza el procesado de TWITTER")
 
     #########################
 
