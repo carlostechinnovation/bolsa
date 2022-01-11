@@ -147,6 +147,7 @@ primercaso="1"
 		if [[ $REPLY == *"COMPLETO.csv" ]]; then
 			diasAEliminar="1"
 			if [[ $primercaso == "1" ]]; then
+				primercaso="0"
 				diasAEliminar=$(echo "${ANTIGUEDAD_MINIMA} - ${ANTIGUEDAD_CERO}"|bc)
 			fi
 				
@@ -170,8 +171,7 @@ primercaso="1"
 			$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/InversionUtils.py" "${directorio}/${ficheronombre}" "0" "${DIR_DROPBOX}" "${ficheronombre}" >> ${LOG_INVERSION}
 		fi
 	done 9< <( find ${DIR_FUT_SUBGRUPOS} -type f -exec printf '%s\0' {} + )
-
-	primercaso="0"
+	
 done
 
 
