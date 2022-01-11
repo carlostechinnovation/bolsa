@@ -20,7 +20,8 @@
 #Se analizará el tramo de antiguedad desde máxima hasta minima
 #Se tomarán los ficheros *_GRANDE_0_SG_0_* generados, o que ya se tienen de ejecuciones antiguas, para usarlo como base de información futura.
 ANTIGUEDAD_MAXIMA="100"
-ANTIGUEDAD_MINIMA="0" # Se puede usar cualquier valor
+ANTIGUEDAD_CERO="0"
+ANTIGUEDAD_MINIMA="20" # Se puede usar cualquier valor. Se recomienda que sea igual que X, para no calcular valores no útiles (no es estimable el futuro de una antigüedad menor que X).
 NUM_EMPRESAS_TRAIN="100" # Número de empresas de entrenamiento, NO para los días posteriores (que estarán en el fichero de parámetros). Se recomienda dejar 1000 siempre.
 
 echo -e "INVERSION HISTORICA SOLO FUTURO SIMPLIFICADO - INICIO: "$( date "+%Y%m%d%H%M%S" )
@@ -89,13 +90,12 @@ DIR_GITHUB_INVERSION="${DIR_CODIGOS}inversion/"
 
 #################################### CÓDIGO ###########################################################
 DESCARGAR="INVALIDO"
-for (( ANTIGUEDAD=${ANTIGUEDAD_MINIMA}; ANTIGUEDAD<=${ANTIGUEDAD_MAXIMA}; ANTIGUEDAD++ ))
+
+for (( ANTIGUEDAD=${ANTIGUEDAD_CERO}; ANTIGUEDAD<=${ANTIGUEDAD_MAXIMA}; ANTIGUEDAD++ ))
 do  
 
-	
-
 ######## Para la antigüedad mínima (normalmente=0), se vacía la carpeta de futuro y se activan las descargas, pero para el resto no (porque se reutilizarán)
-	if [ ${ANTIGUEDAD} -eq ${ANTIGUEDAD_MINIMA} ]; then
+	if [ ${ANTIGUEDAD} -eq ${ANTIGUEDAD_CERO} ]; then
 
         	DESCARGAR="S"
 
@@ -144,7 +144,7 @@ do
 	MIN_COBERTURA_CLUSTER=0    # Para predecir, cojo lo que haya, sin mínimos. El modelo ya lo hemos entrenado
 	MIN_EMPRESAS_POR_CLUSTER=1   # Para predecir, cojo lo que haya, sin mínimos. El modelo ya lo hemos entrenado
 
-        if [ ${ANTIGUEDAD} -eq ${ANTIGUEDAD_MINIMA} ]; then
+        if [ ${ANTIGUEDAD} -eq ${ANTIGUEDAD_CERO} ]; then
 	        ${PATH_SCRIPTS}master.sh "futuro" "${ANTIGUEDAD}" "0" "${DESCARGAR}" "S" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" "${NUM_EMPRESAS_INVERSION}" "${UMBRAL_SUBIDA_POR_VELA}" "${UMBRAL_MINIMO_GRAN_VELA}" "${MIN_COBERTURA_CLUSTER}" "${MIN_EMPRESAS_POR_CLUSTER}" "20001111" "20991111" "${MAX_NUM_FEAT_REDUCIDAS}" "${CAPA5_MAX_FILAS_ENTRADA}" "${DINAMICA1}" "${DINAMICA2}" 2>>${LOG_INVERSION} 1>>${LOG_INVERSION}
         fi
 
@@ -168,4 +168,5 @@ done
 
 
 echo -e "INVERSION HISTORICA SOLO FUTURO SIMPLIFICADO - FIN: "$( date "+%Y%m%d%H%M%S" )
+
 

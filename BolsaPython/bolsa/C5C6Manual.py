@@ -139,6 +139,7 @@ pathCsvPredichos = dir_subgrupo + "TARGETS_PREDICHOS.csv"
 pathCsvPredichosIndices = dir_subgrupo + "TARGETS_PREDICHOS.csv_indices"
 pathCsvFinalFuturo = dir_subgrupo + desplazamientoAntiguedad + "_" + id_subgrupo + "_COMPLETO_PREDICCION.csv"
 dir_subgrupo_img = dir_subgrupo + "img/"
+pathCsvCompletoConFeaturesPython=dir_subgrupo + "COMPLETO_ConFeaturesPython.csv"
 
 print("dir_subgrupo: %s" % dir_subgrupo)
 print("modoTiempo: %s" % modoTiempo)
@@ -158,6 +159,11 @@ tuiterosRecomendacionAOjo = ["BagholderQuotes", "vintweeta", "Xiuying"]
 tuiterosGainers=["GetScanz"]
 tuiterosLosers=["GetScanz"]
 tuiterosGappers=["GetScanz"]
+tuiterosEarlyGainsPremarket=["FloatChecker"]
+tuiterosPremarketStockGainers=["FloatChecker"]
+tuiterosStockGainersToWatch=["FloatChecker"]
+tuiterosTopLosers=["GetScanz"]
+tuiterosMostActivePennyStocks=["GetScanz"]
 
 #####################################################
 
@@ -589,18 +595,18 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
 
 
     # ##################### Variables de TWITTER ################
-    # SE QUITAN PORQUE PARA 100 EMPRESAS TARDA 10 MINUTOS POR SUBGRUPO, Y APENAS INFLUENCIA
+    # # SE QUITAN PORQUE PARA 100 EMPRESAS TARDA 10 MINUTOS POR SUBGRUPO, Y APENAS INFLUENCIA
     #
     # print((datetime.datetime.now()).strftime("%Y%m%d_%H%M%S") + " Se inicia el procesado de TWITTER...")
     #
-    # # FEATURE: Número de menciones del ticker por un conjunto de tuiteros que recomiendan a ojo en un
-    # # rango de "antiguedadMaxima" días. Se sumará 1 por cada día y tuitero, si éste lo menciona los últimos x días.
-    # # DEFINICIÓN de FEATURE:
-    # # Para la empresa XXXX, la feature contará cuántos tuiteros mencionan el ticker $XXXX en el rango de días
-    # # El resultado será 0, 1, 2, 3...
-    # entradaFeaturesYTarget=anadeFeatureTwitter(entradaFeaturesYTarget, "MENCIONES-TWITTER-RANGO",
-    #                                                            pathDestinoTweets, tuiterosRecomendacionAOjo,
-    #                                                            3, "")
+    # # # FEATURE: Número de menciones del ticker por un conjunto de tuiteros que recomiendan a ojo en un
+    # # # rango de "antiguedadMaxima" días. Se sumará 1 por cada día y tuitero, si éste lo menciona los últimos x días.
+    # # # DEFINICIÓN de FEATURE:
+    # # # Para la empresa XXXX, la feature contará cuántos tuiteros mencionan el ticker $XXXX en el rango de días
+    # # # El resultado será 0, 1, 2, 3...
+    # # entradaFeaturesYTarget=anadeFeatureTwitter(entradaFeaturesYTarget, "MENCIONES-TWITTER-RANGO",
+    # #                                                            pathDestinoTweets, tuiterosRecomendacionAOjo,
+    # #                                                            4, "")
     #
     # # FEATURE: Número de menciones del ticker por un conjunto de tuiteros que nombran los Premarket Top Gainers.
     # # Se sumará 1 por cada día y tuitero, si éste lo menciona x días antes.
@@ -609,7 +615,7 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
     # # El resultado será 0, 1, 2, 3...
     # entradaFeaturesYTarget = anadeFeatureTwitter(entradaFeaturesYTarget, "MENCIONES-TWITTER-GAINERS",
     #                                                              pathDestinoTweets, tuiterosGainers,
-    #                                                              2, "Gainers")
+    #                                                              3, "Gainers")
     #
     # # FEATURE: Número de menciones del ticker por un conjunto de tuiteros que nombran los Premarket Top Losers.
     # # Se sumará 1 por cada día y tuitero, si éste lo menciona x días antes.
@@ -618,7 +624,7 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
     # # El resultado será 0, 1, 2, 3...
     # entradaFeaturesYTarget = anadeFeatureTwitter(entradaFeaturesYTarget, "MENCIONES-TWITTER-LOSERS",
     #                                                              pathDestinoTweets, tuiterosLosers,
-    #                                                              2, "Losers")
+    #                                                              3, "Losers")
     #
     # # FEATURE: Número de menciones del ticker por un conjunto de tuiteros que nombran los Most Volatile Gappers.
     # # Se sumará 1 por cada día y tuitero, si éste lo menciona x días antes.
@@ -627,11 +633,69 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
     # # El resultado será 0, 1, 2, 3...
     # entradaFeaturesYTarget = anadeFeatureTwitter(entradaFeaturesYTarget, "MENCIONES-TWITTER-GAPPERS",
     #                                              pathDestinoTweets, tuiterosGappers,
-    #                                              2, "Gappers")
+    #                                              3, "Gappers")
+    #
+    # # FEATURE: Número de menciones del ticker por un conjunto de tuiteros que nombran los
+    # # "Stocks showing early gains in premarket".
+    # # Se sumará 1 por cada día y tuitero, si éste lo menciona x días antes.
+    # # DEFINICIÓN de FEATURE:
+    # # Para la empresa XXXX, la feature contará cuántos tuiteros mencionan el ticker $XXXX en el rango de días
+    # # El resultado será 0, 1, 2, 3...
+    # entradaFeaturesYTarget = anadeFeatureTwitter(entradaFeaturesYTarget, "MENCIONES-TWITTER-EARLYGAINSPREMARKET",
+    #                                              pathDestinoTweets, tuiterosEarlyGainsPremarket,
+    #                                              3, "Stocks showing early gains in premarket")
+    #
+    # # FEATURE: Número de menciones del ticker por un conjunto de tuiteros que nombran los
+    # # "Premarket stock gainers".
+    # # Se sumará 1 por cada día y tuitero, si éste lo menciona x días antes.
+    # # DEFINICIÓN de FEATURE:
+    # # Para la empresa XXXX, la feature contará cuántos tuiteros mencionan el ticker $XXXX en el rango de días
+    # # El resultado será 0, 1, 2, 3...
+    # entradaFeaturesYTarget = anadeFeatureTwitter(entradaFeaturesYTarget, "MENCIONES-TWITTER-PREMARKETSTOCKGAINERS",
+    #                                              pathDestinoTweets, tuiterosPremarketStockGainers,
+    #                                              3, "Premarket stock gainers")
+    #
+    # # FEATURE: Número de menciones del ticker por un conjunto de tuiteros que nombran los
+    # # "Stock gainers on watch".
+    # # Se sumará 1 por cada día y tuitero, si éste lo menciona x días antes.
+    # # DEFINICIÓN de FEATURE:
+    # # Para la empresa XXXX, la feature contará cuántos tuiteros mencionan el ticker $XXXX en el rango de días
+    # # El resultado será 0, 1, 2, 3...
+    # entradaFeaturesYTarget = anadeFeatureTwitter(entradaFeaturesYTarget, "MENCIONES-TWITTER-STOCKGAINERSTOWATCH",
+    #                                              pathDestinoTweets, tuiterosStockGainersToWatch,
+    #                                              3, "Stock gainers on watch")
+    #
+    # # FEATURE: Número de menciones del ticker por un conjunto de tuiteros que nombran los
+    # # "Today’s Top % Losers".
+    # # Se sumará 1 por cada día y tuitero, si éste lo menciona x días antes.
+    # # DEFINICIÓN de FEATURE:
+    # # Para la empresa XXXX, la feature contará cuántos tuiteros mencionan el ticker $XXXX en el rango de días
+    # # El resultado será 0, 1, 2, 3...
+    # entradaFeaturesYTarget = anadeFeatureTwitter(entradaFeaturesYTarget, "MENCIONES-TWITTER-TOPLOSERS",
+    #                                              pathDestinoTweets, tuiterosTopLosers,
+    #                                              3, "Today’s Top % Losers")
+    #
+    #
+    # # FEATURE: Número de menciones del ticker por un conjunto de tuiteros que nombran los
+    # # "Today’s Most Active Penny Stocks".
+    # # Se sumará 1 por cada día y tuitero, si éste lo menciona x días antes.
+    # # DEFINICIÓN de FEATURE:
+    # # Para la empresa XXXX, la feature contará cuántos tuiteros mencionan el ticker $XXXX en el rango de días
+    # # El resultado será 0, 1, 2, 3...
+    # entradaFeaturesYTarget = anadeFeatureTwitter(entradaFeaturesYTarget, "MENCIONES-TWITTER-MOSTACTIVEPENNYSTOCKS",
+    #                                              pathDestinoTweets, tuiterosMostActivePennyStocks,
+    #                                              3, "Today’s Most Active Penny Stocks")
+    #
     #
     # print((datetime.datetime.now()).strftime("%Y%m%d_%H%M%S") + " ... se finaliza el procesado de TWITTER")
+    #
+    # #########################
 
-    #########################
+    ######################
+    # Se guarda el conjunto de datos con las nuevas features añadidas en Python. Se usará sólo para depuración
+    print("Se guarda el conjunto de features, que incluyen las de Python, en: "+pathCsvCompletoConFeaturesPython)
+    entradaFeaturesYTarget.to_csv(pathCsvCompletoConFeaturesPython, index=False, sep='|', float_format='%.4f')
+    #################################
 
     ############# MUY IMPORTANTE: creamos el IDENTIFICADOR UNICO DE FILA, que será el indice!!
     nuevoindice = entradaFeaturesYTarget["empresa"].astype(str) + "_" + entradaFeaturesYTarget["anio"].astype(str) \
@@ -1409,8 +1473,6 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         modelo = lgb.LGBMClassifier(**params, n_estimators=50)
         modelo.fit(ds_train_f, ds_train_t, eval_set=[(ds_train_f, ds_train_t), (ds_test_f, ds_test_t)])
         #####################################################
-
-
 
         # ########################## INICIO DE XGBOOST SIN OPTIMIZAR ########################################################
         #
