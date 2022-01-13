@@ -28,6 +28,7 @@ echo -e "INVERSION HISTORICA SOLO FUTURO SIMPLIFICADO - INICIO: "$( date "+%Y%m%
 #echo -e "Parando cron..."
 #sudo service cron  stop
 
+
 #################### DIRECTORIOS ###############################################################
 DIR_BASE="/bolsa/"
 DIR_DROPBOX_REPO="/BOLSA_PREDICTOR/"
@@ -168,4 +169,5 @@ done
 
 
 echo -e "INVERSION HISTORICA SOLO FUTURO SIMPLIFICADO - FIN: "$( date "+%Y%m%d%H%M%S" )
+
 

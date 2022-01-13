@@ -14,10 +14,14 @@
       <change beforePath="$PROJECT_DIR$/../BolsaJava/src/main/resources/Bolsa_Subgrupos_Descripcion.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/main/resources/Bolsa_Subgrupos_Descripcion.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../BolsaJava/src/main/resources/desconocidos.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/main/resources/desconocidos.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+<<<<<<< HEAD
       <change beforePath="$PROJECT_DIR$/bolsa/AnalisisFalsosPositivos.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/AnalisisFalsosPositivos.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bolsa/C5C6Manual.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/C5C6Manual.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bolsa/ClusteringAlternativo.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/ClusteringAlternativo.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../BolsaScripts/parametros.config" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/parametros.config" afterDir="false" />
+=======
+      <change beforePath="$PROJECT_DIR$/../BolsaScripts/inversionHistoricaSoloFuturoSimplificado.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/inversionHistoricaSoloFuturoSimplificado.sh" afterDir="false" />
+>>>>>>> 9eddec17202b8e55f1876afdbea9e934b3c0eb10
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -421,20 +425,30 @@
     <list>
       <item itemvalue="Python.06_redneuronal_lstm_2" />
       <item itemvalue="Python.07_timeseries_weather_forecasting" />
+      <item itemvalue="Python.C5C6ManualTest" />
       <item itemvalue="Python.C5C6Manual" />
+      <item itemvalue="Python.C5C6Manual_bucle" />
       <item itemvalue="Python.C5C6_simplon_pruebas" />
       <item itemvalue="Python.C5C6_simplon_pytorch" />
       <item itemvalue="Python.C5SeleccionDeVariablesDeSubgrupo" />
       <item itemvalue="Python.C6CreadorModelosDeSubgrupo" />
       <item itemvalue="Python.FeaturesAnalisisPosteriori" />
+      <item itemvalue="Python.InversionJuntarPrediccionesDeUnDia" />
       <item itemvalue="Python.InversionUtilsPosteriori" />
       <item itemvalue="Python.InversionUtils" />
+<<<<<<< HEAD
       <item itemvalue="Python.pruebas" />
       <item itemvalue="Python.C5C6Manual_bucle" />
       <item itemvalue="Python.InversionJuntarPrediccionesDeUnDia" />
       <item itemvalue="Python.PintarMetricasyRentabilidades" />
       <item itemvalue="Python.AnalisisFalsosPositivos" />
       <item itemvalue="Python.ClusteringAlternativo" />
+=======
+      <item itemvalue="Python.PintarMetricasyRentabilidades" />
+      <item itemvalue="Python.TestIntegracionUtilidad1" />
+      <item itemvalue="Python.pruebas" />
+      <item itemvalue="Python.pruebatwitter" />
+>>>>>>> 9eddec17202b8e55f1876afdbea9e934b3c0eb10
     </list>
     <recent_temporary>
       <list>
@@ -537,6 +551,7 @@
           <line>242</line>
           <option name="timeStamp" value="147" />
         </line-breakpoint>
+<<<<<<< HEAD
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/bolsa/AnalisisFalsosPositivos.py</url>
           <line>223</line>
@@ -552,6 +567,8 @@
           <line>196</line>
           <option name="timeStamp" value="169" />
         </line-breakpoint>
+=======
+>>>>>>> 9eddec17202b8e55f1876afdbea9e934b3c0eb10
       </breakpoints>
       <default-breakpoints>
         <breakpoint type="python-exception">
