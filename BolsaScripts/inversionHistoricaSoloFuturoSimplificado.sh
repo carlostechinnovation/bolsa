@@ -20,14 +20,14 @@
 #Se analizará el tramo de antiguedad desde máxima hasta minima
 #Se tomarán los ficheros *_GRANDE_0_SG_0_* generados, o que ya se tienen de ejecuciones antiguas, para usarlo como base de información futura.
 ANTIGUEDAD_MAXIMA="100"
-ANTIGUEDAD_CERO="0"
-ANTIGUEDAD_MINIMA="20" # Se puede usar cualquier valor. Se recomienda que sea igual que X, para no calcular valores no útiles (no es estimable el futuro de una antigüedad menor que X).
+ANTIGUEDAD_MINIMA="0" # Se puede usar cualquier valor
 NUM_EMPRESAS_TRAIN="100" # Número de empresas de entrenamiento, NO para los días posteriores (que estarán en el fichero de parámetros). Se recomienda dejar 1000 siempre.
 
 echo -e "INVERSION HISTORICA SOLO FUTURO SIMPLIFICADO - INICIO: "$( date "+%Y%m%d%H%M%S" )
 
 #echo -e "Parando cron..."
 #sudo service cron  stop
+
 
 #################### DIRECTORIOS ###############################################################
 DIR_BASE="/bolsa/"
@@ -90,77 +90,68 @@ DIR_GITHUB_INVERSION="${DIR_CODIGOS}inversion/"
 
 #################################### CÓDIGO ###########################################################
 DESCARGAR="INVALIDO"
-
-MIN_COBERTURA_CLUSTER=0    # Para predecir, cojo lo que haya, sin mínimos. El modelo ya lo hemos entrenado
-MIN_EMPRESAS_POR_CLUSTER=1   # Para predecir, cojo lo que haya, sin mínimos. El modelo ya lo hemos entrenado
-
-######## Para la ANTIGÜEDAD CERO, se vacía la carpeta de futuro y se activan las descargas, pero para el resto no (porque se reutilizarán)
-
-DESCARGAR="S"
-
-rm -Rf ${DIR_BASE}futuro/ >>${LOG_INVERSION}
-crearCarpetaSiNoExiste "${DIR_FUT_SUBGRUPOS}"
-crearCarpetaSiNoExiste "${DIR_FUT_SUBGRUPOS}brutos/"
-crearCarpetaSiNoExiste "${DIR_FUT_SUBGRUPOS}brutos_csv/"
-crearCarpetaSiNoExiste "${DIR_FUT_SUBGRUPOS}limpios/"
-crearCarpetaSiNoExiste "${DIR_FUT_SUBGRUPOS}elaborados/"
-
-${PATH_SCRIPTS}master.sh "futuro" "${ANTIGUEDAD_CERO}" "0" "${DESCARGAR}" "S" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" "${NUM_EMPRESAS_INVERSION}" "${UMBRAL_SUBIDA_POR_VELA}" "${UMBRAL_MINIMO_GRAN_VELA}" "${MIN_COBERTURA_CLUSTER}" "${MIN_EMPRESAS_POR_CLUSTER}" "20001111" "20991111" "${MAX_NUM_FEAT_REDUCIDAS}" "${CAPA5_MAX_FILAS_ENTRADA}" "${DINAMICA1}" "${DINAMICA2}" 2>>${LOG_INVERSION} 1>>${LOG_INVERSION}
-
-while IFS= read -r -d '' -u 9
-do
-	if [[ $REPLY == *"COMPLETO_PREDICCION"* ]]; then
-		echo "Procesamos  ${REPLY}  y lo copiamos en ${DIR_DROPBOX} ..."  >>${LOG_INVERSION}
-		ficheronombre=$(basename $REPLY)
-		directorio=$(dirname $REPLY)
-		$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/InversionUtils.py" "${directorio}/${ficheronombre}" "0" "${DIR_DROPBOX}" "${ficheronombre}" >> ${LOG_INVERSION}
-	fi
-done 9< <( find ${DIR_FUT_SUBGRUPOS} -type f -exec printf '%s\0' {} + )
-
-# RESTO DE ANTIGÜEDADES:
-
 for (( ANTIGUEDAD=${ANTIGUEDAD_MINIMA}; ANTIGUEDAD<=${ANTIGUEDAD_MAXIMA}; ANTIGUEDAD++ ))
 do  
-	echo -e $( date '+%Y%m%d_%H%M%S' )" Ejecución del futuro (para velas de antiguedad=${ANTIGUEDAD}) con TODAS LAS EMPRESAS (lista DIRECTA ó INVERSA, ya da igual, no estamos mirando overfitting)..." >>${LOG_INVERSION}	
 
-######## Para antigüedades mayores o iguales que la mínima, se asume que el fichero COMPLETO.csv de la antigüedad cero ya existe, así que no se volverá a descargar, sino que se borrarán los días posteriores a esa antigüedad cero (en la práctica se eliminan todas las filas de un día, para cada iteración), y se predecirá. Excepto para el primer caso, que se quitarán todos los días desde la antigüedad cero a la antigüedad mínima.
+	
+
+######## Para la antigüedad mínima (normalmente=0), se vacía la carpeta de futuro y se activan las descargas, pero para el resto no (porque se reutilizarán)
+	if [ ${ANTIGUEDAD} -eq ${ANTIGUEDAD_MINIMA} ]; then
+
+        	DESCARGAR="S"
+
+		rm -Rf ${DIR_BASE}futuro/ >>${LOG_INVERSION}
+		crearCarpetaSiNoExiste "${DIR_FUT_SUBGRUPOS}"
+		crearCarpetaSiNoExiste "${DIR_FUT_SUBGRUPOS}brutos/"
+		crearCarpetaSiNoExiste "${DIR_FUT_SUBGRUPOS}brutos_csv/"
+		crearCarpetaSiNoExiste "${DIR_FUT_SUBGRUPOS}limpios/"
+		crearCarpetaSiNoExiste "${DIR_FUT_SUBGRUPOS}elaborados/"
+	
+	fi
+
+######## Para antigüedades mayores que la mínima, se asume que el fichero COMPLETO.csv de la antigüedad mínima ya existe, así que no se volverá a descargar, sino que se borrarán los días posteriores a esa antigüedad mínima (en la práctica se eliminan todas las filas de un día, para cada iteración), y se predecirá.
 # El fichero resultante de la predicción sobreescribirá al anterior, porque no tiene fecha en su nombre, sino sólo variará su contenido.
 # Antes que nada, se eliminan pasadas predicciones: ficheros *COMPLETO_PREDICCION*
-# Se evita descargar COMPLETO.csv
-DESCARGAR="N"
-primercaso="1"
+	if [ ${ANTIGUEDAD} -gt ${ANTIGUEDAD_MINIMA} ]; then
+                # Se evita descargar COMPLETO.csv
+		DESCARGAR="N"
 
-        # Se eliminan ficheros de antiguas predicciones (en TODOS los subgrupos)
-        while IFS= read -r -d '' -u 9
-	do
-		if [[ $REPLY == *"COMPLETO_PREDICCION"* ]]; then
-			echo "Se elimina el fichero  ${REPLY}  ..."  >>${LOG_INVERSION}
-			ficheronombre=$(basename $REPLY)
-			directorio=$(dirname $REPLY)
-			rm "${directorio}/${ficheronombre}" >> ${LOG_INVERSION}
-		fi
-	done 9< <( find ${DIR_FUT_SUBGRUPOS} -type f -exec printf '%s\0' {} + )
-
-        # Se elimina el siguiente día de COMPLETO.csv (en TODOS los subgrupos)
-	while IFS= read -r -d '' -u 9
-	do
-		if [[ $REPLY == *"COMPLETO.csv" ]]; then
-			diasAEliminar="1"
-			if [[ $primercaso == "1" ]]; then
-				primercaso="0"
-				diasAEliminar=$(echo "${ANTIGUEDAD_MINIMA} - ${ANTIGUEDAD_CERO}"|bc)
+                # Se eliminan ficheros de antiguas predicciones (en TODOS los subgrupos)
+                while IFS= read -r -d '' -u 9
+		do
+			if [[ $REPLY == *"COMPLETO_PREDICCION"* ]]; then
+				echo "Se elimina el fichero  ${REPLY}  ..."  >>${LOG_INVERSION}
+				ficheronombre=$(basename $REPLY)
+				directorio=$(dirname $REPLY)
+				rm "${directorio}/${ficheronombre}" >> ${LOG_INVERSION}
 			fi
-				
-			echo "Procesamos  ${REPLY}  para eliminar todas las filas del día más reciente ..."  >>${LOG_INVERSION}
-			ficheronombre=$(basename $REPLY)
-			directorio=$(dirname $REPLY)
-			$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/QuitarDiasMasRecientes.py" "${directorio}/${ficheronombre}" "${diasAEliminar}" "${directorio}/" "${ficheronombre}" >> ${LOG_INVERSION}
+		done 9< <( find ${DIR_FUT_SUBGRUPOS} -type f -exec printf '%s\0' {} + )
 
-		fi
-	done 9< <( find ${DIR_FUT_SUBGRUPOS} -type f -exec printf '%s\0' {} + )
+                # Se elimina el siguiente día de COMPLETO.csv (en TODOS los subgrupos)
+		while IFS= read -r -d '' -u 9
+		do
+			if [[ $REPLY == *"COMPLETO.csv" ]]; then
+				echo "Procesamos  ${REPLY}  para eliminar todas las filas del día más reciente ..."  >>${LOG_INVERSION}
+				ficheronombre=$(basename $REPLY)
+				directorio=$(dirname $REPLY)
+				$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/QuitarDiasMasRecientes.py" "${directorio}/${ficheronombre}" "1" "${directorio}/" "${ficheronombre}" >> ${LOG_INVERSION}
+			fi
+		done 9< <( find ${DIR_FUT_SUBGRUPOS} -type f -exec printf '%s\0' {} + )
 
-	${PATH_SCRIPTS}masterSimplificado.sh "futuro" "${ANTIGUEDAD}" "0" "${DESCARGAR}" "S" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" "${NUM_EMPRESAS_INVERSION}" "${UMBRAL_SUBIDA_POR_VELA}" "${UMBRAL_MINIMO_GRAN_VELA}" "${MIN_COBERTURA_CLUSTER}" "${MIN_EMPRESAS_POR_CLUSTER}" "20001111" "20991111" "${MAX_NUM_FEAT_REDUCIDAS}" "${CAPA5_MAX_FILAS_ENTRADA}" "${DINAMICA1}" "${DINAMICA2}" 2>>${LOG_INVERSION} 1>>${LOG_INVERSION}
-        
+
+	fi
+
+	echo -e $( date '+%Y%m%d_%H%M%S' )" Ejecución del futuro (para velas de antiguedad=${ANTIGUEDAD}) con TODAS LAS EMPRESAS (lista DIRECTA ó INVERSA, ya da igual, no estamos mirando overfitting)..." >>${LOG_INVERSION}
+	MIN_COBERTURA_CLUSTER=0    # Para predecir, cojo lo que haya, sin mínimos. El modelo ya lo hemos entrenado
+	MIN_EMPRESAS_POR_CLUSTER=1   # Para predecir, cojo lo que haya, sin mínimos. El modelo ya lo hemos entrenado
+
+        if [ ${ANTIGUEDAD} -eq ${ANTIGUEDAD_MINIMA} ]; then
+	        ${PATH_SCRIPTS}master.sh "futuro" "${ANTIGUEDAD}" "0" "${DESCARGAR}" "S" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" "${NUM_EMPRESAS_INVERSION}" "${UMBRAL_SUBIDA_POR_VELA}" "${UMBRAL_MINIMO_GRAN_VELA}" "${MIN_COBERTURA_CLUSTER}" "${MIN_EMPRESAS_POR_CLUSTER}" "20001111" "20991111" "${MAX_NUM_FEAT_REDUCIDAS}" "${CAPA5_MAX_FILAS_ENTRADA}" "${DINAMICA1}" "${DINAMICA2}" 2>>${LOG_INVERSION} 1>>${LOG_INVERSION}
+        fi
+
+        if [ ${ANTIGUEDAD} -gt ${ANTIGUEDAD_MINIMA} ]; then
+        	${PATH_SCRIPTS}masterSimplificado.sh "futuro" "${ANTIGUEDAD}" "0" "${DESCARGAR}" "S" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" "${NUM_EMPRESAS_INVERSION}" "${UMBRAL_SUBIDA_POR_VELA}" "${UMBRAL_MINIMO_GRAN_VELA}" "${MIN_COBERTURA_CLUSTER}" "${MIN_EMPRESAS_POR_CLUSTER}" "20001111" "20991111" "${MAX_NUM_FEAT_REDUCIDAS}" "${CAPA5_MAX_FILAS_ENTRADA}" "${DINAMICA1}" "${DINAMICA2}" 2>>${LOG_INVERSION} 1>>${LOG_INVERSION}
+        fi
 	
 	while IFS= read -r -d '' -u 9
 	do
@@ -171,7 +162,9 @@ primercaso="1"
 			$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/InversionUtils.py" "${directorio}/${ficheronombre}" "0" "${DIR_DROPBOX}" "${ficheronombre}" >> ${LOG_INVERSION}
 		fi
 	done 9< <( find ${DIR_FUT_SUBGRUPOS} -type f -exec printf '%s\0' {} + )
-	
+
+
+
 done
 
 
