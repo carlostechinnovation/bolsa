@@ -116,7 +116,7 @@ public class LimpiarCSVBrutosTemporales {
 			String origen = dirBrutoCsv + pathBorrable;
 			String destino = dirBorrables + "/" + pathBorrable;
 			if (Files.exists(Paths.get(origen))) {
-				MY_LOGGER.info("Moviendo desde: " + origen + "  hasta " + destino);
+				MY_LOGGER.debug("Moviendo desde: " + origen + "  hasta " + destino);
 				Files.move(Paths.get(origen), Paths.get(destino));
 			}
 		}

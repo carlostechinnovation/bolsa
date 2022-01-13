@@ -548,8 +548,8 @@ public class ConstructorElaborados implements Serializable {
 //							FINAL_NOMBRES_PARAMETROS_ELABORADOS._CLOSEHIGH.toString(), Boolean.FALSE);
 //					mapaParamsCloseLow = estadisticasCloseLow.getParametros(periodoActual,
 //							FINAL_NOMBRES_PARAMETROS_ELABORADOS._CLOSELOW.toString(), Boolean.FALSE);
-					mapaParamsOpenHigh = estadisticasOpenHigh.getParametros(periodoActual,
-							FINAL_NOMBRES_PARAMETROS_ELABORADOS._OPENHIGH.toString(), Boolean.FALSE);
+//					mapaParamsOpenHigh = estadisticasOpenHigh.getParametros(periodoActual,
+//							FINAL_NOMBRES_PARAMETROS_ELABORADOS._OPENHIGH.toString(), Boolean.FALSE);
 //					mapaParamsOpenLow = estadisticasOpenLow.getParametros(periodoActual,
 //							FINAL_NOMBRES_PARAMETROS_ELABORADOS._OPENLOW.toString(), Boolean.FALSE);
 					mapaParamsHighLow = estadisticasHighLow.getParametros(periodoActual,
@@ -563,7 +563,7 @@ public class ConstructorElaborados implements Serializable {
 //					parametros.putAll(mapaParamsCloseOpen);
 //					parametros.putAll(mapaParamsCloseHigh);
 //					parametros.putAll(mapaParamsCloseLow);
-					parametros.putAll(mapaParamsOpenHigh);
+//					parametros.putAll(mapaParamsOpenHigh);
 //					parametros.putAll(mapaParamsOpenLow);
 					parametros.putAll(mapaParamsHighLow);
 

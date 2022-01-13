@@ -76,8 +76,8 @@ public class CrearDatasetsSubgrupos implements Serializable {
 	private final static Float IO_umbral1 = 20.0F;
 	private final static Float IO_umbral2 = 60.0F;
 
-	private final static Float factorPicoVolumen = 1.09F;// Pico en volumen
-	private final static Float factorPicoPrecio = 1.09F; // Pico en precio
+	private final static Float factorPicoVolumenCP = 2.8F;// Pico en volumen
+	private final static Float factorPicoVolumenMP = 3.5F;// Pico en volumen
 
 	// Las empresas muy pequeñas o con empleados desconocidos no son fiables, son
 	// opacas y MUY INESTABLES (ruido para el modelo)
@@ -189,7 +189,7 @@ public class CrearDatasetsSubgrupos implements Serializable {
 		List<String> listaSeleccionClustering7 = leerListaClusteringAlternativo("7");
 		List<String> listaSeleccionClustering8 = leerListaClusteringAlternativo("8");
 		List<String> listaSeleccionClustering9 = leerListaClusteringAlternativo("9");
-		List<String> listaSeleccionClustering10 = leerListaClusteringAlternativo("10");
+		List<String> listaSeleccionClustering10 = leerListaClusteringAlternativo("0");
 
 		HashMap<Integer, HashMap<String, String>> datosEmpresaEntrada = new HashMap<Integer, HashMap<String, String>>();
 
@@ -260,8 +260,8 @@ public class CrearDatasetsSubgrupos implements Serializable {
 
 		// Combinaciones manuales
 		ArrayList<String> pathEmpresasTipo43 = new ArrayList<String>(); // Healthcare sin dividendo (SG 11 + SG42)
-		ArrayList<String> pathEmpresasTipo44 = new ArrayList<String>(); // 3 días: Pico en Volumen y precio
-		ArrayList<String> pathEmpresasTipo45 = new ArrayList<String>(); // 7 días: Pico en Volumen y precio
+		ArrayList<String> pathEmpresasTipo44 = new ArrayList<String>(); // Pico en Volumen en corto plazo
+		ArrayList<String> pathEmpresasTipo45 = new ArrayList<String>(); // Pico en Volumen en largo plazo
 
 		// Si tiene operaciones de INSIDERS
 		ArrayList<String> pathEmpresasTipo46 = new ArrayList<String>();
@@ -677,60 +677,42 @@ public class CrearDatasetsSubgrupos implements Serializable {
 						}
 
 						// --------------------------------------------
-						// Casos en los que recientemente ha habido un pico en volumen y precio,
+						// Casos en los que recientemente ha habido un pico en volumen,
 						// respecto de la media de muchos dias antes
 
 						// PICO en VOLUMEN
-						String max3Volumen = parametros.get("MAXIMO_3_VOLUMEN"); // el pico se dio en las ultimas 3
-																					// velas
-						String max7Volumen = parametros.get("MAXIMO_7_VOLUMEN"); // el pico se dio en las ultimas 7
-																					// velas
-						String mediaSma20Volumen = parametros.get("MEDIA_SMA_20_VOLUMEN");
+						String ratioMaxVolumenCP = parametros.get("VARREL_7_VOLUMEN");
+						String ratioMaxVolumenMP = parametros.get("VARREL_20_VOLUMEN");
 
-						// Pico en PRECIO
-						String max3Precio = parametros.get("MAXIMO_3_PRECIO");// el pico se dio en las ultimas 3 velas
-						String max7Precio = parametros.get("MAXIMO_7_PRECIO");// el pico se dio en las ultimas 7 velas
-						String mediaSma20Precio = parametros.get("MEDIA_SMA_20_PRECIO");
+						if (parametros.containsKey("VARREL_7_VOLUMEN") == false
+								&& parametros.containsKey("VARREL_20_VOLUMEN") == false) {
 
-						if (max3Volumen != null && !max3Volumen.isEmpty() && !"-".equals(max3Volumen)
-								&& !"null".equals(max3Volumen)
+							MY_LOGGER.error("Al construir SG_44 y SG_45 para empresa " + empresa
+									+ " faltan columnas esperables.");
 
-								&& max7Volumen != null && !max7Volumen.isEmpty() && !"-".equals(max7Volumen)
-								&& !"null".equals(max7Volumen)
+						} else {
 
-								&& mediaSma20Volumen != null && !mediaSma20Volumen.isEmpty()
-								&& !"-".equals(mediaSma20Volumen) && !"null".equals(mediaSma20Volumen)
+							if (ratioMaxVolumenCP != null && !ratioMaxVolumenCP.isEmpty()
+									&& !"-".equals(ratioMaxVolumenCP) && !"null".equals(ratioMaxVolumenCP)) {
 
-								&& max3Precio != null && !max3Precio.isEmpty() && !"-".equals(max3Precio)
-								&& !"null".equals(max3Precio)
+								Float maxVolumenCPf = Float.valueOf(ratioMaxVolumenCP);
 
-								&& max7Precio != null && !max7Precio.isEmpty() && !"-".equals(max7Precio)
-								&& !"null".equals(max7Precio)
-
-								&& mediaSma20Precio != null && !mediaSma20Precio.isEmpty()
-								&& !"-".equals(mediaSma20Precio) && !"null".equals(mediaSma20Precio)) {
-
-							Float max3Volumenf = Float.valueOf(max3Volumen);
-							Float max7Volumenf = Float.valueOf(max7Volumen);
-							Float mediaSma20Volumenf = Float.valueOf(mediaSma20Volumen);
-							Float max3Preciof = Float.valueOf(max3Precio);
-							Float max7Preciof = Float.valueOf(max7Precio);
-							Float mediaSma20Preciof = Float.valueOf(mediaSma20Precio);
-
-							// En las ultimas 3 ó 7 velas ha habido un pico en volumen y precio, respecto de
-							// la media de 20 dias. Ha caido el precio, pero puede que se repita el pico...
-							boolean hayPicoEnVolumen3 = max3Volumenf > factorPicoVolumen * mediaSma20Volumenf;
-							boolean hayPicoEnVolumen7 = max7Volumenf > factorPicoVolumen * mediaSma20Volumenf;
-							boolean hayPicoEnPrecio3 = max3Preciof > factorPicoPrecio * mediaSma20Preciof;
-							boolean hayPicoEnPrecio7 = max7Preciof > factorPicoPrecio * mediaSma20Preciof;
-
-							if (hayPicoEnVolumen3 && hayPicoEnPrecio3) {
-								pathEmpresasTipo44.add(ficheroGestionado.getAbsolutePath());
-							}
-							if (hayPicoEnVolumen7 && hayPicoEnPrecio7) {
-								pathEmpresasTipo45.add(ficheroGestionado.getAbsolutePath());
+								// A corto plazo ha habido un pico en volumen
+								if (maxVolumenCPf > factorPicoVolumenCP) {
+									pathEmpresasTipo44.add(ficheroGestionado.getAbsolutePath());
+								}
 							}
 
+							if (ratioMaxVolumenMP != null && !ratioMaxVolumenMP.isEmpty()
+									&& !"-".equals(ratioMaxVolumenMP) && !"null".equals(ratioMaxVolumenMP)) {
+
+								Float maxVolumenMPf = Float.valueOf(ratioMaxVolumenMP);
+
+								// A medio plazo ha habido un pico en volumen
+								if (maxVolumenMPf > factorPicoVolumenMP) {
+									pathEmpresasTipo45.add(ficheroGestionado.getAbsolutePath());
+								}
+							}
 						}
 
 						// ------ SUBGRUPOS según OPERACIONES DE INSIDERS ------------

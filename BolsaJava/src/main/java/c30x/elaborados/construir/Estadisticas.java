@@ -22,9 +22,9 @@ public class Estadisticas extends DescriptiveStatistics {
 
 	public final static String VALOR_INVALIDO = "null";
 	public final static int VALOR_FAKE = 0;
-	public final static double NUM100 = 100.0D;
-	public final static double NUM1K = 1000.0D;
-	public final static double NUM1M = 1000000.0D;
+	public final static float NUM100 = 100.0F;
+	public final static float NUM1K = 1000.0F;
+	public final static float NUM1M = 1000000.0F;
 
 	static Logger MY_LOGGER = Logger.getLogger(Estadisticas.class);
 
@@ -35,7 +35,7 @@ public class Estadisticas extends DescriptiveStatistics {
 		STD_SMA_, PENDIENTE_1M_SMA_, RATIO_SMA_SEGUNDO_, RATIO_MAXRELATIVO_SEGUNDO_, PENDIENTE_SMA_SEGUNDO_,
 		PENDIENTE_1M_SMA_SEGUNDO_, PENDIENTE_2M_SMA_SEGUNDO_, MEDIA_SMA_, PENDIENTE_SMA_, PENDIENTE_2M_SMA_, RATIO_SMA_,
 		RATIO_MAXRELATIVO_, RATIO_MINRELATIVO_, RATIO_MINRELATIVO_SEGUNDO_, RATIO_U_SMA_, RATIO_U_MAXRELATIVO_,
-		RATIO_U_MINRELATIVO_, CURTOSIS_, SKEWNESS_, FASEWYCKOFF_, EMA_, MACD_, RSI14_;
+		RATIO_U_MINRELATIVO_, CURTOSIS_, SKEWNESS_, FASEWYCKOFF_, EMA_, MACD_, RSI14_, VARREL_;
 	}
 
 //	Otros menos útiles: 
@@ -84,6 +84,7 @@ public class Estadisticas extends DescriptiveStatistics {
 		System.out.println("e5.getRatioEMA(): " + e5.getRatioEMA());
 		System.out.println("e5.getRatioMACDMitadPeriodo(): " + e5.getRatioMACDMitadPeriodo());
 		System.out.println("e5.getRsi14(): " + e5.getRsi14());
+		System.out.println("e5.getVariacionRelativaMaxima(): " + e5.getVariacionRelativaMaxima());
 	}
 
 	/**
@@ -128,6 +129,7 @@ public class Estadisticas extends DescriptiveStatistics {
 		incluirParametroCebecera(ordenNombresParametrosElaborados, PREFIJOS_ELAB.EMA_);
 		incluirParametroCebecera(ordenNombresParametrosElaborados, PREFIJOS_ELAB.MACD_);
 		incluirParametroCebecera(ordenNombresParametrosElaborados, PREFIJOS_ELAB.RSI14_);
+		incluirParametroCebecera(ordenNombresParametrosElaborados, PREFIJOS_ELAB.VARREL_);
 
 		locale = new Locale("en", "UK");
 		df = (DecimalFormat) NumberFormat.getNumberInstance(locale);
@@ -412,6 +414,7 @@ public class Estadisticas extends DescriptiveStatistics {
 		System.out.println("ema = " + getRatioEMA());
 		System.out.println("macd = " + getRatioMACDMitadPeriodo());
 		System.out.println("rsi14 = " + getRsi14());
+		System.out.println("VariacionRelativaMaxima = " + getVariacionRelativaMaxima());
 	}
 
 	/**
@@ -477,6 +480,8 @@ public class Estadisticas extends DescriptiveStatistics {
 				getRatioMACDMitadPeriodo(), rellenarConInvalidos);
 		incluirParamValor(parametros, PREFIJOS_ELAB.RSI14_, periodoString, finalNombreParametro, getRsi14(),
 				rellenarConInvalidos);
+		incluirParamValor(parametros, PREFIJOS_ELAB.VARREL_, periodoString, finalNombreParametro,
+				getVariacionRelativaMaxima(), rellenarConInvalidos);
 
 		return parametros;
 	}

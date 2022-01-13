@@ -13,7 +13,7 @@ public class InterpreteFalsosPositivos implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	// FALSOS POSITIVOS: por encima de este umbral (%) descartamos subgrupo
-	public static final Float UMBRAL_MAX_RATIOSUBGRUPO_FP = 40.0F;
+	public static final Float UMBRAL_MAX_RATIOSUBGRUPO_FP = 75.0F;
 	// FALSOS POSITIVOS: por encima de este umbral (%) descartamos empresa
 	public static final Float UMBRAL_MAX_RATIOEMPRESA_FP = 90.0F;
 

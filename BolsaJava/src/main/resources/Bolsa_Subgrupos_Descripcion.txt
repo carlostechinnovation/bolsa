@@ -43,8 +43,8 @@ subgrupo|descripcion
 41|Empresa que PAGA dividendo
 42|Empresa que NO paga dividendo
 43|Empresa del sector Healthcare que NO paga dividendo (SG11 + SG42)
-44|Se ha detectado un pico en volumen y precio en los ultimos 3 días (velas diarias)
-45|Se ha detectado un pico en volumen y precio en los ultimos 7 días (velas diarias)
+44|Se ha detectado un pico en volumen en los ultimos 4 días (velas diarias)
+45|Se ha detectado un pico en volumen en los ultimos 7 días (velas diarias)
 46|Tiene operaciones (compras o ventas) de insiders en ultimos 90 días
 47|Tiene operaciones (compras o ventas) de insiders en ultimos 30 días
 48|Tiene operaciones (compras o ventas) de insiders en ultimos 15 días

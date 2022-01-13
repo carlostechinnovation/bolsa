@@ -16,7 +16,7 @@ print("=========== ANALISIS DE FALSOS POSITIVOS ==============")
 
 ##################################################################################################
 print("PARAMETROS: ")
-dir_realimentacion = sys.argv[1]  # /home/carloslinux/Desktop/GIT_BOLSA/BolsaJava/realimentacion/
+dir_realimentacion = sys.argv[1]  # /home/carloslinux/Desktop/GIT_BOLSA/bolsa/BolsaJava/realimentacion/
 ##################################################################################################
 
 dirPasadoSubgrupos = "/bolsa/pasado/subgrupos/"
@@ -70,6 +70,7 @@ for filename in glob.iglob(dirPasadoSubgrupos + '**/intermedio.csv.validac_t_pre
     pathFilesPrediccionesTestYValid.append(filename)
 
 prediccionesTV = pd.DataFrame([], columns=["subgrupo", "numeroPredicciones"])
+prediccionesTVsolopositivos = pd.DataFrame([], columns=["subgrupo", "numeroPrediccionesPositivas"])
 prediccionesTV_temp = pd.DataFrame([], columns=["indice", "targetpredicho"])
 for ficheroPredTV in pathFilesPrediccionesTestYValid:
     sgExtraido = ficheroPredTV.split("/")[4]  # subgrupo
@@ -83,8 +84,13 @@ for ficheroPredTV in pathFilesPrediccionesTestYValid:
             nuevafila = {'subgrupo': sgExtraido, 'numeroPredicciones': numFilasTmp}
             prediccionesTV = prediccionesTV.append(nuevafila, ignore_index=True)
 
+            numFilasPositivasTmp = prediccionesTV_temp[prediccionesTV_temp['targetpredicho']==True].shape[0]
+            nuevafilaPos = {'subgrupo': sgExtraido, 'numeroPrediccionesPositivas': numFilasPositivasTmp}
+            prediccionesTVsolopositivos = prediccionesTVsolopositivos.append(nuevafilaPos, ignore_index=True)
+
 # Sumando los subtotales de Test y validacion por SUBGRUPO
 prediccionesTV = prediccionesTV.groupby('subgrupo').sum()
+prediccionesTVsolopositivos = prediccionesTVsolopositivos.groupby('subgrupo').sum()
 
 ##########################################################################################################
 # NUMERO DE PREDICCIONES CALCULADAS (TEST + VALIDACION) EN CADA EMPRESA (de todos los subgrupos
@@ -181,10 +187,10 @@ print("Top RATIO-SUBGRUPOS con MENOS falsos positivos:")
 data1 = velasFP.groupby('subgrupo')['dia'].count().to_frame().sort_values(by=['dia'], ascending=True)
 data1 = data1.rename(columns={"dia": "numvelasfp"})
 # print(tabulate(data1.transpose(), headers='keys', tablefmt='psql'))
-data2 = prediccionesTV.sort_values(by=['subgrupo'], ascending=True)
+data2 = prediccionesTVsolopositivos.sort_values(by=['subgrupo'], ascending=True)
 # print(tabulate(data2.transpose(), headers='keys', tablefmt='psql'))
 data3 = data1.merge(data2, how='inner', on='subgrupo')
-data3['ratioFalsosPositivos'] = 100 * data3['numvelasfp'] / data3['numeroPredicciones']
+data3['ratioFalsosPositivos'] = 100 * data3['numvelasfp'] / data3['numeroPrediccionesPositivas']
 data3 = data3.sort_values(by=['ratioFalsosPositivos'], ascending=True).round(1)
 print("FALSOSPOSITIVOS - SUBGRUPOS - Path: " + dirLogs + "falsospositivos_subgrupos.csv")
 data3.to_csv(dirLogs + "falsospositivos_subgrupos.csv", index=True, sep='|', float_format='%.4f')
@@ -203,13 +209,13 @@ def acumularInteligencia(dirLogs, dir_realimentacion, nombrefichero, clave):
 
     # PENDIENTE mejorar
 
-    # if os.path.exists(pathDestino):  # juntar info previa y actual
+    #if os.path.exists(pathDestino):  # juntar info previa y actual
     #   previaDF = pd.read_csv(pathOrigen, delimiter="|")
     #   actualDF = pd.read_csv(pathDestino, delimiter="|")
     #   juntos = pd.concat([previaDF, actualDF])
-    # else:  # pone la info actual
+    #else:  # pone la info actual
     shutil.copyfile(pathOrigen, pathDestino)
-    # print(tabulate(juntos.head().to_frame().transpose(), headers='keys', tablefmt='psql'))
+
 
 
 if numEmpresasAnalizadas > numEmpresasSuficiente:

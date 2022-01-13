@@ -12,6 +12,7 @@ print("CLUSTERING - INICIO")
 
 print("PARAMETROS: ")
 modo = sys.argv[1]  # pasado o futuro
+print("modo=" + modo)
 
 ################### Preparacion de la entrada #######################################################################
 X = pd.DataFrame()
@@ -86,8 +87,8 @@ from sklearn.cluster import MeanShift, estimate_bandwidth
 pathModelo = "/bolsa/pasado/clustering_modelo.dat"  # Siempre PASADO (nunca futuro)
 labels = []
 if modo == "pasado":
-    bandwidth = estimate_bandwidth(X, quantile=0.3, n_samples=None, random_state=0, n_jobs=-1)
-    modelo = MeanShift(bandwidth=bandwidth, bin_seeding=True)
+    bandwidth = estimate_bandwidth(X, quantile=0.2, n_samples=None, random_state=0, n_jobs=-1)
+    modelo = MeanShift(bandwidth=bandwidth, bin_seeding=True, min_bin_freq=2, cluster_all=False)
     modelo.fit(X)
     labels = modelo.labels_
     pickle.dump(modelo, open(pathModelo, 'wb'))

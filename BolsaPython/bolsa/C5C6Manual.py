@@ -46,7 +46,7 @@ print("modoTiempo = %s" % modoTiempo)
 print("maxFeatReducidas = %s" % maxFeatReducidas)
 print("maxFilasEntrada = %s" % maxFilasEntrada)
 
-varianza = 0.90  # Variacion acumulada de las features PCA sobre el target
+varianza = 0.93  # Variacion acumulada de las features PCA sobre el target
 UMBRAL_VELASMUYANTIGUASELIMINABLES = (5 * 4.5 * 4)  # todas las velas con mas antiguedad que este umbral no se usan para train ni test ni valid. Recom: 90 (4 meses)
 UMBRAL_COLUMNAS_DEMASIADOS_NULOS = 0.25  # Porcentaje de nulos en cada columna. Si se supera, borramos toda la columna. Recomendable: 0.40
 compatibleParaMuchasEmpresas = False  # Si hay muchas empresas, debo hacer ya el undersampling (en vez de capa 6)
