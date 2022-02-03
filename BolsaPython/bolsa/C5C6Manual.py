@@ -1525,9 +1525,8 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         print("Distribución de las probabilidades del target predicho (debe ser con forma de U para que distinga bien los positivos de los negativos): " + path_dibujo_probabs)
         probsPositivosyNegativos=modelo_loaded.predict_proba(ds_train_f_sinsmote)
         probsPositivosyNegativosDF = pd.DataFrame(data=probsPositivosyNegativos, columns=["probabsNegativas", "probabsPositivas"])
-        plt.hist(probsPositivosyNegativosDF.iloc[:, 0], label="Probabs. target negativos", bins=10, alpha=.7, color='red')
-        plt.hist(probsPositivosyNegativosDF.iloc[:, 1], label="Probabs. target positivos", bins=10, alpha=.7, color='green')
-        plt.title("Distribución de la probab predicha al predecir el target 0 o 1 (subgrupo " + id_subgrupo + ")", fontsize=10)
+        plt.hist(probsPositivosyNegativosDF.iloc[:, 0], label="Probabilidades target predicho", bins=20, alpha=.7, color='blue')
+        plt.title("Distribución de la probab predicha al predecir el target (subgrupo " + id_subgrupo + ")", fontsize=10)
         plt.legend(loc='upper left')
         plt.savefig(path_dibujo_probabs, bbox_inches='tight')
         plt.clf(); plt.cla(); plt.close()  # Limpiando dibujo
