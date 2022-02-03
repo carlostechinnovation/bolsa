@@ -61,41 +61,40 @@ public class CrearDatasetsSubgrupos implements Serializable {
 	private final static Integer marketCap_micro_max = 299;
 	private final static Integer marketCap_nano_max = 49;
 
-	private final static Float PER_umbral1 = 5.0F;
-	private final static Float PER_umbral2 = 25.0F;
+	private final static Float PER_umbral1 = 10.0F;
+	private final static Float PER_umbral2 = 30.0F;
 	private final static Float PER_umbral3 = 50.0F;
+	// Ratio PER (price-earnings ratio): si lo conocemos y es muy alto, la empresa
+	// está demasiado sobrevalorada. Si no lo conocemos, seguimos, pero al menos lo
+	// hemos intentado filtrar
+	private final static Float MAX_PER = 70.0F;
 
-	private final static Float DE_umbral1 = 0.7F;
-	private final static Float DE_umbral2 = 1.5F;
-	private final static Float DE_umbral3 = 2.8F;
+	private final static Float DE_umbral1 = 0.5F;
+	private final static Float DE_umbral2 = 1.2F;
+	private final static Float DE_umbral3 = 1.7F;
+	// DEUDA MAXIMA PERMITIDA (tanto por uno)
+	private final static Float MAX_DEUDA_PERMITIDA = 2.0F;
 
-	private final static Integer SMA50RATIOPRECIO_umbral1 = 80;
-	private final static Integer SMA50RATIOPRECIO_umbral2 = 100;
-	private final static Integer SMA50RATIOPRECIO_umbral3 = 120;
+	private final static Float SMA50RATIOPRECIO_umbral1 = 0.40F * 1000000F;
+	private final static Float SMA50RATIOPRECIO_umbral2 = 0.60F * 1000000F;
+	private final static Float SMA50RATIOPRECIO_umbral3 = 0.80F * 1000000F;
 
 	private final static Float IO_umbral1 = 20.0F;
 	private final static Float IO_umbral2 = 60.0F;
 
 	private final static Float factorPicoVolumenCP = 2.8F;// Pico en volumen
-	private final static Float factorPicoVolumenMP = 3.5F;// Pico en volumen
+	private final static Float factorPicoVolumenMP = 4F;// Pico en volumen
 
-	// Las empresas muy pequeñas o con empleados desconocidos no son fiables, son
-	// opacas y MUY INESTABLES (ruido para el modelo)
-	private final static Integer MINIMO_NUMERO_EMPLEADOS = 40;
-
-	// DEUDA MAXIMA PERMITIDA (tanto por uno)
-	private final static Float MAX_DEUDA_PERMITIDA = 1.9F;
+	// Las empresas MUY PEQUEÑAS (dato posiblemente mal actualizado en Finviz) o con
+	// empleados DESCONOCIDOS no son fiables para usar DINERO REAL --> Son OPACAS y
+	// MUY INESTABLES (ruido para el modelo) ==> DESCARTADAS
+	private final static Integer MINIMO_NUMERO_EMPLEADOS_INFORMADO = 100;
 
 	// MINIMO QUICK RATIO
 	private final static Float MIN_QUICK_RATIO = 0.75F;
 
 	// RECOMENDACIONES DE ANALISTAS (1= Comprar ... 5=Vender)
 	private final static Float MAX_RECOM_ANALISTAS = 4.1F;
-
-	// Ratio PER (price-earnings ratio): si lo conocemos y es muy alto, la empresa
-	// está demasiado sobrevalorada. Si no lo conocemos, seguimos, pero al menos lo
-	// hemos intentado filtrar
-	private final static Float MAX_PER = 60.0F;
 
 	private static HashMap<Integer, ArrayList<String>> empresasPorTipo;
 
@@ -338,17 +337,19 @@ public class CrearDatasetsSubgrupos implements Serializable {
 //				}
 
 				String empleados = parametros.get("Employees");
-				empleadosDesconocidos = empleados != null && (empleados.equals("-") || !empleados.isEmpty());
-				suficientesEmpleados = empleados != null && !empleados.equals("-") && !empleados.isEmpty()
-						&& Integer.valueOf(empleados) >= MINIMO_NUMERO_EMPLEADOS;
+				empleadosDesconocidos = (empleados == null || empleados.equals("-") || empleados.isEmpty());
+				suficientesEmpleados = !empleadosDesconocidos
+						&& Integer.valueOf(empleados) >= MINIMO_NUMERO_EMPLEADOS_INFORMADO;
 
 				if (empleadosDesconocidos) {
-					// MY_LOGGER.info("Permitida, aunque no conocemos el numero de empleados de la
-					// empresa=" + empresa);
+					MY_LOGGER.info("Numero de empleados desconocido (" + empleados + ") en empresa=" + empresa
+							+ " ==>DESCARTADA");
+					contadorDescartadasPorEmpleados++;
 
 				} else if (suficientesEmpleados == false) {
-					MY_LOGGER.info("Motivo suficiente para DESCARTE en empresa=" + empresa
-							+ " porque tiene pocos empleados (umbral=" + MINIMO_NUMERO_EMPLEADOS + "): " + empleados);
+					MY_LOGGER
+							.info("Motivo suficiente para DESCARTE en empresa=" + empresa + " porque tiene " + empleados
+									+ " empleados (umbral=" + MINIMO_NUMERO_EMPLEADOS_INFORMADO + "): " + empleados);
 					contadorDescartadasPorEmpleados++;
 				}
 
@@ -357,8 +358,8 @@ public class CrearDatasetsSubgrupos implements Serializable {
 				deudaConocidaYBaja = deudaTotal != null && !deudaTotal.equals("-") && !deudaTotal.isEmpty()
 						&& Float.valueOf(deudaTotal) <= MAX_DEUDA_PERMITIDA;
 				if (deudaDesconocida) {
-					// MY_LOGGER.info("Permitida, aunque no conocemos la deuda de la empresa=" +
-					// empresa);
+					MY_LOGGER.info("Deuda desconocida en empresa=" + empresa + "==>DESCARTADA");
+					contadorDescartadasPorDeuda++;
 
 				} else if (deudaConocidaYBaja == false) {
 					MY_LOGGER.info("Motivo suficiente para DESCARTE en empresa=" + empresa
@@ -412,13 +413,12 @@ public class CrearDatasetsSubgrupos implements Serializable {
 					MY_LOGGER.info("Motivo suficiente para DESCARTE en empresa=" + empresa
 							+ " porque el PER es demasiado alto (umbral=" + MAX_PER + "): " + ratioPER);
 					contadorDescartadasPorPER++;
-
 				}
 
 			}
 
-			boolean empresaCumpleCriteriosComunes = (empleadosDesconocidos || suficientesEmpleados)
-					&& (deudaDesconocida || deudaConocidaYBaja)
+			boolean empresaCumpleCriteriosComunes = (empleadosDesconocidos == false && suficientesEmpleados)
+					&& (deudaDesconocida == false && deudaConocidaYBaja)
 					&& (quickRatioDesconocido || suficienteLiquidezSegunQuickRatio)
 					&& (recomAnalistasDesconocido || analistasRecomiendanComprar)
 					&& (ratioPERDesconocido || ratioPERRazonable);
@@ -579,7 +579,7 @@ public class CrearDatasetsSubgrupos implements Serializable {
 						}
 
 						// ------ SUBGRUPOS según ratio de SMA50 de precio ------------
-						String ratioSMA50PrecioStr = parametros.get("RATIO_SMA_50_PRECIO");
+						String ratioSMA50PrecioStr = parametros.get("RATIO_MAXRELATIVO_50_CLOSE");
 						Integer ratioSMA50Precio = null;
 
 						if (ratioSMA50PrecioStr != null && !ratioSMA50PrecioStr.contains("null")
@@ -588,16 +588,22 @@ public class CrearDatasetsSubgrupos implements Serializable {
 
 							if (ratioSMA50Precio > 0 && ratioSMA50Precio < SMA50RATIOPRECIO_umbral1) {
 								pathEmpresasTipo27.add(ficheroGestionado.getAbsolutePath());
+								System.out.println("empresa=" + empresa + " RATIO_MAXRELATIVO_50_CLOSE="
+										+ ratioSMA50Precio + " -->MUY BAJO");
 							} else if (ratioSMA50Precio >= SMA50RATIOPRECIO_umbral1
 									&& ratioSMA50Precio < SMA50RATIOPRECIO_umbral2) {
 								pathEmpresasTipo28.add(ficheroGestionado.getAbsolutePath());
+								System.out.println("empresa=" + empresa + " RATIO_MAXRELATIVO_50_CLOSE="
+										+ ratioSMA50Precio + " -->BAJO");
 							} else if (ratioSMA50Precio >= SMA50RATIOPRECIO_umbral2
 									&& ratioSMA50Precio < SMA50RATIOPRECIO_umbral3) {
 								pathEmpresasTipo29.add(ficheroGestionado.getAbsolutePath());
+								System.out.println("empresa=" + empresa + " RATIO_MAXRELATIVO_50_CLOSE="
+										+ ratioSMA50Precio + " -->ALTO");
 							} else {
 								pathEmpresasTipo30.add(ficheroGestionado.getAbsolutePath());
-								// MY_LOGGER.warn("Empresa = " + empresa + " con RATIO_SMA_50_PRECIO = " +
-								// ratioSMA50PrecioStr);
+								System.out.println("empresa=" + empresa + " RATIO_MAXRELATIVO_50_CLOSE="
+										+ ratioSMA50Precio + " -->MUY ALTO");
 							}
 
 						} else {
@@ -774,10 +780,10 @@ public class CrearDatasetsSubgrupos implements Serializable {
 
 		MY_LOGGER.info("=============== CONTADORES DE EMPRESAS PROCESADAS ===============");
 		MY_LOGGER.info("Numero empresas total a la ENTRADA: " + contadorTotal + " empresas");
-		MY_LOGGER.info("De las descartadas, algunas tienen pocos empleados (< " + MINIMO_NUMERO_EMPLEADOS + "): "
-				+ contadorDescartadasPorEmpleados + " empresas (conocemos el dato concreto)");
-		MY_LOGGER.info("De las descartadas, algunas tienen demasiada deuda (> " + (200 * MAX_DEUDA_PERMITIDA) + " %): "
-				+ contadorDescartadasPorDeuda + " empresas (conocemos el dato concreto)");
+		MY_LOGGER.info("De las descartadas, algunas tienen pocos EMPLEADOS (< " + MINIMO_NUMERO_EMPLEADOS_INFORMADO
+				+ "): " + contadorDescartadasPorEmpleados + " empresas o lo desconocemos");
+		MY_LOGGER.info("De las descartadas, algunas tienen demasiada DEUDA (> " + (MAX_DEUDA_PERMITIDA) + " %): "
+				+ contadorDescartadasPorDeuda + " empresas o lo desconocemos");
 		MY_LOGGER.info("De las descartadas, algunas tienen un QUICK RATIO muy bajo (< " + MIN_QUICK_RATIO + "): "
 				+ contadorDescartadasPorQR + " empresas (conocemos el dato concreto)");
 		MY_LOGGER.info("De las descartadas, algunas tienen RECOMENDACION de VENTA FUERTE (>" + MAX_RECOM_ANALISTAS

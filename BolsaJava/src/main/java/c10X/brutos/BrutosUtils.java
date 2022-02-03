@@ -56,7 +56,8 @@ public class BrutosUtils implements Serializable {
 
 	public static final int ES_ENTORNO_VALIDACION = 0;
 
-	public static final String COL_ANIO = "anio", COL_MES = "mes", COL_DIA = "dia";
+	public static final String COL_EMPRESA = "empresa", COL_ANIO = "anio", COL_MES = "mes", COL_DIA = "dia",
+			COL_EMPLEADOS = "Employees", COL_MARKET_CAP = "Market Cap";
 
 	/**
 	 * @param in

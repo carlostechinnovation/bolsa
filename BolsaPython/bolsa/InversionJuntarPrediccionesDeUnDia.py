@@ -15,6 +15,7 @@ from IPython.display import HTML
 ###############################################################
 
 print("--- InversionJuntarPrediccionesDeUnDia: INICIO ---")
+# /home/carloslinux/Dropbox/BOLSA_PREDICTOR/ /home/carloslinux/Dropbox/BOLSA_PREDICTOR/ANALISIS/CALIDAD.csv /home/carloslinux/Desktop/GIT_BOLSA/bolsa/BolsaJava/src/main/resources/Bolsa_Subgrupos_Descripcion.txt /home/carloslinux/Desktop/GIT_BOLSA/bolsa/BolsaJava/realimentacion/falsospositivos_empresas.csv
 entradaPathDirDropbox = sys.argv[1]
 entradaPathCalidad = sys.argv[2]
 entradaPathDescripcionSubgrupos = sys.argv[3]

@@ -26,10 +26,10 @@ subgrupo|descripcion
 24|Con DEUDA alta
 25|Con DEUDA muy alta
 26|Empresas alcistas (lista manual)
-27|Ratio SMA50 vs Precio es bajo
-28|Ratio SMA50 vs Precio es medio
-29|Ratio SMA50 vs Precio es alto
-30|Ratio SMA50 vs Precio es muy alto
+27|Precio muy bajo respecto a curva SMA50
+28|Precio bajo respecto a curva SMA50
+29|Precio alto respecto a curva SMA50
+30|Precio muy alto respecto a curva SMA50
 31|BeNeLux
 32|China
 33|Israel

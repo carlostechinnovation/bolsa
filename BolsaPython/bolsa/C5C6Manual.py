@@ -35,6 +35,7 @@ print((datetime.datetime.now()).strftime(
 
 ##################################################################################################
 print("PARAMETROS: ")
+#EJEMPLO: /bolsa/pasado/subgrupos/SG_29/ pasado 50 20000 0
 dir_subgrupo = sys.argv[1]
 modoTiempo = sys.argv[2]
 maxFeatReducidas = sys.argv[3]
@@ -108,7 +109,7 @@ np.random.seed(12345)
 
 print("\n" + (datetime.datetime.now()).strftime(
     "%Y%m%d_%H%M%S") + " **** CAPAS 5 y 6 - Crear almacenar y evaluar varios modelos (para cada subgrupo) ****")
-print("Tipo de problema: CLASIFICACION DICOTOMICA (target es boolean)")
+print("Tipo de problema: CLASIFICACION BINOMIAL (target es boolean)")
 
 print("PARAMETROS: ")
 pathFeaturesSeleccionadas = dir_subgrupo + "FEATURES_SELECCIONADAS.csv"
@@ -139,7 +140,8 @@ pathCsvPredichos = dir_subgrupo + "TARGETS_PREDICHOS.csv"
 pathCsvPredichosIndices = dir_subgrupo + "TARGETS_PREDICHOS.csv_indices"
 pathCsvFinalFuturo = dir_subgrupo + desplazamientoAntiguedad + "_" + id_subgrupo + "_COMPLETO_PREDICCION.csv"
 dir_subgrupo_img = dir_subgrupo + "img/"
-pathCsvCompletoConFeaturesPython=dir_subgrupo + "COMPLETO_ConFeaturesPython.csv"
+pathCsvCompletoConFeaturesPython = dir_subgrupo + "COMPLETO_ConFeaturesPython.csv"
+pathColumnasConDemasiadosNulos = (dir_subgrupo + "columnasDemasiadosNulos.txt").replace("futuro", "pasado")  # lo guardamos siempre en el pasado
 
 print("dir_subgrupo: %s" % dir_subgrupo)
 print("modoTiempo: %s" % modoTiempo)
@@ -765,31 +767,50 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
     entradaFeaturesYTarget2 = entradaFeaturesYTarget2.drop('volumen', axis=1).drop('high', axis=1) \
         .drop('low', axis=1).drop('close', axis=1).drop('open', axis=1)
 
-    print("Borrar COLUMNAS dinamicas con demasiados nulos (umbral = " + str(UMBRAL_COLUMNAS_DEMASIADOS_NULOS) + ")...")
-    # print(tabulate(entradaFeaturesYTarget2.head(n=1), headers='keys', tablefmt='psql'))
-    columnasDemasiadosNulos = missing_df.index.values
-    print("columnasDemasiadosNulos: " + columnasDemasiadosNulos)
-    columnasDemasiadosNulos = np.delete(columnasDemasiadosNulos, np.where(columnasDemasiadosNulos =="TARGET"))
-    entradaFeaturesYTarget2 = entradaFeaturesYTarget2.drop(columnasDemasiadosNulos, axis=1)
-    # print(tabulate(entradaFeaturesYTarget2.head(n=1), headers='keys', tablefmt='psql'))
-
-    # entradaFeaturesYTarget2.to_csv(path_csv_completo + "_TEMP02", index=True, sep='|')  # UTIL para testIntegracion
-
-    print("entradaFeaturesYTarget2: " + str(entradaFeaturesYTarget2.shape[0]) + " x " + str(
+    print("entradaFeaturesYTarget2 (tras quitar columnas dinamicas identificadoras y con valores absolutos): " + str(entradaFeaturesYTarget2.shape[0]) + " x " + str(
         entradaFeaturesYTarget2.shape[1]))
-    # print(entradaFeaturesYTarget2.head())
+    print(entradaFeaturesYTarget2.head())
 
     if modoTiempo == "pasado":
+        print("Borrar COLUMNAS dinamicas con demasiados nulos (umbral = " + str(
+            UMBRAL_COLUMNAS_DEMASIADOS_NULOS) + ")...")
+        columnasDemasiadosNulos = missing_df.index.values
+        print("columnasDemasiadosNulos: " + columnasDemasiadosNulos)
+
+        print("Guardando columnasDemasiadosNulos en: " + pathColumnasConDemasiadosNulos)
+        pickle.dump(columnasDemasiadosNulos, open(pathColumnasConDemasiadosNulos, 'wb'))
+
+        print(tabulate(entradaFeaturesYTarget2.head(), headers='keys', tablefmt='psql'))
+        entradaFeaturesYTarget2 = entradaFeaturesYTarget2.drop(columnasDemasiadosNulos, axis=1)
+        print("entradaFeaturesYTarget2: " + str(entradaFeaturesYTarget2.shape[0]) + " x " + str(
+            entradaFeaturesYTarget2.shape[1]))
+        print(entradaFeaturesYTarget2.head())
+
         print(
             "MISSING VALUES (FILAS) - Borramos las FILAS que tengan 1 o mas valores NaN porque son huecos que no deberían estar...")
-        entradaFeaturesYTarget3 = entradaFeaturesYTarget2.dropna(axis=0,
-                                                                 how='any')  # Borrar FILA si ALGUNO sus valores tienen NaN
+        entradaFeaturesYTarget3 = entradaFeaturesYTarget2.dropna(axis=0, how='any')  # Borrar FILA si ALGUNO sus valores tienen NaN
+        print("entradaFeaturesYTarget3: " + str(entradaFeaturesYTarget3.shape[0]) + " x " + str(
+            entradaFeaturesYTarget3.shape[1]))
 
     elif modoTiempo == "futuro":
+        print("Borrar COLUMNAS dinamicas con demasiados nulos desde un fichero del pasado..." + pathColumnasConDemasiadosNulos)
+        columnasDemasiadosNulos = pickle.load(open(pathColumnasConDemasiadosNulos, 'rb'))
+        print("columnasDemasiadosNulos: "); print(columnasDemasiadosNulos)
+        print(tabulate(entradaFeaturesYTarget2.head(), headers='keys', tablefmt='psql'))
+        entradaFeaturesYTarget2 = entradaFeaturesYTarget2.drop(columnasDemasiadosNulos, axis=1)
+        print("entradaFeaturesYTarget2: " + str(entradaFeaturesYTarget2.shape[0]) + " x " + str(
+            entradaFeaturesYTarget2.shape[1]))
+
         print(
-            "MISSING VALUES (FILAS) - Para el FUTURO; el target es NULO siempre, pero borramos las filas que tengan ademas otros NULOS...")
-        entradaFeaturesYTarget3 = entradaFeaturesYTarget2.drop('TARGET', axis=1).dropna(axis=0,
-                                                                                        how='any')  # Borrar FILA si ALGUNO sus valores tienen NaN
+            "MISSING VALUES (FILAS) - Para el FUTURO; el target es NULO siempre...")
+        entradaFeaturesYTarget2 = entradaFeaturesYTarget2.drop('TARGET', axis=1)
+        print(tabulate(entradaFeaturesYTarget2.head(), headers='keys', tablefmt='psql'))
+        print("MISSING VALUES (FILAS) - Para el FUTURO, borramos las filas que tengan ademas otros NULOS...")
+        entradaFeaturesYTarget3 = entradaFeaturesYTarget2
+        print("entradaFeaturesYTarget3: " + str(entradaFeaturesYTarget3.shape[0]) + " x " + str(entradaFeaturesYTarget3.shape[1]))
+        print("Por si acaso en el futuro viniera una columna con todo NaN, ponemos un 0 a todo...")
+        entradaFeaturesYTarget3 = entradaFeaturesYTarget3.replace(np.nan, 0)
+
 
     print("Pasado o futuro: Transformacion en la que he borrado filas. Por tanto, guardo el indice...")
     indiceFilasFuturasTransformadas2 = entradaFeaturesYTarget3.index.values
@@ -1003,8 +1024,8 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
             print(
                 "Usando PCA, creamos una NUEVA BASE DE FEATURES ORTOGONALES y cogemos las que tengan un impacto agregado sobre el X% de la varianza del target. Descartamos el resto.")
 
-            modelo_pca_subgrupo = PCA(n_components=varianza, svd_solver='full')  # Variaza acumulada sobre el target
-            # modelo_pca_subgrupo = PCA(n_components='mle', svd_solver='full')  # Metodo "MLE de Minka": https://vismod.media.mit.edu/tech-reports/TR-514.pdf
+            #modelo_pca_subgrupo = PCA(n_components=varianza, svd_solver='full')  # Variaza acumulada sobre el target
+            modelo_pca_subgrupo = PCA(n_components='mle', svd_solver='full')  # Metodo "MLE de Minka": https://vismod.media.mit.edu/tech-reports/TR-514.pdf
             # modelo_pca_subgrupo = TSNE(n_components=2, perplexity=30.0, early_exaggeration=12.0, learning_rate=200.0,
             #                            n_iter=1000, n_iter_without_progress=300, min_grad_norm=1e-07,
             #                            metric='euclidean', init='random', verbose=0, random_state=None,
@@ -1500,6 +1521,17 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         train_t_predicho = modelo_loaded.predict(ds_train_f_sinsmote)
         precision_train = precision_score(ds_train_t_sinsmote, train_t_predicho)
 
+        path_dibujo_probabs = dir_subgrupo_img + "histograma_target_probabilidades.png"
+        print("Distribución de las probabilidades del target predicho (debe ser con forma de U para que distinga bien los positivos de los negativos): " + path_dibujo_probabs)
+        probsPositivosyNegativos=modelo_loaded.predict_proba(ds_train_f_sinsmote)
+        probsPositivosyNegativosDF = pd.DataFrame(data=probsPositivosyNegativos, columns=["probabsNegativas", "probabsPositivas"])
+        plt.hist(probsPositivosyNegativosDF.iloc[:, 0], label="Probabs. target negativos", bins=10, alpha=.7, color='red')
+        plt.hist(probsPositivosyNegativosDF.iloc[:, 1], label="Probabs. target positivos", bins=10, alpha=.7, color='green')
+        plt.title("Distribución de la probab predicha al predecir el target 0 o 1 (subgrupo " + id_subgrupo + ")", fontsize=10)
+        plt.legend(loc='upper left')
+        plt.savefig(path_dibujo_probabs, bbox_inches='tight')
+        plt.clf(); plt.cla(); plt.close()  # Limpiando dibujo
+
         print("Informe de metricas:")
         print(classification_report(ds_train_t_sinsmote, train_t_predicho))
 
@@ -1527,7 +1559,6 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         precision_avg_media = (precision_avg_test + precision_avg_validation) / 2
         print("PRECISIÓN EN TEST = " + '{0:0.2f}'.format(precision_test))
         print("PRECISIÓN EN VALIDACION = " + '{0:0.2f}'.format(precision_validation))
-
 
 
         # NO BORRAR: UTIL para informe HTML entregable
@@ -1657,7 +1688,7 @@ elif (modoTiempo == "futuro" and pathCsvReducido.endswith('.csv') and os.path.is
         # UMBRAL MENOS PROBABLES CON TARGET=1. Cuando el target es 1, se guarda su probabilidad
         # print("El DF llamado probs contiene las probabilidades de predecir un 0 o un 1:")
         # print(probs)
-
+        print("Sobre los targets predichos, se cogen solo aquellos con probabilidad encima del umbral -> umbralProbTargetTrue=" + str(umbralProbTargetTrue) + " y granProbTargetUno=" + str(granProbTargetUno))
         probabilidadesEnTargetUnoPeq = probs.iloc[:, 1]  # Cogemos solo la segunda columna: prob de que sea target=1
         probabilidadesEnTargetUnoPeq2 = probabilidadesEnTargetUnoPeq.apply(
             lambda x: x if (x >= umbralProbTargetTrue) else np.nan)  # Cogemos solo las filas cuya prob_1 > umbral
@@ -1700,26 +1731,30 @@ elif (modoTiempo == "futuro" and pathCsvReducido.endswith('.csv') and os.path.is
         # Predichos con columnas: empresa anio mes dia
         indiceDFPredichos = df_predichos.index.values
         df_predichos.insert(0, column="indiceColumna", value=indiceDFPredichos)
-        df_predichos[['empresa', 'anio', 'mes', 'dia']] = df_predichos['indiceColumna'].str.split('_', 4, expand=True)
-        df_predichos = df_predichos.drop('indiceColumna', axis=1)
-        df_predichos = df_predichos.astype({"anio": int, "mes": int, "dia": int})
 
-        indiceDFPredichos = df_predichos_probs.index.values
-        df_predichos_probs.insert(0, column="indiceColumna", value=indiceDFPredichos)
-        df_predichos_probs[['empresa', 'anio', 'mes', 'dia']] = df_predichos_probs['indiceColumna'].str.split('_', 4,
-                                                                                                              expand=True)
-        df_predichos_probs = df_predichos_probs.drop('indiceColumna', axis=1)
-        df_predichos_probs = df_predichos_probs.astype({"anio": int, "mes": int, "dia": int})
+        if df_predichos.shape[0] <= 0:
+            print("No se ha predicho NINGUN target=1 sabiendo que cogemos el top " + str(granProbTargetUno) + "% elementos que han tenido probabilidad >= "+ str(umbralProbTargetTrue) + " Por tanto, sa acaba el proceso.")
+        else:
+            df_predichos[['empresa', 'anio', 'mes', 'dia']] = df_predichos['indiceColumna'].str.split('_', 4, expand=True)
+            df_predichos = df_predichos.drop('indiceColumna', axis=1)
+            df_predichos = df_predichos.astype({"anio": int, "mes": int, "dia": int})
 
-        print("Juntar COMPLETO con TARGETS PREDICHOS... ")
-        df_juntos_1 = pd.merge(df_completo, df_predichos, on=["empresa", "anio", "mes", "dia"], how='left')
-        df_juntos_2 = pd.merge(df_juntos_1, df_predichos_probs, on=["empresa", "anio", "mes", "dia"], how='left')
+            indiceDFPredichos = df_predichos_probs.index.values
+            df_predichos_probs.insert(0, column="indiceColumna", value=indiceDFPredichos)
+            df_predichos_probs[['empresa', 'anio', 'mes', 'dia']] = df_predichos_probs['indiceColumna'].str.split('_', 4,
+                                                                                                                  expand=True)
+            df_predichos_probs = df_predichos_probs.drop('indiceColumna', axis=1)
+            df_predichos_probs = df_predichos_probs.astype({"anio": int, "mes": int, "dia": int})
 
-        df_juntos_2['TARGET_PREDICHO'] = (df_juntos_2['TARGET_PREDICHO'] * 1).astype(
-            'Int64')  # Convertir de boolean a int64, manteniendo los nulos
+            print("Juntar COMPLETO con TARGETS PREDICHOS... ")
+            df_juntos_1 = pd.merge(df_completo, df_predichos, on=["empresa", "anio", "mes", "dia"], how='left')
+            df_juntos_2 = pd.merge(df_juntos_1, df_predichos_probs, on=["empresa", "anio", "mes", "dia"], how='left')
 
-        print("Guardando (pathCsvFinalFuturo): " + pathCsvFinalFuturo)
-        df_juntos_2.to_csv(pathCsvFinalFuturo, index=False, sep='|', float_format='%.4f')
+            df_juntos_2['TARGET_PREDICHO'] = (df_juntos_2['TARGET_PREDICHO'] * 1).astype(
+                'Int64')  # Convertir de boolean a int64, manteniendo los nulos
+
+            print("Guardando (pathCsvFinalFuturo): " + pathCsvFinalFuturo)
+            df_juntos_2.to_csv(pathCsvFinalFuturo, index=False, sep='|', float_format='%.4f')
 
 
     else:
