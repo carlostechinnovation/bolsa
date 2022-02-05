@@ -365,7 +365,7 @@ public class EstaticosFinvizDescargarYParsear {
 			Map<String, String> mapaExtraidos, List<String> operacionesInsidersLimpias, FinvizNoticiasEmpresa noticias)
 			throws Exception {
 
-		MY_LOGGER.debug("parsearNasdaqEstaticos2 --> " + idEmpresa + "|" + rutaHtmlBruto);
+		MY_LOGGER.info("parsearNasdaqEstaticos2 --> " + idEmpresa + "|" + rutaHtmlBruto);
 
 		byte[] encoded = Files.readAllBytes(Paths.get(rutaHtmlBruto));
 		String in = new String(encoded, Charset.forName("ISO-8859-1"));
@@ -607,7 +607,9 @@ public class EstaticosFinvizDescargarYParsear {
 //				Element urlSecForm4 = datos.get(8);
 
 				// GUARDAR DATO
-				operacionesInsidersLimpias.add(date + "|" + transaction + "|" + value);
+				if (date != null && !date.isEmpty()) {
+					operacionesInsidersLimpias.add(date + "|" + transaction + "|" + value);
+				}
 
 			}
 
@@ -709,7 +711,7 @@ public class EstaticosFinvizDescargarYParsear {
 					"mapaFechasInsiders esta vacio, pero deberia haberse poblado al iniciar la instancia. Saliendo...");
 		}
 
-		if (in != null && !in.isEmpty()) {
+		if (in != null && !in.isEmpty() && !in.equalsIgnoreCase("Date")) {
 			String[] partes = in.split("\\s+");
 			String mesIn = getInstance().mapaFechasInsiders.get(partes[0]);
 
