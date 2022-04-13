@@ -26,3 +26,6 @@ gnome-terminal /bolsa/logs/ &
 echo -e "Abriendo GitExtensions..." >> ${LOG_DESA}
 ${DIR_PROGRAMAS}GitExtensions/GitExtensions.exe &
 
+echo -e "Abriendo SQLiteStudio..." >> ${LOG_DESA}
+${DIR_PROGRAMAS}SQLiteStudio/sqlitestudio &
+

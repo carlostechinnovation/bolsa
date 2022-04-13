@@ -782,7 +782,7 @@ public class CrearDatasetsSubgrupos implements Serializable {
 		MY_LOGGER.info("Numero empresas total a la ENTRADA: " + contadorTotal + " empresas");
 		MY_LOGGER.info("De las descartadas, algunas tienen pocos EMPLEADOS (< " + MINIMO_NUMERO_EMPLEADOS_INFORMADO
 				+ "): " + contadorDescartadasPorEmpleados + " empresas o lo desconocemos");
-		MY_LOGGER.info("De las descartadas, algunas tienen demasiada DEUDA (> " + (MAX_DEUDA_PERMITIDA) + " %): "
+		MY_LOGGER.info("De las descartadas, algunas tienen demasiada DEUDA (> " + (100 * MAX_DEUDA_PERMITIDA) + " %): "
 				+ contadorDescartadasPorDeuda + " empresas o lo desconocemos");
 		MY_LOGGER.info("De las descartadas, algunas tienen un QUICK RATIO muy bajo (< " + MIN_QUICK_RATIO + "): "
 				+ contadorDescartadasPorQR + " empresas (conocemos el dato concreto)");

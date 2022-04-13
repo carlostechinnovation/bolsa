@@ -750,7 +750,7 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
     missing['percent'] = missing['total'] / len(entradaFeaturesYTarget2)  # Create a percentage missing
     missing_df = missing.sort_values('percent', ascending=False)
     missing_df = missing_df[missing_df['percent'] > UMBRAL_COLUMNAS_DEMASIADOS_NULOS]
-    print(tabulate(missing_df.head(), headers='keys', tablefmt='psql'))  # .drop('TARGET')
+    # print(tabulate(missing_df.head(), headers='keys', tablefmt='psql'))  # .drop('TARGET')
 
     # print("Pasado o Futuro: Transformacion en la que borro filas. Por tanto, guardo el indice...")
     indiceFilasFuturasTransformadas1 = entradaFeaturesYTarget2.index.values
@@ -780,7 +780,7 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
         print("Guardando columnasDemasiadosNulos en: " + pathColumnasConDemasiadosNulos)
         pickle.dump(columnasDemasiadosNulos, open(pathColumnasConDemasiadosNulos, 'wb'))
 
-        print(tabulate(entradaFeaturesYTarget2.head(), headers='keys', tablefmt='psql'))
+        # print(tabulate(entradaFeaturesYTarget2.head(), headers='keys', tablefmt='psql'))
         entradaFeaturesYTarget2 = entradaFeaturesYTarget2.drop(columnasDemasiadosNulos, axis=1)
         print("entradaFeaturesYTarget2: " + str(entradaFeaturesYTarget2.shape[0]) + " x " + str(
             entradaFeaturesYTarget2.shape[1]))
@@ -795,8 +795,8 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
     elif modoTiempo == "futuro":
         print("Borrar COLUMNAS dinamicas con demasiados nulos desde un fichero del pasado..." + pathColumnasConDemasiadosNulos)
         columnasDemasiadosNulos = pickle.load(open(pathColumnasConDemasiadosNulos, 'rb'))
-        print("columnasDemasiadosNulos: "); print(columnasDemasiadosNulos)
-        print(tabulate(entradaFeaturesYTarget2.head(), headers='keys', tablefmt='psql'))
+        # print("columnasDemasiadosNulos: "); print(columnasDemasiadosNulos)
+        # print(tabulate(entradaFeaturesYTarget2.head(), headers='keys', tablefmt='psql'))
         entradaFeaturesYTarget2 = entradaFeaturesYTarget2.drop(columnasDemasiadosNulos, axis=1)
         print("entradaFeaturesYTarget2: " + str(entradaFeaturesYTarget2.shape[0]) + " x " + str(
             entradaFeaturesYTarget2.shape[1]))
@@ -804,7 +804,7 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
         print(
             "MISSING VALUES (FILAS) - Para el FUTURO; el target es NULO siempre...")
         entradaFeaturesYTarget2 = entradaFeaturesYTarget2.drop('TARGET', axis=1)
-        print(tabulate(entradaFeaturesYTarget2.head(), headers='keys', tablefmt='psql'))
+        # print(tabulate(entradaFeaturesYTarget2.head(), headers='keys', tablefmt='psql'))
         print("MISSING VALUES (FILAS) - Para el FUTURO, borramos las filas que tengan ademas otros NULOS...")
         entradaFeaturesYTarget3 = entradaFeaturesYTarget2
         print("entradaFeaturesYTarget3: " + str(entradaFeaturesYTarget3.shape[0]) + " x " + str(entradaFeaturesYTarget3.shape[1]))
