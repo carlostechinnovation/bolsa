@@ -16,6 +16,7 @@ sqlite3 -batch /bolsa/basedatos/bolsa.db -separator '|' -header "DROP TABLE IF E
 sqlite3 -batch /bolsa/basedatos/bolsa.db  -separator '|' -cmd ".import --csv -v /bolsa/pasado/limpios/NASDAQ_AAPL.csv pasado_limpios_NASDAQ_AAPL" ".quit" 
 
 sqlite3 -batch /bolsa/basedatos/bolsa.db -header "SELECT 'pasado_limpios_NASDAQ_AAPL' AS tabla, count(*) AS numero_filas FROM pasado_limpios_NASDAQ_AAPL LIMIT 3;"
+sqlite3 -batch /bolsa/basedatos/bolsa.db ".schema pasado_limpios_NASDAQ_AAPL"
 sqlite3 -batch /bolsa/basedatos/bolsa.db -header "SELECT * FROM pasado_limpios_NASDAQ_AAPL LIMIT 3;"
 
 ######## Visualizar la base de datos (es un fichero físico sencillo) #############
