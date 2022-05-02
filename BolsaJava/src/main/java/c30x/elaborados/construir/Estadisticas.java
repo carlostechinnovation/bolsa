@@ -26,6 +26,8 @@ public class Estadisticas extends DescriptiveStatistics {
 	public final static float NUM1K = 1000.0F;
 	public final static float NUM1M = 1000000.0F;
 
+	private static final DecimalFormat df4decimales = new DecimalFormat("0.0000");
+
 	static Logger MY_LOGGER = Logger.getLogger(Estadisticas.class);
 
 	// Si anhado mas parametros, debo modificar la constructora
@@ -502,6 +504,11 @@ public class Estadisticas extends DescriptiveStatistics {
 
 			if (valor instanceof Double && Double.isNaN((double) valor)) {
 				parametros.put(prefijo + periodo + finalNombreParametro, VALOR_INVALIDO);
+
+			} else if ((valor instanceof Double && !Double.isNaN((double) valor))
+					|| valor instanceof Float && !Float.isNaN((float) valor)) {
+				parametros.put(prefijo + periodo + finalNombreParametro, df4decimales.format(valor));
+
 			} else {
 				parametros.put(prefijo + periodo + finalNombreParametro, String.valueOf(valor));
 			}

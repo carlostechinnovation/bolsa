@@ -45,30 +45,30 @@ with sqlite3.connect(PATH_BASEDATOS) as conn:
     c = conn.cursor()
 
     #-------------------------------------------------
-    print("Se crea tabla de pruebas...")
-    salida_pruebas1 = c.execute('''DROP TABLE IF EXISTS pruebas;''')
-    salida_pruebas2 = c.execute('''CREATE TABLE pruebas (id INTEGER PRIMARY KEY, nombre TEXT);''')
-    salida_pruebas3 = c.execute('''INSERT INTO pruebas (id,nombre) VALUES (1, 'empresa1');''')
-    salida_pruebas4 = c.execute('''INSERT INTO pruebas (id,nombre) VALUES (2, 'empresa2');''')
-    salida_pruebas5 = c.execute('''SELECT * FROM pruebas LIMIT 10;''')
-    df = pd.read_sql_query('''SELECT * FROM pruebas LIMIT 10;''', conn)
+    # print("Se crea tabla de pruebas...")
+    # salida_pruebas1 = c.execute('''DROP TABLE IF EXISTS pruebas;''')
+    # salida_pruebas2 = c.execute('''CREATE TABLE pruebas (id INTEGER PRIMARY KEY, nombre TEXT);''')
+    # salida_pruebas3 = c.execute('''INSERT INTO pruebas (id,nombre) VALUES (1, 'empresa1');''')
+    # salida_pruebas4 = c.execute('''INSERT INTO pruebas (id,nombre) VALUES (2, 'empresa2');''')
+    # salida_pruebas5 = c.execute('''SELECT * FROM pruebas LIMIT 10;''')
+    # df = pd.read_sql_query('''SELECT * FROM pruebas LIMIT 10;''', conn)
     #print(tabulate(df, headers='keys', tablefmt='psql'))
 
     #-------------------------------------------------
     print("############# CARGAR CSV en la BASE DE DATOS ####################")
 
-    print("PASADO - LIMPIOS:")
-    with os.scandir("/bolsa/pasado/limpios/") as iterador:
+    print("PASADO - elaborados:")
+    with os.scandir("/bolsa/pasado/elaborados/") as iterador:
         for PATH_CSV in iterador:
             if PATH_CSV.name.endswith(".csv") and "/NASDAQ_" in PATH_CSV.path and PATH_CSV.is_file():
-                importarCsvHaciaTabla(conn, PATH_CSV.path, PATH_BASEDATOS, "pasado_limpios_" + PATH_CSV.name.replace(".csv", "").replace("NASDAQ_", ""))
+                importarCsvHaciaTabla(conn, PATH_CSV.path, PATH_BASEDATOS, "pasado_elaborados_" + PATH_CSV.name.replace(".csv", "").replace("NASDAQ_", ""))
 
-    print("FUTURO - LIMPIOS:")
-    with os.scandir("/bolsa/futuro/limpios/") as iterador:
+    print("FUTURO - elaborados:")
+    with os.scandir("/bolsa/futuro/elaborados/") as iterador:
         for PATH_CSV in iterador:
             if PATH_CSV.name.endswith(".csv") and "/NASDAQ_" in PATH_CSV.path and PATH_CSV.is_file():
                 importarCsvHaciaTabla(conn, PATH_CSV.path, PATH_BASEDATOS,
-                                      "futuro_limpios_" + PATH_CSV.name.replace(".csv", "").replace("NASDAQ_", ""))
+                                      "futuro_elaborados_" + PATH_CSV.name.replace(".csv", "").replace("NASDAQ_", ""))
 
     print("PASADO - SUBGRUPOS:")
     for root, dirs, files in os.walk("/bolsa/pasado/subgrupos/"):

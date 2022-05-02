@@ -200,6 +200,8 @@ crearCarpetaSiNoExisteYVaciar "${DIR_ELABORADOS}"
 echo -e "Calculando elaborados y target..." >> ${LOG_MASTER}
 java -jar ${PATH_JAR} --class "coordinador.Principal" "c30X.elaborados.ConstructorElaborados" "${DIR_LIMPIOS}" "${DIR_ELABORADOS}" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" "${UMBRAL_SUBIDA_POR_VELA}" "${UMBRAL_MINIMO_GRAN_VELA}" "${DINAMICA1}" "${DINAMICA2}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 
+#$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/ConstructorElaboradosEnPython.py" "${DIR_LIMPIOS}" "${DIR_ELABORADOS}" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" "${UMBRAL_SUBIDA_POR_VELA}" "${UMBRAL_MINIMO_GRAN_VELA}" "${DINAMICA1}" "${DINAMICA2}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
+
 echo -e "Elaborados (incluye la variable elaborada TARGET) ya calculados" >> ${LOG_MASTER}
 
 NUM_FICHEROS_30x=$(ls -l ${DIR_ELABORADOS} | grep -v 'total' | wc -l)

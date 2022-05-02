@@ -20,12 +20,14 @@ echo -e "Abriendo SmartGIT..." >> ${LOG_DESA}
 #~/.dropbox-dist/dropboxd &
 
 echo -e "Abriendo terminal Linux..." >> ${LOG_DESA}
-gnome-terminal /bolsa/logs/ &
-#gnome-terminal /home/carloslinux/Desktop/GIT_BOLSA/bolsa/BolsaScripts/ &
+cd /bolsa/logs/
+gnome-terminal &
+cd /home/carloslinux/Desktop/GIT_BOLSA/bolsa/BolsaScripts/
+gnome-terminal &
 
 echo -e "Abriendo GitExtensions..." >> ${LOG_DESA}
 ${DIR_PROGRAMAS}GitExtensions/GitExtensions.exe &
 
-echo -e "Abriendo SQLiteStudio..." >> ${LOG_DESA}
-${DIR_PROGRAMAS}SQLiteStudio/sqlitestudio &
+#echo -e "Abriendo SQLiteStudio..." >> ${LOG_DESA}
+#${DIR_PROGRAMAS}SQLiteStudio/sqlitestudio &
 
