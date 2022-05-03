@@ -142,6 +142,15 @@ public class CrearDatasetsSubgrupos implements Serializable {
 			realimentacion = args[7];
 		}
 
+		MY_LOGGER.info("directorioIn: " + directorioIn);
+		MY_LOGGER.info("directorioOut: " + directorioOut);
+		MY_LOGGER.info("coberturaMinima: " + coberturaMinima);
+		MY_LOGGER.info("minEmpresasPorCluster: " + minEmpresasPorCluster);
+		MY_LOGGER.info("modoTiempo: " + modoTiempo);
+		MY_LOGGER.info("filtroDinamico1: " + filtroDinamico1);
+		MY_LOGGER.info("filtroDinamico2: " + filtroDinamico2);
+		MY_LOGGER.info("realimentacion: " + realimentacion);
+
 		crearSubgruposYNormalizar(directorioIn, directorioOut, coberturaMinima, minEmpresasPorCluster, modoTiempo,
 				filtroDinamico1, filtroDinamico2, realimentacion);
 

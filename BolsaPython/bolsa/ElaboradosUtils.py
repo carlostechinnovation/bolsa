@@ -18,17 +18,43 @@ Analiza los periodos [t1,t2] y [t2,t3], donde el foco está en el tiempo t1. El 
 Parametros:
     - entradaDF: dataframe de entrada. Debe contener la columna de precio de cierre (close)
     - nombreEmpresa: nombre de la empresa analizada
-    - S: Subida del precio de cierre durante [t1,t2]
+    - S: Subida del precio de cierre durante [t1,t2] en el HIGH (no en el close)
     - X: Duración del periodo [t1,t2]
-    - R: Caida ligera máxima permitida durante [t2,t3], en TODAS esas velas.
-    - M: Duración del periodo [t2,t3]
-    - F: Caida ligera permitida durante [t2,t3], en la ÚLTIMA vela.
-    - B: Caida ligera permitida durante [t1,t2], en TODAS esas velas.
-    - umbralMaximo: Porcentaje máximo aceptado para la subida de cada vela respecto del incremento medio en las velas de 1 a X.
-    - umbralMinimo: Porcentaje mínimo aceptado para la subida de cada vela respecto del incremento medio en las velas de 1 a X.
+    - R (NO USADO): Caida ligera máxima permitida durante [t2,t3], en TODAS esas velas
+    - M: Duración del periodo [t2,t3]. garantiza estabilidad de la subida en [t1, t2]
+    - F: Caida ligera permitida durante [t2,t3], en la ÚLTIMA vela en su CLOSE
+    - B (NO USADO): Caida ligera permitida durante [t1,t2], en TODAS esas velas
+    - umbralMaximo: Porcentaje máximo aceptado para la subida de cada vela respecto del incremento medio en las velas de 1 a X. Sirve para QUEDARSE solo con PELOTAZOS. Recomendable: 0 (3 o menos).
+    - umbralMinimo: Porcentaje mínimo aceptado para la subida de cada vela respecto del incremento medio en las velas de 1 a X. Sirve para DESCARTAR subidas enormes no controladas. Recomendable: 5 (3 o mas).
 """
 def calcularTargetYanhadirlo (entradaDF, nombreEmpresa, S, X, R, M, F, B, umbralMaximo, umbralMinimo):
     print("Calculando columna TARGET...")
+    tempDF = pd.DataFrame()  # auxiliar
+    tempDF['antiguedad'] = entradaDF['antiguedad']
+    tempDF['anio'] = entradaDF['anio']
+    tempDF['mes'] = entradaDF['mes']
+    tempDF['dia'] = entradaDF['dia']
+
+    tempDF['close'] = entradaDF['close']                # Precio de cierre del día analizado t1
+    #tempDF['close_X'] = entradaDF['close'].shift(X)     # Precio de cierre del día analizado t2 (t2=t1+X)
+    tempDF['high_X'] = entradaDF['high'].shift(X)  # Precio de cierre del día analizado t2 (t2=t1+X)
+    #tempDF['close_XM'] = entradaDF['close'].shift(X + M)  # Precio de cierre del día analizado t3 (t3=t1+X+M)
+    tempDF['high_XM'] = entradaDF['high'].shift(X + M)  # Precio de cierre del día analizado t3 (t3=t1+X+M)
+
+    #tempDF['high_mas_S'] = entradaDF['high'].rolling(S, min_periods=S).max()  # Maximo precio high en ventana [t1,t2] imputado a la vela t1
+    #https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.rolling.html
+
+    condicion1 = pd.DataFrame(tempDF['high_X'] > ((100+S)/100 * tempDF['close']) )
+    condicion2 = pd.DataFrame(tempDF['high_XM'] > ((100+S-F)/100 * tempDF['close']) )
+    tempDF['TARGET'] = condicion1 & condicion2
+    tempDF.replace({False: 0, True: 1}, inplace=True)
+    numPositivos = len(tempDF[tempDF['TARGET'] == True])
+    numNegativos = len(tempDF[tempDF['TARGET'] == False])
+    tasaDesbalanceo=round(numPositivos/numNegativos, 2)
+    print("Tasa de desbalanceo (true/false): " + str(numPositivos) + "/" + str(numNegativos) + " = " + str(tasaDesbalanceo))
+
+    #Se añade la columna al final del dataframe de entrada
+    entradaDF['TARGET'] = tempDF['TARGET']
 
 
 
@@ -69,7 +95,7 @@ def procesarCSV (pathEntrada, pathSalida, modoTiempo, analizarEntrada, S, X, R, 
         # PENDIENTE RELATIVA DE CRECIMIENTO de VOLUMEN en ultimas PERIODO velas
         tempDF['volumen'] = entradaDF['volumen']
         tempDF['volumen_shifted_' + str(periodo)] = entradaDF['volumen'].shift(-1 * periodo)
-        entradaDF['volumen_pendienterelativa_' + str(periodo)] = 100 * (tempDF['volumen'] - tempDF['volumen_shifted_' + str(periodo)]) / tempDF['volumen_shifted_' + str(periodo)]
+        entradaDF['VARREL_'+str(periodo)+'_VOLUMEN'  ] = 100 * (tempDF['volumen'] - tempDF['volumen_shifted_' + str(periodo)]) / tempDF['volumen_shifted_' + str(periodo)]
 
         # SPAN entre precios High y Low en últimas PERIODO velas.
         # Para la vela analizada en tiempo t, se leen todos los precios high del periodo [t-P, t] cogiendo el máximo; y análogo para coger el mínimo de los precios low.
@@ -83,12 +109,16 @@ def procesarCSV (pathEntrada, pathSalida, modoTiempo, analizarEntrada, S, X, R, 
         # Variación de MEDIA EWMA (exponentially weighted moving average) sobre precios CLOSE, relativa al precio close de la vela analizada
         entradaDF['close_ewma_' + str(periodo)] = 100 * (entradaDF['close'].ewm(span=periodo, adjust=False).mean() - entradaDF['close'] )/ entradaDF['close']
 
-
-
     ##################  COLUMNA ESPECIAL: TARGET #######################
     if "pasado" == modoTiempo:
         calcularTargetYanhadirlo(entradaDF, nombreEmpresa, S, X, R, M, F, B, umbralMaximo, umbralMinimo)
 
 
     # Pintar estado final del dataframe CON columnas ELABORADAS:
-    print(tabulate(entradaDF.head(n=10), headers='keys', tablefmt='psql'))
+    #print(tabulate(entradaDF.head(n=10), headers='keys', tablefmt='psql'))
+
+    #Guardar
+    print("Justo antes de guardar, entradaDF: " + str(entradaDF.shape[0]) + " x " + str(
+        entradaDF.shape[1]) + " --> " + pathSalida)
+    entradaDF.to_csv(pathSalida, index=False, sep='|', float_format='%.4f')
+

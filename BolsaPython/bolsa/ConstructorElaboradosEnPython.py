@@ -13,7 +13,7 @@ import ElaboradosUtils
 ###############################################################
 
 # Ejemplo:
-# /bolsa/pasado/limpios/ /bolsa/pasado/elaborados/ 10 5 15 3 15 15 5.0 0.0 0 0
+# /bolsa/pasado/limpios/ /bolsa/pasado/elaborados/ 12 8 15 2 4 15 5.0 0.0 0 0
 
 
 print("=========== CONSTRUCTOR ELABORADOS EN PYTHON: inicio ==============")
@@ -65,8 +65,7 @@ for f in entradasCsv:
     contador += 1
     analizarEntrada = (contador <= NUMERO_EMPRESAS_ANALIZAR_PROFILING)  #Permite analizar detalladamente la entrada si se desea
     ElaboradosUtils.procesarCSV(directorioIn + f, directorioOut + f, modoTiempo, analizarEntrada, S, X, R, M, F, B, umbralSubidaPorVela, umbralMinimoGranVela)
-    break ###TEMPORAL
-
+    #break ###TEMPORAL
 
 
 print("=========== CONSTRUCTOR ELABORADOS EN PYTHON: fin ==============")
