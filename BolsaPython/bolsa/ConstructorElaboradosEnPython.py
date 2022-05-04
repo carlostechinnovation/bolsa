@@ -13,7 +13,7 @@ import ElaboradosUtils
 ###############################################################
 
 # Ejemplo:
-# /bolsa/pasado/limpios/ /bolsa/pasado/elaborados/ 12 8 15 2 4 15 5.0 0.0 0 0
+# /bolsa/pasado/limpios/ /bolsa/pasado/elaborados/ 10 7 15 2 4 15 5.0 0.0 0 0
 
 
 print("=========== CONSTRUCTOR ELABORADOS EN PYTHON: inicio ==============")

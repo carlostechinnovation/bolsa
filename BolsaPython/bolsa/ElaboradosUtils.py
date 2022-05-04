@@ -36,21 +36,24 @@ def calcularTargetYanhadirlo (entradaDF, nombreEmpresa, S, X, R, M, F, B, umbral
     tempDF['dia'] = entradaDF['dia']
 
     tempDF['close'] = entradaDF['close']                # Precio de cierre del día analizado t1
-    #tempDF['close_X'] = entradaDF['close'].shift(X)     # Precio de cierre del día analizado t2 (t2=t1+X)
-    tempDF['high_X'] = entradaDF['high'].shift(X)  # Precio de cierre del día analizado t2 (t2=t1+X)
-    #tempDF['close_XM'] = entradaDF['close'].shift(X + M)  # Precio de cierre del día analizado t3 (t3=t1+X+M)
-    tempDF['high_XM'] = entradaDF['high'].shift(X + M)  # Precio de cierre del día analizado t3 (t3=t1+X+M)
+    tempDF['high'] = entradaDF['high']                # Precio de cierre del día analizado t1
+    tempDF['high_durante_X'] = entradaDF['high'].copy().rolling(X+1, min_periods=X+1).max()  # Maximo precio high en ventana [t1,t2]
+    tempDF['close_X'] = entradaDF['close'].copy().shift(X)     # Precio de cierre del día analizado t2 (t2=t1+X)
+    #tempDF['high_en_X'] = entradaDF['high'].copy().shift(X)  # Precio de cierre del día analizado t2 (t2=t1+X)
+    #tempDF['high_durante_XM'] = entradaDF['high'].copy().rolling(X+M+1,min_periods=(X+M+1)).max()  # Maximo precio high en ventana [t1,t3]
+    tempDF['close_XM'] = entradaDF['close'].copy().shift(X + M)  # Precio de cierre del día analizado t3 (t3=t1+X+M)
+    #tempDF['high_XM'] = entradaDF['high'].copy().shift(X + M)  # Precio de cierre del día analizado t3 (t3=t1+X+M)
 
-    #tempDF['high_mas_S'] = entradaDF['high'].rolling(S, min_periods=S).max()  # Maximo precio high en ventana [t1,t2] imputado a la vela t1
-    #https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.rolling.html
 
-    condicion1 = pd.DataFrame(tempDF['high_X'] > ((100+S)/100 * tempDF['close']) )
-    condicion2 = pd.DataFrame(tempDF['high_XM'] > ((100+S-F)/100 * tempDF['close']) )
-    tempDF['TARGET'] = condicion1 & condicion2
+    condicion1 = pd.DataFrame(tempDF['high_durante_X'] > ((100 + S) / 100 * tempDF['close']) )  # corte del umbral S en algun HIGH de alguna vela [t1,t2]
+    condicion2 = pd.DataFrame(tempDF['close_X'] > ((100 + S - F) / 100 * tempDF['close']))  # corte del umbral S en algun CLOSE en t1
+    condicion3 = pd.DataFrame(tempDF['close_XM'] > ((100 + S - F) / 100 * tempDF['close']) )  # corte del umbral S en algun CLOSE en t3
+    tempDF['TARGET'] = condicion1 & condicion2 & condicion3
+
     tempDF.replace({False: 0, True: 1}, inplace=True)
     numPositivos = len(tempDF[tempDF['TARGET'] == True])
     numNegativos = len(tempDF[tempDF['TARGET'] == False])
-    tasaDesbalanceo=round(numPositivos/numNegativos, 2)
+    tasaDesbalanceo = round(numPositivos/numNegativos, 2)
     print("Tasa de desbalanceo (true/false): " + str(numPositivos) + "/" + str(numNegativos) + " = " + str(tasaDesbalanceo))
 
     #Se añade la columna al final del dataframe de entrada
@@ -87,15 +90,16 @@ def procesarCSV (pathEntrada, pathSalida, modoTiempo, analizarEntrada, S, X, R, 
     # Nuevas columnas calculadas para cada periodo P
     for periodo in periodosDParaParametros:
 
-        # PENDIENTE RELATIVA DE CRECIMIENTO de PRECIO CLOSE en ultimas PERIODO velas
+        # PENDIENTE RELATIVA DE CRECIMIENTO de PRECIO CLOSE en ultimas PERIODO velas (respecto del precio close inicial)
         tempDF['close'] = entradaDF['close']
         tempDF['close_shifted_'+str(periodo)] = entradaDF['close'].shift(-1 * periodo)
         entradaDF['close_pendienterelativa_' + str(periodo)] = 100 * (tempDF['close'] - tempDF['close_shifted_'+str(periodo)] )/ tempDF['close_shifted_'+str(periodo)]
 
-        # PENDIENTE RELATIVA DE CRECIMIENTO de VOLUMEN en ultimas PERIODO velas
+        # PENDIENTE RELATIVA DE CRECIMIENTO de VOLUMEN en ultimas PERIODO velas (respecto del volumen habitual, medio historico de la empresa)
         tempDF['volumen'] = entradaDF['volumen']
+        volumen_medio_historico = tempDF['volumen'].mean()
         tempDF['volumen_shifted_' + str(periodo)] = entradaDF['volumen'].shift(-1 * periodo)
-        entradaDF['VARREL_'+str(periodo)+'_VOLUMEN'  ] = 100 * (tempDF['volumen'] - tempDF['volumen_shifted_' + str(periodo)]) / tempDF['volumen_shifted_' + str(periodo)]
+        entradaDF['VARREL_'+str(periodo)+'_VOLUMEN'  ] = 100 * (tempDF['volumen'] - tempDF['volumen_shifted_' + str(periodo)]) / volumen_medio_historico
 
         # SPAN entre precios High y Low en últimas PERIODO velas.
         # Para la vela analizada en tiempo t, se leen todos los precios high del periodo [t-P, t] cogiendo el máximo; y análogo para coger el mínimo de los precios low.
