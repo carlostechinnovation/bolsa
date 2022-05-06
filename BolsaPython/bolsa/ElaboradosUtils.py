@@ -62,7 +62,7 @@ def calcularTargetYanhadirlo (entradaDF, nombreEmpresa, S, X, R, M, F, B, umbral
 
 
 def procesarCSV (pathEntrada, pathSalida, modoTiempo, analizarEntrada, S, X, R, M, F, B, umbralMaximo, umbralMinimo):
-    print("Construyendo elaborados: " + pathEntrada + " --> " + pathSalida)
+    # print("Construyendo elaborados: " + pathEntrada + " --> " + pathSalida)
     entradaDF = pd.read_csv(filepath_or_buffer=pathEntrada, sep='|')
     nombreEmpresa = pathEntrada.split("/")[-1].replace(".csv", "")
     tempDF = pd.DataFrame()  # auxiliar
@@ -116,13 +116,14 @@ def procesarCSV (pathEntrada, pathSalida, modoTiempo, analizarEntrada, S, X, R, 
     ##################  COLUMNA ESPECIAL: TARGET #######################
     if "pasado" == modoTiempo:
         calcularTargetYanhadirlo(entradaDF, nombreEmpresa, S, X, R, M, F, B, umbralMaximo, umbralMinimo)
+    else: #futuro
+        entradaDF['TARGET'] = 'null'
 
 
     # Pintar estado final del dataframe CON columnas ELABORADAS:
     #print(tabulate(entradaDF.head(n=10), headers='keys', tablefmt='psql'))
 
     #Guardar
-    print("Justo antes de guardar, entradaDF: " + str(entradaDF.shape[0]) + " x " + str(
-        entradaDF.shape[1]) + " --> " + pathSalida)
+    # print("Justo antes de guardar, entradaDF: " + str(entradaDF.shape[0]) + " x " + str(entradaDF.shape[1]) + " --> " + pathSalida)
     entradaDF.to_csv(pathSalida, index=False, sep='|', float_format='%.4f')
 

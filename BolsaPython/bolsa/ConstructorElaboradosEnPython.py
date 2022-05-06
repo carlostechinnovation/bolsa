@@ -60,6 +60,13 @@ modoTiempo = "futuro"  #default
 if "pasado" in directorioIn:
     modoTiempo = "pasado"
 
+#Limpieza
+import glob
+
+ficherosPrevios = glob.glob("/bolsa/"+modoTiempo+"/elaborados/*")
+for f in ficherosPrevios:
+    os.remove(f)
+
 contador = 0
 for f in entradasCsv:
     contador += 1

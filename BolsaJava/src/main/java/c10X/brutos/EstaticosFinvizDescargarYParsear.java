@@ -365,7 +365,7 @@ public class EstaticosFinvizDescargarYParsear {
 			Map<String, String> mapaExtraidos, List<String> operacionesInsidersLimpias, FinvizNoticiasEmpresa noticias)
 			throws Exception {
 
-		MY_LOGGER.info("parsearNasdaqEstaticos2 --> " + idEmpresa + "|" + rutaHtmlBruto);
+		MY_LOGGER.debug("parsearNasdaqEstaticos2 --> " + idEmpresa + "|" + rutaHtmlBruto);
 
 		byte[] encoded = Files.readAllBytes(Paths.get(rutaHtmlBruto));
 		String in = new String(encoded, Charset.forName("ISO-8859-1"));

@@ -174,8 +174,9 @@ todasEmpresasYProbabsDF.sort_values(by=['prob_media'], ascending=False, inplace=
 
 # Operaciones de insiders (tambien son buen indicador, pero lo ponemos para evitar entrar a mirar en Finviz manualmente)
 print("Se incluyen columnas de operaciones con insiders...")
-if os.path.isfile("/bolsa/futuro/subgrupos/SG_46/COMPLETO.csv"):
-    entradaSG46df = pd.read_csv("/bolsa/futuro/subgrupos/SG_46/COMPLETO.csv", sep="|")
+pathSG46 = "/bolsa/futuro/subgrupos/SG_46/COMPLETO.csv"
+if os.path.exists(pathSG46) and os.path.isfile(pathSG46):
+    entradaSG46df = pd.read_csv(pathSG46, sep="|", nrows=1)
     entradaSG46df = entradaSG46df[entradaSG46df['antiguedad'] == 0]
     entradaSG46df = entradaSG46df[
         ["empresa", "flagOperacionesInsiderUltimos90dias", "flagOperacionesInsiderUltimos30dias",
