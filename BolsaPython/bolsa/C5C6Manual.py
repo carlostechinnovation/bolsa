@@ -11,7 +11,6 @@ import pandas as pd
 import seaborn as sns
 import sklearn
 from imblearn.combine import SMOTETomek
-from pandas import DataFrame
 from pandas_profiling import ProfileReport
 from sklearn.decomposition import PCA
 from sklearn.ensemble import IsolationForest
@@ -25,8 +24,8 @@ from sklearn.utils import resample
 from tabulate import tabulate
 from xgboost import XGBClassifier
 
-import tweepy  # https://github.com/tweepy/tweepy
-import csv
+
+import C5C6ManualFunciones
 
 print((datetime.datetime.now()).strftime(
     "%Y%m%d_%H%M%S") + " **** CAPA 5  --> Selección de variables/ Reducción de dimensiones (para cada subgrupo) ****")
@@ -34,8 +33,14 @@ print((datetime.datetime.now()).strftime(
 # print("URL Feature Selection: https://scikit-learn.org/stable/modules/feature_selection.html")
 
 ##################################################################################################
-print("PARAMETROS: ")
-#EJEMPLO: /bolsa/pasado/subgrupos/SG_29/ pasado 50 20000 0
+print("PARAMETROS: dir_subgrupo modoTiempo maxFeatReducidas maxFilasEntrada desplazamientoAntiguedad")
+if len(sys.argv) <= 1:
+    print("Falta indicar los PARAMETROS. Saliendo...")
+    exit(-1)
+
+# EJEMPLO 1: /bolsa/pasado/subgrupos/SG_2/ pasado 50 20000 0
+# EJEMPLO 2: /bolsa/futuro/subgrupos/SG_2/ futuro 50 20000 0
+
 dir_subgrupo = sys.argv[1]
 modoTiempo = sys.argv[2]
 maxFeatReducidas = sys.argv[3]
@@ -47,8 +52,18 @@ print("modoTiempo = %s" % modoTiempo)
 print("maxFeatReducidas = %s" % maxFeatReducidas)
 print("maxFilasEntrada = %s" % maxFilasEntrada)
 
+##################################################################################################
+# DEBUG - EMPRESA vigilada en un dia-mes-año
+global DEBUG_EMPRESA; DEBUG_EMPRESA = "ADI"
+global DEBUG_ANIO; DEBUG_ANIO = 2022
+global DEBUG_MES; DEBUG_MES = 2
+global DEBUG_DIA; DEBUG_DIA = 17
+global DEBUG_FILTRO; DEBUG_FILTRO = DEBUG_EMPRESA + "_" + str(DEBUG_ANIO) + "_" + str(DEBUG_MES) + "_" + str(DEBUG_DIA)
+##################################################################################################
+
+
 varianza = 0.93  # Variacion acumulada de las features PCA sobre el target
-UMBRAL_VELASMUYANTIGUASELIMINABLES = (5 * 4.5 * 4)  # todas las velas con mas antiguedad que este umbral no se usan para train ni test ni valid. Recom: 90 (4 meses)
+UMBRAL_VELASMUYANTIGUASELIMINABLES = (5 * 4.5) * 6  # todas las velas con mas antiguedad que este umbral no se usan para train ni test ni valid. Recom: 90 (4 meses)
 UMBRAL_COLUMNAS_DEMASIADOS_NULOS = 0.25  # Porcentaje de nulos en cada columna. Si se supera, borramos toda la columna. Recomendable: 0.40
 compatibleParaMuchasEmpresas = False  # Si hay muchas empresas, debo hacer ya el undersampling (en vez de capa 6)
 global modoDebug;
@@ -81,11 +96,7 @@ umbralNecesarioCompensarDesbalanceo = 1  # Umbral de desbalanceo clase positiva/
 balancearConSmoteSoloTrain = True  # SMOTE sobre minoritaria y mayoritaria. Sólo aplicable a pasado-Train; no a test ni validacion ni a futuro.
 balancearUsandoDownsampling = False  # Downsampling de clase mayoritaria. Sólo aplicable a pasado-Train; no a test ni validacion ni a futuro.
 
-# Etiquetas Globales
-FORMATO_FECHA_SP500 = '%Y-%m-%d'
-ETIQUETA_FECHA_SP500 = "fecha"
-ETIQUETA_CLOSE_SP500 = "close"
-ETIQUETA_RENTA_SP500 = "rentaSP500"
+
 
 print("pathCsvCompleto = %s" % pathCsvCompleto)
 print("dir_subgrupo_img = %s" % dir_subgrupo_img)
@@ -118,8 +129,8 @@ umbralProbTargetTrue = 0.50  # IMPORTANTE: umbral para decidir si el target es t
 granProbTargetUno = 100  # De todos los target=1, nos quedaremos con los granProbTargetUno (en tanto por cien) MAS probables. Un valor de 100 o mayor anula este parámetro
 umbralFeaturesCorrelacionadas = varianza  # Umbral aplicado para descartar features cuya correlacion sea mayor que él
 cv_todos = 25  # CROSS_VALIDATION: número de iteraciones. Sirve para evitar el overfitting
-fraccion_train = 0.60  # Fracción de datos usada para entrenar
-fraccion_test = 0.20  # Fracción de datos usada para testear (no es validación)
+fraccion_train = 0.50  # Fracción de datos usada para entrenar
+fraccion_test = 0.25  # Fracción de datos usada para testear (no es validación)
 fraccion_valid = 1.00 - (fraccion_train + fraccion_test)
 
 print("umbralCasosSuficientesClasePositiva (positivos en pasado de train+test+valid) = " + str(umbralCasosSuficientesClasePositiva))
@@ -150,349 +161,6 @@ print("pathCsvReducido: %s" % pathCsvReducido)
 print("dir_subgrupo_img = %s" % dir_subgrupo_img)
 print("umbralFeaturesCorrelacionadas = " + str(umbralFeaturesCorrelacionadas))
 
-######################### PARÁMETROS TWITTER ########################
-
-pathClavesTwitter = "/bolsa/twitterapikeys/keys"
-pathDestinoTweets = "/bolsa/twitter"
-
-FORMATO_FECHA_TWITTER = '%Y-%m-%d'
-
-tuiterosRecomendacionAOjo = ["BagholderQuotes", "vintweeta", "Xiuying"]
-tuiterosGainers=["GetScanz"]
-tuiterosLosers=["GetScanz"]
-tuiterosGappers=["GetScanz"]
-tuiterosEarlyGainsPremarket=["FloatChecker"]
-tuiterosPremarketStockGainers=["FloatChecker"]
-tuiterosStockGainersToWatch=["FloatChecker"]
-tuiterosTopLosers=["GetScanz"]
-tuiterosMostActivePennyStocks=["GetScanz"]
-
-#####################################################
-
-# PRECISION: de los pocos casos que predigamos TRUE, queremos que todos sean aciertos.
-def comprobarPrecisionManualmente(targetsNdArray1, targetsNdArray2, etiqueta, id_subgrupo, dfConIndex, dir_subgrupo):
-    print(id_subgrupo + " " + etiqueta + " Comprobación de la precisión --> dfConIndex: " + str(
-        dfConIndex.shape[0]) + " x " + str(
-        dfConIndex.shape[1]) + ". Se comparan: array1=" + str(targetsNdArray1.size) + " y array2=" + str(
-        targetsNdArray2.size))
-
-    df1 = pd.DataFrame(targetsNdArray1, columns=['target'])
-    df1.index = dfConIndex.index  # fijamos el indice del DF grande
-    df2 = pd.DataFrame(targetsNdArray2, columns=['target'])
-    df2.index = dfConIndex.index  # fijamos el indice del DF grande
-
-    df1['targetpredicho'] = df2['target']
-    df1['iguales'] = np.where(df1['target'] == df1['targetpredicho'], True, False)
-
-    # Solo nos interesan los PREDICHOS True, porque es donde pondremos dinero real
-    df1a = df1[df1.target == True];
-    df1b = df1a[df1a.iguales == True]  # Solo los True Positives
-    df2a = df1[df1.targetpredicho == True]  # donde ponemos el dinero real (True Positives y False Positives)
-
-    mensajeAlerta = ""
-    if len(df2a) > 0:
-        precision = (100 * len(df1b) / len(df2a))
-        if precision >= 25 and len(df2a) >= 10:
-            mensajeAlerta = " ==> INTERESANTE"
-
-        print(id_subgrupo + " " + etiqueta + " --> Positivos reales = " + str(
-            len(df1a)) + ". Positivos predichos = " + str(len(df2a)) + ". De estos ultimos, los ACIERTOS son: " + str(
-            len(df1b)) + " ==> Precision = TP/(TP+FP) = " + str(round(precision, 1)) + " %" + mensajeAlerta)
-
-        print("ENTREGABLEACIERTOSPASADO"
-              + "|id_subgrupo:" + str(id_subgrupo)
-              + "|escenario:" + etiqueta
-              + "|positivosreales:" + str(len(df1a))
-              + "|positivospredichos:" + str(len(df2a))
-              + "|aciertos:" + str(len(df1b))
-              )
-
-        if etiqueta == "TEST" or etiqueta == "VALIDACION":
-            dfEmpresasPredichasTrue = pd.merge(dfConIndex, df2a, how="inner", left_index=True, right_index=True)
-            dfEmpresasPredichasTrueLoInteresante = dfEmpresasPredichasTrue[
-                ["empresa", "antiguedad", "target", "targetpredicho", "anio", "mes", "dia", "hora", "volumen"]]
-            # print(tabulate(dfEmpresasPredichasTrueLoInteresante, headers='keys', tablefmt='psql'))
-
-            casosTP = dfEmpresasPredichasTrueLoInteresante[
-                dfEmpresasPredichasTrueLoInteresante['target'] == True]  # los BUENOS
-            casosFP = dfEmpresasPredichasTrueLoInteresante[
-                dfEmpresasPredichasTrueLoInteresante['target'] == False]  # Los MALOS que debemos estudiar y reducir
-
-            # FALSOS POSITIVOS:
-            if id_subgrupo != "SG_0":
-                print(id_subgrupo + " " + etiqueta +
-                      " --> Casos con predicción True y lo real ha sido True (TP, deseados): " + str(casosTP.shape[0]) +
-                      " pero tambien hay False (FP, no deseados): " + str(casosFP.shape[0]) + " que son: ")
-                falsosPositivosArray = id_subgrupo + "|" + etiqueta + "|" + casosFP.sort_index().index.values
-                pathFP = dir_subgrupo + "falsospositivos_" + etiqueta + ".csv"
-                print("Guardando lista de falsos positivos en: " + pathFP)
-                falsosPositivosArray.tofile(pathFP, sep='\n', format='%s')
-
-                # PREDICCIONES TOTALES (util para el analisis de falsos positivos a posteriori)
-                todasLasPrediccionesArray = id_subgrupo + "|" + etiqueta + "|" + dfEmpresasPredichasTrueLoInteresante.sort_index().index.values
-                pathTodasPredicciones = dir_subgrupo + "todaslaspredicciones_" + etiqueta + ".csv"
-                print(
-                    "Guardando lista de todas las predicciones en (verdaderos y falsos positivos) en: " + pathTodasPredicciones)
-                todasLasPrediccionesArray.tofile(pathTodasPredicciones, sep='\n', format='%s')
-
-    else:
-        print(id_subgrupo + " " + etiqueta + " --> Positivos predichos = " + str(len(df2a)))
-
-    return mensajeAlerta
-
-######33###### RSI ###################
-def relative_strength_idx(df, n=14):
-    close = df['close']
-    delta = close.diff()
-    delta = delta[1:]
-    pricesUp = delta.copy()
-    pricesDown = delta.copy()
-    pricesUp[pricesUp < 0] = 0
-    pricesDown[pricesDown > 0] = 0
-    rollUp = pricesUp.rolling(n).mean()
-    rollDown = pricesDown.abs().rolling(n).mean()
-    rs = rollUp / rollDown
-    rsi = 100.0 - (100.0 / (1.0 + rs))
-    return rsi
-
-
-##################### DESCARGA DEL SP500 ########################
-
-import requests
-from datetime import date
-from datetime import datetime as datetime2
-from datetime import timedelta
-
-
-def getSP500conRentaTrasXDias(X, fechaInicio, fechaFin):
-    # X: días futuros para el cálculo de renta, respecto al día del que se muestran datos (cada fila es distinta)
-    # fechaInicio y fechaFin, con formato "2019-01-01"
-    # Descarga del histórico del SP500
-    url = "https://fred.stlouisfed.org/graph/fredgraph.csv?bgcolor=%23e1e9f0&chart_type=line&drp=0&fo=open%20sans&" \
-          "graph_bgcolor=%23ffffff&height=450&mode=fred&recession_bars=on&txtcolor=%23444444&ts=12&tts=12&width=1168&" \
-          "nt=0&thu=0&trc=0&show_legend=yes&show_axis_titles=yes&show_tooltip=yes&id=SP500&scale=left&cosd=" + fechaInicio \
-          + "&coed=fechaFin&line_color=%234572a7&link_values=false&line_style=solid&mark_type=none&mw=3&lw=2&ost=-99999&" \
-            "oet=99999&mma=0&fml=a&fq=Daily%2C%20Close&fam=avg&fgst=lin&fgsnd=2010-04-12&line_index=1&transformation=lin&" \
-            "vintage_date=" + fechaFin + "&revision_date=2020-04-10&nd=2010-04-12"
-    print("URL: ", url)
-    destino = dir_subgrupo + "SP500.csv"
-    myfile = requests.get(url, allow_redirects=True)
-    open(destino, 'wb').write(myfile.content)
-
-    # Se guarda en dataframe
-    datosSP500 = pd.read_csv(filepath_or_buffer=destino, sep=',')
-
-    # Sólo me quedo con las filas cuyo precio sea numérico
-    datosSP500 = datosSP500.loc[~(datosSP500['SP500'] == '.')]
-    # resetting index
-    datosSP500.reset_index(inplace=True)
-
-    # La fecha se convierte a dato de fecha
-    dfSP500 = pd.DataFrame(columns=[ETIQUETA_FECHA_SP500, ETIQUETA_CLOSE_SP500, ETIQUETA_RENTA_SP500])
-    closeXDiasFuturos = 0
-    tamaniodfSP500 = len(datosSP500)
-    for index, fila in datosSP500.iterrows():
-        fecha = datetime2.strptime(fila['DATE'], FORMATO_FECHA_SP500)
-        if index < (tamaniodfSP500 - int(X)):
-            filaXDiasFuturos = datosSP500.iloc[index + int(X)]
-            closeXDiasFuturos = filaXDiasFuturos['SP500']
-            rentaSP500 = 100 * (float(closeXDiasFuturos) - float(fila['SP500'])) / float(closeXDiasFuturos)
-        else:
-            rentaSP500 = 0
-
-        nuevaFila = [
-            {ETIQUETA_FECHA_SP500: fecha, 'close': float(fila['SP500']), ETIQUETA_RENTA_SP500: float(rentaSP500)}]
-        dfSP500 = dfSP500.append(nuevaFila, ignore_index=True, sort=False)
-
-    return dfSP500
-
-
-def anadeComparacionSencillaSP500(sp500, x):
-    comparaSP500Ayer=-1000
-    fechaAhora = str(x.anio) + "-" + str(x.mes) + "-" + str(x.dia)
-    ahora_obj = datetime2.strptime(fechaAhora, FORMATO_FECHA_SP500)
-    a = pd.DataFrame()
-    # Se itera hacia atrás hasta que se encuentre algún día (laborable) con datos en SP500
-    while (a.empty):
-        days_to_subtract = 1
-        diasAntes_obj = ahora_obj - timedelta(days=days_to_subtract)
-        antes = diasAntes_obj.strftime(FORMATO_FECHA_SP500)
-        empresaRentaAhora = float(x.close) - float(x.open)
-        a=sp500[sp500[ETIQUETA_FECHA_SP500] == antes]
-        if(len(a.index)>0):
-            sp500RentaAyer = float(a[ETIQUETA_RENTA_SP500])
-            comparaSP500Ayer = int(empresaRentaAhora * sp500RentaAyer > 0)
-        else:
-            ahora_obj=diasAntes_obj
-
-    return comparaSP500Ayer
-
-
-def descargaTuits(cuentas):
-    clavesTwitter = {}
-    with open(pathClavesTwitter) as myfile:
-        for line in myfile:
-            name, var = line.partition("=")[::2]
-            clavesTwitter[name.strip()] = var.rstrip()
-
-    # NO DESCOMENTAR, PORQUE SE VERÍAN LAS CLAVES EN EL LOG!!
-    # print(clavesTwitter)
-
-    # Twitter API credentials
-    api_key = clavesTwitter.get("apikey")
-    api_key_secret = clavesTwitter.get("apikeysecret")
-    access_token = clavesTwitter.get("accesstoken")
-    access_token_secret = clavesTwitter.get("accesstokensecret")
-
-    import os
-    import tweepy as tw
-    import pandas as pd
-
-    auth = tw.OAuthHandler(api_key, api_key_secret)
-    auth.set_access_token(access_token, access_token_secret)
-    api = tw.API(auth)
-
-    # USO
-    api = tweepy.API(auth)
-
-    # Verificación de la conexión
-    api.verify_credentials()
-
-    # Se descarga la info de todos los tuiteros
-    for cuenta in cuentas:
-        get_all_tweets(cuenta, api)
-
-
-def get_all_tweets(screen_name, api):
-    # Twitter only allows access to a users most recent 3240 tweets with this method
-
-    # Se asume que está ya autenticado
-
-    # initialize a list to hold all the tweepy Tweets
-    alltweets = []
-
-    # make initial request for most recent tweets (200 is the maximum allowed count)
-    new_tweets = api.user_timeline(screen_name=screen_name, count=200)
-
-    # save most recent tweets
-    alltweets.extend(new_tweets)
-
-    # save the id of the oldest tweet less one
-    oldest = alltweets[-1].id - 1
-
-    # keep grabbing tweets until there are no tweets left to grab
-    while len(new_tweets) > 0:
-        #print(f"getting tweets before {oldest}")
-
-        # all subsequent requests use the max_id param to prevent duplicates
-        new_tweets = api.user_timeline(screen_name=screen_name, count=200, max_id=oldest)
-
-        # save most recent tweets
-        alltweets.extend(new_tweets)
-
-        # update the id of the oldest tweet less one
-        oldest = alltweets[-1].id - 1
-
-        #print(f"...{len(alltweets)} tweets downloaded so far")
-
-    # transform the tweepy tweets into a 2D array that will populate the csv
-    outtweets = [[tweet.id_str, tweet.created_at, tweet.text] for tweet in alltweets]
-
-    # write the csv
-    with open(pathDestinoTweets + "/" + f'{screen_name}' + "_tweets.csv", 'w') as f:
-        writer = csv.writer(f)
-        writer.writerow(["id", "created_at", "text"])
-        writer.writerows(outtweets)
-
-    pass
-
-
-def vaciarCarpeta(folder):
-    import os, shutil
-    for filename in os.listdir(folder):
-        file_path = os.path.join(folder, filename)
-        try:
-            if os.path.isfile(file_path) or os.path.islink(file_path):
-                os.unlink(file_path)
-            elif os.path.isdir(file_path):
-                shutil.rmtree(file_path)
-        except Exception as e:
-            print('Failed to delete %s. Reason: %s' % (file_path, e))
-
-
-def anadeMencionesTwitterPorTuiteros(diasAntiguedad, tuits, x, stringABuscar):
-    numeroMencionesTotales = 0
-    fechaRowActual = str(x.anio) + "-" + str(x.mes) + "-" + str(x.dia)
-    fechaRowActual_obj= datetime2.strptime(fechaRowActual, FORMATO_FECHA_TWITTER)
-    fechaElegida_obj = fechaRowActual_obj - timedelta(days=diasAntiguedad)
-    fechaElegida = fechaElegida_obj.strftime(FORMATO_FECHA_TWITTER)
-
-    # Para optimizar recursos, se eliminan todos los tuits que no coincidan con la fecha indicada
-    tuits=tuits.loc[tuits["created_at"].str.startswith(fechaElegida, na=False)]
-
-    ficheros = os.listdir(pathDestinoTweets)
-    tuiteros=tuits.tuitero.unique()
-
-    for tuitero in tuiteros:
-        tuitsDeTuitero=tuits[tuits['tuitero'] == tuitero]
-        numeroMencionesPorElTuitero=0
-
-        tuitsDeTuitero = tuitsDeTuitero.loc[tuitsDeTuitero["text"].str.contains(stringABuscar)]
-
-        # Se comprueba si hay al menos 1 tuit
-        if tuitsDeTuitero.shape[0] > 0:
-            numeroMencionesTotales += 1
-            # print("El tuitero "+ tuitero + "ha escrito al menos un tuit de "+stringABuscar+
-            #       " en la fecha " + fechaElegida)
-
-    # print("Número de tuiteros que referencian al menos una vez a la empresa " + x.empresa + " en la fecha "
-    #       + fechaElegida+ " : "+numeroMencionesTotales)
-    return numeroMencionesTotales
-
-
-def anadeFeatureTwitter(entradaFeaturesYTarget, tituloNuevaFeature, pathDestinoTweets, cuentas,
-                                        antiguedadMaxima, stringOpcionalEnTuit):
-
-    # Se vacía la carpeta donde se guardarán los tuits, y se descargan los tuits de tuiteros
-    vaciarCarpeta(pathDestinoTweets)
-    descargaTuits(cuentas)
-
-    # Se acumulan los tuits en memoria, para optimizar velocidad
-    ficheros = os.listdir(pathDestinoTweets)
-    tuits = pd.DataFrame(columns=['id', 'created_at', 'text', 'tuitero'])
-    for fichero in ficheros:
-        pathFichero = os.path.join(pathDestinoTweets, fichero)
-        if os.path.isfile(pathFichero) and fichero.endswith('.csv'):
-            numeroMencionesPorElTuitero = 0
-            # Cada fichero pertenece a un tuitero
-            tuitero = fichero.split("_")[0]
-            # Se lee el fichero
-            tuitsDeFichero = pd.read_csv(filepath_or_buffer=pathFichero, sep=',')
-            # Para acelerar el proceso, se toman sólo las filas que contengan "$" en su columna text (mensaje),
-            # ya que siempre buscamos un ticker.
-            tuitsDeFichero=tuitsDeFichero[tuitsDeFichero['text'].str.contains("\$")]
-
-            # Se permite filtrar opcionalmente por un string, si no está vacío.
-            if not stringOpcionalEnTuit:
-                tuitsDeFichero = tuitsDeFichero[tuitsDeFichero['text'].str.contains(stringOpcionalEnTuit)]
-
-            # Se añade el nombre del tuitero en la primera columna de todas las filas del dataframe
-            tuitsDeFichero['tuitero'] = pd.Series([tuitero for x in range(len(tuitsDeFichero.index))])
-            # Es una chapuza, pero son pocos ficheros
-            tuits = tuits.append(tuitsDeFichero, ignore_index=True)
-
-        # Se sumarán las apariciones en todos los días del rango desde 0 a antiguedadMaxima. Por defecto serán 0
-        entradaFeaturesYTarget[tituloNuevaFeature] = 0
-        for i in range(0, antiguedadMaxima):
-            # print("Para crear la nueva feature "+tituloNuevaFeature+
-            #       " se añaden menciones en TWITTER de la empresa en el fichero "+fichero+
-            #       " con antigüedad "+str(i)+"...")
-            # Se busca una mención en el tuit a la empresa de cada fila manejada por nuestro dataframe
-            entradaFeaturesYTarget[tituloNuevaFeature] += entradaFeaturesYTarget.apply(
-                lambda x: anadeMencionesTwitterPorTuiteros(i, tuits, x, "\$" + x.empresa), axis=1)
-
-    return entradaFeaturesYTarget
-
 
 ################## MAIN ###########################################################
 
@@ -508,10 +176,10 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
     print("entradaFeaturesYTarget (LEIDO): " + str(entradaFeaturesYTarget.shape[0]) + " x " + str(
         entradaFeaturesYTarget.shape[1]))
 
+    C5C6ManualFunciones.mostrarEmpresaConcreta(entradaFeaturesYTarget, DEBUG_EMPRESA, DEBUG_MES, DEBUG_DIA, 30)
 
     ### IMPORTANTE: entrenar quitando velas muy antiguas: las de hace mas de 4 meses (90 velas)
     entradaFeaturesYTarget = entradaFeaturesYTarget[entradaFeaturesYTarget['antiguedad'] < UMBRAL_VELASMUYANTIGUASELIMINABLES]
-
 
     ################### SE CREAN VARIABLES ADICIONALES #########################
 
@@ -524,7 +192,7 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
     entradaFeaturesYTarget['high_aux'] = entradaFeaturesYTarget['high']
 
     # Se crea un RSI-14 en python
-    entradaFeaturesYTarget['RSI-python'] = relative_strength_idx(entradaFeaturesYTarget).fillna(0)
+    entradaFeaturesYTarget['RSI-python'] = C5C6ManualFunciones.relative_strength_idx(entradaFeaturesYTarget).fillna(0)
 
 
     # #####
@@ -536,7 +204,7 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
     # today = date.today()
     # fechaInicio = "2019-01-01"
     # fechaFin = today.strftime("%Y-%m-%d")
-    # sp500 = getSP500conRentaTrasXDias(1, fechaInicio, fechaFin)
+    # sp500 = getSP500conRentaTrasXDias(1, fechaInicio, fechaFin, dir_subgrupo)
     # entradaFeaturesYTarget['COMPARA-SP500-AYER-BOOL'] = entradaFeaturesYTarget.apply(
     #     lambda x: anadeComparacionSencillaSP500(sp500, x), axis=1)
     #
@@ -559,7 +227,7 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
     #     ultimaFila.loc[0, 'dia'])
     #
     # # Se cargan los rangos del SP500 en dicha fecha
-    # sp500 = getSP500conRentaTrasXDias(1, fechaMasAntigua, fechaMasReciente)
+    # sp500 = getSP500conRentaTrasXDias(1, fechaMasAntigua, fechaMasReciente, dir_subgrupo)
     #
     # # En el dataframe final, para cada fila se compara la evolución del precio de la empresa vs la evolución del SP500.
     # # IMPORTANTE: el rango del periodo debe estar dentro del rango completo de fechas de la empresa, para no saltar a
@@ -704,6 +372,8 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
                   + "_" + entradaFeaturesYTarget["mes"].astype(str) + "_" + entradaFeaturesYTarget["dia"].astype(str)
     entradaFeaturesYTarget = entradaFeaturesYTarget.reset_index().set_index(nuevoindice, drop=True)
     entradaFeaturesYTarget = entradaFeaturesYTarget.drop('index', axis=1)  # columna index no util ya
+
+    C5C6ManualFunciones.mostrarEmpresaConcreta(entradaFeaturesYTarget, DEBUG_EMPRESA, DEBUG_MES, DEBUG_DIA, 30)
     ###########################################################################
 
     entradaFeaturesYTarget.sort_index(
@@ -769,7 +439,10 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
 
     print("entradaFeaturesYTarget2 (tras quitar columnas dinamicas identificadoras y con valores absolutos): " + str(entradaFeaturesYTarget2.shape[0]) + " x " + str(
         entradaFeaturesYTarget2.shape[1]))
-    print(entradaFeaturesYTarget2.head())
+
+    tablaDebugDF = entradaFeaturesYTarget2.filter(like=DEBUG_FILTRO, axis=0)
+    print("tablaDebugDF (caso vigilado) - Tras quitar columnas dinamicas identificadoras y con valores absolutos:")
+    print(tabulate(tablaDebugDF, headers='keys', tablefmt='psql'))
 
     if modoTiempo == "pasado":
         print("Borrar COLUMNAS dinamicas con demasiados nulos (umbral = " + str(
@@ -784,13 +457,20 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
         entradaFeaturesYTarget2 = entradaFeaturesYTarget2.drop(columnasDemasiadosNulos, axis=1)
         print("entradaFeaturesYTarget2: " + str(entradaFeaturesYTarget2.shape[0]) + " x " + str(
             entradaFeaturesYTarget2.shape[1]))
-        print(entradaFeaturesYTarget2.head())
+
+        tablaDebugDF = entradaFeaturesYTarget2.filter(like=DEBUG_FILTRO, axis=0)
+        print("tablaDebugDF (caso vigilado) - Tras quitar las columnas con demasiados nulos:")
+        print(tabulate(tablaDebugDF, headers='keys', tablefmt='psql'))
 
         print(
             "MISSING VALUES (FILAS) - Borramos las FILAS que tengan 1 o mas valores NaN porque son huecos que no deberían estar...")
         entradaFeaturesYTarget3 = entradaFeaturesYTarget2.dropna(axis=0, how='any')  # Borrar FILA si ALGUNO sus valores tienen NaN
         print("entradaFeaturesYTarget3: " + str(entradaFeaturesYTarget3.shape[0]) + " x " + str(
             entradaFeaturesYTarget3.shape[1]))
+
+        tablaDebugDF = entradaFeaturesYTarget3.filter(like=DEBUG_FILTRO, axis=0)
+        print("tablaDebugDF (caso vigilado) - entradaFeaturesYTarget3:")
+        print(tabulate(tablaDebugDF, headers='keys', tablefmt='psql'))
 
     elif modoTiempo == "futuro":
         print("Borrar COLUMNAS dinamicas con demasiados nulos desde un fichero del pasado..." + pathColumnasConDemasiadosNulos)
@@ -803,7 +483,9 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
 
         print(
             "MISSING VALUES (FILAS) - Para el FUTURO; el target es NULO siempre...")
-        entradaFeaturesYTarget2 = entradaFeaturesYTarget2.drop('TARGET', axis=1)
+        if "TARGET" in entradaFeaturesYTarget2.columns:
+            entradaFeaturesYTarget2 = entradaFeaturesYTarget2.drop('TARGET', axis=1)
+
         # print(tabulate(entradaFeaturesYTarget2.head(), headers='keys', tablefmt='psql'))
         print("MISSING VALUES (FILAS) - Para el FUTURO, borramos las filas que tengan ademas otros NULOS...")
         entradaFeaturesYTarget3 = entradaFeaturesYTarget2
@@ -859,10 +541,15 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
         entradaFeaturesYTarget4 = entradaFeaturesYTarget4.drop('marca_anomalia', axis=1)  # Quitamos la columna auxiliar
 
     else:
-        entradaFeaturesYTarget4=entradaFeaturesYTarget3
+        entradaFeaturesYTarget4 = entradaFeaturesYTarget3
 
     print("entradaFeaturesYTarget4 (sin outliers):" + str(entradaFeaturesYTarget4.shape[0]) + " x " + str(
         entradaFeaturesYTarget4.shape[1]))
+
+    tablaDebugDF = entradaFeaturesYTarget4.filter(like=DEBUG_FILTRO, axis=0)
+    print("tablaDebugDF (caso vigilado) - entradaFeaturesYTarget4:")
+    print(tabulate(tablaDebugDF, headers='keys', tablefmt='psql'))
+
     entradaFeaturesYTarget4.to_csv(pathCsvIntermedio + ".sinoutliers.csv", index=True,
                                    sep='|')  # NO BORRAR: UTIL para testIntegracion
     entradaFeaturesYTarget4.to_csv(pathCsvIntermedio + ".sinoutliers_INDICES.csv",
@@ -894,6 +581,10 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
         print("Tasa de desbalanceo entre clases = " + str(ift_mayoritaria.shape[0]) + "/" +
               str(ift_minoritaria.shape[0]) + " = " + str(ift_mayoritaria.shape[0] / ift_minoritaria.shape[0]))
         entradaFeaturesYTarget5 = entradaFeaturesYTarget4
+
+        tablaDebugDF = entradaFeaturesYTarget5.filter(like=DEBUG_FILTRO, axis=0)
+        print("tablaDebugDF (caso vigilado) - entradaFeaturesYTarget5:")
+        print(tabulate(tablaDebugDF, headers='keys', tablefmt='psql'))
 
         # entradaFeaturesYTarget5.to_csv(path_csv_completo + "_TEMP05", index=True, sep='|')  # UTIL para testIntegracion
         featuresFichero = entradaFeaturesYTarget5.drop('TARGET', axis=1)
@@ -1021,11 +712,11 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
         print("** PCA (Principal Components Algorithm) **")
 
         if modoTiempo == "pasado":
-            print(
-                "Usando PCA, creamos una NUEVA BASE DE FEATURES ORTOGONALES y cogemos las que tengan un impacto agregado sobre el X% de la varianza del target. Descartamos el resto.")
+            #print("Usando PCA, creamos una NUEVA BASE DE FEATURES ORTOGONALES y cogemos las que tengan un impacto agregado sobre el "+str(varianza)+"% de la varianza del target. Descartamos el resto.")
+            #modelo_pca_subgrupo = PCA(n_components=varianza, svd_solver='full')  # Varianza acumulada sobre el target
 
-            #modelo_pca_subgrupo = PCA(n_components=varianza, svd_solver='full')  # Variaza acumulada sobre el target
             modelo_pca_subgrupo = PCA(n_components='mle', svd_solver='full')  # Metodo "MLE de Minka": https://vismod.media.mit.edu/tech-reports/TR-514.pdf
+
             # modelo_pca_subgrupo = TSNE(n_components=2, perplexity=30.0, early_exaggeration=12.0, learning_rate=200.0,
             #                            n_iter=1000, n_iter_without_progress=300, min_grad_norm=1e-07,
             #                            metric='euclidean', init='random', verbose=0, random_state=None,
@@ -1050,7 +741,7 @@ if pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.s
         num_columnas_pca = featuresFichero3_pca.shape[1]
         columnas_pca = ["pca_" + f"{i:0>2}" for i in
                         range(num_columnas_pca)]  # Hacemos left padding con la funcion f-strings
-        featuresFichero3_pca_df = DataFrame(featuresFichero3_pca, columns=columnas_pca,
+        featuresFichero3_pca_df = pd.DataFrame(featuresFichero3_pca, columns=columnas_pca,
                                             index=featuresFichero3.index)
         # print(tabulate(featuresFichero3_pca_df.head(), headers='keys', tablefmt='psql'))  # .drop('TARGET')
         featuresFichero3Elegidas = featuresFichero3_pca_df
@@ -1477,14 +1168,14 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         nombreModelo = "lgbm"
 
         params = {'objective': 'binary',
-                  'learning_rate': 0.20,
+                  'learning_rate': 0.08,
                   "boosting_type": "gbdt",
                   "metric": 'precision',
                   'n_jobs': -1,
-                  'min_data_in_leaf': 3,
+                  'min_data_in_leaf': 6,
                   'min_child_samples': 3,
-                  'num_leaves': 25,  # maximo numero de hojas
-                  'max_depth': 8,
+                  'num_leaves': 15,  # maximo numero de hojas
+                  'max_depth': 4,
                   'random_state': 0,
                   'importance_type': 'split',
                   'min_split_gain': 0.0,
@@ -1523,7 +1214,16 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
 
         path_dibujo_probabs = dir_subgrupo_img + "histograma_target_probabilidades.png"
         print("Distribución de las probabilidades del target predicho (debe ser con forma de U para que distinga bien los positivos de los negativos): " + path_dibujo_probabs)
-        probsPositivosyNegativos=modelo_loaded.predict_proba(ds_train_f_sinsmote)
+        probsPositivosyNegativos = modelo_loaded.predict_proba(ds_train_f_sinsmote)
+
+        # probabilities
+        probs = pd.DataFrame(data=probsPositivosyNegativos)
+        probs.columns = ['proba_false', 'proba_true']
+        print("PASADO - Ejemplos de probabilidades al predecir targets true (orden descendiente): ")
+        print(tabulate(probs.sort_values("proba_true", ascending=False).head(n=5), headers='keys', tablefmt='psql'))
+        print("PASADO - Ejemplos de probabilidades al predecir targets true (orden ascendiente): ")
+        print(tabulate(probs.sort_values("proba_true", ascending=True).head(n=5), headers='keys', tablefmt='psql'))
+
         probsPositivosyNegativosDF = pd.DataFrame(data=probsPositivosyNegativos, columns=["probabsNegativas", "probabsPositivas"])
         plt.hist(probsPositivosyNegativosDF.iloc[:, 1], label="Probabilidades target predicho", bins=20, alpha=.7, color='blue')
         plt.title("Distribución de la probab predicha al predecir el target (subgrupo " + id_subgrupo + ")", fontsize=10)
@@ -1623,12 +1323,12 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
             df_train_f_sinsmote = pd.DataFrame(ds_train_f_sinsmote, columns=ds_train_f_temp.columns,
                                                index=ds_train_f_temp.index)  # Indice que tenia antes de SMOTE
 
-            comprobarPrecisionManualmente(ds_train_t_sinsmote, train_t_predicho, "TRAIN (forzado)", id_subgrupo,
-                                          df_train_f_sinsmote, dir_subgrupo)  # ds_train_t tiene SMOTE!!!
-            comprobarPrecisionManualmente(ds_test_t, test_t_predicho, "TEST", id_subgrupo, df_test_empresas_index,
-                                          dir_subgrupo)
-            comprobarPrecisionManualmente(ds_validac_t, validac_t_predicho, "VALIDACION", id_subgrupo,
-                                          df_valid_empresas_index, dir_subgrupo)
+            C5C6ManualFunciones.comprobarPrecisionManualmente(ds_train_t_sinsmote, train_t_predicho, "TRAIN (forzado)", id_subgrupo,
+                                                              df_train_f_sinsmote, dir_subgrupo, DEBUG_FILTRO)  # ds_train_t tiene SMOTE!!!
+            C5C6ManualFunciones.comprobarPrecisionManualmente(ds_test_t, test_t_predicho, "TEST", id_subgrupo, df_test_empresas_index,
+                                          dir_subgrupo, DEBUG_FILTRO)
+            C5C6ManualFunciones.comprobarPrecisionManualmente(ds_validac_t, validac_t_predicho, "VALIDACION", id_subgrupo,
+                                          df_valid_empresas_index, dir_subgrupo, DEBUG_FILTRO)
             ######################################################################################################################
         else:
             print("No se ha guardado modelo:" + pathModeloGanadorDeSubgrupoOrigen)
@@ -1641,7 +1341,7 @@ elif (modoTiempo == "futuro" and pathCsvReducido.endswith('.csv') and os.path.is
     print("inputFeaturesyTarget: " + str(inputFeaturesyTarget.shape[0]) + " x " + str(inputFeaturesyTarget.shape[1]))
 
     print("Si las hay, eliminamos las features muy correladas (umbral =" + str(
-        umbralFeaturesCorrelacionadas) + ") aprendido en el PASADO..")
+        umbralFeaturesCorrelacionadas) + ") aprendido en el PASADO.")
     if os.path.exists(pathListaColumnasCorreladasDrop):
         columnasCorreladas = pickle.load(open(pathListaColumnasCorreladasDrop, 'rb'))
         inputFeaturesyTarget.drop(columnasCorreladas, axis=1, inplace=True)
@@ -1683,6 +1383,9 @@ elif (modoTiempo == "futuro" and pathCsvReducido.endswith('.csv') and os.path.is
         # probabilities
         probs = pd.DataFrame(data=modelo_predictor_ganador.predict_proba(inputFeatures_sinnulos),
                              index=inputFeatures_sinnulos.index)
+        probs.columns = ['proba_false', 'proba_true']
+        print("FUTURO - Ejemplos de probabilidades al predecir targets true (orden descendiente): ")
+        print(tabulate(probs.sort_values("proba_true", ascending=False).head(n=5), headers='keys', tablefmt='psql'))
 
         # UMBRAL MENOS PROBABLES CON TARGET=1. Cuando el target es 1, se guarda su probabilidad
         # print("El DF llamado probs contiene las probabilidades de predecir un 0 o un 1:")

@@ -6,6 +6,7 @@ import sys
 import pandas as pd
 from tabulate import tabulate
 
+
 ##################### EXPLICACION #####################
 # Tras haber ejecutado en modo PASADO, se han generado ficheros con velas FP, falsos positivos (predicho True, pero la realidad fue False).
 # Queremos analizar por qué los modelos se han equivocado y si hay

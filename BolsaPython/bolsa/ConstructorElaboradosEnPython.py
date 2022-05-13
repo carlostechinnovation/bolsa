@@ -20,6 +20,10 @@ print("=========== CONSTRUCTOR ELABORADOS EN PYTHON: inicio ==============")
 
 ############################## PARAMETROS ####################################################################
 print("PARAMETROS: directorioIn directorioOut S X R M F B umbralSubidaPorVela umbralMinimoGranVela filtroDinamico1 filtroDinamico2")
+if len(sys.argv) <=1:
+    print("Falta indicar los PARAMETROS. Saliendo...")
+    exit(-1)
+
 directorioIn = sys.argv[1]          # String
 directorioOut = sys.argv[2]         # String
 S = int(sys.argv[3])    # Integer
@@ -71,7 +75,9 @@ contador = 0
 for f in entradasCsv:
     contador += 1
     analizarEntrada = (contador <= NUMERO_EMPRESAS_ANALIZAR_PROFILING)  #Permite analizar detalladamente la entrada si se desea
+    #if "_ADI." in f:
     ElaboradosUtils.procesarCSV(directorioIn + f, directorioOut + f, modoTiempo, analizarEntrada, S, X, R, M, F, B, umbralSubidaPorVela, umbralMinimoGranVela)
+
     #break ###TEMPORAL
 
 
