@@ -268,7 +268,7 @@ def entrenarModeloModoPasado(dir_subgrupo, ds_train_f, ds_train_t, ds_test_f, ds
     pathModelo = dir_subgrupo + nombreModelo + ".modelo"
     pickle.dump(modelo, open(pathModelo, 'wb'))
 
-    print("PASADO - GUARDANDO MODELO PREDICTIVO ENTENADO EN: " + pathModelo)
+    print("PASADO - GUARDANDO MODELO PREDICTIVO ENTRENADO EN: " + pathModelo)
 
     return pathModelo, nombreModelo
 
@@ -310,11 +310,86 @@ def normalizar (path_modelo_normalizador, featuresFichero, modoTiempo, pathCsvIn
     C5C6ManualFunciones.mostrarEmpresaConcretaConFilter(featuresFicheroNorm, DEBUG_FILTRO, "featuresFicheroNorm")
     featuresFicheroNorm.to_csv(pathCsvIntermedio + ".normalizado.csv", index=True, sep='|', float_format='%.4f')  # UTIL para testIntegracion
 
-
     if modoDebug and modoTiempo == "pasado":
         pintarFuncionesDeDensidad(featuresFichero, dir_subgrupo_img, dibujoBins, "normalizadas")
 
     return featuresFicheroNorm
+
+'''
+Comprueba el numero de clases diferentes y aborta en caso de que no haya suficientes.
+@:returns Numero de clases encontradas
+'''
+def comprobarSuficientesClasesDelTarget (targetsFichero, modoTiempo):
+    print((datetime.datetime.now()).strftime("%Y%m%d_%H%M%S") + " ----- comprobarSuficientesClasesDelTarget ------")
+    y_unicos = np.unique(targetsFichero)
+    print("Clases encontradas en el target: ")
+    print(y_unicos)
+    numclases = y_unicos.size
+
+    if modoTiempo == "pasado" and numclases <= 1:
+        print(modoTiempo + " - El subgrupo solo tiene " + str(numclases) + " clases en el target. No son SUFICIENTES. Abortamos...")
+        exit(-1)
+
+    return numclases
+
+'''
+Matriz de correlaciones y quitar features correladas
+'''
+def matrizCorrelacionesYquitarFaturesCorreladas(ift_juntas, umbralFeaturesCorrelacionadas, pathListaColumnasCorreladasDrop, pathFeaturesSeleccionadas):
+    print((datetime.datetime.now()).strftime("%Y%m%d_%H%M%S") + " Matriz de correlaciones (PASADO):")
+    matrizCorr = ift_juntas.corr().abs()
+    # print(matrizCorr.to_string())
+    upper = matrizCorr.where(np.triu(np.ones(matrizCorr.shape), k=1).astype(bool))
+    # print(upper.to_string())
+    print("Eliminamos las features muy correladas (umbral = " + str(umbralFeaturesCorrelacionadas) + "):")
+    to_drop = [column for column in upper.columns if any(upper[column] > umbralFeaturesCorrelacionadas)]
+    print(to_drop)
+    print("Guardamos esa lista de features muy correladas en: " + pathListaColumnasCorreladasDrop)
+    pickle.dump(to_drop, open(pathListaColumnasCorreladasDrop, 'wb'))
+    ift_juntas.drop(to_drop, axis=1, inplace=True)
+    # print(ift_juntas)
+    print("Matriz de correlaciones corregida, habiendo quitado las muy correlacionadas (PASADO):")
+    matrizCorr = ift_juntas.corr()
+    # print(matrizCorr)
+    print("matrizCorr:" + str(matrizCorr.shape[0]) + " x " + str(matrizCorr.shape[1]))
+    # ##################################################################
+    columnasSeleccionadas = ift_juntas.columns
+    print("Guardando las columnas seleccionadas en: ", pathFeaturesSeleccionadas)
+    # print(columnasSeleccionadas)
+    columnasSeleccionadasStr = '|'.join(columnasSeleccionadas)
+    featuresSeleccionadasFile = open(pathFeaturesSeleccionadas, "w")
+    featuresSeleccionadasFile.write(columnasSeleccionadasStr)
+    featuresSeleccionadasFile.close()
+
+
+'''
+Para el target predicho, pinta la distribución de probabilidades (predict_proba) y la guarda en una imagen
+'''
+def pintarDistribucionProbabDelTargetPredicho(dir_subgrupo_img, nombreFichero, modeloPredictivoEntrenado, featuresDF, id_subgrupo):
+    print("pintarDistribucionProbabDelTargetPredicho-INICIO")
+    path_dibujo_probabs = dir_subgrupo_img + nombreFichero
+    print("Distribución de las probabilidades del target predicho (debe ser con forma de U para que distinga bien los positivos de los negativos): " + path_dibujo_probabs)
+    probsPositivosyNegativos = modeloPredictivoEntrenado.predict_proba(featuresDF)
+
+    # probabilities
+    probs = pd.DataFrame(data=probsPositivosyNegativos)
+    probs.columns = ['proba_false', 'proba_true']
+    print("PASADO - Ejemplos de probabilidades al predecir targets true (orden descendiente): ")
+    print(tabulate(probs.sort_values("proba_true", ascending=False).head(n=5), headers='keys', tablefmt='psql'))
+    print("PASADO - Ejemplos de probabilidades al predecir targets true (orden ascendiente): ")
+    print(tabulate(probs.sort_values("proba_true", ascending=True).head(n=5), headers='keys', tablefmt='psql'))
+
+    probsPositivosyNegativosDF = pd.DataFrame(data=probsPositivosyNegativos, columns=["probabsNegativas", "probabsPositivas"])
+    plt.hist(probsPositivosyNegativosDF.iloc[:, 1], label="Probabilidades target predicho", bins=20, alpha=.7,
+             color='blue')
+    plt.title("Distribución de la probab predicha al predecir el target (subgrupo " + id_subgrupo + ")",
+              fontsize=10)
+    plt.legend(loc='upper left')
+    plt.savefig(path_dibujo_probabs, bbox_inches='tight')
+    plt.clf();
+    plt.cla();
+    plt.close()  # Limpiando dibujo
+    print("pintarDistribucionProbabDelTargetPredicho-FIN")
 
 
 

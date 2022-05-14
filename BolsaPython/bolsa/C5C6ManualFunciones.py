@@ -4,23 +4,49 @@ from tabulate import tabulate
 import os
 import seaborn as sns
 import matplotlib.pyplot as plt
+from pandas_profiling import ProfileReport
+import datetime
+import os.path
+import pickle
+import sys
+import warnings
+from shutil import copyfile
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import seaborn as sns
+import sklearn
+from imblearn.combine import SMOTETomek
+from sklearn.decomposition import PCA
+from sklearn.ensemble import IsolationForest
+from sklearn.metrics import average_precision_score
+from sklearn.metrics import classification_report
+from sklearn.metrics import precision_score
+from sklearn.model_selection import cross_val_score
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import PowerTransformer, MinMaxScaler
+from sklearn.utils import resample
+from tabulate import tabulate
+from xgboost import XGBClassifier
 
-def mostrarEmpresaConcreta (miDF, DEBUG_EMPRESA, DEBUG_MES, DEBUG_DIA, numFilasMax):
+
+def mostrarEmpresaConcreta(miDF, DEBUG_EMPRESA, DEBUG_MES, DEBUG_DIA, numFilasMax):
     tablaDebugDF = miDF[
         (miDF['empresa'] == DEBUG_EMPRESA) & (miDF['mes'] == DEBUG_MES) & (
-                    miDF['dia'] == DEBUG_DIA)].head(n=numFilasMax)
+                miDF['dia'] == DEBUG_DIA)].head(n=numFilasMax)
     print("tablaDebugDF (caso vigilado) - ENTRADA:")
     print(tabulate(tablaDebugDF, headers='keys', tablefmt='psql'))
 
-def mostrarEmpresaConcretaConFilter (miDF, DEBUG_FILTRO, etiqueta):
+
+def mostrarEmpresaConcretaConFilter(miDF, DEBUG_FILTRO, etiqueta):
     tablaDebugDF = miDF.filter(like=DEBUG_FILTRO, axis=0)
     print("tablaDebugDF (caso vigilado) - " + etiqueta + ":")
     print(tabulate(tablaDebugDF, headers='keys', tablefmt='psql'))
 
+
 ######################### PARÁMETROS TWITTER ########################
 import tweepy  # https://github.com/tweepy/tweepy
 import csv
-
 
 pathClavesTwitter = "/bolsa/twitterapikeys/keys"
 pathDestinoTweets = "/bolsa/twitter"
@@ -28,14 +54,15 @@ pathDestinoTweets = "/bolsa/twitter"
 FORMATO_FECHA_TWITTER = '%Y-%m-%d'
 
 tuiterosRecomendacionAOjo = ["BagholderQuotes", "vintweeta", "Xiuying"]
-tuiterosGainers=["GetScanz"]
-tuiterosLosers=["GetScanz"]
-tuiterosGappers=["GetScanz"]
-tuiterosEarlyGainsPremarket=["FloatChecker"]
-tuiterosPremarketStockGainers=["FloatChecker"]
-tuiterosStockGainersToWatch=["FloatChecker"]
-tuiterosTopLosers=["GetScanz"]
-tuiterosMostActivePennyStocks=["GetScanz"]
+tuiterosGainers = ["GetScanz"]
+tuiterosLosers = ["GetScanz"]
+tuiterosGappers = ["GetScanz"]
+tuiterosEarlyGainsPremarket = ["FloatChecker"]
+tuiterosPremarketStockGainers = ["FloatChecker"]
+tuiterosStockGainersToWatch = ["FloatChecker"]
+tuiterosTopLosers = ["GetScanz"]
+tuiterosMostActivePennyStocks = ["GetScanz"]
+
 
 #####################################################
 
@@ -130,7 +157,6 @@ def relative_strength_idx(df, n=14):
     return rsi
 
 
-
 ##################### DESCARGA DEL SP500 ########################
 
 import requests
@@ -189,7 +215,7 @@ def getSP500conRentaTrasXDias(X, fechaInicio, fechaFin, dir_subgrupo):
 
 
 def anadeComparacionSencillaSP500(sp500, x):
-    comparaSP500Ayer=-1000
+    comparaSP500Ayer = -1000
     fechaAhora = str(x.anio) + "-" + str(x.mes) + "-" + str(x.dia)
     ahora_obj = datetime2.strptime(fechaAhora, FORMATO_FECHA_SP500)
     a = pd.DataFrame()
@@ -199,12 +225,12 @@ def anadeComparacionSencillaSP500(sp500, x):
         diasAntes_obj = ahora_obj - timedelta(days=days_to_subtract)
         antes = diasAntes_obj.strftime(FORMATO_FECHA_SP500)
         empresaRentaAhora = float(x.close) - float(x.open)
-        a=sp500[sp500[ETIQUETA_FECHA_SP500] == antes]
-        if(len(a.index)>0):
+        a = sp500[sp500[ETIQUETA_FECHA_SP500] == antes]
+        if (len(a.index) > 0):
             sp500RentaAyer = float(a[ETIQUETA_RENTA_SP500])
             comparaSP500Ayer = int(empresaRentaAhora * sp500RentaAyer > 0)
         else:
-            ahora_obj=diasAntes_obj
+            ahora_obj = diasAntes_obj
 
     return comparaSP500Ayer
 
@@ -263,7 +289,7 @@ def get_all_tweets(screen_name, api):
 
     # keep grabbing tweets until there are no tweets left to grab
     while len(new_tweets) > 0:
-        #print(f"getting tweets before {oldest}")
+        # print(f"getting tweets before {oldest}")
 
         # all subsequent requests use the max_id param to prevent duplicates
         new_tweets = api.user_timeline(screen_name=screen_name, count=200, max_id=oldest)
@@ -274,7 +300,7 @@ def get_all_tweets(screen_name, api):
         # update the id of the oldest tweet less one
         oldest = alltweets[-1].id - 1
 
-        #print(f"...{len(alltweets)} tweets downloaded so far")
+        # print(f"...{len(alltweets)} tweets downloaded so far")
 
     # transform the tweepy tweets into a 2D array that will populate the csv
     outtweets = [[tweet.id_str, tweet.created_at, tweet.text] for tweet in alltweets]
@@ -304,19 +330,19 @@ def vaciarCarpeta(folder):
 def anadeMencionesTwitterPorTuiteros(diasAntiguedad, tuits, x, stringABuscar):
     numeroMencionesTotales = 0
     fechaRowActual = str(x.anio) + "-" + str(x.mes) + "-" + str(x.dia)
-    fechaRowActual_obj= datetime2.strptime(fechaRowActual, FORMATO_FECHA_TWITTER)
+    fechaRowActual_obj = datetime2.strptime(fechaRowActual, FORMATO_FECHA_TWITTER)
     fechaElegida_obj = fechaRowActual_obj - timedelta(days=diasAntiguedad)
     fechaElegida = fechaElegida_obj.strftime(FORMATO_FECHA_TWITTER)
 
     # Para optimizar recursos, se eliminan todos los tuits que no coincidan con la fecha indicada
-    tuits=tuits.loc[tuits["created_at"].str.startswith(fechaElegida, na=False)]
+    tuits = tuits.loc[tuits["created_at"].str.startswith(fechaElegida, na=False)]
 
     ficheros = os.listdir(pathDestinoTweets)
-    tuiteros=tuits.tuitero.unique()
+    tuiteros = tuits.tuitero.unique()
 
     for tuitero in tuiteros:
-        tuitsDeTuitero=tuits[tuits['tuitero'] == tuitero]
-        numeroMencionesPorElTuitero=0
+        tuitsDeTuitero = tuits[tuits['tuitero'] == tuitero]
+        numeroMencionesPorElTuitero = 0
 
         tuitsDeTuitero = tuitsDeTuitero.loc[tuitsDeTuitero["text"].str.contains(stringABuscar)]
 
@@ -332,8 +358,7 @@ def anadeMencionesTwitterPorTuiteros(diasAntiguedad, tuits, x, stringABuscar):
 
 
 def anadeFeatureTwitter(entradaFeaturesYTarget, tituloNuevaFeature, pathDestinoTweets, cuentas,
-                                        antiguedadMaxima, stringOpcionalEnTuit):
-
+                        antiguedadMaxima, stringOpcionalEnTuit):
     # Se vacía la carpeta donde se guardarán los tuits, y se descargan los tuits de tuiteros
     vaciarCarpeta(pathDestinoTweets)
     descargaTuits(cuentas)
@@ -351,7 +376,7 @@ def anadeFeatureTwitter(entradaFeaturesYTarget, tituloNuevaFeature, pathDestinoT
             tuitsDeFichero = pd.read_csv(filepath_or_buffer=pathFichero, sep=',')
             # Para acelerar el proceso, se toman sólo las filas que contengan "$" en su columna text (mensaje),
             # ya que siempre buscamos un ticker.
-            tuitsDeFichero=tuitsDeFichero[tuitsDeFichero['text'].str.contains("\$")]
+            tuitsDeFichero = tuitsDeFichero[tuitsDeFichero['text'].str.contains("\$")]
 
             # Se permite filtrar opcionalmente por un string, si no está vacío.
             if not stringOpcionalEnTuit:
@@ -375,10 +400,8 @@ def anadeFeatureTwitter(entradaFeaturesYTarget, tituloNuevaFeature, pathDestinoT
     return entradaFeaturesYTarget
 
 
-
-
-def aniadirColumnasDependientesSP500 ():
-    x=0
+def aniadirColumnasDependientesSP500():
+    x = 0
     # # Variables dependientes de SP500
     #
     # # FEATURE:
@@ -446,8 +469,9 @@ def aniadirColumnasDependientesSP500 ():
     #
     #         b = 1
 
+
 def aniadirColumnasDeTwitter():
-    x=0
+    x = 0
 
     # SE QUITAN PORQUE PARA 100 EMPRESAS TARDA 10 MINUTOS POR SUBGRUPO, Y APENAS INFLUYE
     #
@@ -545,10 +569,13 @@ def aniadirColumnasDeTwitter():
     #
     # #########################
 
+
 '''
 Crea una imagen de las función de densidad de probabilidad de cada columna (feature) del dataframe.
 '''
-def pintarFuncionesDeDensidad (miDF, dir_subgrupo_img, dibujoBins, descripcion):
+
+
+def pintarFuncionesDeDensidad(miDF, dir_subgrupo_img, dibujoBins, descripcion):
     print("FUNCIONES DE DENSIDAD (" + descripcion + "):")
     for column in miDF:
         path_dibujo = dir_subgrupo_img + column + ".png"
@@ -562,5 +589,120 @@ def pintarFuncionesDeDensidad (miDF, dir_subgrupo_img, dibujoBins, descripcion):
         plt.close()  # Limpiando dibujo
 
 
+'''
+'''
 
 
+def describirConPandasProfiling(modoDebug, miDF, dir_subgrupo):
+    ############ PANDAS PROFILING ###########
+    if modoDebug:
+        print("REDUCIDO - Profiling...")
+        if len(miDF) > 2000:
+            prof = ProfileReport(miDF.drop(columns=['TARGET']).sample(n=2000))
+        else:
+            prof = ProfileReport(miDF.drop(columns=['TARGET']))
+
+        prof.to_file(output_file=dir_subgrupo + "REDUCIDO_profiling.html")
+
+
+'''
+'''
+
+
+def splitTrainTestValidation(modoTiempo, ift_juntas, fraccion_train, fraccion_test, fraccion_valid, balancearConSmoteSoloTrain, umbralNecesarioCompensarDesbalanceo, balancearUsandoDownsampling):
+    ############################## DIVISIÓN DE DATOS: TRAIN, TEST, VALIDACIÓN ##########################
+    ######## Las filas se randomizan (shuffle) con .sample(frac=1).reset_index(drop=True) #####
+    print((datetime.datetime.now()).strftime("%Y%m%d_%H%M%S") + " DIVIDIR EL DATASET DE ENTRADA EN 3 PARTES: TRAIN (" + str(fraccion_train) + "), TEST (" + str(
+        fraccion_test) + "), VALIDACION (" + str(round(fraccion_valid, 2)) + ")")
+
+    dfBarajado = ift_juntas.sample(frac=1)  # Los indices aparecen bien
+    ds_train, ds_test, ds_validacion = np.split(dfBarajado, [int(fraccion_train * len(ift_juntas)), int((fraccion_train + fraccion_test) * len(ift_juntas))])
+    print("TRAIN = " + str(ds_train.shape[0]) + " x " + str(ds_train.shape[1]) + "  " + "TEST --> " + str(ds_test.shape[0]) + " x " + str(ds_test.shape[1]) + "  " + "VALIDACION --> " + str(
+        ds_validacion.shape[0]) + " x " + str(ds_validacion.shape[1]))
+
+    print("Separamos FEATURES y TARGETS, de los 3 dataframes...")
+    ds_train_f = ds_train.drop('TARGET', axis=1).to_numpy()
+    ds_train_t = ds_train[['TARGET']].to_numpy().ravel()
+    ds_test_f = ds_test.drop('TARGET', axis=1).to_numpy()
+    ds_test_t = ds_test[['TARGET']].to_numpy().ravel()
+    ds_validac_f = ds_validacion.drop('TARGET', axis=1).to_numpy()
+    ds_validac_t = ds_validacion[['TARGET']].to_numpy().ravel()
+
+    feature_names = ds_train.columns.drop('TARGET')
+
+    ################ DESBALANCEOS en train, test y validation ########
+    df_mayoritaria = ds_train_t[ds_train_t == False]  # En este caso los mayoritarios son los False
+    df_minoritaria = ds_train_t[ds_train_t == True]
+    # print("df_mayoritaria (train):" + str(len(df_mayoritaria)))
+    # print("df_minoritaria (train):" + str(len(df_minoritaria)))
+    tasaDesbalanceoAntes = round(len(df_mayoritaria) / len(df_minoritaria), 2)
+    print("TRAIN - Tasa de desbalanceo entre clases (antes de balancear con SMOTE) = mayoritaria/minoritaria = " + str(len(df_mayoritaria)) + " / " + str(len(df_minoritaria)) + " = " + str(
+        tasaDesbalanceoAntes))
+
+    df_mayoritaria_test = ds_test_t[ds_test_t == False]  # En este caso los mayoritarios son los False
+    df_minoritaria_test = ds_test_t[ds_test_t == True]
+    # print("df_mayoritaria (test):" + str(len(df_mayoritaria_test)))
+    # print("df_minoritaria (test):" + str(len(df_minoritaria_test)))
+    tasaDesbalanceoAntes_test = round(len(df_mayoritaria_test) / len(df_minoritaria_test), 2)
+    print("TEST - Tasa de desbalanceo entre clases = mayoritaria/minoritaria = " + str(len(df_mayoritaria_test)) + " / " + str(len(df_minoritaria_test)) + " = " + str(tasaDesbalanceoAntes_test))
+
+    df_mayoritaria_validac = ds_validac_t[ds_validac_t == False]  # En este caso los mayoritarios son los False
+    df_minoritaria_validac = ds_validac_t[ds_validac_t == True]
+    # print("df_mayoritaria (validac):" + str(len(df_mayoritaria_validac)))
+    # print("df_minoritaria (validac):" + str(len(df_minoritaria_validac)))
+    tasaDesbalanceoAntes_validac = round(len(df_mayoritaria_validac) / len(df_minoritaria_validac), 2)
+    print("VALIDAC - Tasa de desbalanceo entre clases = mayoritaria/minoritaria = " + str(len(df_mayoritaria_validac)) + " / " + str(len(df_minoritaria_validac)) + " = " + str(
+        tasaDesbalanceoAntes_validac))
+
+    ########################### SMOTE (Over/Under sampling) ##################
+    ########################### Se aplica sólo en el TRAIN #############################################3
+
+    balancearConSmoteSoloTrain = balancearConSmoteSoloTrain and (tasaDesbalanceoAntes > umbralNecesarioCompensarDesbalanceo)
+    balancearUsandoDownsampling = balancearUsandoDownsampling and (tasaDesbalanceoAntes > umbralNecesarioCompensarDesbalanceo)
+    ds_train_sinsmote = ds_train  # NO TOCAR
+    ds_train_f_sinsmote = ds_train_f  # NO TOCAR
+    ds_train_t_sinsmote = ds_train_t  # NO TOCAR
+    columnas_f = ds_train_sinsmote.drop('TARGET', axis=1).columns
+    if modoTiempo == "pasado" and balancearConSmoteSoloTrain:
+        print((datetime.datetime.now()).strftime(
+            "%Y%m%d_%H%M%S") + " ---------------- RESAMPLING con SMOTE (y porque supera umbral = " + str(
+            umbralNecesarioCompensarDesbalanceo) + ") --------")
+        print("Resampling con SMOTE del vector de TRAINING (pero no a TEST ni a VALIDATION) según: "
+              + "https://machinelearningmastery.com/combine-oversampling-and-undersampling-for-imbalanced-classification/")
+        resampleST = SMOTETomek()
+        print("SMOTE antes (mayoritaria + minoritaria): %d" % ds_train_f_sinsmote.shape[0])
+        # print("SMOTE fit...")
+        ds_train_f, ds_train_t = resampleST.fit_resample(ds_train_f_sinsmote, ds_train_t_sinsmote)
+        ds_train_f = pd.DataFrame(ds_train_f, columns=columnas_f)  # restablecer nombres de columnas
+        ds_train_t = pd.DataFrame(ds_train_t, columns=['TARGET'])  # restablecer nombres de columnas
+        print("SMOTE después (mayoritaria + minoritaria): %d" % ds_train_f.shape[0])
+
+    elif modoTiempo == "pasado" and balancearUsandoDownsampling:
+        print((datetime.datetime.now()).strftime("%Y%m%d_%H%M%S") + " ---------------- RESAMPLING haciendo DOWNSAMPLING de la mayoritaria (y porque supera umbral = " + str(
+            umbralNecesarioCompensarDesbalanceo) + ") --------")
+        print("URL: https://elitedatascience.com/imbalanced-classes")
+        print("Solo actua sobre pasado-train, pero no sobre: pasado-test, pasado-valid ni futuro")
+        # Separate majority and minority classes
+        df_majority = ds_train_sinsmote[ds_train_sinsmote["TARGET"] == False]
+        df_minority = ds_train_sinsmote[ds_train_sinsmote["TARGET"] == True]
+        # Downsample majority class
+
+        df_majority_downsampled = resample(df_majority,
+                                           replace=False,  # sample without replacement
+                                           n_samples=len(df_minority),  # to match minority class
+                                           random_state=123)  # reproducible results
+        df_downsampled = pd.concat([df_majority_downsampled, df_minority])  # junta mayoritaria y minoritaria
+        df_downsampled = sklearn.utils.shuffle(df_downsampled)  # barajar
+        ds_train_f = pd.DataFrame(df_downsampled.drop('TARGET', axis=1), columns=columnas_f)
+        ds_train_t = pd.DataFrame(df_downsampled[['TARGET']], columns=['TARGET'])
+
+    ift_mayoritaria_entrada_modelos = ds_train_t[ds_train_t == False]  # En este caso los mayoritarios son los False
+    ift_minoritaria_entrada_modelos = ds_train_t[ds_train_t == True]
+    print("ift_mayoritaria_entrada_modelos:" + str(len(ift_mayoritaria_entrada_modelos)))
+    print("ift_minoritaria_entrada_modelos:" + str(len(ift_minoritaria_entrada_modelos)))
+    tasaDesbalanceoDespues = len(ift_mayoritaria_entrada_modelos) / len(ift_minoritaria_entrada_modelos)
+    print("Tasa de desbalanceo entre clases (entrada a los modelos predictivos) = " + str(tasaDesbalanceoDespues))
+
+    ###############################  FIN DE SMOTE ##############################
+
+    return ds_train, ds_test, ds_validacion, ds_train_f, ds_train_t, ds_test_f, ds_test_t, ds_validac_f, ds_validac_t, ds_train_f_sinsmote, ds_train_t_sinsmote
