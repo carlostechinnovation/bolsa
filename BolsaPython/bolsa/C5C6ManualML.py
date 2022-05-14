@@ -24,6 +24,9 @@ from sklearn.utils import resample
 from tabulate import tabulate
 from xgboost import XGBClassifier
 
+from bolsa import C5C6ManualFunciones
+from bolsa.C5C6ManualFunciones import pintarFuncionesDeDensidad
+
 '''
 Entrena modelo predictivo (solo PASADO) y lo guarda en una ruta.
 @:returns Path absoluto del modelo entrenado guardado 
@@ -268,3 +271,50 @@ def entrenarModeloModoPasado(dir_subgrupo, ds_train_f, ds_train_t, ds_test_f, ds
     print("PASADO - GUARDANDO MODELO PREDICTIVO ENTENADO EN: " + pathModelo)
 
     return pathModelo, nombreModelo
+
+
+'''
+MODO PASADO - Entrena el modelo normalizador de features y lo guarda en una ruta.
+Ese modelo puede usarse después para normalizar esas mismas features del pasado u otras del futuro.
+'''
+def fitNormalizadorDeFeaturesSoloModoPasado (featuresDF, path_modelo_normalizador):
+
+    # Con el "normalizador COMPLEJO" solucionamos este bug: https://github.com/scikit-learn/scikit-learn/issues/14959  --> Aplicar los cambios indicados a:_/home/carloslinux/Desktop/PROGRAMAS/anaconda3/envs/BolsaPython/lib/python3.7/site-packages/sklearn/preprocessing/_data.py
+    modelo_normalizador = make_pipeline(MinMaxScaler(), PowerTransformer(method='yeo-johnson', standardize=True, copy=True), ).fit(featuresDF)  # COMPLEJO
+    # modelo_normalizador = PowerTransformer(method='yeo-johnson', standardize=True, copy=True).fit(featuresFichero)
+    pickle.dump(modelo_normalizador, open(path_modelo_normalizador, 'wb'))
+
+'''
+MODOS PASADO Y FUTURO - Aplica la NORMALIZACIÓN
+@:returns Dataframe con las columnas normalizadas.
+'''
+def normalizar (path_modelo_normalizador, featuresFichero, modoTiempo, pathCsvIntermedio, modoDebug, dir_subgrupo_img, dibujoBins, DEBUG_FILTRO):
+
+    print((datetime.datetime.now()).strftime("%Y%m%d_%H%M%S") + " ----- NORMALIZACIÓN de las features ------")
+    print("NORMALIZACION: hacemos que todas las features tengan distribución gaussiana media 0 y varianza 1. El target no se toca.")
+    print("featuresFichero: " + str(featuresFichero.shape[0]) + " x " + str(featuresFichero.shape[1]))
+    print("pathCsvIntermedio: " + pathCsvIntermedio)
+    print("path_modelo_normalizador: " + path_modelo_normalizador)
+
+    # Vamos a normalizar z-score (media 0, std_dvt=1), pero yeo-johnson tiene un bug (https://github.com/scipy/scipy/issues/10821) que se soluciona sumando una constante a toda la matriz, lo cual no afecta a la matriz normalizada
+    featuresFichero = featuresFichero + 1.015815
+
+    if modoTiempo == "pasado":
+        fitNormalizadorDeFeaturesSoloModoPasado(featuresFichero, path_modelo_normalizador)
+
+    # Pasado o futuro: Cargar normalizador
+    modelo_normalizador = pickle.load(open(path_modelo_normalizador, 'rb'))
+    print("Aplicando normalizacion, manteniendo indices y nombres de columnas...")
+    featuresFicheroNorm = pd.DataFrame(data=modelo_normalizador.transform(featuresFichero), index=featuresFichero.index, columns=featuresFichero.columns)
+    print("featuresFicheroNorm:" + str(featuresFicheroNorm.shape[0]) + " x " + str(featuresFicheroNorm.shape[1]))
+    C5C6ManualFunciones.mostrarEmpresaConcretaConFilter(featuresFicheroNorm, DEBUG_FILTRO, "featuresFicheroNorm")
+    featuresFicheroNorm.to_csv(pathCsvIntermedio + ".normalizado.csv", index=True, sep='|', float_format='%.4f')  # UTIL para testIntegracion
+
+
+    if modoDebug and modoTiempo == "pasado":
+        pintarFuncionesDeDensidad(featuresFichero, dir_subgrupo_img, dibujoBins, "normalizadas")
+
+    return featuresFicheroNorm
+
+
+

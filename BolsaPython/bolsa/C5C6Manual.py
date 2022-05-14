@@ -160,7 +160,6 @@ print("pathCsvReducido: %s" % pathCsvReducido)
 print("dir_subgrupo_img = %s" % dir_subgrupo_img)
 print("umbralFeaturesCorrelacionadas = " + str(umbralFeaturesCorrelacionadas))
 
-
 ################## MAIN ###########################################################
 if __name__ != '__main__':
     print("Solo queremos ejecutar este script en modo MAIN, pero se está ejecutando desde fuera como librería, con __name__: " + __name__ + "    Saliendo...")
@@ -168,7 +167,7 @@ if __name__ != '__main__':
 
 pathCsvEntradaEsCorrecto = (pathCsvCompleto.endswith('.csv') and os.path.isfile(pathCsvCompleto) and os.stat(pathCsvCompleto).st_size > 0)
 if pathCsvEntradaEsCorrecto == False:
-    print("El path del CSV de entrada NO es correcto: "+pathCsvCompleto+"   Saliendo...")
+    print("El path del CSV de entrada NO es correcto: " + pathCsvCompleto + "   Saliendo...")
     exit(-1)
 
 print((datetime.datetime.now()).strftime("%Y%m%d_%H%M%S") + " ----- leerFeaturesyTarget ------")
@@ -248,8 +247,7 @@ print("MISSING VALUES (FILAS)...")
 if modoTiempo == "futuro":
     print("Nos quedamos solo con las velas con antiguedad=0 (futuras)...")
     entradaFeaturesYTarget2 = entradaFeaturesYTarget2[entradaFeaturesYTarget2.antiguedad == 0]
-    print("entradaFeaturesYTarget2:" + str(entradaFeaturesYTarget2.shape[0]) + " x " + str(
-        entradaFeaturesYTarget2.shape[1]))
+    print("entradaFeaturesYTarget2:" + str(entradaFeaturesYTarget2.shape[0]) + " x " + str(entradaFeaturesYTarget2.shape[1]))
     # print(entradaFeaturesYTarget2.head())
 
 print("Porcentaje de MISSING VALUES en cada columna del dataframe de entrada (mostramos las que superen " + str(
@@ -294,7 +292,7 @@ if modoTiempo == "pasado":
     print(
         "MISSING VALUES (FILAS) - Borramos las FILAS que tengan 1 o mas valores NaN porque son huecos que no deberían estar...")
     entradaFeaturesYTarget3 = entradaFeaturesYTarget2.dropna(axis=0, how='any')  # Borrar FILA si ALGUNO sus valores tienen NaN
-    print("entradaFeaturesYTarget3: " + str(entradaFeaturesYTarget3.shape[0]) + " x " + str( entradaFeaturesYTarget3.shape[1]))
+    print("entradaFeaturesYTarget3: " + str(entradaFeaturesYTarget3.shape[0]) + " x " + str(entradaFeaturesYTarget3.shape[1]))
     C5C6ManualFunciones.mostrarEmpresaConcretaConFilter(entradaFeaturesYTarget3, DEBUG_FILTRO, "entradaFeaturesYTarget3")
 
 elif modoTiempo == "futuro":
@@ -306,8 +304,7 @@ elif modoTiempo == "futuro":
     entradaFeaturesYTarget2 = entradaFeaturesYTarget2.drop(columnasDemasiadosNulos, axis=1)
     print("entradaFeaturesYTarget2: " + str(entradaFeaturesYTarget2.shape[0]) + " x " + str(entradaFeaturesYTarget2.shape[1]))
 
-    print(
-        "MISSING VALUES (FILAS) - Para el FUTURO; el target es NULO siempre...")
+    print("MISSING VALUES (FILAS) - Para el FUTURO; el target es NULO siempre...")
     if "TARGET" in entradaFeaturesYTarget2.columns:
         entradaFeaturesYTarget2 = entradaFeaturesYTarget2.drop('TARGET', axis=1)
 
@@ -323,8 +320,7 @@ indiceFilasFuturasTransformadas2 = entradaFeaturesYTarget3.index.values
 print("indiceFilasFuturasTransformadas2: " + str(indiceFilasFuturasTransformadas2.shape[0]))
 # print(indiceFilasFuturasTransformadas2)
 
-print("entradaFeaturesYTarget3 (filas con algun nulo borradas):" + str(
-    entradaFeaturesYTarget3.shape[0]) + " x " + str(entradaFeaturesYTarget3.shape[1]))
+print("entradaFeaturesYTarget3 (filas con algun nulo borradas):" + str(entradaFeaturesYTarget3.shape[0]) + " x " + str(entradaFeaturesYTarget3.shape[1]))
 
 entradaFeaturesYTarget3.to_csv(pathCsvIntermedio + ".sololascompletas.csv", index=True, sep='|')  # NO BORRAR: UTIL para testIntegracion
 entradaFeaturesYTarget3.to_csv(pathCsvIntermedio + ".sololascompletas_INDICES.csv", columns=[])  # NO BORRAR: UTIL para testIntegracion
@@ -353,12 +349,10 @@ if limpiarOutliers is True:
     indice3 = entradaFeaturesYTarget3.index  # lo guardo para pegarlo luego
     entradaFeaturesYTarget3.reset_index(drop=True, inplace=True)
     flagAnomaliasDf.reset_index(drop=True, inplace=True)
-    entradaFeaturesYTarget4 = pd.concat([entradaFeaturesYTarget3, flagAnomaliasDf],
-                                        axis=1)  # Column Bind, manteniendo el índice del DF izquierdo
+    entradaFeaturesYTarget4 = pd.concat([entradaFeaturesYTarget3, flagAnomaliasDf], axis=1)  # Column Bind, manteniendo el índice del DF izquierdo
     entradaFeaturesYTarget4.set_index(indice3, inplace=True)  # ponemos el indice que tenia el DF de la izquierda
 
-    entradaFeaturesYTarget4 = entradaFeaturesYTarget4.loc[
-        entradaFeaturesYTarget4['marca_anomalia'] == 1]  # Cogemos solo las que no son anomalias
+    entradaFeaturesYTarget4 = entradaFeaturesYTarget4.loc[entradaFeaturesYTarget4['marca_anomalia'] == 1]  # Cogemos solo las que no son anomalias
     entradaFeaturesYTarget4 = entradaFeaturesYTarget4.drop('marca_anomalia', axis=1)  # Quitamos la columna auxiliar
 
 else:
@@ -366,10 +360,8 @@ else:
 
 print("entradaFeaturesYTarget4 (sin outliers):" + str(entradaFeaturesYTarget4.shape[0]) + " x " + str(entradaFeaturesYTarget4.shape[1]))
 C5C6ManualFunciones.mostrarEmpresaConcretaConFilter(entradaFeaturesYTarget4, DEBUG_FILTRO, "entradaFeaturesYTarget4")
-entradaFeaturesYTarget4.to_csv(pathCsvIntermedio + ".sinoutliers.csv", index=True,
-                               sep='|')  # NO BORRAR: UTIL para testIntegracion
-entradaFeaturesYTarget4.to_csv(pathCsvIntermedio + ".sinoutliers_INDICES.csv",
-                               columns=[])  # NO BORRAR: UTIL para testIntegracion
+entradaFeaturesYTarget4.to_csv(pathCsvIntermedio + ".sinoutliers.csv", index=True, sep='|')  # NO BORRAR: UTIL para testIntegracion
+entradaFeaturesYTarget4.to_csv(pathCsvIntermedio + ".sinoutliers_INDICES.csv", columns=[])  # NO BORRAR: UTIL para testIntegracion
 
 # ENTRADA: features (+ target)
 if modoTiempo == "pasado":
@@ -378,8 +370,9 @@ if modoTiempo == "pasado":
 else:
     featuresFichero = entradaFeaturesYTarget4
 
-# Si hay POCAS empresas
+
 if compatibleParaMuchasEmpresas is False or modoTiempo == "futuro":
+    # Si hay POCAS empresas
     print("POCAS EMPRESAS (modoTiempo=" + modoTiempo + ")...")
     if modoTiempo == "pasado":
         featuresFichero = entradaFeaturesYTarget4.drop('TARGET', axis=1)
@@ -387,109 +380,39 @@ if compatibleParaMuchasEmpresas is False or modoTiempo == "futuro":
     elif modoTiempo == "futuro":
         featuresFichero = entradaFeaturesYTarget4
         targetsFichero = pd.DataFrame({'TARGET': []})  # DEFAULT: Vacio (caso futuro)
-
-# SOLO PARA EL PASADO Si hay MUCHAS empresas (UNDER-SAMPLING para reducir los datos -útil para miles de empresas, pero puede quedar sobreentrenado, si borro casi todas las minoritarias-)
 else:
+    # SOLO PARA EL PASADO Si hay MUCHAS empresas (UNDER-SAMPLING para reducir los datos -útil para miles de empresas, pero puede quedar sobreentrenado, si borro casi todas las minoritarias-)
     print("MUCHAS EMPRESAS (modoTiempo=" + modoTiempo + ")...")
     print("NO balanceamos clases en capa 5 (pero seguramente sí en capa 6 solo sobre dataset de TRAIN)!!!")
     ift_minoritaria = entradaFeaturesYTarget4[entradaFeaturesYTarget4.TARGET == True]
     ift_mayoritaria = entradaFeaturesYTarget4[entradaFeaturesYTarget4.TARGET == False]
-    print("Tasa de desbalanceo entre clases = " + str(ift_mayoritaria.shape[0]) + "/" +
-          str(ift_minoritaria.shape[0]) + " = " + str(ift_mayoritaria.shape[0] / ift_minoritaria.shape[0]))
+    print("Tasa de desbalanceo entre clases = " + str(ift_mayoritaria.shape[0]) + "/" + str(ift_minoritaria.shape[0]) + " = " + str(ift_mayoritaria.shape[0] / ift_minoritaria.shape[0]))
     entradaFeaturesYTarget5 = entradaFeaturesYTarget4
-    C5C6ManualFunciones.mostrarEmpresaConcretaConFilter(entradaFeaturesYTarget5, DEBUG_FILTRO,
-                                                        "entradaFeaturesYTarget5")
+    C5C6ManualFunciones.mostrarEmpresaConcretaConFilter(entradaFeaturesYTarget5, DEBUG_FILTRO, "entradaFeaturesYTarget5")
 
     # entradaFeaturesYTarget5.to_csv(path_csv_completo + "_TEMP05", index=True, sep='|')  # UTIL para testIntegracion
     featuresFichero = entradaFeaturesYTarget5.drop('TARGET', axis=1)
     targetsFichero = entradaFeaturesYTarget5[['TARGET']]
     targetsFichero = (targetsFichero[['TARGET']] == 1)  # Convierto de int a boolean
 
-    print("entradaFeaturesYTarget5 (sin outliers):" + str(entradaFeaturesYTarget5.shape[0]) + " x " + str(
-        entradaFeaturesYTarget5.shape[1]))
+    print("entradaFeaturesYTarget5 (sin outliers):" + str(entradaFeaturesYTarget5.shape[0]) + " x " + str(entradaFeaturesYTarget5.shape[1]))
 
 ##################################################
-
-# print("FEATURES (sample):")
-# print(featuresFichero.head())
-# print("TARGETS (sample):")
-# print(targetsFichero.head())
-
 if modoDebug and modoTiempo == "pasado":
-    print("FUNCIONES DE DENSIDAD (sin nulos, pero antes de normalizar):")
-    for column in featuresFichero:
-        path_dibujo = dir_subgrupo_img + column + ".png"
-        print("Guardando distrib de col: " + column + " en fichero: " + path_dibujo)
-        datos_columna = featuresFichero[column]
-        sns.distplot(datos_columna, kde=False, color='red', bins=dibujoBins)
-        plt.title(column, fontsize=10)
-        plt.savefig(path_dibujo, bbox_inches='tight')
-        plt.clf();
-        plt.cla();
-        plt.close()  # Limpiando dibujo
+    C5C6ManualFunciones.pintarFuncionesDeDensidad(featuresFichero, dir_subgrupo_img, dibujoBins, "sin nulos, pero antes de normalizar")
 
-# NORMALIZAR, PERO SIN TRAMIFICAR: leer apartado 4.3 de https://eprints.ucm.es/56355/1/TFM_MPP_Jul19%20%281%29Palau.pdf
-
-print((datetime.datetime.now()).strftime("%Y%m%d_%H%M%S") + " ----- normalizarFeatures ------")
-print(
-    "NORMALIZACION: hacemos que todas las features tengan distribución gaussiana media 0 y varianza 1. El target no se toca.")
-print("PARAMS --> " + path_modelo_normalizador + "|" + modoTiempo + "|" + str(modoDebug))
-print("featuresFichero: " + str(featuresFichero.shape[0]) + " x " + str(featuresFichero.shape[1]))
-print("path_modelo_normalizador: " + path_modelo_normalizador)
-print("pathCsvIntermedio: " + pathCsvIntermedio)
-
-################################### NORMALIZACIÓN YEO-JOHNSON ####################################################
+################################### NORMALIZACIÓN ####################################################
 if evitarNormalizarNiTramificar is False:
-    print("Normalizando cada feature...")
-    # Vamos a normalizar z-score (media 0, std_dvt=1), pero yeo-johnson tiene un bug (https://github.com/scipy/scipy/issues/10821) que se soluciona sumando una constante a toda la matriz, lo cual no afecta a la matriz normalizada
-    featuresFichero = featuresFichero + 1.015815
-
-    if modoTiempo == "pasado":
-        # Con el "normalizador COMPLEJO" solucionamos este bug: https://github.com/scikit-learn/scikit-learn/issues/14959  --> Aplicar los cambios indicados a:_/home/carloslinux/Desktop/PROGRAMAS/anaconda3/envs/BolsaPython/lib/python3.7/site-packages/sklearn/preprocessing/_data.py
-        modelo_normalizador = make_pipeline(MinMaxScaler(),
-                                            PowerTransformer(method='yeo-johnson', standardize=True,
-                                                             copy=True), ).fit(
-            featuresFichero)  # COMPLEJO
-        # modelo_normalizador = PowerTransformer(method='yeo-johnson', standardize=True, copy=True).fit(featuresFichero)
-        pickle.dump(modelo_normalizador, open(path_modelo_normalizador, 'wb'))
-
-    # Pasado o futuro: Cargar normalizador
-    modelo_normalizador = pickle.load(open(path_modelo_normalizador, 'rb'))
-
-    print("Aplicando normalizacion, manteniendo indices y nombres de columnas...")
-    featuresFicheroNorm = pd.DataFrame(data=modelo_normalizador.transform(featuresFichero),
-                                       index=featuresFichero.index,
-                                       columns=featuresFichero.columns)
-
-    print("featuresFicheroNorm:" + str(featuresFicheroNorm.shape[0]) + " x " + str(featuresFicheroNorm.shape[1]))
-    featuresFicheroNorm.to_csv(pathCsvIntermedio + ".normalizado.csv", index=True,
-                               sep='|', float_format='%.4f')  # UTIL para testIntegracion
-
-    if modoDebug and modoTiempo == "pasado":
-        print("FUNCIONES DE DENSIDAD (normalizadas):")
-        for column in featuresFicheroNorm:
-            path_dibujo = dir_subgrupo_img + column + "_NORM.png"
-            print("Guardando distrib de col normalizada: " + column + " en fichero: " + path_dibujo)
-            datos_columna = featuresFicheroNorm[column]
-            sns.distplot(datos_columna, kde=False, color='red', bins=dibujoBins)
-            plt.title(column + " (NORM)", fontsize=10)
-            plt.savefig(path_dibujo, bbox_inches='tight')
-            plt.clf();
-            plt.cla();
-            plt.close()  # Limpiando dibujo
-
-    featuresFichero3 = featuresFicheroNorm
-
-##############################################################################
+    # NORMALIZAR, PERO SIN TRAMIFICAR: leer apartado 4.3 de https://eprints.ucm.es/56355/1/TFM_MPP_Jul19%20%281%29Palau.pdf
+    featuresFichero3 = C5C6ManualML.normalizar(path_modelo_normalizador, featuresFichero, modoTiempo, pathCsvIntermedio, modoDebug, dir_subgrupo_img, dibujoBins, DEBUG_FILTRO)
 else:
-    # NO NORMALIZAR y NO TRAMIFICAR
+    print("NO NORMALIZAR y NO TRAMIFICAR")
     featuresFichero3 = featuresFichero
 ##############################################################################
 
 # -----  Comprobar las clases del target:
 print((datetime.datetime.now()).strftime("%Y%m%d_%H%M%S") + " ----- comprobarSuficientesClasesTarget ------")
-print("featuresFicheroNorm: " + str(featuresFichero3.shape[0]) + " x " + str(
-    featuresFichero3.shape[1]) + "  Y  " + "targetsFichero: " + str(targetsFichero.shape[0]) + " x " + str(
+print("featuresFicheroNorm: " + str(featuresFichero3.shape[0]) + " x " + str(featuresFichero3.shape[1]) + "  Y  " + "targetsFichero: " + str(targetsFichero.shape[0]) + " x " + str(
     targetsFichero.shape[1]))
 
 y_unicos = np.unique(targetsFichero)
@@ -497,8 +420,9 @@ y_unicos = np.unique(targetsFichero)
 # print(y_unicos)
 numclases = y_unicos.size
 
-if (modoTiempo == "pasado" and numclases <= 1):
+if modoTiempo == "pasado" and numclases <= 1:
     print("El subgrupo solo tiene " + str(numclases) + " clases en el target. Abortamos...")
+    exit(-1)
 else:
     print((datetime.datetime.now()).strftime("%Y%m%d_%H%M%S") + " ----- reducirFeaturesYGuardar ------")
     print("path_modelo_reductor_features --> " + path_modelo_reductor_features)
@@ -529,8 +453,7 @@ else:
         # print("Usando PCA, creamos una NUEVA BASE DE FEATURES ORTOGONALES y cogemos las que tengan un impacto agregado sobre el "+str(varianza)+"% de la varianza del target. Descartamos el resto.")
         # modelo_pca_subgrupo = PCA(n_components=varianza, svd_solver='full')  # Varianza acumulada sobre el target
 
-        modelo_pca_subgrupo = PCA(n_components='mle',
-                                  svd_solver='full')  # Metodo "MLE de Minka": https://vismod.media.mit.edu/tech-reports/TR-514.pdf
+        modelo_pca_subgrupo = PCA(n_components='mle', svd_solver='full')  # Metodo "MLE de Minka": https://vismod.media.mit.edu/tech-reports/TR-514.pdf
 
         # modelo_pca_subgrupo = TSNE(n_components=2, perplexity=30.0, early_exaggeration=12.0, learning_rate=200.0,
         #                            n_iter=1000, n_iter_without_progress=300, min_grad_norm=1e-07,
@@ -548,16 +471,13 @@ else:
         print(modelo_pca_subgrupo)
         featuresFichero3_pca = modelo_pca_subgrupo.transform(featuresFichero3Elegidas)
 
-    print("Dimensiones del dataframe tras PCA: " + str(featuresFichero3_pca.shape[0]) + " x " + str(
-        featuresFichero3_pca.shape[1]))
+    print("Dimensiones del dataframe tras PCA: " + str(featuresFichero3_pca.shape[0]) + " x " + str(featuresFichero3_pca.shape[1]))
 
     # print(
     # "Las features están ya normalizadas, reducidas y en base ortogonal PCA. DESCRIBIMOS lo que hemos hecho y GUARDAMOS el dataset.")
     num_columnas_pca = featuresFichero3_pca.shape[1]
-    columnas_pca = ["pca_" + f"{i:0>2}" for i in
-                    range(num_columnas_pca)]  # Hacemos left padding con la funcion f-strings
-    featuresFichero3_pca_df = pd.DataFrame(featuresFichero3_pca, columns=columnas_pca,
-                                           index=featuresFichero3.index)
+    columnas_pca = ["pca_" + f"{i:0>2}" for i in range(num_columnas_pca)]  # Hacemos left padding con la funcion f-strings
+    featuresFichero3_pca_df = pd.DataFrame(featuresFichero3_pca, columns=columnas_pca, index=featuresFichero3.index)
     # print(tabulate(featuresFichero3_pca_df.head(), headers='keys', tablefmt='psql'))  # .drop('TARGET')
     featuresFichero3Elegidas = featuresFichero3_pca_df
 
@@ -572,19 +492,15 @@ else:
     # print("Muestro las features + targets antes de juntarlas...")
     # print("FEATURES (sample):")
     # print(featuresFichero3Elegidas.head())
-    print("featuresFichero3Elegidas: " + str(featuresFichero3Elegidas.shape[0]) + " x " + str(
-        featuresFichero3Elegidas.shape[1]))
+    print("featuresFichero3Elegidas: " + str(featuresFichero3Elegidas.shape[0]) + " x " + str(featuresFichero3Elegidas.shape[1]))
     # print("TARGETS (sample):")
     # print(targetsFichero.head())
 
-    featuresytargets = pd.concat(
-        [featuresFichero3Elegidas.reset_index(drop=True), targetsFichero.reset_index(drop=True)],
-        axis=1)  # Column bind
+    featuresytargets = pd.concat([featuresFichero3Elegidas.reset_index(drop=True), targetsFichero.reset_index(drop=True)], axis=1)  # Column bind
     featuresytargets.set_index(featuresFichero3Elegidas.index, inplace=True)
     # print("FEATURES+TARGETS juntas (sample):")
     # print(featuresytargets.head())
-    print("Justo antes de guardar, featuresytargets: " + str(featuresytargets.shape[0]) + " x " + str(
-        featuresytargets.shape[1]))
+    print("Justo antes de guardar, featuresytargets: " + str(featuresytargets.shape[0]) + " x " + str(featuresytargets.shape[1]))
     featuresytargets.to_csv(pathCsvReducido, index=True, sep='|', float_format='%.4f')
 
     ####################################################################
@@ -596,11 +512,9 @@ ganador_nombreModelo = "NINGUNO"
 ganador_metrica = 0
 ganador_metrica_avg = 0
 ganador_grid_mejores_parametros = []
-pathListaColumnasCorreladasDrop = (dir_subgrupo + "columnas_correladas_drop" + ".txt").replace("futuro",
-                                                                                               "pasado")  # lo guardamos siempre en el pasado
+pathListaColumnasCorreladasDrop = (dir_subgrupo + "columnas_correladas_drop" + ".txt").replace("futuro", "pasado")  # lo guardamos siempre en el pasado
 
-if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfile(pathCsvReducido) and os.stat(
-        pathCsvReducido).st_size > 0):
+if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfile(pathCsvReducido) and os.stat(pathCsvReducido).st_size > 0):
 
     print((datetime.datetime.now()).strftime("%Y%m%d_%H%M%S") + " Capa 6 - Modo PASADO")
 
@@ -609,15 +523,13 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
 
     print("BALANCEAR los casos positivos y negativos, haciendo downsampling de la clase mayoritaria...")
     print("URL: https://elitedatascience.com/imbalanced-classes")
-    ift_mayoritaria = inputFeaturesyTarget[
-        inputFeaturesyTarget.TARGET == False]  # En este caso los mayoritarios son los False
+    ift_mayoritaria = inputFeaturesyTarget[inputFeaturesyTarget.TARGET == False]  # En este caso los mayoritarios son los False
     ift_minoritaria = inputFeaturesyTarget[inputFeaturesyTarget.TARGET == True]
     print("ift_mayoritaria:" + str(ift_mayoritaria.shape[0]) + " x " + str(ift_mayoritaria.shape[1]))
     print("ift_minoritaria:" + str(ift_minoritaria.shape[0]) + " x " + str(ift_minoritaria.shape[1]))
 
     tasaDesbalanceoAntes = round(ift_mayoritaria.shape[0] / ift_minoritaria.shape[0], 2)
-    print("Tasa de desbalanceo entre clases (antes de balancear INICIO) = " + str(ift_mayoritaria.shape[0]) + "/" + str(
-        ift_minoritaria.shape[0]) + " = " + str(tasaDesbalanceoAntes))
+    print("Tasa de desbalanceo entre clases (antes de balancear INICIO) = " + str(ift_mayoritaria.shape[0]) + "/" + str(ift_minoritaria.shape[0]) + " = " + str(tasaDesbalanceoAntes))
     num_muestras_minoria = ift_minoritaria.shape[0]
 
     casosInsuficientes = (num_muestras_minoria < umbralCasosSuficientesClasePositiva)
@@ -627,17 +539,14 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
 
     else:
         print("En el dataframe se coloca primero todas las mayoritarias y despues todas las minoritarias")
-        ift_juntas = pd.concat([ift_mayoritaria.reset_index(drop=True), ift_minoritaria.reset_index(drop=True)],
-                               axis=0)  # Row bind
+        ift_juntas = pd.concat([ift_mayoritaria.reset_index(drop=True), ift_minoritaria.reset_index(drop=True)], axis=0)  # Row bind
         indices_juntos = ift_mayoritaria.index.append(ift_minoritaria.index)  # Row bind
         ift_juntas.set_index(indices_juntos, inplace=True)
         print("Las clases juntas son:")
         print("ift_juntas:" + str(ift_juntas.shape[0]) + " x " + str(ift_juntas.shape[1]))
 
-        ift_juntas.to_csv(pathCsvIntermedio + ".trasbalancearclases.csv", index=True, sep='|',
-                          float_format='%.4f')  # NO BORRAR: UTIL para testIntegracion
-        ift_juntas.to_csv(pathCsvIntermedio + ".trasbalancearclases_INDICES.csv",
-                          columns=[])  # NO BORRAR: UTIL para testIntegracion
+        ift_juntas.to_csv(pathCsvIntermedio + ".trasbalancearclases.csv", index=True, sep='|', float_format='%.4f')  # NO BORRAR: UTIL para testIntegracion
+        ift_juntas.to_csv(pathCsvIntermedio + ".trasbalancearclases_INDICES.csv", columns=[])  # NO BORRAR: UTIL para testIntegracion
 
         ############ PANDAS PROFILING ###########
         if modoDebug:
@@ -679,17 +588,12 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
 
         ############################## DIVISIÓN DE DATOS: TRAIN, TEST, VALIDACIÓN ##########################
         ######## Las filas se randomizan (shuffle) con .sample(frac=1).reset_index(drop=True) #####
-        print((datetime.datetime.now()).strftime(
-            "%Y%m%d_%H%M%S") + " DIVIDIR EL DATASET DE ENTRADA EN 3 PARTES: TRAIN (" + str(
-            fraccion_train) + "), TEST (" + str(fraccion_test) + "), VALIDACION (" + str(
-            round(fraccion_valid, 2)) + ")")
+        print((datetime.datetime.now()).strftime("%Y%m%d_%H%M%S") + " DIVIDIR EL DATASET DE ENTRADA EN 3 PARTES: TRAIN (" + str(fraccion_train) + "), TEST (" + str(
+            fraccion_test) + "), VALIDACION (" + str(round(fraccion_valid, 2)) + ")")
 
         dfBarajado = ift_juntas.sample(frac=1)  # Los indices aparecen bien
-        ds_train, ds_test, ds_validacion = np.split(dfBarajado,
-                                                    [int(fraccion_train * len(ift_juntas)),
-                                                     int((fraccion_train + fraccion_test) * len(ift_juntas))])
-        print("TRAIN = " + str(ds_train.shape[0]) + " x " + str(ds_train.shape[1]) + "  " + "TEST --> " + str(
-            ds_test.shape[0]) + " x " + str(ds_test.shape[1]) + "  " + "VALIDACION --> " + str(
+        ds_train, ds_test, ds_validacion = np.split(dfBarajado, [int(fraccion_train * len(ift_juntas)), int((fraccion_train + fraccion_test) * len(ift_juntas))])
+        print("TRAIN = " + str(ds_train.shape[0]) + " x " + str(ds_train.shape[1]) + "  " + "TEST --> " + str(ds_test.shape[0]) + " x " + str(ds_test.shape[1]) + "  " + "VALIDACION --> " + str(
             ds_validacion.shape[0]) + " x " + str(ds_validacion.shape[1]))
 
         print("Separamos FEATURES y TARGETS, de los 3 dataframes...")
@@ -709,9 +613,8 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         # print("df_mayoritaria (train):" + str(len(df_mayoritaria)))
         # print("df_minoritaria (train):" + str(len(df_minoritaria)))
         tasaDesbalanceoAntes = round(len(df_mayoritaria) / len(df_minoritaria), 2)
-        print(
-            "TRAIN - Tasa de desbalanceo entre clases (antes de balancear con SMOTE) = mayoritaria/minoritaria = " + str(
-                len(df_mayoritaria)) + " / " + str(len(df_minoritaria)) + " = " + str(tasaDesbalanceoAntes))
+        print("TRAIN - Tasa de desbalanceo entre clases (antes de balancear con SMOTE) = mayoritaria/minoritaria = " + str(len(df_mayoritaria)) + " / " + str(len(df_minoritaria)) + " = " + str(
+            tasaDesbalanceoAntes))
 
         df_mayoritaria_test = ds_test_t[ds_test_t == False]  # En este caso los mayoritarios son los False
         df_minoritaria_test = ds_test_t[ds_test_t == True]

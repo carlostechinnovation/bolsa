@@ -2,6 +2,20 @@ import numpy as np
 import pandas as pd
 from tabulate import tabulate
 import os
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+def mostrarEmpresaConcreta (miDF, DEBUG_EMPRESA, DEBUG_MES, DEBUG_DIA, numFilasMax):
+    tablaDebugDF = miDF[
+        (miDF['empresa'] == DEBUG_EMPRESA) & (miDF['mes'] == DEBUG_MES) & (
+                    miDF['dia'] == DEBUG_DIA)].head(n=numFilasMax)
+    print("tablaDebugDF (caso vigilado) - ENTRADA:")
+    print(tabulate(tablaDebugDF, headers='keys', tablefmt='psql'))
+
+def mostrarEmpresaConcretaConFilter (miDF, DEBUG_FILTRO, etiqueta):
+    tablaDebugDF = miDF.filter(like=DEBUG_FILTRO, axis=0)
+    print("tablaDebugDF (caso vigilado) - " + etiqueta + ":")
+    print(tabulate(tablaDebugDF, headers='keys', tablefmt='psql'))
 
 ######################### PARÁMETROS TWITTER ########################
 import tweepy  # https://github.com/tweepy/tweepy
@@ -46,9 +60,7 @@ def comprobarPrecisionManualmente(targetsNdArray1, targetsNdArray2, etiqueta, id
     df2a = df1[df1.targetpredicho == True]  # donde ponemos el dinero real (True Positives y False Positives)
 
     print(etiqueta, " - Ejemplos de predicciones:")
-    tablaDebugDF = df1.filter(like=DEBUG_FILTRO, axis=0)
-    print("tablaDebugDF (caso vigilado) - df1:")
-    print(tabulate(tablaDebugDF, headers='keys', tablefmt='psql'))
+    mostrarEmpresaConcretaConFilter(df1, DEBUG_FILTRO, "df1")
 
     mensajeAlerta = ""
     if len(df2a) > 0:
@@ -363,17 +375,7 @@ def anadeFeatureTwitter(entradaFeaturesYTarget, tituloNuevaFeature, pathDestinoT
     return entradaFeaturesYTarget
 
 
-def mostrarEmpresaConcreta (miDF, DEBUG_EMPRESA, DEBUG_MES, DEBUG_DIA, numFilasMax):
-    tablaDebugDF = miDF[
-        (miDF['empresa'] == DEBUG_EMPRESA) & (miDF['mes'] == DEBUG_MES) & (
-                    miDF['dia'] == DEBUG_DIA)].head(n=numFilasMax)
-    print("tablaDebugDF (caso vigilado) - ENTRADA:")
-    print(tabulate(tablaDebugDF, headers='keys', tablefmt='psql'))
 
-def mostrarEmpresaConcretaConFilter (miDF, DEBUG_FILTRO, etiqueta):
-    tablaDebugDF = miDF.filter(like=DEBUG_FILTRO, axis=0)
-    print("tablaDebugDF (caso vigilado) - " + etiqueta + ":")
-    print(tabulate(tablaDebugDF, headers='keys', tablefmt='psql'))
 
 def aniadirColumnasDependientesSP500 ():
     x=0
@@ -542,4 +544,23 @@ def aniadirColumnasDeTwitter():
     # print((datetime.datetime.now()).strftime("%Y%m%d_%H%M%S") + " ... se finaliza el procesado de TWITTER")
     #
     # #########################
+
+'''
+Crea una imagen de las función de densidad de probabilidad de cada columna (feature) del dataframe.
+'''
+def pintarFuncionesDeDensidad (miDF, dir_subgrupo_img, dibujoBins, descripcion):
+    print("FUNCIONES DE DENSIDAD (" + descripcion + "):")
+    for column in miDF:
+        path_dibujo = dir_subgrupo_img + column + ".png"
+        print("Guardando distrib de col: " + column + " en fichero: " + path_dibujo)
+        datos_columna = miDF[column]
+        sns.distplot(datos_columna, kde=False, color='red', bins=dibujoBins)
+        plt.title(column, fontsize=10)
+        plt.savefig(path_dibujo, bbox_inches='tight')
+        plt.clf();
+        plt.cla();
+        plt.close()  # Limpiando dibujo
+
+
+
 
