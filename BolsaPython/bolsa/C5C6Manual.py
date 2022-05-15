@@ -381,8 +381,8 @@ else:
     # SOLO PARA EL PASADO Si hay MUCHAS empresas (UNDER-SAMPLING para reducir los datos -útil para miles de empresas, pero puede quedar sobreentrenado, si borro casi todas las minoritarias-)
     print("MUCHAS EMPRESAS (modoTiempo=" + modoTiempo + ")...")
     print("NO balanceamos clases en capa 5 (pero seguramente sí en capa 6 solo sobre dataset de TRAIN)!!!")
-    ift_minoritaria = entradaFeaturesYTarget4[entradaFeaturesYTarget4.TARGET == True]
-    ift_mayoritaria = entradaFeaturesYTarget4[entradaFeaturesYTarget4.TARGET == False]
+    ift_minoritaria = entradaFeaturesYTarget4[(entradaFeaturesYTarget4.TARGET == True)]
+    ift_mayoritaria = entradaFeaturesYTarget4[(entradaFeaturesYTarget4.TARGET == False)]
     print("Tasa de desbalanceo entre clases = " + str(ift_mayoritaria.shape[0]) + "/" + str(ift_minoritaria.shape[0]) + " = " + str(ift_mayoritaria.shape[0] / ift_minoritaria.shape[0]))
     entradaFeaturesYTarget5 = entradaFeaturesYTarget4
     C5C6ManualFunciones.mostrarEmpresaConcretaConFilter(entradaFeaturesYTarget5, DEBUG_FILTRO, "entradaFeaturesYTarget5")
@@ -551,16 +551,19 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
 
         ############################## PREDICCION y CALCULO DE LAS METRICAS EN TEST Y VALID ####################
         train_t_predicho, test_t_predicho, validac_t_predicho, ganador_metrica, ganador_metrica_avg, ganador_nombreModelo, ganador_grid_mejores_parametros = C5C6ManualML.calcularMetricasModeloEntrenado(
-            id_subgrupo, modeloPredictivoEntrenado, ds_train_f_sinsmote, ds_train_t_sinsmote,
-            ds_train_t, ds_test_f, ds_test_t, ds_validac_f, ds_validac_t,
-            dir_subgrupo_img,
-            pathCsvIntermedio, tasaDesbalanceoAntes, nombreModelo, ganador_metrica)
+            id_subgrupo, modeloPredictivoEntrenado, ds_train_f_sinsmote, ds_train_t_sinsmote, ds_train_t, ds_test_f, ds_test_t, ds_validac_f, ds_validac_t, dir_subgrupo_img, pathCsvIntermedio,
+            tasaDesbalanceoAntes, nombreModelo, ganador_metrica)
 
         ######################################################################################################################
 
         print("********* GANADOR de subgrupo *************")
-        num_positivos_test = len(ds_test_t[ds_test_t is True])
-        num_positivos_validac = len(ds_validac_t[ds_validac_t is True])
+        num_positivos_train = ds_train_t_sinsmote[(ds_train_t_sinsmote == True)].count().values[0]
+        num_positivos_test = ds_test_t[(ds_test_t == True)].count().values[0]
+        num_positivos_validac = ds_validac_t[(ds_validac_t == True)].count().values[0]
+        print("\tnum_positivos_train="+str(num_positivos_train))
+        print("\tnum_positivos_test=" + str(num_positivos_test))
+        print("\tnum_positivos_validac=" + str(num_positivos_validac))
+
         print("PASADO -> " + id_subgrupo + " (num features = " + str(ds_train_f.shape[1]) + ")" + " -> Modelo ganador = " + ganador_nombreModelo + " --> METRICA = " + str(
             round(ganador_metrica, 4)) + " (avg_precision = " + str(round(ganador_metrica_avg, 4)) + ")")
 

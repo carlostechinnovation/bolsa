@@ -38,7 +38,7 @@ def entrenarModeloModoPasado(dir_subgrupo, ds_train_f, ds_train_t, ds_test_f, ds
     :param ds_test_t:
     :return: Path absoluto del modelo entrenado guardado
     """
-    print("PASADO - ENTRENANDO MODELO PREDICTIVO...")
+    print("PASADO - ENTRENANDO MODELO PREDICTIVO (entrenarModeloModoPasado)...")
 
     ################################# GENERACIÓN DE MODELOS #################################
 
@@ -273,7 +273,7 @@ def entrenarModeloModoPasado(dir_subgrupo, ds_train_f, ds_train_t, ds_test_f, ds
     pathModelo = dir_subgrupo + nombreModelo + ".modelo"
     pickle.dump(modelo, open(pathModelo, 'wb'))
 
-    print("PASADO - GUARDANDO MODELO PREDICTIVO ENTRENADO EN: " + pathModelo)
+    print("PASADO - entrenarModeloModoPasado - GUARDANDO MODELO PREDICTIVO ENTRENADO EN: " + pathModelo)
 
     return pathModelo, nombreModelo
 
@@ -442,7 +442,7 @@ def calcularMetricasModeloEntrenado(id_subgrupo, modeloPredictivoEntrenado, ds_t
     :param ganador_metrica:
     :return:
     """
-    print("Inicio de ANÁLISIS DE RESULTADOS - train vs test vs validación")
+    print("Inicio de ANÁLISIS DE RESULTADOS (calcularMetricasModeloEntrenado) - train vs test vs validación")
 
     print("ds_train_f_sinsmote: " + str(ds_train_f_sinsmote.shape[0]) + " x " + str(ds_train_f_sinsmote.shape[1]))
     train_t_predicho = modeloPredictivoEntrenado.predict(ds_train_f_sinsmote)
@@ -500,6 +500,7 @@ def calcularMetricasModeloEntrenado(id_subgrupo, modeloPredictivoEntrenado, ds_t
         ganador_metrica_avg = precision_avg_media
         ganador_nombreModelo = nombreModelo
         ganador_grid_mejores_parametros = []  # Este modelo no tiene esta variable
-    print("Fin de ANÁLISIS DE RESULTADOS")
+
+    print("Fin de ANÁLISIS DE RESULTADOS (calcularMetricasModeloEntrenado)")
 
     return train_t_predicho, test_t_predicho, validac_t_predicho, ganador_metrica, ganador_metrica_avg, ganador_nombreModelo, ganador_grid_mejores_parametros

@@ -93,23 +93,23 @@ def comprobarPrecisionManualmente(targetsNdArray1, targetsNdArray2, etiqueta, id
     :param DEBUG_FILTRO:
     :return:
     """
-    print(id_subgrupo + " " + etiqueta + " Comprobación de la precisión --> dfConIndex: " + str(
+    print("comprobarPrecisionManualmente ==> " + id_subgrupo + " " + etiqueta + " Comprobación de la precisión --> dfConIndex: " + str(
         dfConIndex.shape[0]) + " x " + str(
         dfConIndex.shape[1]) + ". Se comparan: array1=" + str(targetsNdArray1.size) + " y array2=" + str(
         targetsNdArray2.size))
 
-    df1 = pd.DataFrame(targetsNdArray1, columns=['target'])
-    df1.index = dfConIndex.index  # fijamos el indice del DF grande
+    df1 = targetsNdArray1
     df2 = pd.DataFrame(targetsNdArray2, columns=['target'])
     df2.index = dfConIndex.index  # fijamos el indice del DF grande
 
-    df1['targetpredicho'] = df2['target']
-    df1['iguales'] = np.where(df1['target'] == df1['targetpredicho'], True, False)
+    df2.rename(columns={'target': 'targetpredicho'}, inplace=True)
+    df1['targetpredicho'] = df2
+    df1['iguales'] = np.where(df1['TARGET'] == df1['targetpredicho'], True, False)
 
     # Solo nos interesan los PREDICHOS True, porque es donde pondremos dinero real
-    df1a = df1[df1.target == True];
-    df1b = df1a[df1a.iguales == True]  # Solo los True Positives
-    df2a = df1[df1.targetpredicho == True]  # donde ponemos el dinero real (True Positives y False Positives)
+    df1a = df1[(df1.TARGET == True)]
+    df1b = df1a[(df1a.iguales == True)]  # Solo los True Positives
+    df2a = df1[(df1.targetpredicho == True)]  # donde ponemos el dinero real (True Positives y False Positives)
 
     print(etiqueta, " - Ejemplos de predicciones:")
     mostrarEmpresaConcretaConFilter(df1, DEBUG_FILTRO, "df1")
@@ -135,13 +135,11 @@ def comprobarPrecisionManualmente(targetsNdArray1, targetsNdArray2, etiqueta, id
         if etiqueta == "TEST" or etiqueta == "VALIDACION":
             dfEmpresasPredichasTrue = pd.merge(dfConIndex, df2a, how="inner", left_index=True, right_index=True)
             dfEmpresasPredichasTrueLoInteresante = dfEmpresasPredichasTrue[
-                ["empresa", "antiguedad", "target", "targetpredicho", "anio", "mes", "dia", "hora", "volumen"]]
+                ["empresa", "antiguedad", "TARGET", "targetpredicho", "anio", "mes", "dia", "hora", "volumen"]]
             # print(tabulate(dfEmpresasPredichasTrueLoInteresante, headers='keys', tablefmt='psql'))
 
-            casosTP = dfEmpresasPredichasTrueLoInteresante[
-                dfEmpresasPredichasTrueLoInteresante['target'] == True]  # los BUENOS
-            casosFP = dfEmpresasPredichasTrueLoInteresante[
-                dfEmpresasPredichasTrueLoInteresante['target'] == False]  # Los MALOS que debemos estudiar y reducir
+            casosTP = dfEmpresasPredichasTrueLoInteresante[(dfEmpresasPredichasTrueLoInteresante['TARGET'] == True)]  # los BUENOS
+            casosFP = dfEmpresasPredichasTrueLoInteresante[(dfEmpresasPredichasTrueLoInteresante['TARGET'] == False)]  # Los MALOS que debemos estudiar y reducir
 
             # FALSOS POSITIVOS:
             if id_subgrupo != "SG_0":
@@ -692,7 +690,7 @@ def describirConPandasProfiling(modoDebug, miDF, dir_subgrupo):
         prof.to_file(output_file=dir_subgrupo + "REDUCIDO_profiling.html")
 
 
-def splitTrainTestValidation(modoTiempo, ift_juntas, fraccion_train, fraccion_test, fraccion_valid, balancearConSmoteSoloTrain, umbralNecesarioCompensarDesbalanceo, balancearUsandoDownsampling, DEBUG_FILTRO):
+def splitTrainTestValidation(modoTiempo, ift_juntas, fraccion_train, fraccion_test, fraccion_valid, balancearConSmoteSoloTrainInput, umbralNecesarioCompensarDesbalanceo, balancearUsandoDownsamplingInput, DEBUG_FILTRO):
     """
 
     :param modoTiempo:
@@ -700,9 +698,9 @@ def splitTrainTestValidation(modoTiempo, ift_juntas, fraccion_train, fraccion_te
     :param fraccion_train:
     :param fraccion_test:
     :param fraccion_valid:
-    :param balancearConSmoteSoloTrain:
+    :param balancearConSmoteSoloTrainInput:
     :param umbralNecesarioCompensarDesbalanceo:
-    :param balancearUsandoDownsampling:
+    :param balancearUsandoDownsamplingInput:
     :return:
     """
     ############################## DIVISIÓN DE DATOS: TRAIN, TEST, VALIDACIÓN ##########################
@@ -721,48 +719,42 @@ def splitTrainTestValidation(modoTiempo, ift_juntas, fraccion_train, fraccion_te
     mostrarEmpresaConcretaConFilter(ds_validacion, DEBUG_FILTRO, "splitTrainTestValidation - ds_validacion")
 
     print("Separamos FEATURES y TARGETS, de los 3 dataframes...")
-    ds_train_f = ds_train.drop('TARGET', axis=1).to_numpy()
-    ds_train_t = ds_train[['TARGET']].to_numpy().ravel()
-    ds_test_f = ds_test.drop('TARGET', axis=1).to_numpy()
-    ds_test_t = ds_test[['TARGET']].to_numpy().ravel()
-    ds_validac_f = ds_validacion.drop('TARGET', axis=1).to_numpy()
-    ds_validac_t = ds_validacion[['TARGET']].to_numpy().ravel()
+    ds_train_f = ds_train.drop('TARGET', axis=1)  # .to_numpy()
+    ds_train_t = ds_train[['TARGET']]  # .to_numpy().ravel()
+    ds_test_f = ds_test.drop('TARGET', axis=1)  # .to_numpy()
+    ds_test_t = ds_test[['TARGET']]  # .to_numpy().ravel()
+    ds_validac_f = ds_validacion.drop('TARGET', axis=1)  # .to_numpy()
+    ds_validac_t = ds_validacion[['TARGET']]  # .to_numpy().ravel()
 
     feature_names = ds_train.columns.drop('TARGET')
 
     ################ DESBALANCEOS en train, test y validation ########
-    df_mayoritaria = ds_train_t[ds_train_t == False]  # En este caso los mayoritarios son los False
-    df_minoritaria = ds_train_t[ds_train_t == True]
-    # print("df_mayoritaria (train):" + str(len(df_mayoritaria)))
-    # print("df_minoritaria (train):" + str(len(df_minoritaria)))
-    tasaDesbalanceoAntes = round(len(df_mayoritaria) / len(df_minoritaria), 2)
-    print("TRAIN - Tasa de desbalanceo entre clases (antes de balancear con SMOTE) = mayoritaria/minoritaria = " + str(len(df_mayoritaria)) + " / " + str(len(df_minoritaria)) + " = " + str(
-        tasaDesbalanceoAntes))
+    df_mayoritaria_train = ds_train_t[(ds_train_t == False)]  # En este caso los mayoritarios son los False
+    df_minoritaria_train = ds_train_t[(ds_train_t == True)]
+    tasaDesbalanceoAntes_train = round(df_mayoritaria_train.count().values[0] / df_minoritaria_train.count().values[0], 2)
+    print("TRAIN - Tasa de desbalanceo entre clases (antes de balancear con SMOTE) = mayoritaria/minoritaria = " + str(len(df_mayoritaria_train)) + " / " + str(len(df_minoritaria_train)) + " = " + str(
+        tasaDesbalanceoAntes_train))
 
-    df_mayoritaria_test = ds_test_t[ds_test_t == False]  # En este caso los mayoritarios son los False
-    df_minoritaria_test = ds_test_t[ds_test_t == True]
-    # print("df_mayoritaria (test):" + str(len(df_mayoritaria_test)))
-    # print("df_minoritaria (test):" + str(len(df_minoritaria_test)))
-    tasaDesbalanceoAntes_test = round(len(df_mayoritaria_test) / len(df_minoritaria_test), 2)
+    df_mayoritaria_test = ds_test_t[(ds_test_t == False)]  # En este caso los mayoritarios son los False
+    df_minoritaria_test = ds_test_t[(ds_test_t == True)]
+    tasaDesbalanceoAntes_test = round(df_mayoritaria_test.count().values[0] / df_minoritaria_test.count().values[0], 2)
     print("TEST - Tasa de desbalanceo entre clases = mayoritaria/minoritaria = " + str(len(df_mayoritaria_test)) + " / " + str(len(df_minoritaria_test)) + " = " + str(tasaDesbalanceoAntes_test))
 
-    df_mayoritaria_validac = ds_validac_t[ds_validac_t == False]  # En este caso los mayoritarios son los False
-    df_minoritaria_validac = ds_validac_t[ds_validac_t == True]
-    # print("df_mayoritaria (validac):" + str(len(df_mayoritaria_validac)))
-    # print("df_minoritaria (validac):" + str(len(df_minoritaria_validac)))
-    tasaDesbalanceoAntes_validac = round(len(df_mayoritaria_validac) / len(df_minoritaria_validac), 2)
+    df_mayoritaria_validac = ds_validac_t[(ds_validac_t == False)]  # En este caso los mayoritarios son los False
+    df_minoritaria_validac = ds_validac_t[(ds_validac_t == True)]
+    tasaDesbalanceoAntes_validac = round(df_mayoritaria_validac.count().values[0] / df_minoritaria_validac.count().values[0], 2)
     print("VALIDAC - Tasa de desbalanceo entre clases = mayoritaria/minoritaria = " + str(len(df_mayoritaria_validac)) + " / " + str(len(df_minoritaria_validac)) + " = " + str(
         tasaDesbalanceoAntes_validac))
 
     ########################### SMOTE (Over/Under sampling) ##################
     ########################### Se aplica sólo en el TRAIN #############################################3
-
-    balancearConSmoteSoloTrain = balancearConSmoteSoloTrain and (tasaDesbalanceoAntes > umbralNecesarioCompensarDesbalanceo)
-    balancearUsandoDownsampling = balancearUsandoDownsampling and (tasaDesbalanceoAntes > umbralNecesarioCompensarDesbalanceo)
+    balancearConSmoteSoloTrain = balancearConSmoteSoloTrainInput and (tasaDesbalanceoAntes_train > umbralNecesarioCompensarDesbalanceo)
+    balancearUsandoDownsampling = balancearUsandoDownsamplingInput and (tasaDesbalanceoAntes_train > umbralNecesarioCompensarDesbalanceo)
     ds_train_sinsmote = ds_train  # NO TOCAR
     ds_train_f_sinsmote = ds_train_f  # NO TOCAR
     ds_train_t_sinsmote = ds_train_t  # NO TOCAR
     columnas_f = ds_train_sinsmote.drop('TARGET', axis=1).columns
+
     if modoTiempo == "pasado" and balancearConSmoteSoloTrain:
         print((datetime.datetime.now()).strftime(
             "%Y%m%d_%H%M%S") + " ---------------- RESAMPLING con SMOTE (y porque supera umbral = " + str(
@@ -796,10 +788,10 @@ def splitTrainTestValidation(modoTiempo, ift_juntas, fraccion_train, fraccion_te
         ds_train_f = pd.DataFrame(df_downsampled.drop('TARGET', axis=1), columns=columnas_f)
         ds_train_t = pd.DataFrame(df_downsampled[['TARGET']], columns=['TARGET'])
 
-    ift_mayoritaria_entrada_modelos = ds_train_t[ds_train_t == False]  # En este caso los mayoritarios son los False
-    ift_minoritaria_entrada_modelos = ds_train_t[ds_train_t == True]
-    print("ift_mayoritaria_entrada_modelos:" + str(len(ift_mayoritaria_entrada_modelos)))
-    print("ift_minoritaria_entrada_modelos:" + str(len(ift_minoritaria_entrada_modelos)))
+    ift_mayoritaria_entrada_modelos = ds_train_t[(ds_train_t == False)]  # En este caso los mayoritarios son los False
+    ift_minoritaria_entrada_modelos = ds_train_t[(ds_train_t == True)]
+    print("ift_mayoritaria_entrada_modelos: " + str(ift_mayoritaria_entrada_modelos.count().values[0]))
+    print("ift_minoritaria_entrada_modelos: " + str(ift_minoritaria_entrada_modelos.count().values[0]))
     tasaDesbalanceoDespues = len(ift_mayoritaria_entrada_modelos) / len(ift_minoritaria_entrada_modelos)
     print("Tasa de desbalanceo entre clases (entrada a los modelos predictivos) = " + str(tasaDesbalanceoDespues))
 
@@ -809,15 +801,15 @@ def splitTrainTestValidation(modoTiempo, ift_juntas, fraccion_train, fraccion_te
     mostrarEmpresaConcretaConFilter(ds_test, DEBUG_FILTRO, "splitTrainTestValidation - SALIDA - ds_test")
     mostrarEmpresaConcretaConFilter(ds_validacion, DEBUG_FILTRO, "splitTrainTestValidation - SALIDA - ds_validacion")
 
-    #mostrarEmpresaConcretaConFilter(ds_train_f, DEBUG_FILTRO, "splitTrainTestValidation - SALIDA - ds_train_f")
-    #mostrarEmpresaConcretaConFilter(ds_train_t, DEBUG_FILTRO, "splitTrainTestValidation - SALIDA - ds_train_t")
-    #mostrarEmpresaConcretaConFilter(ds_test_f, DEBUG_FILTRO, "splitTrainTestValidation - SALIDA - ds_test_f")
-    #mostrarEmpresaConcretaConFilter(ds_test_t, DEBUG_FILTRO, "splitTrainTestValidation - SALIDA - ds_test_t")
-    #mostrarEmpresaConcretaConFilter(ds_validac_f, DEBUG_FILTRO, "splitTrainTestValidation - SALIDA - ds_validac_f")
-    #mostrarEmpresaConcretaConFilter(ds_validac_t, DEBUG_FILTRO, "splitTrainTestValidation - SALIDA - ds_validac_t")
+    mostrarEmpresaConcretaConFilter(ds_train_f, DEBUG_FILTRO, "splitTrainTestValidation - SALIDA - ds_train_f")
+    mostrarEmpresaConcretaConFilter(ds_train_t, DEBUG_FILTRO, "splitTrainTestValidation - SALIDA - ds_train_t")
+    mostrarEmpresaConcretaConFilter(ds_test_f, DEBUG_FILTRO, "splitTrainTestValidation - SALIDA - ds_test_f")
+    mostrarEmpresaConcretaConFilter(ds_test_t, DEBUG_FILTRO, "splitTrainTestValidation - SALIDA - ds_test_t")
+    mostrarEmpresaConcretaConFilter(ds_validac_f, DEBUG_FILTRO, "splitTrainTestValidation - SALIDA - ds_validac_f")
+    mostrarEmpresaConcretaConFilter(ds_validac_t, DEBUG_FILTRO, "splitTrainTestValidation - SALIDA - ds_validac_t")
 
-    #mostrarEmpresaConcretaConFilter(ds_train_f_sinsmote, DEBUG_FILTRO, "splitTrainTestValidation - SALIDA - ds_train_f_sinsmote")
-    #mostrarEmpresaConcretaConFilter(ds_train_t_sinsmote, DEBUG_FILTRO, "splitTrainTestValidation - SALIDA - ds_train_t_sinsmote")
+    mostrarEmpresaConcretaConFilter(ds_train_f_sinsmote, DEBUG_FILTRO, "splitTrainTestValidation - SALIDA - ds_train_f_sinsmote")
+    mostrarEmpresaConcretaConFilter(ds_train_t_sinsmote, DEBUG_FILTRO, "splitTrainTestValidation - SALIDA - ds_train_t_sinsmote")
 
     return ds_train, ds_test, ds_validacion, ds_train_f, ds_train_t, ds_test_f, ds_test_t, ds_validac_f, ds_validac_t, ds_train_f_sinsmote, ds_train_t_sinsmote
 
