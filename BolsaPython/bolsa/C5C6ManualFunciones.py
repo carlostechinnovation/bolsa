@@ -103,16 +103,17 @@ def comprobarPrecisionManualmente(targetsNdArray1, targetsNdArray2, etiqueta, id
     df2.index = dfConIndex.index  # fijamos el indice del DF grande
 
     df2.rename(columns={'target': 'targetpredicho'}, inplace=True)
-    df1['targetpredicho'] = df2
-    df1['iguales'] = np.where(df1['TARGET'] == df1['targetpredicho'], True, False)
+    #df1['targetpredicho'] = df2
+    df1df2=pd.merge(df1, df2, left_index=True, right_index=True)
+    df1df2['iguales'] = np.where(df1df2['TARGET'] == df1df2['targetpredicho'], True, False)
 
     # Solo nos interesan los PREDICHOS True, porque es donde pondremos dinero real
-    df1a = df1[(df1.TARGET == True)]
+    df1a = df1df2[(df1df2.TARGET == True)]
     df1b = df1a[(df1a.iguales == True)]  # Solo los True Positives
-    df2a = df1[(df1.targetpredicho == True)]  # donde ponemos el dinero real (True Positives y False Positives)
+    df2a = df1df2[(df1df2.targetpredicho == True)]  # donde ponemos el dinero real (True Positives y False Positives)
 
     print(etiqueta, " - Ejemplos de predicciones:")
-    mostrarEmpresaConcretaConFilter(df1, DEBUG_FILTRO, "df1")
+    mostrarEmpresaConcretaConFilter(df1df2, DEBUG_FILTRO, "df1df2")
 
     mensajeAlerta = ""
     if len(df2a) > 0:
