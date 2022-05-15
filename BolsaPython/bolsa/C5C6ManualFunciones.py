@@ -692,7 +692,7 @@ def describirConPandasProfiling(modoDebug, miDF, dir_subgrupo):
         prof.to_file(output_file=dir_subgrupo + "REDUCIDO_profiling.html")
 
 
-def splitTrainTestValidation(modoTiempo, ift_juntas, fraccion_train, fraccion_test, fraccion_valid, balancearConSmoteSoloTrain, umbralNecesarioCompensarDesbalanceo, balancearUsandoDownsampling):
+def splitTrainTestValidation(modoTiempo, ift_juntas, fraccion_train, fraccion_test, fraccion_valid, balancearConSmoteSoloTrain, umbralNecesarioCompensarDesbalanceo, balancearUsandoDownsampling, DEBUG_FILTRO):
     """
 
     :param modoTiempo:
@@ -709,11 +709,16 @@ def splitTrainTestValidation(modoTiempo, ift_juntas, fraccion_train, fraccion_te
     ######## Las filas se randomizan (shuffle) con .sample(frac=1).reset_index(drop=True) #####
     print((datetime.datetime.now()).strftime("%Y%m%d_%H%M%S") + " DIVIDIR EL DATASET DE ENTRADA EN 3 PARTES: TRAIN (" + str(fraccion_train) + "), TEST (" + str(
         fraccion_test) + "), VALIDACION (" + str(round(fraccion_valid, 2)) + ")")
+    mostrarEmpresaConcretaConFilter(ift_juntas, DEBUG_FILTRO, "splitTrainTestValidation - ift_juntas")
 
     dfBarajado = ift_juntas.sample(frac=1)  # Los indices aparecen bien
     ds_train, ds_test, ds_validacion = np.split(dfBarajado, [int(fraccion_train * len(ift_juntas)), int((fraccion_train + fraccion_test) * len(ift_juntas))])
     print("TRAIN = " + str(ds_train.shape[0]) + " x " + str(ds_train.shape[1]) + "  " + "TEST --> " + str(ds_test.shape[0]) + " x " + str(ds_test.shape[1]) + "  " + "VALIDACION --> " + str(
         ds_validacion.shape[0]) + " x " + str(ds_validacion.shape[1]))
+
+    mostrarEmpresaConcretaConFilter(ds_train, DEBUG_FILTRO, "splitTrainTestValidation - ds_train")
+    mostrarEmpresaConcretaConFilter(ds_test, DEBUG_FILTRO, "splitTrainTestValidation - ds_test")
+    mostrarEmpresaConcretaConFilter(ds_validacion, DEBUG_FILTRO, "splitTrainTestValidation - ds_validacion")
 
     print("Separamos FEATURES y TARGETS, de los 3 dataframes...")
     ds_train_f = ds_train.drop('TARGET', axis=1).to_numpy()
@@ -800,4 +805,20 @@ def splitTrainTestValidation(modoTiempo, ift_juntas, fraccion_train, fraccion_te
 
     ###############################  FIN DE SMOTE ##############################
 
+    mostrarEmpresaConcretaConFilter(ds_train, DEBUG_FILTRO, "splitTrainTestValidation - SALIDA - ds_train")
+    mostrarEmpresaConcretaConFilter(ds_test, DEBUG_FILTRO, "splitTrainTestValidation - SALIDA - ds_test")
+    mostrarEmpresaConcretaConFilter(ds_validacion, DEBUG_FILTRO, "splitTrainTestValidation - SALIDA - ds_validacion")
+
+    #mostrarEmpresaConcretaConFilter(ds_train_f, DEBUG_FILTRO, "splitTrainTestValidation - SALIDA - ds_train_f")
+    #mostrarEmpresaConcretaConFilter(ds_train_t, DEBUG_FILTRO, "splitTrainTestValidation - SALIDA - ds_train_t")
+    #mostrarEmpresaConcretaConFilter(ds_test_f, DEBUG_FILTRO, "splitTrainTestValidation - SALIDA - ds_test_f")
+    #mostrarEmpresaConcretaConFilter(ds_test_t, DEBUG_FILTRO, "splitTrainTestValidation - SALIDA - ds_test_t")
+    #mostrarEmpresaConcretaConFilter(ds_validac_f, DEBUG_FILTRO, "splitTrainTestValidation - SALIDA - ds_validac_f")
+    #mostrarEmpresaConcretaConFilter(ds_validac_t, DEBUG_FILTRO, "splitTrainTestValidation - SALIDA - ds_validac_t")
+
+    #mostrarEmpresaConcretaConFilter(ds_train_f_sinsmote, DEBUG_FILTRO, "splitTrainTestValidation - SALIDA - ds_train_f_sinsmote")
+    #mostrarEmpresaConcretaConFilter(ds_train_t_sinsmote, DEBUG_FILTRO, "splitTrainTestValidation - SALIDA - ds_train_t_sinsmote")
+
     return ds_train, ds_test, ds_validacion, ds_train_f, ds_train_t, ds_test_f, ds_test_t, ds_validac_f, ds_validac_t, ds_train_f_sinsmote, ds_train_t_sinsmote
+
+
