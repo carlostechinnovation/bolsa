@@ -31,6 +31,15 @@ from xgboost import XGBClassifier
 
 
 def mostrarEmpresaConcreta(miDF, DEBUG_EMPRESA, DEBUG_MES, DEBUG_DIA, numFilasMax):
+    """
+
+    :param miDF:
+    :param DEBUG_EMPRESA:
+    :param DEBUG_MES:
+    :param DEBUG_DIA:
+    :param numFilasMax:
+    :return:
+    """
     tablaDebugDF = miDF[
         (miDF['empresa'] == DEBUG_EMPRESA) & (miDF['mes'] == DEBUG_MES) & (
                 miDF['dia'] == DEBUG_DIA)].head(n=numFilasMax)
@@ -39,6 +48,13 @@ def mostrarEmpresaConcreta(miDF, DEBUG_EMPRESA, DEBUG_MES, DEBUG_DIA, numFilasMa
 
 
 def mostrarEmpresaConcretaConFilter(miDF, DEBUG_FILTRO, etiqueta):
+    """
+
+    :param miDF:
+    :param DEBUG_FILTRO:
+    :param etiqueta:
+    :return:
+    """
     tablaDebugDF = miDF.filter(like=DEBUG_FILTRO, axis=0)
     print("tablaDebugDF (caso vigilado) - " + etiqueta + ":")
     print(tabulate(tablaDebugDF, headers='keys', tablefmt='psql'))
@@ -65,9 +81,18 @@ tuiterosMostActivePennyStocks = ["GetScanz"]
 
 
 #####################################################
-
-# PRECISION: de los pocos casos que predigamos TRUE, queremos que todos sean aciertos.
 def comprobarPrecisionManualmente(targetsNdArray1, targetsNdArray2, etiqueta, id_subgrupo, dfConIndex, dir_subgrupo, DEBUG_FILTRO):
+    """
+    PRECISION: de los pocos casos que predigamos TRUE, queremos que todos sean aciertos.
+    :param targetsNdArray1:
+    :param targetsNdArray2:
+    :param etiqueta:
+    :param id_subgrupo:
+    :param dfConIndex:
+    :param dir_subgrupo:
+    :param DEBUG_FILTRO:
+    :return:
+    """
     print(id_subgrupo + " " + etiqueta + " Comprobación de la precisión --> dfConIndex: " + str(
         dfConIndex.shape[0]) + " x " + str(
         dfConIndex.shape[1]) + ". Se comparan: array1=" + str(targetsNdArray1.size) + " y array2=" + str(
@@ -141,8 +166,13 @@ def comprobarPrecisionManualmente(targetsNdArray1, targetsNdArray2, etiqueta, id
     return mensajeAlerta
 
 
-############ RSI ###################
 def relative_strength_idx(df, n=14):
+    """
+    RSI
+    :param df:
+    :param n:
+    :return:
+    """
     close = df['close']
     delta = close.diff()
     delta = delta[1:]
@@ -172,9 +202,15 @@ ETIQUETA_RENTA_SP500 = "rentaSP500"
 
 
 def getSP500conRentaTrasXDias(X, fechaInicio, fechaFin, dir_subgrupo):
-    # X: días futuros para el cálculo de renta, respecto al día del que se muestran datos (cada fila es distinta)
-    # fechaInicio y fechaFin, con formato "2019-01-01"
-    # Descarga del histórico del SP500
+    """
+    Descarga del histórico del SP500
+    :param X: días futuros para el cálculo de renta, respecto al día del que se muestran datos (cada fila es distinta)
+    :param fechaInicio: con formato "2019-01-01"
+    :param fechaFin: con formato "2019-01-01"
+    :param dir_subgrupo:
+    :return:
+    """
+    #
     url = "https://fred.stlouisfed.org/graph/fredgraph.csv?bgcolor=%23e1e9f0&chart_type=line&drp=0&fo=open%20sans&" \
           "graph_bgcolor=%23ffffff&height=450&mode=fred&recession_bars=on&txtcolor=%23444444&ts=12&tts=12&width=1168&" \
           "nt=0&thu=0&trc=0&show_legend=yes&show_axis_titles=yes&show_tooltip=yes&id=SP500&scale=left&cosd=" + fechaInicio \
@@ -215,6 +251,12 @@ def getSP500conRentaTrasXDias(X, fechaInicio, fechaFin, dir_subgrupo):
 
 
 def anadeComparacionSencillaSP500(sp500, x):
+    """
+
+    :param sp500:
+    :param x:
+    :return:
+    """
     comparaSP500Ayer = -1000
     fechaAhora = str(x.anio) + "-" + str(x.mes) + "-" + str(x.dia)
     ahora_obj = datetime2.strptime(fechaAhora, FORMATO_FECHA_SP500)
@@ -236,6 +278,11 @@ def anadeComparacionSencillaSP500(sp500, x):
 
 
 def descargaTuits(cuentas):
+    """
+
+    :param cuentas:
+    :return:
+    """
     clavesTwitter = {}
     with open(pathClavesTwitter) as myfile:
         for line in myfile:
@@ -271,6 +318,12 @@ def descargaTuits(cuentas):
 
 
 def get_all_tweets(screen_name, api):
+    """
+
+    :param screen_name:
+    :param api:
+    :return:
+    """
     # Twitter only allows access to a users most recent 3240 tweets with this method
 
     # Se asume que está ya autenticado
@@ -315,6 +368,11 @@ def get_all_tweets(screen_name, api):
 
 
 def vaciarCarpeta(folder):
+    """
+
+    :param folder:
+    :return:
+    """
     import os, shutil
     for filename in os.listdir(folder):
         file_path = os.path.join(folder, filename)
@@ -328,6 +386,14 @@ def vaciarCarpeta(folder):
 
 
 def anadeMencionesTwitterPorTuiteros(diasAntiguedad, tuits, x, stringABuscar):
+    """
+
+    :param diasAntiguedad:
+    :param tuits:
+    :param x:
+    :param stringABuscar:
+    :return:
+    """
     numeroMencionesTotales = 0
     fechaRowActual = str(x.anio) + "-" + str(x.mes) + "-" + str(x.dia)
     fechaRowActual_obj = datetime2.strptime(fechaRowActual, FORMATO_FECHA_TWITTER)
@@ -359,6 +425,16 @@ def anadeMencionesTwitterPorTuiteros(diasAntiguedad, tuits, x, stringABuscar):
 
 def anadeFeatureTwitter(entradaFeaturesYTarget, tituloNuevaFeature, pathDestinoTweets, cuentas,
                         antiguedadMaxima, stringOpcionalEnTuit):
+    """
+
+    :param entradaFeaturesYTarget:
+    :param tituloNuevaFeature:
+    :param pathDestinoTweets:
+    :param cuentas:
+    :param antiguedadMaxima:
+    :param stringOpcionalEnTuit:
+    :return:
+    """
     # Se vacía la carpeta donde se guardarán los tuits, y se descargan los tuits de tuiteros
     vaciarCarpeta(pathDestinoTweets)
     descargaTuits(cuentas)
@@ -401,7 +477,10 @@ def anadeFeatureTwitter(entradaFeaturesYTarget, tituloNuevaFeature, pathDestinoT
 
 
 def aniadirColumnasDependientesSP500():
-    x = 0
+    """
+
+    :return:
+    """
     # # Variables dependientes de SP500
     #
     # # FEATURE:
@@ -471,8 +550,10 @@ def aniadirColumnasDependientesSP500():
 
 
 def aniadirColumnasDeTwitter():
-    x = 0
+    """
 
+    :return:
+    """
     # SE QUITAN PORQUE PARA 100 EMPRESAS TARDA 10 MINUTOS POR SUBGRUPO, Y APENAS INFLUYE
     #
     # print((datetime.datetime.now()).strftime("%Y%m%d_%H%M%S") + " Se inicia el procesado de TWITTER...")
@@ -570,12 +651,15 @@ def aniadirColumnasDeTwitter():
     # #########################
 
 
-'''
-Crea una imagen de las función de densidad de probabilidad de cada columna (feature) del dataframe.
-'''
-
-
 def pintarFuncionesDeDensidad(miDF, dir_subgrupo_img, dibujoBins, descripcion):
+    """
+    Crea una imagen de las función de densidad de probabilidad de cada columna (feature) del dataframe.
+    :param miDF:
+    :param dir_subgrupo_img:
+    :param dibujoBins:
+    :param descripcion:
+    :return:
+    """
     print("FUNCIONES DE DENSIDAD (" + descripcion + "):")
     for column in miDF:
         path_dibujo = dir_subgrupo_img + column + ".png"
@@ -589,11 +673,14 @@ def pintarFuncionesDeDensidad(miDF, dir_subgrupo_img, dibujoBins, descripcion):
         plt.close()  # Limpiando dibujo
 
 
-'''
-'''
-
-
 def describirConPandasProfiling(modoDebug, miDF, dir_subgrupo):
+    """
+
+    :param modoDebug:
+    :param miDF:
+    :param dir_subgrupo:
+    :return:
+    """
     ############ PANDAS PROFILING ###########
     if modoDebug:
         print("REDUCIDO - Profiling...")
@@ -605,11 +692,19 @@ def describirConPandasProfiling(modoDebug, miDF, dir_subgrupo):
         prof.to_file(output_file=dir_subgrupo + "REDUCIDO_profiling.html")
 
 
-'''
-'''
-
-
 def splitTrainTestValidation(modoTiempo, ift_juntas, fraccion_train, fraccion_test, fraccion_valid, balancearConSmoteSoloTrain, umbralNecesarioCompensarDesbalanceo, balancearUsandoDownsampling):
+    """
+
+    :param modoTiempo:
+    :param ift_juntas:
+    :param fraccion_train:
+    :param fraccion_test:
+    :param fraccion_valid:
+    :param balancearConSmoteSoloTrain:
+    :param umbralNecesarioCompensarDesbalanceo:
+    :param balancearUsandoDownsampling:
+    :return:
+    """
     ############################## DIVISIÓN DE DATOS: TRAIN, TEST, VALIDACIÓN ##########################
     ######## Las filas se randomizan (shuffle) con .sample(frac=1).reset_index(drop=True) #####
     print((datetime.datetime.now()).strftime("%Y%m%d_%H%M%S") + " DIVIDIR EL DATASET DE ENTRADA EN 3 PARTES: TRAIN (" + str(fraccion_train) + "), TEST (" + str(

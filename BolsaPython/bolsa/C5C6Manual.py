@@ -550,75 +550,18 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
         modeloPredictivoEntrenado = pickle.load(open(pathModelo, 'rb'))
 
         ############################## PREDICCION y CALCULO DE LAS METRICAS EN TEST Y VALID ####################
-        print("Inicio de ANÁLISIS DE RESULTADOS - train vs test vs validación")
+        train_t_predicho, test_t_predicho, validac_t_predicho, ganador_metrica, ganador_metrica_avg, ganador_nombreModelo, ganador_grid_mejores_parametros = C5C6ManualML.calcularMetricasModeloEntrenado(
+            id_subgrupo, modeloPredictivoEntrenado, ds_train_f_sinsmote, ds_train_t_sinsmote,
+            ds_train_t, ds_test_f, ds_test_t, ds_validac_f, ds_validac_t,
+            dir_subgrupo_img,
+            pathCsvIntermedio, tasaDesbalanceoAntes, nombreModelo, ganador_metrica)
 
-        print("ds_train_f_sinsmote: " + str(ds_train_f_sinsmote.shape[0]) + " x " + str(ds_train_f_sinsmote.shape[1]))
-        train_t_predicho = modeloPredictivoEntrenado.predict(ds_train_f_sinsmote)
-        precision_train = precision_score(ds_train_t_sinsmote, train_t_predicho)
-        C5C6ManualML.pintarDistribucionProbabDelTargetPredicho(dir_subgrupo_img, "histograma_target_probabilidades.png", modeloPredictivoEntrenado, ds_train_f_sinsmote, id_subgrupo)
-
-        print("Informe de metricas:")
-        print(classification_report(ds_train_t_sinsmote, train_t_predicho))
-
-        if precision_train == 0:
-            # print(train_t_predicho)
-            raise NameError("La precision calculada es 0 porque posiblemente no tenemos casos positivos en la muestra predicha. Salimos del proceso de este subgrupo " + id_subgrupo + "...")
-
-        print("PRECISIÓN EN TRAIN = " + '{0:0.2f}'.format(precision_train))
-        pd.DataFrame(ds_train_t).to_csv(pathCsvIntermedio + ".ds_train_t_sinsmote.csv", index=True, sep='|', float_format='%.4f')  # NO BORRAR: UTIL para testIntegracion
-        pd.DataFrame(train_t_predicho).to_csv(pathCsvIntermedio + ".train_t_predicho.csv", index=True, sep='|', float_format='%.4f')  # NO BORRAR: UTIL para testIntegracion
-
-        print("ds_validac_f: " + str(ds_validac_f.shape[0]) + " x " + str(ds_validac_f.shape[1]))
-        print("ds_validac_t: " + str(len(ds_validac_t)))
-
-        ds_test_t_pred = modeloPredictivoEntrenado.predict(ds_test_f)
-        test_t_predicho = ds_test_t_pred
-        validac_t_predicho = modeloPredictivoEntrenado.predict(ds_validac_f)
-        precision_test = precision_score(ds_test_t, test_t_predicho)
-        precision_avg_test = average_precision_score(ds_test_t, test_t_predicho)
-        precision_validation = precision_score(ds_validac_t, validac_t_predicho)
-        precision_avg_validation = average_precision_score(ds_validac_t, validac_t_predicho)
-        precision_media = (precision_test + precision_validation) / 2
-        precision_avg_media = (precision_avg_test + precision_avg_validation) / 2
-        print("PRECISIÓN EN TEST = " + '{0:0.2f}'.format(precision_test))
-        print("PRECISIÓN EN VALIDACION = " + '{0:0.2f}'.format(precision_validation))
-
-        # NO BORRAR: UTIL para informe HTML entregable
-        precisionSistemaRandom = 1 / tasaDesbalanceoAntes  # Precision del sistema tonto
-        precisionMediaTestValid = (precision_test + precision_validation) / 2
-        mejoraRespectoSistemaRandom = 100 * (precisionMediaTestValid - precisionSistemaRandom) / precisionSistemaRandom
-        print("ENTREGABLEPRECISIONESPASADO"
-              + "|id_subgrupo:" + str(id_subgrupo)
-              + "|precisionpasadotrain:" + str(round(precision_train, 2))
-              + "|precisionpasadotest:" + str(round(precision_test, 2))
-              + "|precisionpasadovalidacion:" + str(round(precision_validation, 2))
-              + "|precisionsistemarandom:" + str(round(precisionSistemaRandom, 2))
-              + "|mejoraRespectoSistemaRandom:" + str(round(mejoraRespectoSistemaRandom, 0)) + " %"
-              )
-
-        # NO BORRAR: UTIL para testIntegracion
-        pd.DataFrame(ds_test_t).to_csv(pathCsvIntermedio + ".ds_test_t.csv", index=True, sep='|', float_format='%.4f')
-        pd.DataFrame(test_t_predicho).to_csv(pathCsvIntermedio + ".test_t_predicho.csv", index=True, sep='|', float_format='%.4f')
-        pd.DataFrame(ds_validac_t).to_csv(pathCsvIntermedio + ".ds_validac_t.csv", index=True, sep='|', float_format='%.4f')
-        pd.DataFrame(validac_t_predicho).to_csv(pathCsvIntermedio + ".validac_t_predicho.csv", index=True, sep='|', float_format='%.4f')
-
-        print(id_subgrupo + " " + nombreModelo + " -> Precision = " + '{0:0.2f}'.format(
-            precision_media) + " (average precision = " + '{0:0.2f}'.format(precision_avg_media) + ")")
-        if precision_media > ganador_metrica:
-            ganador_metrica = precision_media
-            ganador_metrica_avg = precision_avg_media
-            ganador_nombreModelo = nombreModelo
-            ganador_grid_mejores_parametros = []  # Este modelo no tiene esta variable
-        print("Fin de ANÁLISIS DE RESULTADOS")
-
-        ######################################################################################################################
         ######################################################################################################################
 
         print("********* GANADOR de subgrupo *************")
         num_positivos_test = len(ds_test_t[ds_test_t is True])
         num_positivos_validac = len(ds_validac_t[ds_validac_t is True])
-        print("PASADO -> " + id_subgrupo + " (num features = " + str(
-            ds_train_f.shape[1]) + ")" + " -> Modelo ganador = " + ganador_nombreModelo + " --> METRICA = " + str(
+        print("PASADO -> " + id_subgrupo + " (num features = " + str(ds_train_f.shape[1]) + ")" + " -> Modelo ganador = " + ganador_nombreModelo + " --> METRICA = " + str(
             round(ganador_metrica, 4)) + " (avg_precision = " + str(round(ganador_metrica_avg, 4)) + ")")
 
         print("PASADO -> " + id_subgrupo + " TASA DE MEJORA DE PRECISION RESPECTO A RANDOM: ", round(ganador_metrica / (1 / (1 + tasaDesbalanceoAntes)), 2))
@@ -639,8 +582,7 @@ if (modoTiempo == "pasado" and pathCsvReducido.endswith('.csv') and os.path.isfi
             df_valid_empresas_index = pd.merge(entradaFeaturesYTarget, ds_validacion, left_index=True, right_index=True)
 
             ds_train_f_temp = ds_train.drop('TARGET', axis=1)
-            df_train_f_sinsmote = pd.DataFrame(ds_train_f_sinsmote, columns=ds_train_f_temp.columns,
-                                               index=ds_train_f_temp.index)  # Indice que tenia antes de SMOTE
+            df_train_f_sinsmote = pd.DataFrame(ds_train_f_sinsmote, columns=ds_train_f_temp.columns, index=ds_train_f_temp.index)  # Indice que tenia antes de SMOTE
 
             C5C6ManualFunciones.comprobarPrecisionManualmente(ds_train_t_sinsmote, train_t_predicho, "TRAIN (forzado)", id_subgrupo, df_train_f_sinsmote, dir_subgrupo,
                                                               DEBUG_FILTRO)  # ds_train_t tiene SMOTE!!!
@@ -701,14 +643,11 @@ elif (modoTiempo == "futuro" and pathCsvReducido.endswith('.csv') and os.path.is
         # UMBRAL MENOS PROBABLES CON TARGET=1. Cuando el target es 1, se guarda su probabilidad
         # print("El DF llamado probs contiene las probabilidades de predecir un 0 o un 1:")
         # print(probs)
-        print(
-            "Sobre los targets predichos, se cogen solo aquellos con probabilidad encima del umbral -> umbralProbTargetTrue=" + str(
-                umbralProbTargetTrue) + " y granProbTargetUno=" + str(granProbTargetUno))
+        print("Sobre los targets predichos, se cogen solo aquellos con probabilidad encima del umbral -> umbralProbTargetTrue=" + str(umbralProbTargetTrue) + " y granProbTargetUno=" + str(
+            granProbTargetUno))
         probabilidadesEnTargetUnoPeq = probs.iloc[:, 1]  # Cogemos solo la segunda columna: prob de que sea target=1
-        probabilidadesEnTargetUnoPeq2 = probabilidadesEnTargetUnoPeq.apply(
-            lambda x: x if (x >= umbralProbTargetTrue) else np.nan)  # Cogemos solo las filas cuya prob_1 > umbral
-        probabilidadesEnTargetUnoPeq3 = probabilidadesEnTargetUnoPeq2[
-            np.isnan(probabilidadesEnTargetUnoPeq2[:]) == False]  # Cogemos todos los no nulos (NAN)
+        probabilidadesEnTargetUnoPeq2 = probabilidadesEnTargetUnoPeq.apply(lambda x: x if (x >= umbralProbTargetTrue) else np.nan)  # Cogemos solo las filas cuya prob_1 > umbral
+        probabilidadesEnTargetUnoPeq3 = probabilidadesEnTargetUnoPeq2[np.isnan(probabilidadesEnTargetUnoPeq2[:]) == False]  # Cogemos todos los no nulos (NAN)
         # print("El DF llamado probabilidadesEnTargetUnoPeq3 contiene las probabilidades de los UNO con prob mayor que umbral ("+str(umbralProbTargetTrue)+"):")
         # print(probabilidadesEnTargetUnoPeq3)
 
@@ -716,8 +655,7 @@ elif (modoTiempo == "futuro" and pathCsvReducido.endswith('.csv') and os.path.is
         # print("El DF llamado probabilidadesEnTargetUnoPeq4 contiene los indices y probabilidades, tras aplicar umbral INFERIOR: " + str(umbralProbTargetTrue) + ". Son:")
         # print(probabilidadesEnTargetUnoPeq4)
 
-        numfilasSeleccionadas = int(granProbTargetUno * probabilidadesEnTargetUnoPeq4.shape[
-            0] / 100)  # Como están ordenadas en descendente, cojo estas NUM primeras filas
+        numfilasSeleccionadas = int(granProbTargetUno * probabilidadesEnTargetUnoPeq4.shape[0] / 100)  # Como están ordenadas en descendente, cojo estas NUM primeras filas
         print("numfilasSeleccionadas: " + str(numfilasSeleccionadas))
         targets_predichosCorregidos_probs = probabilidadesEnTargetUnoPeq4[0:numfilasSeleccionadas]
         targets_predichosCorregidos = targets_predichosCorregidos_probs.apply(lambda x: 1)
@@ -727,8 +665,7 @@ elif (modoTiempo == "futuro" and pathCsvReducido.endswith('.csv') and os.path.is
         print("Guardando targets PREDICHOS en: " + pathCsvPredichos)
         df_predichos = targets_predichosCorregidos.to_frame()
         df_predichos.columns = ['TARGET_PREDICHO']
-        df_predichos.to_csv(pathCsvPredichos, index=False, sep='|',
-                            float_format='%.4f')  # Capa 6 - Salida (para el validador, sin indice)
+        df_predichos.to_csv(pathCsvPredichos, index=False, sep='|', float_format='%.4f')  # Capa 6 - Salida (para el validador, sin indice)
 
         df_predichos_probs = targets_predichosCorregidos_probs.to_frame()
         df_predichos_probs.columns = ['TARGET_PREDICHO_PROB']
@@ -748,20 +685,16 @@ elif (modoTiempo == "futuro" and pathCsvReducido.endswith('.csv') and os.path.is
         df_predichos.insert(0, column="indiceColumna", value=indiceDFPredichos)
 
         if df_predichos.shape[0] <= 0:
-            print("No se ha predicho NINGUN target=1 sabiendo que cogemos el top " + str(
-                granProbTargetUno) + "% elementos que han tenido probabilidad >= " + str(
+            print("No se ha predicho NINGUN target=1 sabiendo que cogemos el top " + str(granProbTargetUno) + "% elementos que han tenido probabilidad >= " + str(
                 umbralProbTargetTrue) + " Por tanto, sa acaba el proceso.")
         else:
-            df_predichos[['empresa', 'anio', 'mes', 'dia']] = df_predichos['indiceColumna'].str.split('_', 4,
-                                                                                                      expand=True)
+            df_predichos[['empresa', 'anio', 'mes', 'dia']] = df_predichos['indiceColumna'].str.split('_', 4, expand=True)
             df_predichos = df_predichos.drop('indiceColumna', axis=1)
             df_predichos = df_predichos.astype({"anio": int, "mes": int, "dia": int})
 
             indiceDFPredichos = df_predichos_probs.index.values
             df_predichos_probs.insert(0, column="indiceColumna", value=indiceDFPredichos)
-            df_predichos_probs[['empresa', 'anio', 'mes', 'dia']] = df_predichos_probs['indiceColumna'].str.split('_',
-                                                                                                                  4,
-                                                                                                                  expand=True)
+            df_predichos_probs[['empresa', 'anio', 'mes', 'dia']] = df_predichos_probs['indiceColumna'].str.split('_', 4, expand=True)
             df_predichos_probs = df_predichos_probs.drop('indiceColumna', axis=1)
             df_predichos_probs = df_predichos_probs.astype({"anio": int, "mes": int, "dia": int})
 
@@ -769,8 +702,7 @@ elif (modoTiempo == "futuro" and pathCsvReducido.endswith('.csv') and os.path.is
             df_juntos_1 = pd.merge(df_completo, df_predichos, on=["empresa", "anio", "mes", "dia"], how='left')
             df_juntos_2 = pd.merge(df_juntos_1, df_predichos_probs, on=["empresa", "anio", "mes", "dia"], how='left')
 
-            df_juntos_2['TARGET_PREDICHO'] = (df_juntos_2['TARGET_PREDICHO'] * 1).astype(
-                'Int64')  # Convertir de boolean a int64, manteniendo los nulos
+            df_juntos_2['TARGET_PREDICHO'] = (df_juntos_2['TARGET_PREDICHO'] * 1).astype('Int64')  # Convertir de boolean a int64, manteniendo los nulos
 
             print("Guardando (pathCsvFinalFuturo): " + pathCsvFinalFuturo)
             df_juntos_2.to_csv(pathCsvFinalFuturo, index=False, sep='|', float_format='%.4f')

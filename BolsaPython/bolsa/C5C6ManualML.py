@@ -27,12 +27,17 @@ from xgboost import XGBClassifier
 from bolsa import C5C6ManualFunciones
 from bolsa.C5C6ManualFunciones import pintarFuncionesDeDensidad
 
-'''
-Entrena modelo predictivo (solo PASADO) y lo guarda en una ruta.
-@:returns Path absoluto del modelo entrenado guardado 
-'''
-def entrenarModeloModoPasado(dir_subgrupo, ds_train_f, ds_train_t, ds_test_f, ds_test_t):
 
+def entrenarModeloModoPasado(dir_subgrupo, ds_train_f, ds_train_t, ds_test_f, ds_test_t):
+    """
+    Entrena modelo predictivo (solo PASADO) y lo guarda en una ruta.
+    :param dir_subgrupo:
+    :param ds_train_f:
+    :param ds_train_t:
+    :param ds_test_f:
+    :param ds_test_t:
+    :return: Path absoluto del modelo entrenado guardado
+    """
     print("PASADO - ENTRENANDO MODELO PREDICTIVO...")
 
     ################################# GENERACIÓN DE MODELOS #################################
@@ -273,23 +278,33 @@ def entrenarModeloModoPasado(dir_subgrupo, ds_train_f, ds_train_t, ds_test_f, ds
     return pathModelo, nombreModelo
 
 
-'''
-MODO PASADO - Entrena el modelo normalizador de features y lo guarda en una ruta.
-Ese modelo puede usarse después para normalizar esas mismas features del pasado u otras del futuro.
-'''
-def fitNormalizadorDeFeaturesSoloModoPasado (featuresDF, path_modelo_normalizador):
-
+def fitNormalizadorDeFeaturesSoloModoPasado(featuresDF, path_modelo_normalizador):
+    """
+    MODO PASADO - Entrena el modelo normalizador de features y lo guarda en una ruta.
+    Ese modelo puede usarse después para normalizar esas mismas features del pasado u otras del futuro.
+    :param featuresDF:
+    :param path_modelo_normalizador:
+    :return:
+    """
     # Con el "normalizador COMPLEJO" solucionamos este bug: https://github.com/scikit-learn/scikit-learn/issues/14959  --> Aplicar los cambios indicados a:_/home/carloslinux/Desktop/PROGRAMAS/anaconda3/envs/BolsaPython/lib/python3.7/site-packages/sklearn/preprocessing/_data.py
     modelo_normalizador = make_pipeline(MinMaxScaler(), PowerTransformer(method='yeo-johnson', standardize=True, copy=True), ).fit(featuresDF)  # COMPLEJO
     # modelo_normalizador = PowerTransformer(method='yeo-johnson', standardize=True, copy=True).fit(featuresFichero)
     pickle.dump(modelo_normalizador, open(path_modelo_normalizador, 'wb'))
 
-'''
-MODOS PASADO Y FUTURO - Aplica la NORMALIZACIÓN
-@:returns Dataframe con las columnas normalizadas.
-'''
-def normalizar (path_modelo_normalizador, featuresFichero, modoTiempo, pathCsvIntermedio, modoDebug, dir_subgrupo_img, dibujoBins, DEBUG_FILTRO):
 
+def normalizar(path_modelo_normalizador, featuresFichero, modoTiempo, pathCsvIntermedio, modoDebug, dir_subgrupo_img, dibujoBins, DEBUG_FILTRO):
+    """
+    MODOS PASADO Y FUTURO - Aplica la NORMALIZACIÓN
+    :param path_modelo_normalizador:
+    :param featuresFichero:
+    :param modoTiempo:
+    :param pathCsvIntermedio:
+    :param modoDebug:
+    :param dir_subgrupo_img:
+    :param dibujoBins:
+    :param DEBUG_FILTRO:
+    :return: Dataframe con las columnas normalizadas.
+    """
     print((datetime.datetime.now()).strftime("%Y%m%d_%H%M%S") + " ----- NORMALIZACIÓN de las features ------")
     print("NORMALIZACION: hacemos que todas las features tengan distribución gaussiana media 0 y varianza 1. El target no se toca.")
     print("featuresFichero: " + str(featuresFichero.shape[0]) + " x " + str(featuresFichero.shape[1]))
@@ -315,11 +330,14 @@ def normalizar (path_modelo_normalizador, featuresFichero, modoTiempo, pathCsvIn
 
     return featuresFicheroNorm
 
-'''
-Comprueba el numero de clases diferentes y aborta en caso de que no haya suficientes.
-@:returns Numero de clases encontradas
-'''
-def comprobarSuficientesClasesDelTarget (targetsFichero, modoTiempo):
+
+def comprobarSuficientesClasesDelTarget(targetsFichero, modoTiempo):
+    """
+    Comprueba el numero de clases diferentes y aborta en caso de que no haya suficientes.
+    :param targetsFichero:
+    :param modoTiempo:
+    :return: Numero de clases encontradas
+    """
     print((datetime.datetime.now()).strftime("%Y%m%d_%H%M%S") + " ----- comprobarSuficientesClasesDelTarget ------")
     y_unicos = np.unique(targetsFichero)
     print("Clases encontradas en el target: ")
@@ -332,10 +350,16 @@ def comprobarSuficientesClasesDelTarget (targetsFichero, modoTiempo):
 
     return numclases
 
-'''
-Matriz de correlaciones y quitar features correladas
-'''
+
 def matrizCorrelacionesYquitarFaturesCorreladas(ift_juntas, umbralFeaturesCorrelacionadas, pathListaColumnasCorreladasDrop, pathFeaturesSeleccionadas):
+    """
+    Matriz de correlaciones y quitar features correladas
+    :param ift_juntas:
+    :param umbralFeaturesCorrelacionadas:
+    :param pathListaColumnasCorreladasDrop:
+    :param pathFeaturesSeleccionadas:
+    :return:
+    """
     print((datetime.datetime.now()).strftime("%Y%m%d_%H%M%S") + " Matriz de correlaciones (PASADO):")
     matrizCorr = ift_juntas.corr().abs()
     # print(matrizCorr.to_string())
@@ -362,10 +386,16 @@ def matrizCorrelacionesYquitarFaturesCorreladas(ift_juntas, umbralFeaturesCorrel
     featuresSeleccionadasFile.close()
 
 
-'''
-Para el target predicho, pinta la distribución de probabilidades (predict_proba) y la guarda en una imagen
-'''
 def pintarDistribucionProbabDelTargetPredicho(dir_subgrupo_img, nombreFichero, modeloPredictivoEntrenado, featuresDF, id_subgrupo):
+    """
+    Para el target predicho, pinta la distribución de probabilidades (predict_proba) y la guarda en una imagen
+    :param dir_subgrupo_img:
+    :param nombreFichero:
+    :param modeloPredictivoEntrenado:
+    :param featuresDF:
+    :param id_subgrupo:
+    :return:
+    """
     print("pintarDistribucionProbabDelTargetPredicho-INICIO")
     path_dibujo_probabs = dir_subgrupo_img + nombreFichero
     print("Distribución de las probabilidades del target predicho (debe ser con forma de U para que distinga bien los positivos de los negativos): " + path_dibujo_probabs)
@@ -392,4 +422,84 @@ def pintarDistribucionProbabDelTargetPredicho(dir_subgrupo_img, nombreFichero, m
     print("pintarDistribucionProbabDelTargetPredicho-FIN")
 
 
+def calcularMetricasModeloEntrenado(id_subgrupo, modeloPredictivoEntrenado, ds_train_f_sinsmote, ds_train_t_sinsmote, ds_train_t, ds_test_f, ds_test_t, ds_validac_f, ds_validac_t, dir_subgrupo_img,
+                                    pathCsvIntermedio, tasaDesbalanceoAntes, nombreModelo, ganador_metrica):
+    """
 
+    :param id_subgrupo:
+    :param modeloPredictivoEntrenado:
+    :param ds_train_f_sinsmote:
+    :param ds_train_t_sinsmote:
+    :param ds_train_t:
+    :param ds_test_f:
+    :param ds_test_t:
+    :param ds_validac_f:
+    :param ds_validac_t:
+    :param dir_subgrupo_img:
+    :param pathCsvIntermedio:
+    :param tasaDesbalanceoAntes:
+    :param nombreModelo:
+    :param ganador_metrica:
+    :return:
+    """
+    print("Inicio de ANÁLISIS DE RESULTADOS - train vs test vs validación")
+
+    print("ds_train_f_sinsmote: " + str(ds_train_f_sinsmote.shape[0]) + " x " + str(ds_train_f_sinsmote.shape[1]))
+    train_t_predicho = modeloPredictivoEntrenado.predict(ds_train_f_sinsmote)
+    precision_train = precision_score(ds_train_t_sinsmote, train_t_predicho)
+    pintarDistribucionProbabDelTargetPredicho(dir_subgrupo_img, "histograma_target_probabilidades.png", modeloPredictivoEntrenado, ds_train_f_sinsmote, id_subgrupo)
+
+    print("Informe de metricas:")
+    print(classification_report(ds_train_t_sinsmote, train_t_predicho))
+
+    if precision_train == 0:
+        # print(train_t_predicho)
+        raise NameError("La precision calculada es 0 porque posiblemente no tenemos casos positivos en la muestra predicha. Salimos del proceso de este subgrupo " + id_subgrupo + "...")
+
+    print("PRECISIÓN EN TRAIN = " + '{0:0.2f}'.format(precision_train))
+    pd.DataFrame(ds_train_t).to_csv(pathCsvIntermedio + ".ds_train_t_sinsmote.csv", index=True, sep='|', float_format='%.4f')  # NO BORRAR: UTIL para testIntegracion
+    pd.DataFrame(train_t_predicho).to_csv(pathCsvIntermedio + ".train_t_predicho.csv", index=True, sep='|', float_format='%.4f')  # NO BORRAR: UTIL para testIntegracion
+
+    print("ds_validac_f: " + str(ds_validac_f.shape[0]) + " x " + str(ds_validac_f.shape[1]))
+    print("ds_validac_t: " + str(len(ds_validac_t)))
+
+    ds_test_t_pred = modeloPredictivoEntrenado.predict(ds_test_f)
+    test_t_predicho = ds_test_t_pred
+    validac_t_predicho = modeloPredictivoEntrenado.predict(ds_validac_f)
+    precision_test = precision_score(ds_test_t, test_t_predicho)
+    precision_avg_test = average_precision_score(ds_test_t, test_t_predicho)
+    precision_validation = precision_score(ds_validac_t, validac_t_predicho)
+    precision_avg_validation = average_precision_score(ds_validac_t, validac_t_predicho)
+    precision_media = (precision_test + precision_validation) / 2
+    precision_avg_media = (precision_avg_test + precision_avg_validation) / 2
+    print("PRECISIÓN EN TEST = " + '{0:0.2f}'.format(precision_test))
+    print("PRECISIÓN EN VALIDACION = " + '{0:0.2f}'.format(precision_validation))
+
+    # NO BORRAR: UTIL para informe HTML entregable
+    precisionSistemaRandom = 1 / tasaDesbalanceoAntes  # Precision del sistema tonto
+    precisionMediaTestValid = (precision_test + precision_validation) / 2
+    mejoraRespectoSistemaRandom = 100 * (precisionMediaTestValid - precisionSistemaRandom) / precisionSistemaRandom
+    print("ENTREGABLEPRECISIONESPASADO"
+          + "|id_subgrupo:" + str(id_subgrupo)
+          + "|precisionpasadotrain:" + str(round(precision_train, 2))
+          + "|precisionpasadotest:" + str(round(precision_test, 2))
+          + "|precisionpasadovalidacion:" + str(round(precision_validation, 2))
+          + "|precisionsistemarandom:" + str(round(precisionSistemaRandom, 2))
+          + "|mejoraRespectoSistemaRandom:" + str(round(mejoraRespectoSistemaRandom, 0)) + " %"
+          )
+
+    # NO BORRAR: UTIL para testIntegracion
+    pd.DataFrame(ds_test_t).to_csv(pathCsvIntermedio + ".ds_test_t.csv", index=True, sep='|', float_format='%.4f')
+    pd.DataFrame(test_t_predicho).to_csv(pathCsvIntermedio + ".test_t_predicho.csv", index=True, sep='|', float_format='%.4f')
+    pd.DataFrame(ds_validac_t).to_csv(pathCsvIntermedio + ".ds_validac_t.csv", index=True, sep='|', float_format='%.4f')
+    pd.DataFrame(validac_t_predicho).to_csv(pathCsvIntermedio + ".validac_t_predicho.csv", index=True, sep='|', float_format='%.4f')
+
+    print(id_subgrupo + " " + nombreModelo + " -> Precision = " + '{0:0.2f}'.format(precision_media) + " (average precision = " + '{0:0.2f}'.format(precision_avg_media) + ")")
+    if precision_media > ganador_metrica:
+        ganador_metrica = precision_media
+        ganador_metrica_avg = precision_avg_media
+        ganador_nombreModelo = nombreModelo
+        ganador_grid_mejores_parametros = []  # Este modelo no tiene esta variable
+    print("Fin de ANÁLISIS DE RESULTADOS")
+
+    return train_t_predicho, test_t_predicho, validac_t_predicho, ganador_metrica, ganador_metrica_avg, ganador_nombreModelo, ganador_grid_mejores_parametros
