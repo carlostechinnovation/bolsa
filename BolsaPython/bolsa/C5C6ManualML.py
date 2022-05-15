@@ -239,7 +239,7 @@ def entrenarModeloModoPasado(dir_subgrupo, ds_train_f, ds_train_t, ds_test_f, ds
     nombreModelo = "lgbm"
 
     params = {'objective': 'binary',
-              'learning_rate': 0.02,
+              'learning_rate': 0.001,
               "boosting_type": "gbdt",
               "metric": 'precision',
               'n_jobs': -1,
@@ -253,7 +253,7 @@ def entrenarModeloModoPasado(dir_subgrupo, ds_train_f, ds_train_t, ds_test_f, ds
               # min_child_weight = 0.001,  subsample = 1.0, subsample_freq = 0, colsample_bytree = 1.0, reg_alpha = 0.0, reg_lambda = 0.0,
               }
 
-    modelo = lgb.LGBMClassifier(**params, n_estimators=50)
+    modelo = lgb.LGBMClassifier(**params, n_estimators=200)
     modelo.fit(ds_train_f, ds_train_t, eval_set=[(ds_train_f, ds_train_t), (ds_test_f, ds_test_t)])
     #####################################################
 
