@@ -239,14 +239,14 @@ def entrenarModeloModoPasado(dir_subgrupo, ds_train_f, ds_train_t, ds_test_f, ds
     nombreModelo = "lgbm"
 
     params = {'objective': 'binary',
-              'learning_rate': 0.001,
+              'learning_rate': 0.01,
               "boosting_type": "gbdt",
               "metric": 'precision',
               'n_jobs': -1,
               'min_data_in_leaf': 5,
-              'min_child_samples': 6,
-              'num_leaves': 50,  # maximo numero de hojas
-              'max_depth': 3,
+              'min_child_samples': 5,
+              'num_leaves': 20,  # maximo numero de hojas
+              'max_depth': 1,
               'random_state': 0,
               'importance_type': 'split',
               'min_split_gain': 0.0,

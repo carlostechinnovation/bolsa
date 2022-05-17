@@ -93,18 +93,16 @@ def comprobarPrecisionManualmente(targetsNdArray1, targetsNdArray2, etiqueta, id
     :param DEBUG_FILTRO:
     :return:
     """
-    print("comprobarPrecisionManualmente ==> " + id_subgrupo + " " + etiqueta + " Comprobación de la precisión --> dfConIndex: " + str(
-        dfConIndex.shape[0]) + " x " + str(
-        dfConIndex.shape[1]) + ". Se comparan: array1=" + str(targetsNdArray1.size) + " y array2=" + str(
-        targetsNdArray2.size))
+    print("comprobarPrecisionManualmente ==> " + id_subgrupo + " " + etiqueta + " Comprobación de la precisión --> dfConIndex: " + str(dfConIndex.shape[0]) + " x " + str(
+        dfConIndex.shape[1]) + ". Se comparan: array1=" + str(targetsNdArray1.size) + " y array2=" + str(targetsNdArray2.size))
 
     df1 = targetsNdArray1
     df2 = pd.DataFrame(targetsNdArray2, columns=['target'])
     df2.index = dfConIndex.index  # fijamos el indice del DF grande
 
     df2.rename(columns={'target': 'targetpredicho'}, inplace=True)
-    #df1['targetpredicho'] = df2
-    df1df2=pd.merge(df1, df2, left_index=True, right_index=True)
+    # df1['targetpredicho'] = df2
+    df1df2 = pd.merge(df1, df2, left_index=True, right_index=True)
     df1df2['iguales'] = np.where(df1df2['TARGET'] == df1df2['targetpredicho'], True, False)
 
     # Solo nos interesan los PREDICHOS True, porque es donde pondremos dinero real
@@ -112,7 +110,9 @@ def comprobarPrecisionManualmente(targetsNdArray1, targetsNdArray2, etiqueta, id
     df1b = df1a[(df1a.iguales == True)]  # Solo los True Positives
     df2a = df1df2[(df1df2.targetpredicho == True)]  # donde ponemos el dinero real (True Positives y False Positives)
 
-    print(etiqueta, " - Ejemplos de predicciones:")
+    print(etiqueta, "Ejemplos de predicciones TRUE POSITIVES (aciertos):")
+    print(tabulate(df1b.head(n=5), headers='keys', tablefmt='psql'))
+
     mostrarEmpresaConcretaConFilter(df1df2, DEBUG_FILTRO, "df1df2")
 
     mensajeAlerta = ""
@@ -691,7 +691,8 @@ def describirConPandasProfiling(modoDebug, miDF, dir_subgrupo):
         prof.to_file(output_file=dir_subgrupo + "REDUCIDO_profiling.html")
 
 
-def splitTrainTestValidation(modoTiempo, ift_juntas, fraccion_train, fraccion_test, fraccion_valid, balancearConSmoteSoloTrainInput, umbralNecesarioCompensarDesbalanceo, balancearUsandoDownsamplingInput, DEBUG_FILTRO):
+def splitTrainTestValidation(modoTiempo, ift_juntas, fraccion_train, fraccion_test, fraccion_valid, balancearConSmoteSoloTrainInput, umbralNecesarioCompensarDesbalanceo,
+                             balancearUsandoDownsamplingInput, DEBUG_FILTRO):
     """
 
     :param modoTiempo:
@@ -733,8 +734,9 @@ def splitTrainTestValidation(modoTiempo, ift_juntas, fraccion_train, fraccion_te
     df_mayoritaria_train = ds_train_t[(ds_train_t == False)]  # En este caso los mayoritarios son los False
     df_minoritaria_train = ds_train_t[(ds_train_t == True)]
     tasaDesbalanceoAntes_train = round(df_mayoritaria_train.count().values[0] / df_minoritaria_train.count().values[0], 2)
-    print("TRAIN - Tasa de desbalanceo entre clases (antes de balancear con SMOTE) = mayoritaria/minoritaria = " + str(len(df_mayoritaria_train)) + " / " + str(len(df_minoritaria_train)) + " = " + str(
-        tasaDesbalanceoAntes_train))
+    print(
+        "TRAIN - Tasa de desbalanceo entre clases (antes de balancear con SMOTE) = mayoritaria/minoritaria = " + str(len(df_mayoritaria_train)) + " / " + str(len(df_minoritaria_train)) + " = " + str(
+            tasaDesbalanceoAntes_train))
 
     df_mayoritaria_test = ds_test_t[(ds_test_t == False)]  # En este caso los mayoritarios son los False
     df_minoritaria_test = ds_test_t[(ds_test_t == True)]
@@ -813,5 +815,3 @@ def splitTrainTestValidation(modoTiempo, ift_juntas, fraccion_train, fraccion_te
     mostrarEmpresaConcretaConFilter(ds_train_t_sinsmote, DEBUG_FILTRO, "splitTrainTestValidation - SALIDA - ds_train_t_sinsmote")
 
     return ds_train, ds_test, ds_validacion, ds_train_f, ds_train_t, ds_test_f, ds_test_t, ds_validac_f, ds_validac_t, ds_train_f_sinsmote, ds_train_t_sinsmote
-
-
