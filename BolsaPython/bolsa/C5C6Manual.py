@@ -121,7 +121,7 @@ print("Tipo de problema: CLASIFICACION BINOMIAL (target es boolean)")
 
 print("PARAMETROS: ")
 pathFeaturesSeleccionadas = dir_subgrupo + "FEATURES_SELECCIONADAS.csv"
-umbralCasosSuficientesClasePositiva = 100
+umbralCasosSuficientesClasePositiva = 50
 umbralProbTargetTrue = 0.50  # IMPORTANTE: umbral para decidir si el target es true o false
 granProbTargetUno = 100  # De todos los target=1, nos quedaremos con los granProbTargetUno (en tanto por cien) MAS probables. Un valor de 100 o mayor anula este parámetro
 umbralFeaturesCorrelacionadas = varianza  # Umbral aplicado para descartar features cuya correlacion sea mayor que él

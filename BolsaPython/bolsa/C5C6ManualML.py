@@ -24,9 +24,6 @@ from sklearn.utils import resample
 from tabulate import tabulate
 from xgboost import XGBClassifier
 
-from bolsa import C5C6ManualFunciones
-from bolsa.C5C6ManualFunciones import pintarFuncionesDeDensidad
-
 
 def entrenarModeloModoPasado(dir_subgrupo, ds_train_f, ds_train_t, ds_test_f, ds_test_t):
     """
@@ -322,7 +319,11 @@ def normalizar(path_modelo_normalizador, featuresFichero, modoTiempo, pathCsvInt
     print("Aplicando normalizacion, manteniendo indices y nombres de columnas...")
     featuresFicheroNorm = pd.DataFrame(data=modelo_normalizador.transform(featuresFichero), index=featuresFichero.index, columns=featuresFichero.columns)
     print("featuresFicheroNorm:" + str(featuresFicheroNorm.shape[0]) + " x " + str(featuresFicheroNorm.shape[1]))
-    C5C6ManualFunciones.mostrarEmpresaConcretaConFilter(featuresFicheroNorm, DEBUG_FILTRO, "featuresFicheroNorm")
+
+    tablaDebugDF = featuresFicheroNorm.filter(like=DEBUG_FILTRO, axis=0)
+    print("tablaDebugDF (caso vigilado) - " + "featuresFicheroNorm" + ":")
+    print(tabulate(tablaDebugDF, headers='keys', tablefmt='psql'))
+
     featuresFicheroNorm.to_csv(pathCsvIntermedio + ".normalizado.csv", index=True, sep='|', float_format='%.4f')  # UTIL para testIntegracion
 
     if modoDebug and modoTiempo == "pasado":
@@ -504,3 +505,28 @@ def calcularMetricasModeloEntrenado(id_subgrupo, modeloPredictivoEntrenado, ds_t
     print("Fin de ANÁLISIS DE RESULTADOS (calcularMetricasModeloEntrenado)")
 
     return train_t_predicho, test_t_predicho, validac_t_predicho, ganador_metrica, ganador_metrica_avg, ganador_nombreModelo, ganador_grid_mejores_parametros
+
+
+
+def pintarFuncionesDeDensidad(miDF, dir_subgrupo_img, dibujoBins, descripcion):
+    """
+    Crea una imagen de las función de densidad de probabilidad de cada columna (feature) del dataframe.
+    :param miDF:
+    :param dir_subgrupo_img:
+    :param dibujoBins:
+    :param descripcion:
+    :return:
+    """
+    print("FUNCIONES DE DENSIDAD (" + descripcion + "):")
+    for column in miDF:
+        path_dibujo = dir_subgrupo_img + column + ".png"
+        print("Guardando distrib de col: " + column + " en fichero: " + path_dibujo)
+        datos_columna = miDF[column]
+        sns.distplot(datos_columna, kde=False, color='red', bins=dibujoBins)
+        plt.title(column, fontsize=10)
+        plt.savefig(path_dibujo, bbox_inches='tight')
+        plt.clf();
+        plt.cla();
+        plt.close()  # Limpiando dibujo
+
+

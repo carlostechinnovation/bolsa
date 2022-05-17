@@ -650,27 +650,6 @@ def aniadirColumnasDeTwitter():
     # #########################
 
 
-def pintarFuncionesDeDensidad(miDF, dir_subgrupo_img, dibujoBins, descripcion):
-    """
-    Crea una imagen de las función de densidad de probabilidad de cada columna (feature) del dataframe.
-    :param miDF:
-    :param dir_subgrupo_img:
-    :param dibujoBins:
-    :param descripcion:
-    :return:
-    """
-    print("FUNCIONES DE DENSIDAD (" + descripcion + "):")
-    for column in miDF:
-        path_dibujo = dir_subgrupo_img + column + ".png"
-        print("Guardando distrib de col: " + column + " en fichero: " + path_dibujo)
-        datos_columna = miDF[column]
-        sns.distplot(datos_columna, kde=False, color='red', bins=dibujoBins)
-        plt.title(column, fontsize=10)
-        plt.savefig(path_dibujo, bbox_inches='tight')
-        plt.clf();
-        plt.cla();
-        plt.close()  # Limpiando dibujo
-
 
 def describirConPandasProfiling(modoDebug, miDF, dir_subgrupo):
     """
