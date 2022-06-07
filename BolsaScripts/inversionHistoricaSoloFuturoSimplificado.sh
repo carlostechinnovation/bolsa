@@ -21,7 +21,7 @@
 #Se tomarán los ficheros *_GRANDE_0_SG_0_* generados, o que ya se tienen de ejecuciones antiguas, para usarlo como base de información futura.
 ANTIGUEDAD_MAXIMA="70"
 ANTIGUEDAD_MINIMA="0" # Se puede usar cualquier valor
-NUM_EMPRESAS_TRAIN="150" # Número de empresas de entrenamiento, NO para los días posteriores (que estarán en el fichero de parámetros). Se recomienda dejar 1000 siempre.
+NUM_EMPRESAS_TRAIN="50" # Número de empresas de entrenamiento, NO para los días posteriores (que estarán en el fichero de parámetros). Se recomienda dejar 1000 siempre.
 
 echo -e "INVERSION HISTORICA SOLO FUTURO SIMPLIFICADO - INICIO: "$( date "+%Y%m%d%H%M%S" )
 
