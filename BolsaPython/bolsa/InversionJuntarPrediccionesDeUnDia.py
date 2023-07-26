@@ -1,6 +1,6 @@
 import os
 import sys
-
+import numpy as np
 import pandas as pd
 from IPython.display import HTML
 
@@ -9,19 +9,22 @@ from IPython.display import HTML
 # - Carpeta Dropbox: contiene varios CSV (predicciones MANEJABLES para cada subgrupo, excluyendo el SG_0 que no es util)
 # - Path al fichero CALIDAD.csv
 # - Path al CSV de falsos positivos segun empresas
+# - Path al fichero de FALSOS POSITIVOS agrupado por empresas
 # Salidas:
 # - Fichero llamado 202XMMDD.html en la carpeta de Dropbox que agrupa toda la info predicha para ese dia. Ademas, le añade columnas de CALIDAD.csv para poder entregarlo ordenado
 ###############################################################
 
 print("--- InversionJuntarPrediccionesDeUnDia: INICIO ---")
+# /home/carloslinux/Dropbox/BOLSA_PREDICTOR/ /home/carloslinux/Dropbox/BOLSA_PREDICTOR/ANALISIS/CALIDAD.csv /home/carloslinux/Desktop/GIT_BOLSA/bolsa/BolsaJava/src/main/resources/Bolsa_Subgrupos_Descripcion.txt /home/carloslinux/Desktop/GIT_BOLSA/bolsa/BolsaJava/realimentacion/falsospositivos_empresas.csv
 entradaPathDirDropbox = sys.argv[1]
 entradaPathCalidad = sys.argv[2]
 entradaPathDescripcionSubgrupos = sys.argv[3]
 entradaFPempresas = sys.argv[4]
-targetPredichoProbUmbral = float(0.93)
+targetPredichoProbUmbral = float(0.80)
 print("entradaPathDirDropbox = " + entradaPathDirDropbox)
 print("entradaPathCalidad = " + entradaPathCalidad)
 print("entradaPathDescripcionSubgrupos = " + entradaPathDescripcionSubgrupos)
+print("entradaFPempresas = " + entradaFPempresas)
 print("targetPredichoProbUmbral = " + str(targetPredichoProbUmbral))
 
 manejablesCsv = []
@@ -152,22 +155,37 @@ for file in manejablesCsv:
 todasEmpresasYProbabsDF = todasEmpresasYProbabsDF.sort_values(by=['empresa'], ascending=True).reset_index(
     drop=True)  # Ordenar filas
 todasEmpresasYProbabsDF = todasEmpresasYProbabsDF.fillna("")  # Sustituir NaN por cadena vacia para que quede bonito
-
 todasEmpresasYProbabsDF_aux = todasEmpresasYProbabsDF.drop(['empresa'], axis=1, inplace=False)
-import numpy as np
+
+######################################################################################
+print("REORDENAR COLUMNAS ALFABETICAMENTE...")
+todasEmpresasYProbabsDF_columnasSorted = todasEmpresasYProbabsDF_aux\
+    .reindex(sorted(todasEmpresasYProbabsDF_aux, key=lambda x: float(x[3:])), axis=1)
+todasEmpresasYProbabsDF_columnasSorted = pd.DataFrame(todasEmpresasYProbabsDF["empresa"]).join(todasEmpresasYProbabsDF_columnasSorted)
+todasEmpresasYProbabsDF = todasEmpresasYProbabsDF_columnasSorted
+######################################################################################
 
 todasEmpresasYProbabsDF_aux['prob_media'] = todasEmpresasYProbabsDF_aux.replace('', np.nan).astype(float).mean(
     skipna=True, numeric_only=True, axis=1)
 todasEmpresasYProbabsDF['prob_media'] = todasEmpresasYProbabsDF_aux['prob_media']
+todasEmpresasYProbabsDF_aux['num_sg'] = todasEmpresasYProbabsDF_aux.drop('prob_media', axis=1).replace('', np.nan).astype(float).count(axis=1)
+todasEmpresasYProbabsDF['num_sg'] = todasEmpresasYProbabsDF_aux['num_sg']
 todasEmpresasYProbabsDF.sort_values(by=['prob_media'], ascending=False, inplace=True)
 
 # Operaciones de insiders (tambien son buen indicador, pero lo ponemos para evitar entrar a mirar en Finviz manualmente)
-entradaSG46df = pd.read_csv("/bolsa/futuro/subgrupos/SG_46/COMPLETO.csv", sep="|")
-entradaSG46df = entradaSG46df[entradaSG46df['antiguedad'] == 0]
-entradaSG46df = entradaSG46df[["empresa", "flagOperacionesInsiderUltimos90dias", "flagOperacionesInsiderUltimos30dias",
-                               "flagOperacionesInsiderUltimos15dias", "flagOperacionesInsiderUltimos5dias"]] \
-    .rename(columns={"flagOperacionesInsiderUltimos90dias": "I90D", "flagOperacionesInsiderUltimos30dias": "I30D",
-                     "flagOperacionesInsiderUltimos15dias": "I15D", "flagOperacionesInsiderUltimos5dias": "I5D"})
+print("Se incluyen columnas de operaciones con insiders...")
+pathSG46 = "/bolsa/futuro/subgrupos/SG_46/COMPLETO.csv"
+if os.path.exists(pathSG46) and os.path.isfile(pathSG46):
+    entradaSG46df = pd.read_csv(pathSG46, sep="|", nrows=1)
+    entradaSG46df = entradaSG46df[entradaSG46df['antiguedad'] == 0]
+    entradaSG46df = entradaSG46df[
+        ["empresa", "flagOperacionesInsiderUltimos90dias", "flagOperacionesInsiderUltimos30dias",
+         "flagOperacionesInsiderUltimos15dias", "flagOperacionesInsiderUltimos5dias"]] \
+        .rename(columns={"flagOperacionesInsiderUltimos90dias": "I90D", "flagOperacionesInsiderUltimos30dias": "I30D",
+                         "flagOperacionesInsiderUltimos15dias": "I15D", "flagOperacionesInsiderUltimos5dias": "I5D"})
+else:
+    entradaSG46df = pd.DataFrame([], columns=['empresa'])  # default: vacio
+
 todasEmpresasYProbabsDFconInsiders = pd.merge(todasEmpresasYProbabsDF, entradaSG46df, how="left", on="empresa")
 todasEmpresasYProbabsDFconInsiders = todasEmpresasYProbabsDFconInsiders.fillna(
     "")  # Sustituir NaN por cadena vacia para que quede bonito

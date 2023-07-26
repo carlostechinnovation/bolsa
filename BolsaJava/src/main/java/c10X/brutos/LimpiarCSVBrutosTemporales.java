@@ -16,7 +16,7 @@ import org.apache.log4j.helpers.NullEnumeration;
 import coordinador.Principal;
 
 /**
- * Juntar ESTATICOS + DINAMICOS
+ * Limpiar ESTATICOS + DINAMICOS
  *
  */
 public class LimpiarCSVBrutosTemporales {
@@ -98,8 +98,11 @@ public class LimpiarCSVBrutosTemporales {
 				boolean temporalFinviz = name.startsWith(BrutosUtils.FINVIZ_ESTATICOS + "_") && name.endsWith(".csv");
 				boolean temporalFinvizInsiders = name.startsWith(BrutosUtils.FINVIZ_INSIDERS + "_")
 						&& name.endsWith(".csv");
+				boolean temporalFinvizNoticias = name.startsWith(BrutosUtils.FINVIZ_NOTICIAS + "_")
+						&& name.endsWith(".csv");
 
-				if (temporalNasdaqOld || temporalYahoo || temporalFinviz || temporalFinvizInsiders) {
+				if (temporalNasdaqOld || temporalYahoo || temporalFinviz || temporalFinvizInsiders
+						|| temporalFinvizNoticias) {
 					return true;
 				}
 				return false;
@@ -109,9 +112,13 @@ public class LimpiarCSVBrutosTemporales {
 		MY_LOGGER.info("Borrado lógico de ficheros CSV temporales. Movemos todos desde: " + dirBrutoCsv + "  hasta "
 				+ dirBorrables + "/");
 		for (String pathBorrable : listaBorrables) {
-			MY_LOGGER.debug("Moviendo fichero temporal desde: " + dirBrutoCsv + pathBorrable + "  hasta " + dirBorrables
-					+ "/" + pathBorrable);
-			Files.move(Paths.get(dirBrutoCsv + pathBorrable), Paths.get(dirBorrables + "/" + pathBorrable));
+
+			String origen = dirBrutoCsv + pathBorrable;
+			String destino = dirBorrables + "/" + pathBorrable;
+			if (Files.exists(Paths.get(origen))) {
+				MY_LOGGER.debug("Moviendo desde: " + origen + "  hasta " + destino);
+				Files.move(Paths.get(origen), Paths.get(destino));
+			}
 		}
 
 	}

@@ -16,6 +16,7 @@ public class OperacionInsiderFinvizModelo implements Serializable {
 
 	public static final String VENTA = "Sale";
 	public static final String COMPRA = "Buy";
+	public static final String OPTION_EXERCISE = "Option Exercise";
 
 	public Calendar fecha;
 	public String tipooperacion;
@@ -32,12 +33,20 @@ public class OperacionInsiderFinvizModelo implements Serializable {
 
 		this.tipooperacion = tipooperacion;
 
-		if (tipooperacion != null && tipooperacion.equalsIgnoreCase(VENTA)) {
-			// Signo NEGATIVO porque es una venta (y esto nos servirá para tratar todas las
-			// operaciones a la vez)
-			this.importe = Long.valueOf("-" + importe.replace(",", ""));
-		} else {
-			this.importe = Long.valueOf(importe.replace(",", ""));
+		if (tipooperacion != null) {
+			if (tipooperacion.equalsIgnoreCase(VENTA)) {
+				// Signo NEGATIVO porque es una venta (y esto nos servirá para tratar todas las
+				// operaciones a la vez)
+				this.importe = Long.valueOf("-" + importe.replace(",", ""));
+
+			} else if (tipooperacion.equalsIgnoreCase(COMPRA)) {
+				// POSITIVO: COMPRAS y OPTION_EXERCISE (que normalmente son compras)
+				this.importe = Long.valueOf(importe.replace(",", ""));
+
+			} else {
+				// OPTION_EXERCISE: indeterminado. No sabemos si son compras o ventas
+				this.importe = null;
+			}
 		}
 
 	}

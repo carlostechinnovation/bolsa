@@ -13,7 +13,7 @@ import org.apache.commons.math3.util.ResizableDoubleArray;
 import org.apache.log4j.Logger;
 
 /**
- * @author carloslinux
+ * Utilidad que calcula estadisticas a partir de un dataset de entrada.
  *
  */
 public class Estadisticas extends DescriptiveStatistics {
@@ -22,21 +22,22 @@ public class Estadisticas extends DescriptiveStatistics {
 
 	public final static String VALOR_INVALIDO = "null";
 	public final static int VALOR_FAKE = 0;
-	public final static double NUM100 = 100.0D;
-	public final static double NUM1K = 1000.0D;
-	public final static double NUM1M = 1000000.0D;
+	public final static float NUM100 = 100.0F;
+	public final static float NUM1K = 1000.0F;
+	public final static float NUM1M = 1000000.0F;
+
+	private static final DecimalFormat df4decimales = new DecimalFormat("0.0000");
 
 	static Logger MY_LOGGER = Logger.getLogger(Estadisticas.class);
 
 	// Si anhado mas parametros, debo modificar la constructora
 	private HashMap<Integer, String> ordenNombresParametrosElaborados;
 
-	// Otros menos útiles:
-//	RATIO_MAXRELATIVO_SEGUNDO_, RATIO_SMA_SEGUNDO_, STD_SMA_, PENDIENTE_1M_SMA_, 
-//	RATIO_MINRELATIVO_SEGUNDO_, RATIO_U_SMA_, RATIO_U_MAXRELATIVO_, RATIO_U_MINRELATIVO_, FASEWYCKOFF_
-	public enum COMIENZO_NOMBRES_PARAMETROS_ELABORADOS {
-		PENDIENTE_SMA_SEGUNDO_, PENDIENTE_1M_SMA_SEGUNDO_, PENDIENTE_2M_SMA_SEGUNDO_, MEDIA_SMA_, PENDIENTE_SMA_,
-		PENDIENTE_2M_SMA_, RATIO_SMA_, RATIO_MAXRELATIVO_, RATIO_MINRELATIVO_, CURTOSIS_, SKEWNESS_, EMA_, MACD_;
+	public enum PREFIJOS_ELAB {
+		STD_SMA_, PENDIENTE_1M_SMA_, RATIO_SMA_SEGUNDO_, RATIO_MAXRELATIVO_SEGUNDO_, PENDIENTE_SMA_SEGUNDO_,
+		PENDIENTE_1M_SMA_SEGUNDO_, PENDIENTE_2M_SMA_SEGUNDO_, MEDIA_SMA_, PENDIENTE_SMA_, PENDIENTE_2M_SMA_, RATIO_SMA_,
+		RATIO_MAXRELATIVO_, RATIO_MINRELATIVO_, RATIO_MINRELATIVO_SEGUNDO_, RATIO_U_SMA_, RATIO_U_MAXRELATIVO_,
+		RATIO_U_MINRELATIVO_, CURTOSIS_, SKEWNESS_, FASEWYCKOFF_, EMA_, MACD_, RSI14_, VARREL_;
 	}
 
 //	Otros menos útiles: 
@@ -84,6 +85,8 @@ public class Estadisticas extends DescriptiveStatistics {
 		System.out.println("e5.getVariacionRelativaMaxima(): " + e5.getVariacionRelativaMaxima());
 		System.out.println("e5.getRatioEMA(): " + e5.getRatioEMA());
 		System.out.println("e5.getRatioMACDMitadPeriodo(): " + e5.getRatioMACDMitadPeriodo());
+		System.out.println("e5.getRsi14(): " + e5.getRsi14());
+		System.out.println("e5.getVariacionRelativaMaxima(): " + e5.getVariacionRelativaMaxima());
 	}
 
 	/**
@@ -102,55 +105,45 @@ public class Estadisticas extends DescriptiveStatistics {
 	 * Constructora
 	 */
 	public Estadisticas() {
+
 		ordenNombresParametrosElaborados = new HashMap<Integer, String>();
-		// otros no útiles:
 
-//		ordenNombresParametrosElaborados.put(ordenNombresParametrosElaborados.size() + 1, COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.STD_SMA_.toString());
-//		ordenNombresParametrosElaborados.put(ordenNombresParametrosElaborados.size() + 1, COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.PENDIENTE_1M_SMA_.toString());
-//		ordenNombresParametrosElaborados.put(ordenNombresParametrosElaborados.size() + 1, COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_SMA_SEGUNDO_.toString());
-//		ordenNombresParametrosElaborados.put(ordenNombresParametrosElaborados.size() + 1,
-//				COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_MAXRELATIVO_SEGUNDO_.toString());
-
-//		ordenNombresParametrosElaborados.put(ordenNombresParametrosElaborados.size() + 1,
-//				COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.PENDIENTE_SMA_SEGUNDO_.toString());
-//		ordenNombresParametrosElaborados.put(ordenNombresParametrosElaborados.size() + 1,
-//				COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.PENDIENTE_1M_SMA_SEGUNDO_.toString());
-//		ordenNombresParametrosElaborados.put(ordenNombresParametrosElaborados.size() + 1,
-//				COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.PENDIENTE_2M_SMA_SEGUNDO_.toString());
-		ordenNombresParametrosElaborados.put(ordenNombresParametrosElaborados.size() + 1,
-				COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_.toString());
-		ordenNombresParametrosElaborados.put(ordenNombresParametrosElaborados.size() + 1,
-				COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.PENDIENTE_SMA_.toString());
-		ordenNombresParametrosElaborados.put(ordenNombresParametrosElaborados.size() + 1,
-				COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.PENDIENTE_2M_SMA_.toString());
-		ordenNombresParametrosElaborados.put(ordenNombresParametrosElaborados.size() + 1,
-				COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_SMA_.toString());
-		ordenNombresParametrosElaborados.put(ordenNombresParametrosElaborados.size() + 1,
-				COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_MAXRELATIVO_.toString());
-		ordenNombresParametrosElaborados.put(ordenNombresParametrosElaborados.size() + 1,
-				COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_MINRELATIVO_.toString());
-//		ordenNombresParametrosElaborados.put(ordenNombresParametrosElaborados.size() + 1,
-//				COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_MINRELATIVO_SEGUNDO_.toString());
-//		ordenNombresParametrosElaborados.put(ordenNombresParametrosElaborados.size() + 1,
-//				COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_U_SMA_.toString());
-//		ordenNombresParametrosElaborados.put(ordenNombresParametrosElaborados.size() + 1,
-//				COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_U_MAXRELATIVO_.toString());
-//		ordenNombresParametrosElaborados.put(ordenNombresParametrosElaborados.size() + 1,
-//				COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_U_MINRELATIVO_.toString());
-		ordenNombresParametrosElaborados.put(ordenNombresParametrosElaborados.size() + 1,
-				COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.CURTOSIS_.toString());
-		ordenNombresParametrosElaborados.put(ordenNombresParametrosElaborados.size() + 1,
-				COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.SKEWNESS_.toString());
-//		ordenNombresParametrosElaborados.put(ordenNombresParametrosElaborados.size() + 1,
-//				COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.FASEWYCKOFF_.toString());
-		ordenNombresParametrosElaborados.put(ordenNombresParametrosElaborados.size() + 1,
-				COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.EMA_.toString());
-		ordenNombresParametrosElaborados.put(ordenNombresParametrosElaborados.size() + 1,
-				COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MACD_.toString());
+		incluirParametroCebecera(ordenNombresParametrosElaborados, PREFIJOS_ELAB.STD_SMA_);
+		incluirParametroCebecera(ordenNombresParametrosElaborados, PREFIJOS_ELAB.PENDIENTE_1M_SMA_);
+		incluirParametroCebecera(ordenNombresParametrosElaborados, PREFIJOS_ELAB.RATIO_SMA_SEGUNDO_);
+		incluirParametroCebecera(ordenNombresParametrosElaborados, PREFIJOS_ELAB.RATIO_MAXRELATIVO_SEGUNDO_);
+		incluirParametroCebecera(ordenNombresParametrosElaborados, PREFIJOS_ELAB.PENDIENTE_SMA_SEGUNDO_);
+		incluirParametroCebecera(ordenNombresParametrosElaborados, PREFIJOS_ELAB.PENDIENTE_1M_SMA_SEGUNDO_);
+		incluirParametroCebecera(ordenNombresParametrosElaborados, PREFIJOS_ELAB.PENDIENTE_2M_SMA_SEGUNDO_);
+		incluirParametroCebecera(ordenNombresParametrosElaborados, PREFIJOS_ELAB.MEDIA_SMA_);
+		incluirParametroCebecera(ordenNombresParametrosElaborados, PREFIJOS_ELAB.PENDIENTE_SMA_);
+		incluirParametroCebecera(ordenNombresParametrosElaborados, PREFIJOS_ELAB.PENDIENTE_2M_SMA_);
+		incluirParametroCebecera(ordenNombresParametrosElaborados, PREFIJOS_ELAB.RATIO_SMA_);
+		incluirParametroCebecera(ordenNombresParametrosElaborados, PREFIJOS_ELAB.RATIO_MAXRELATIVO_);
+		incluirParametroCebecera(ordenNombresParametrosElaborados, PREFIJOS_ELAB.RATIO_MINRELATIVO_);
+		incluirParametroCebecera(ordenNombresParametrosElaborados, PREFIJOS_ELAB.RATIO_MINRELATIVO_SEGUNDO_);
+		incluirParametroCebecera(ordenNombresParametrosElaborados, PREFIJOS_ELAB.RATIO_U_SMA_);
+		incluirParametroCebecera(ordenNombresParametrosElaborados, PREFIJOS_ELAB.RATIO_U_MAXRELATIVO_);
+		incluirParametroCebecera(ordenNombresParametrosElaborados, PREFIJOS_ELAB.RATIO_U_MINRELATIVO_);
+		incluirParametroCebecera(ordenNombresParametrosElaborados, PREFIJOS_ELAB.CURTOSIS_);
+		incluirParametroCebecera(ordenNombresParametrosElaborados, PREFIJOS_ELAB.SKEWNESS_);
+		incluirParametroCebecera(ordenNombresParametrosElaborados, PREFIJOS_ELAB.FASEWYCKOFF_);
+		incluirParametroCebecera(ordenNombresParametrosElaborados, PREFIJOS_ELAB.EMA_);
+		incluirParametroCebecera(ordenNombresParametrosElaborados, PREFIJOS_ELAB.MACD_);
+		incluirParametroCebecera(ordenNombresParametrosElaborados, PREFIJOS_ELAB.RSI14_);
+		incluirParametroCebecera(ordenNombresParametrosElaborados, PREFIJOS_ELAB.VARREL_);
 
 		locale = new Locale("en", "UK");
 		df = (DecimalFormat) NumberFormat.getNumberInstance(locale);
 		df.applyPattern("#0.#");
+	}
+
+	/**
+	 * @param mapa
+	 * @param item
+	 */
+	public void incluirParametroCebecera(HashMap<Integer, String> mapa, Object item) {
+		mapa.put(ordenNombresParametrosElaborados.size() + 1, item.toString());
 	}
 
 	/**
@@ -422,6 +415,8 @@ public class Estadisticas extends DescriptiveStatistics {
 		System.out.println("faseWyckoff = " + getFaseWyckoff());
 		System.out.println("ema = " + getRatioEMA());
 		System.out.println("macd = " + getRatioMACDMitadPeriodo());
+		System.out.println("rsi14 = " + getRsi14());
+		System.out.println("VariacionRelativaMaxima = " + getVariacionRelativaMaxima());
 	}
 
 	/**
@@ -436,128 +431,90 @@ public class Estadisticas extends DescriptiveStatistics {
 		String periodoString = periodo.toString();
 		HashMap<String, String> parametros = new HashMap<String, String>();
 
-		String media_sma = VALOR_INVALIDO;// default
-//		String std_sma = VALOR_INVALIDO;// default
-		String pendiente_sma = VALOR_INVALIDO;// default
-//		String pendiente_sma_segundo = VALOR_INVALIDO;// default
-//		String pendiente_1m_sma = VALOR_INVALIDO;// default
-//		String pendiente_1m_sma_segundo = VALOR_INVALIDO;// default
-		String pendiente_2m_sma = VALOR_INVALIDO;// default
-//		String pendiente_2m_sma_segundo = VALOR_INVALIDO;// default
-		String ratio_sma = VALOR_INVALIDO;// default
-//		String ratio_smaSegundo = VALOR_INVALIDO;// default
-		String ratio_maxrelativo = VALOR_INVALIDO;// default
-		String ratio_minrelativo = VALOR_INVALIDO;// default
-//		String ratio_maxrelativoSegundo = VALOR_INVALIDO;// default
-//		String ratio_minrelativoSegundo = VALOR_INVALIDO;// default
-//		String ratio_usma = VALOR_INVALIDO;// default
-//		String ratio_umaxrelativo = VALOR_INVALIDO;// default
-//		String ratio_uminrelativo = VALOR_INVALIDO;// default
-		String kurtosis = VALOR_INVALIDO;// default
-		String skewness = VALOR_INVALIDO;// default
-//		String faseWyckoff = VALOR_INVALIDO;// default
-		String ema = VALOR_INVALIDO;// default
-		String macd = VALOR_INVALIDO;// default
+		incluirParamValor(parametros, PREFIJOS_ELAB.STD_SMA_, periodoString, finalNombreParametro, getStd(),
+				rellenarConInvalidos);
+		incluirParamValor(parametros, PREFIJOS_ELAB.PENDIENTE_1M_SMA_, periodoString, finalNombreParametro,
+				getPendienteRelativa1M(), rellenarConInvalidos);
+		incluirParamValor(parametros, PREFIJOS_ELAB.RATIO_SMA_SEGUNDO_, periodoString, finalNombreParametro,
+				getRatioSMASegundo(), rellenarConInvalidos);
+		incluirParamValor(parametros, PREFIJOS_ELAB.RATIO_MAXRELATIVO_SEGUNDO_, periodoString, finalNombreParametro,
+				getRatioMaxSegundo(), rellenarConInvalidos);
+		incluirParamValor(parametros, PREFIJOS_ELAB.PENDIENTE_SMA_SEGUNDO_, periodoString, finalNombreParametro,
+				getPendienteRelativaSegundo(), rellenarConInvalidos);
+		incluirParamValor(parametros, PREFIJOS_ELAB.PENDIENTE_1M_SMA_SEGUNDO_, periodoString, finalNombreParametro,
+				getPendienteRelativa1MSegundo(), rellenarConInvalidos);
+		incluirParamValor(parametros, PREFIJOS_ELAB.PENDIENTE_2M_SMA_SEGUNDO_, periodoString, finalNombreParametro,
+				getPendienteRelativa2MSegundo(), rellenarConInvalidos);
+		incluirParamValor(parametros, PREFIJOS_ELAB.MEDIA_SMA_, periodoString, finalNombreParametro, getMedia(),
+				rellenarConInvalidos);
+		incluirParamValor(parametros, PREFIJOS_ELAB.PENDIENTE_SMA_, periodoString, finalNombreParametro,
+				getPendienteRelativa(), rellenarConInvalidos);
+		incluirParamValor(parametros, PREFIJOS_ELAB.PENDIENTE_2M_SMA_, periodoString, finalNombreParametro,
+				getPendienteRelativa2M(), rellenarConInvalidos);
+		incluirParamValor(parametros, PREFIJOS_ELAB.RATIO_SMA_, periodoString, finalNombreParametro, getRatioSMA(),
+				rellenarConInvalidos);
+		incluirParamValor(parametros, PREFIJOS_ELAB.RATIO_MAXRELATIVO_, periodoString, finalNombreParametro,
+				getRatioMax(), rellenarConInvalidos);
+		incluirParamValor(parametros, PREFIJOS_ELAB.RATIO_MINRELATIVO_, periodoString, finalNombreParametro,
+				getRatioMin(), rellenarConInvalidos);
+		incluirParamValor(parametros, PREFIJOS_ELAB.RATIO_MINRELATIVO_SEGUNDO_, periodoString, finalNombreParametro,
+				getRatioMinSegundo(), rellenarConInvalidos);
+		incluirParamValor(parametros, PREFIJOS_ELAB.RATIO_U_SMA_, periodoString, finalNombreParametro,
+				getRatioUltimoSMA(), rellenarConInvalidos);
+		incluirParamValor(parametros, PREFIJOS_ELAB.RATIO_U_MAXRELATIVO_, periodoString, finalNombreParametro,
+				getRatioUltimoMax(), rellenarConInvalidos);
+		incluirParamValor(parametros, PREFIJOS_ELAB.RATIO_U_MINRELATIVO_, periodoString, finalNombreParametro,
+				getRatioUltimoMin(), rellenarConInvalidos);
 
-		if (rellenarConInvalidos == false) {
+		// Se pone un 0 si la kurtosis no es válida. Para menos de 4 valores, será
+		// siempre inválido. Se pone 0 en vez de null para que no se descarten todas las
+		// filas. El clasificador no lo usará, ya que no lo considerará útil
+		incluirParamValor(parametros, PREFIJOS_ELAB.CURTOSIS_, periodoString, finalNombreParametro,
+				Double.isNaN(getKurtosis()) ? 0 : getKurtosis(), rellenarConInvalidos);
 
-			double d_media_sma = this.getMedia();
-//			double d_std_sma = this.getStd();
-			double d_pendiente_sma = this.getPendienteRelativa();
-//			double d_pendiente_sma_segundo = this.getPendienteRelativaSegundo();
-//			double d_pendiente_1m_sma = this.getPendienteRelativa1M();
-//			double d_pendiente_1m_sma_segundo = this.getPendienteRelativa1MSegundo();
-			double d_pendiente_2m_sma = this.getPendienteRelativa2M();
-//			double d_pendiente_2m_sma_segundo = this.getPendienteRelativa2MSegundo();
-			double d_ratio_sma = this.getRatioSMA();
-//			double d_ratio_smaSegundo = this.getRatioSMASegundo();
-			double d_ratio_maxrelativo = this.getRatioMax();
-			double d_ratio_minrelativo = this.getRatioMin();
-//			double d_ratio_maxrelativoSegundo = this.getRatioMaxSegundo();
-//			double d_ratio_minrelativoSegundo = this.getRatioMinSegundo();
-//			double d_ratio_usma = this.getRatioUltimoSMA();
-//			double d_ratio_umaxrelativo = this.getRatioUltimoMax();
-//			double d_ratio_uminrelativo = this.getRatioUltimoMin();
-			double d_kurtosis = this.getKurtosis();
-			double d_skewness = this.getSkewness();
-//			double d_faseWyckoff = this.getFaseWyckoff();
-			double d_ema = this.getRatioEMA();
-			double d_macd = this.getRatioMACDMitadPeriodo();
-
-			media_sma = Double.isNaN(d_media_sma) ? VALOR_INVALIDO : df.format(d_media_sma);
-//			std_sma = Double.isNaN(d_std_sma) ? VALOR_INVALIDO : df.format(d_std_sma);
-			pendiente_sma = Double.isNaN(d_pendiente_sma) ? VALOR_INVALIDO : df.format(d_pendiente_sma);
-//			pendiente_sma_segundo = Double.isNaN(d_pendiente_sma_segundo) ? VALOR_INVALIDO : df.format(d_pendiente_sma_segundo);
-//			pendiente_1m_sma = Double.isNaN(d_pendiente_1m_sma) ? VALOR_INVALIDO : df.format(d_pendiente_1m_sma);
-//			pendiente_1m_sma_segundo = Double.isNaN(d_pendiente_1m_sma_segundo) ? VALOR_INVALIDO : df.format(d_pendiente_1m_sma_segundo);
-			pendiente_2m_sma = Double.isNaN(d_pendiente_2m_sma) ? VALOR_INVALIDO : df.format(d_pendiente_2m_sma);
-//			pendiente_2m_sma_segundo = Double.isNaN(d_pendiente_2m_sma_segundo) ? VALOR_INVALIDO : df.format(d_pendiente_2m_sma_segundo);
-			ratio_sma = Double.isNaN(d_ratio_sma) ? VALOR_INVALIDO : df.format(d_ratio_sma);
-//			ratio_smaSegundo = Double.isNaN(d_ratio_smaSegundo) ? VALOR_INVALIDO : df.format(d_ratio_smaSegundo);
-			ratio_maxrelativo = Double.isNaN(d_ratio_maxrelativo) ? VALOR_INVALIDO : df.format(d_ratio_maxrelativo);
-			ratio_minrelativo = Double.isNaN(d_ratio_minrelativo) ? VALOR_INVALIDO : df.format(d_ratio_minrelativo);
-//			ratio_maxrelativoSegundo = Double.isNaN(d_ratio_maxrelativoSegundo) ? VALOR_INVALIDO
-//					: df.format(d_ratio_maxrelativoSegundo);
-//			ratio_minrelativoSegundo = Double.isNaN(d_ratio_minrelativoSegundo) ? VALOR_INVALIDO
-//					: df.format(d_ratio_minrelativoSegundo);
-//			ratio_usma = Double.isNaN(d_ratio_usma) ? VALOR_INVALIDO : df.format(d_ratio_usma);
-//			ratio_umaxrelativo = Double.isNaN(d_ratio_umaxrelativo) ? VALOR_INVALIDO : df.format(d_ratio_umaxrelativo);
-//			ratio_uminrelativo = Double.isNaN(d_ratio_uminrelativo) ? VALOR_INVALIDO : df.format(d_ratio_uminrelativo);
-			// Se pone un 0 si la kurtosis no es válida. Para menos de 4 valores, será
-			// siempre inválido. Se pone 0 en vez de null para que no se descarten todas las
-			// filas. El clasificador no lo usará, ya que no lo considerará útil
-			kurtosis = Double.isNaN(d_kurtosis) ? "0" : df.format(d_kurtosis);
-			skewness = Double.isNaN(d_skewness) ? VALOR_INVALIDO : df.format(d_skewness);
-//			faseWyckoff = Double.isNaN(d_faseWyckoff) ? VALOR_INVALIDO : df.format(d_faseWyckoff);
-			ema = Double.isNaN(d_ema) ? VALOR_INVALIDO : df.format(d_ema);
-			macd = Double.isNaN(d_macd) ? VALOR_INVALIDO : df.format(d_macd);
-		}
-
-		parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_ + periodoString + finalNombreParametro,
-				media_sma);
-//		parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.STD_SMA_ + periodoString + finalNombreParametro, std_sma);
-		parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.PENDIENTE_SMA_ + periodoString + finalNombreParametro,
-				pendiente_sma);
-//		parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.PENDIENTE_SMA_SEGUNDO_ + periodoString + finalNombreParametro,
-//				pendiente_sma_segundo);
-//		parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.PENDIENTE_1M_SMA_ + periodoString + finalNombreParametro,
-//				pendiente_1m_sma);
-//		parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.PENDIENTE_1M_SMA_SEGUNDO_ + periodoString + finalNombreParametro,
-//				pendiente_1m_sma_segundo);
-		parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.PENDIENTE_2M_SMA_ + periodoString + finalNombreParametro,
-				pendiente_2m_sma);
-//		parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.PENDIENTE_2M_SMA_SEGUNDO_ + periodoString + finalNombreParametro,
-//				pendiente_2m_sma_segundo);
-		parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_SMA_ + periodoString + finalNombreParametro,
-				ratio_sma);
-//		parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_SMA_SEGUNDO_ + periodoString + finalNombreParametro,
-//				ratio_smaSegundo);
-		parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_MAXRELATIVO_ + periodoString + finalNombreParametro,
-				ratio_maxrelativo);
-		parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_MINRELATIVO_ + periodoString + finalNombreParametro,
-				ratio_minrelativo);
-//		parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_MAXRELATIVO_SEGUNDO_ + periodoString
-//				+ finalNombreParametro, ratio_maxrelativoSegundo);
-//		parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_MINRELATIVO_SEGUNDO_ + periodoString
-//				+ finalNombreParametro, ratio_minrelativoSegundo);
-//		parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_U_SMA_ + periodoString + finalNombreParametro,
-//				ratio_usma);
-//		parametros.put(
-//				COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_U_MAXRELATIVO_ + periodoString + finalNombreParametro,
-//				ratio_umaxrelativo);
-//		parametros.put(
-//				COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.RATIO_U_MINRELATIVO_ + periodoString + finalNombreParametro,
-//				ratio_uminrelativo);
-		parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.CURTOSIS_ + periodoString + finalNombreParametro,
-				kurtosis);
-		parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.SKEWNESS_ + periodoString + finalNombreParametro,
-				skewness);
-//		parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.FASEWYCKOFF_ + periodoString + finalNombreParametro,
-//				faseWyckoff);
-		parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.EMA_ + periodoString + finalNombreParametro, ema);
-		parametros.put(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MACD_ + periodoString + finalNombreParametro, macd);
+		incluirParamValor(parametros, PREFIJOS_ELAB.SKEWNESS_, periodoString, finalNombreParametro, getSkewness(),
+				rellenarConInvalidos);
+		incluirParamValor(parametros, PREFIJOS_ELAB.FASEWYCKOFF_, periodoString, finalNombreParametro, getFaseWyckoff(),
+				rellenarConInvalidos);
+		incluirParamValor(parametros, PREFIJOS_ELAB.EMA_, periodoString, finalNombreParametro, getRatioEMA(),
+				rellenarConInvalidos);
+		incluirParamValor(parametros, PREFIJOS_ELAB.MACD_, periodoString, finalNombreParametro,
+				getRatioMACDMitadPeriodo(), rellenarConInvalidos);
+		incluirParamValor(parametros, PREFIJOS_ELAB.RSI14_, periodoString, finalNombreParametro, getRsi14(),
+				rellenarConInvalidos);
+		incluirParamValor(parametros, PREFIJOS_ELAB.VARREL_, periodoString, finalNombreParametro,
+				getVariacionRelativaMaxima(), rellenarConInvalidos);
 
 		return parametros;
+	}
+
+	/**
+	 * @param parametros
+	 * @param prefijo
+	 * @param periodo
+	 * @param finalNombreParametro
+	 * @param valor
+	 */
+	public void incluirParamValor(HashMap<String, String> parametros, Object prefijo, String periodo,
+			String finalNombreParametro, Object valor, Boolean rellenarConInvalidos) {
+
+		if (rellenarConInvalidos) {
+			parametros.put(prefijo + periodo + finalNombreParametro, VALOR_INVALIDO);
+		} else {
+
+			if (valor instanceof Double && Double.isNaN((double) valor)) {
+				parametros.put(prefijo + periodo + finalNombreParametro, VALOR_INVALIDO);
+
+			} else if ((valor instanceof Double && !Double.isNaN((double) valor))
+					|| valor instanceof Float && !Float.isNaN((float) valor)) {
+				parametros.put(prefijo + periodo + finalNombreParametro, df4decimales.format(valor));
+
+			} else {
+				parametros.put(prefijo + periodo + finalNombreParametro, String.valueOf(valor));
+			}
+
+		}
+
 	}
 
 	/**
@@ -736,4 +693,50 @@ public class Estadisticas extends DescriptiveStatistics {
 		return getRatioEMAPeriodo((int) Math.floor(this.getN() / 2)) - getRatioEMAPeriodo((int) this.getN());
 	}
 
+	/**
+	 * 
+	 * @return RSI de 14 elementos.
+	 */
+	public double getRsi14() {
+
+		int period = 14;
+		EMA ema = new EMA(2 * period - 1);
+
+		// fill 'up' and 'down' table - 'up' when today prize is bigger than yesterday,
+		// 'down' when today is lower than yesterday
+		final double[] up = new double[(int) getN() - 1];
+		final double[] down = new double[(int) getN() - 1];
+		for (int i = 0; i < (int) getN() - 1; i++) {
+			if (getElement(i) > getElement(i + 1)) {
+				up[i] = getElement(i) - getElement(i + 1);
+				down[i] = 0;
+			}
+			if (getElement(i) < getElement(i + 1)) {
+				down[i] = Math.abs(getElement(i) - getElement(i + 1));
+				up[i] = 0;
+			}
+		}
+
+		// count EMA for up and down tables
+		final int emaLength = (int) getN() - 2 * period;
+		double[] rsis = new double[0];
+		if (emaLength > 0) {
+			final double[] emus = new double[emaLength];
+			final double[] emds = new double[emaLength];
+			ema.count(up, 0, emus);
+			ema.count(down, 0, emds);
+
+			// count RSI with RSI recursive formula
+			rsis = new double[emaLength];
+			for (int i = 0; i < rsis.length; i++) {
+				rsis[i] = 100 - (100 / (double) (1 + emus[i] / emds[i]));
+			}
+		}
+
+		double salida = 0;
+		if (rsis.length > 0)
+			salida = rsis[rsis.length - 1];
+
+		return salida;
+	}
 }

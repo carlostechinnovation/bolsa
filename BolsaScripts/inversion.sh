@@ -5,7 +5,7 @@
 echo -e "INVERSION - INICIO: "$( date "+%Y%m%d%H%M%S" )
 
 #################### DIRECTORIOS ###############################################################
-DIR_CODIGOS_CARLOS="/home/carloslinux/Desktop/GIT_BOLSA/"
+DIR_CODIGOS_CARLOS="/home/carloslinux/Desktop/GIT_BOLSA/bolsa/"
 DIR_CODIGOS_LUIS="/home/t151521/bolsa/"
 PYTHON_MOTOR_CARLOS="/home/carloslinux/anaconda3/envs/BolsaPython38/bin/python"
 PYTHON_MOTOR_LUIS="/usr/bin/python3.8"
@@ -105,6 +105,17 @@ done 9< <( find ${DIR_FUT_SUBGRUPOS} -type f -exec printf '%s\0' {} + )
 
 # En la carpeta DROPBOX, coge el CSV más reciente de predicciones (su nombre es 202XMMDD) y crea un fichero llamado 202XMMDD.html con toda la info que encuentre de ese dia. Ademas, le añade la info de CALIDAD.csv que esta aparte
 $PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/InversionJuntarPrediccionesDeUnDia.py" "${DIR_DROPBOX}" "${DIR_DROPBOX}/ANALISIS/CALIDAD.csv" "${DIR_CODIGOS}BolsaJava/src/main/resources/Bolsa_Subgrupos_Descripcion.txt" "${DIR_CODIGOS}BolsaJava/realimentacion/falsospositivos_empresas.csv" >> ${LOG_INVERSION}
+
+
+# Crear CARPETA DIARIA DE ENTREGABLES y meterlos dentro
+CARPETA_ENTREGABLES="${DIR_DROPBOX}/"$(date '+%Y%m%d_%H%M%S')
+mkdir -p "${CARPETA_ENTREGABLES}"
+PREFIJO_RECIEN_CALCULADOS=$(ls -t | grep GRANDE | grep SG_0_ | head -n 1 | awk -F "_" '{print $1}')  # no tiene que cogerse AAAAMMDD de ahora, sino de los CSV mas recientes encontrados
+cp "${DIR_DROPBOX}/${PREFIJO_RECIEN_CALCULADOS}.html" "${CARPETA_ENTREGABLES}/"
+cp "${DIR_DROPBOX}/${PREFIJO_RECIEN_CALCULADOS}_todas_las_empresas.html" "${CARPETA_ENTREGABLES}/"
+cp "/bolsa/logs/pasado_metricas_y_rentabilidades.html" "${CARPETA_ENTREGABLES}/"
+cp "/bolsa/pasado/empresas_clustering_web.html" "${CARPETA_ENTREGABLES}/"
+
 
 
 ################################## GITHUB: commit and push##############################################################

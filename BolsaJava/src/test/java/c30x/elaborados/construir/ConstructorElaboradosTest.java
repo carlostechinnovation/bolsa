@@ -33,19 +33,19 @@ public class ConstructorElaboradosTest {
 		myReader.close();
 
 		String empresa = "AACG";
-		Integer ANTIGUEDAD_ESTUDIADA = 10; // ANTIGUEDAD ESTUDIADA (su target será 1 ó 0 mirando las X+M velas más
-									// recientes (futuras)
-		Integer S = ElaboradosUtils.S; // DEFAULT
-		Integer X = ElaboradosUtils.X; // DEFAULT
-		Integer R = ElaboradosUtils.R; // DEFAULT
-		Integer M = ElaboradosUtils.M; // DEFAULT
-		Integer F = ElaboradosUtils.F; // DEFAULT
-		Integer B = ElaboradosUtils.B; // DEFAULT
-		Double umbralMaximo = ElaboradosUtils.SUBIDA_MAXIMA_POR_VELA; // DEFAULT
-		Double umbralMinimo = ElaboradosUtils.SUBIDA_MINIMA_GRAN_VELA; // DEFAULT
+		Integer ANTIGUEDAD_ESTUDIADA = 20; // ANTIGUEDAD ESTUDIADA (su target será 1 ó 0 mirando las X+M velas más
+		// recientes (futuras)
+		Integer S = 10;
+		Integer X = 10;
+		Integer R = 10;
+		Integer M = 1;
+		Integer F = 10;
+		Integer B = 10;
+		Double umbralMaximo = 5.0D;
+		Double umbralMinimo = 0.0D;
 
-		String targetCalculado = ConstructorElaborados.calcularTarget(empresa, datosEmpresaEntrada, ANTIGUEDAD_ESTUDIADA, S, X, R,
-				M, F, B, umbralMaximo, umbralMinimo);
+		String targetCalculado = ConstructorElaborados.calcularTarget(empresa, datosEmpresaEntrada,
+				ANTIGUEDAD_ESTUDIADA, S, X, R, M, F, B, umbralMaximo, umbralMinimo);
 		String targetEsperado = "1";
 
 		assertTrue(targetCalculado.equals(targetEsperado));
@@ -71,6 +71,13 @@ public class ConstructorElaboradosTest {
 			mapaFeatures.put(claveyvalor[0], claveyvalor[1]);
 		}
 		datosEmpresaEntrada.put(antiguedad, mapaFeatures);
+
+		// Pintamos los 50 precios close más recientes
+		if (antiguedad < 30) {
+			System.out.println("(ConstructorElaboradosTest.procesarFilaFichero1): antiguedad=" + antiguedad
+					+ " -->close=" + mapaFeatures.get("close"));
+		}
+
 	}
 
 }

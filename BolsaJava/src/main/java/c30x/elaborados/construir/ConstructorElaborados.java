@@ -16,9 +16,9 @@ import org.apache.log4j.PatternLayout;
 import org.apache.log4j.helpers.NullEnumeration;
 
 import c20X.limpios.LimpiosUtils;
-import c30x.elaborados.construir.Estadisticas.COMIENZO_NOMBRES_PARAMETROS_ELABORADOS;
 import c30x.elaborados.construir.Estadisticas.FINAL_NOMBRES_PARAMETROS_ELABORADOS;
 import c30x.elaborados.construir.Estadisticas.OTROS_PARAMS_ELAB;
+import c30x.elaborados.construir.Estadisticas.PREFIJOS_ELAB;
 import coordinador.Principal;
 
 public class ConstructorElaborados implements Serializable {
@@ -31,7 +31,7 @@ public class ConstructorElaborados implements Serializable {
 
 	// Se toman los parámetros de los grupos 11, 33 y 42 como los únicos autorizados
 	// en el sistema. Así evitamos que la matriz de datos se muy grande
-	private static String LISTA_PARAMETROS_AUTORIZADOS = "MEDIA_SMA_1_VOLUMEN,RATIO_MINRELATIVO_4_HIGH,RATIO_MAXRELATIVO_4_LOW,RATIO_U_MAXRELATIVO_20_HIGH,RATIO_U_MINRELATIVO_20_LOW,SKEWNESS_20_LOW,SKEWNESS_20_OPEN,RATIO_SMA_20_VOLUMEN,PENDIENTE_2M_SMA_50_HIGH,RATIO_U_MINRELATIVO_50_HIGH,PENDIENTE_SMA_50_OPEN,CURTOSIS_50_CLOSEOPEN,RATIO_MINRELATIVO_50_HIGHLOW,RATIO_U_SMA_50_HIGHLOW,SG_HIGH_PENDIENTE7D,MEDIA_SMA_1_LOW,CURTOSIS_1_OPEN,MEDIA_SMA_1_HIGHLOW,RATIO_U_MAXRELATIVO_1_VOLUMEN,RATIO_U_MINRELATIVO_1_VOLUMEN,CURTOSIS_1_VOLUMEN,MEDIA_SMA_4_CLOSE,RATIO_SMA_4_CLOSE,RATIO_MAXRELATIVO_4_CLOSE,RATIO_MINRELATIVO_SEGUNDO_4_HIGH,RATIO_U_MINRELATIVO_4_HIGH,PENDIENTE_SMA_4_LOW,RATIO_MINRELATIVO_SEGUNDO_4_LOW,RATIO_U_MAXRELATIVO_4_LOW,RATIO_MAXRELATIVO_4_OPEN,SKEWNESS_4_VOLUMEN,RATIO_MINRELATIVO_20_CLOSE,RATIO_U_MINRELATIVO_20_CLOSE,RATIO_MAXRELATIVO_20_HIGH,RATIO_U_MINRELATIVO_20_HIGH,MEDIA_SMA_20_LOW,RATIO_MINRELATIVO_20_LOW,RATIO_U_MAXRELATIVO_20_LOW,SKEWNESS_20_CLOSEOPEN,RATIO_MINRELATIVO_20_HIGHLOW,RATIO_MINRELATIVO_SEGUNDO_20_HIGHLOW,PENDIENTE_SMA_20_VOLUMEN,RATIO_MAXRELATIVO_20_VOLUMEN,RATIO_MINRELATIVO_SEGUNDO_20_VOLUMEN,RATIO_U_MAXRELATIVO_20_VOLUMEN,CURTOSIS_20_VOLUMEN,SKEWNESS_20_VOLUMEN,RATIO_MINRELATIVO_SEGUNDO_50_CLOSE,RATIO_U_SMA_50_CLOSE,RATIO_U_MAXRELATIVO_50_HIGH,CURTOSIS_50_HIGH,SKEWNESS_50_HIGH,PENDIENTE_SMA_50_LOW,RATIO_MINRELATIVO_50_LOW,RATIO_U_SMA_50_LOW,PENDIENTE_2M_SMA_50_OPEN,RATIO_U_SMA_50_OPEN,SKEWNESS_50_CLOSEOPEN,MEDIA_SMA_50_OPENHIGH,RATIO_U_SMA_50_OPENHIGH,PENDIENTE_2M_SMA_50_HIGHLOW,RATIO_MINRELATIVO_SEGUNDO_50_HIGHLOW,RATIO_MINRELATIVO_50_VOLUMEN,RATIO_MINRELATIVO_SEGUNDO_50_VOLUMEN,CURTOSIS_50_VOLUMEN,SKEWNESS_50_VOLUMEN,SG_LOW_PENDIENTE3D,RATIO_MAXRELATIVO_20_CLOSE,RATIO_MAXRELATIVO_50_HIGH,SG_HIGH_PENDIENTE3D";
+//	private static String LISTA_PARAMETROS_AUTORIZADOS = "MEDIA_SMA_1_VOLUMEN,RATIO_MINRELATIVO_4_HIGH,RATIO_MAXRELATIVO_4_LOW,RATIO_U_MAXRELATIVO_20_HIGH,RATIO_U_MINRELATIVO_20_LOW,SKEWNESS_20_LOW,SKEWNESS_20_OPEN,RATIO_SMA_20_VOLUMEN,PENDIENTE_2M_SMA_50_HIGH,RATIO_U_MINRELATIVO_50_HIGH,PENDIENTE_SMA_50_OPEN,CURTOSIS_50_CLOSEOPEN,RATIO_MINRELATIVO_50_HIGHLOW,RATIO_U_SMA_50_HIGHLOW,SG_HIGH_PENDIENTE7D,MEDIA_SMA_1_LOW,CURTOSIS_1_OPEN,MEDIA_SMA_1_HIGHLOW,RATIO_U_MAXRELATIVO_1_VOLUMEN,RATIO_U_MINRELATIVO_1_VOLUMEN,CURTOSIS_1_VOLUMEN,MEDIA_SMA_4_CLOSE,RATIO_SMA_4_CLOSE,RATIO_MAXRELATIVO_4_CLOSE,RATIO_MINRELATIVO_SEGUNDO_4_HIGH,RATIO_U_MINRELATIVO_4_HIGH,PENDIENTE_SMA_4_LOW,RATIO_MINRELATIVO_SEGUNDO_4_LOW,RATIO_U_MAXRELATIVO_4_LOW,RATIO_MAXRELATIVO_4_OPEN,SKEWNESS_4_VOLUMEN,RATIO_MINRELATIVO_20_CLOSE,RATIO_U_MINRELATIVO_20_CLOSE,RATIO_MAXRELATIVO_20_HIGH,RATIO_U_MINRELATIVO_20_HIGH,MEDIA_SMA_20_LOW,RATIO_MINRELATIVO_20_LOW,RATIO_U_MAXRELATIVO_20_LOW,SKEWNESS_20_CLOSEOPEN,RATIO_MINRELATIVO_20_HIGHLOW,RATIO_MINRELATIVO_SEGUNDO_20_HIGHLOW,PENDIENTE_SMA_20_VOLUMEN,RATIO_MAXRELATIVO_20_VOLUMEN,RATIO_MINRELATIVO_SEGUNDO_20_VOLUMEN,RATIO_U_MAXRELATIVO_20_VOLUMEN,CURTOSIS_20_VOLUMEN,SKEWNESS_20_VOLUMEN,RATIO_MINRELATIVO_SEGUNDO_50_CLOSE,RATIO_U_SMA_50_CLOSE,RATIO_U_MAXRELATIVO_50_HIGH,CURTOSIS_50_HIGH,SKEWNESS_50_HIGH,PENDIENTE_SMA_50_LOW,RATIO_MINRELATIVO_50_LOW,RATIO_U_SMA_50_LOW,PENDIENTE_2M_SMA_50_OPEN,RATIO_U_SMA_50_OPEN,SKEWNESS_50_CLOSEOPEN,MEDIA_SMA_50_OPENHIGH,RATIO_U_SMA_50_OPENHIGH,PENDIENTE_2M_SMA_50_HIGHLOW,RATIO_MINRELATIVO_SEGUNDO_50_HIGHLOW,RATIO_MINRELATIVO_50_VOLUMEN,RATIO_MINRELATIVO_SEGUNDO_50_VOLUMEN,CURTOSIS_50_VOLUMEN,SKEWNESS_50_VOLUMEN,SG_LOW_PENDIENTE3D,RATIO_MAXRELATIVO_20_CLOSE,RATIO_MAXRELATIVO_50_HIGH,SG_HIGH_PENDIENTE3D";
 
 	private static final Float MAXIMO_DESBALANCEO = 7.0F; // MAXIMO DESBALANCEO NATURAL PERMITIDO (mayoritaria vs
 															// minoritaria)
@@ -49,7 +49,7 @@ public class ConstructorElaborados implements Serializable {
 
 	// Se usan los periodos típicos que suelen usar los robots
 	// (consideraremos velas)
-	public final static Integer[] periodosDParaParametros = new Integer[] { 3, 4, 7, 20, 50 };
+	public final static Integer[] periodosDParaParametros = new Integer[] { 4, 7, 20, 50 };
 
 	// IMPORTANTE: se asume que los datos estan ordenados de menor a mayor
 	// antiguedad, y agrupados por empresa
@@ -133,8 +133,8 @@ public class ConstructorElaborados implements Serializable {
 			destino = directorioSalida + "/" + ficheroGestionado.getName();
 
 			if (i % 10 == 1) {
-				MY_LOGGER.info("ENTRADA Empresa numero = " + i + " Ficheros ENTRADA|salida -> "
-						+ ficheroGestionado.getAbsolutePath() + " | \t" + destino);
+				MY_LOGGER.info("ENTRADA Empresa numero = " + i + " ENTRADA: " + ficheroGestionado.getAbsolutePath()
+						+ " | salida: " + destino);
 			}
 			i++;
 
@@ -398,21 +398,21 @@ public class ConstructorElaborados implements Serializable {
 							auxOpen = parametros.get("open");
 
 							// Precio simple
-							estadisticasClose.addValue(new Double(auxClose));
-							estadisticasHigh.addValue(new Double(auxHigh));
-							estadisticasLow.addValue(new Double(auxLow));
-							estadisticasOpen.addValue(new Double(auxOpen));
+							estadisticasClose.addValue(Double.valueOf(auxClose));
+							estadisticasHigh.addValue(Double.valueOf(auxHigh));
+							estadisticasLow.addValue(Double.valueOf(auxLow));
+							estadisticasOpen.addValue(Double.valueOf(auxOpen));
 
 							// Precio complejo
-							estadisticasCloseOpen.addValue(new Double(auxClose) - new Double(auxOpen));
-//							estadisticasCloseHigh.addValue(new Double(auxClose) - new Double(auxHigh));
-//							estadisticasCloseLow.addValue(new Double(auxClose) - new Double(auxLow));
-							estadisticasOpenHigh.addValue(new Double(auxOpen) - new Double(auxHigh));
-//							estadisticasOpenLow.addValue(new Double(auxOpen) - new Double(auxLow));
-							estadisticasHighLow.addValue(new Double(auxHigh) - new Double(auxLow));
+							estadisticasCloseOpen.addValue(Double.valueOf(auxClose) - Double.valueOf(auxOpen));
+//							estadisticasCloseHigh.addValue( Double.valueOf(auxClose) -  Double.valueOf(auxHigh));
+//							estadisticasCloseLow.addValue( Double.valueOf(auxClose) -  Double.valueOf(auxLow));
+							estadisticasOpenHigh.addValue(Double.valueOf(auxOpen) - Double.valueOf(auxHigh));
+//							estadisticasOpenLow.addValue( Double.valueOf(auxOpen) -  Double.valueOf(auxLow));
+							estadisticasHighLow.addValue(Double.valueOf(auxHigh) - Double.valueOf(auxLow));
 
 							// Volumen
-							estadisticasVolumen.addValue(new Double(auxVolumen));
+							estadisticasVolumen.addValue(Double.valueOf(auxVolumen));
 
 							MY_LOGGER.debug("(antiguedad: " + antiguedad + ", periodo: " + periodo
 									+ ") Metido para estadísticas: " + auxClose);
@@ -548,8 +548,8 @@ public class ConstructorElaborados implements Serializable {
 //							FINAL_NOMBRES_PARAMETROS_ELABORADOS._CLOSEHIGH.toString(), Boolean.FALSE);
 //					mapaParamsCloseLow = estadisticasCloseLow.getParametros(periodoActual,
 //							FINAL_NOMBRES_PARAMETROS_ELABORADOS._CLOSELOW.toString(), Boolean.FALSE);
-					mapaParamsOpenHigh = estadisticasOpenHigh.getParametros(periodoActual,
-							FINAL_NOMBRES_PARAMETROS_ELABORADOS._OPENHIGH.toString(), Boolean.FALSE);
+//					mapaParamsOpenHigh = estadisticasOpenHigh.getParametros(periodoActual,
+//							FINAL_NOMBRES_PARAMETROS_ELABORADOS._OPENHIGH.toString(), Boolean.FALSE);
 //					mapaParamsOpenLow = estadisticasOpenLow.getParametros(periodoActual,
 //							FINAL_NOMBRES_PARAMETROS_ELABORADOS._OPENLOW.toString(), Boolean.FALSE);
 					mapaParamsHighLow = estadisticasHighLow.getParametros(periodoActual,
@@ -563,7 +563,7 @@ public class ConstructorElaborados implements Serializable {
 //					parametros.putAll(mapaParamsCloseOpen);
 //					parametros.putAll(mapaParamsCloseHigh);
 //					parametros.putAll(mapaParamsCloseLow);
-					parametros.putAll(mapaParamsOpenHigh);
+//					parametros.putAll(mapaParamsOpenHigh);
 //					parametros.putAll(mapaParamsOpenLow);
 					parametros.putAll(mapaParamsHighLow);
 
@@ -864,12 +864,10 @@ public class ConstructorElaborados implements Serializable {
 
 					String Sclose = parametros.get("close");
 					String Sopen = parametros.get("open");
-					String Ssma3Volumen = parametros
-							.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_ + "3_VOLUMEN");
-					String Ssma50Volumen = parametros
-							.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_ + "50_VOLUMEN");
-					String Ssma20Close = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_ + "20_CLOSE");
-					String Ssma50Close = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_ + "50_CLOSE");
+					String Ssma3Volumen = parametros.get(PREFIJOS_ELAB.MEDIA_SMA_ + "3_VOLUMEN");
+					String Ssma50Volumen = parametros.get(PREFIJOS_ELAB.MEDIA_SMA_ + "50_VOLUMEN");
+					String Ssma20Close = parametros.get(PREFIJOS_ELAB.MEDIA_SMA_ + "20_CLOSE");
+					String Ssma50Close = parametros.get(PREFIJOS_ELAB.MEDIA_SMA_ + "50_CLOSE");
 					Float close, open, sma3Volumen, sma50Volumen, sma20Close, sma50Close;
 
 					if (Sclose != null && Sopen != null && Ssma3Volumen != null && Ssma50Volumen != null
@@ -944,8 +942,8 @@ public class ConstructorElaborados implements Serializable {
 				// (close hoy vs 50 días)
 				String Sclose = parametros.get("close");
 				String Svolumen = parametros.get("volumen");
-				String Ssma50Close = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_ + "50_CLOSE");
-				String Ssma50Volumen = parametros.get(COMIENZO_NOMBRES_PARAMETROS_ELABORADOS.MEDIA_SMA_ + "50_VOLUMEN");
+				String Ssma50Close = parametros.get(PREFIJOS_ELAB.MEDIA_SMA_ + "50_CLOSE");
+				String Ssma50Volumen = parametros.get(PREFIJOS_ELAB.MEDIA_SMA_ + "50_VOLUMEN");
 
 				Float DINAMICA3_INVALIDO = 1.0F;
 				DINAMICA3 = String.valueOf(DINAMICA3_INVALIDO);
@@ -1021,7 +1019,8 @@ public class ConstructorElaborados implements Serializable {
 				+ "% (100 + S). Durante todas ellas, el precio de cierre nunca puede estar debajo de " + (100 - B)
 				+ "% (100 - B) respecto de t1. El periodo [t2,t3] dura " + M
 				+ " (M) velas; durante TODAS ellas, el precio de cierre puede caer un poco, pero nunca por debajo de un "
-				+ (100 + S - R) + "% (100 + S - R) respecto del precio de t1. El precio en el instante t3 (es decir, tras = "
+				+ (100 + S - R)
+				+ "% (100 + S - R) respecto del precio de t1. El precio en el instante t3 (es decir, tras = "
 				+ Integer.valueOf(X + M) + " velas (X + M) desde ahora) debe ser >= " + (100 + S - F)
 				+ "% (100 + S - F) respecto de t1. Sólo entonces, Target = 1";
 
@@ -1089,7 +1088,7 @@ public class ConstructorElaborados implements Serializable {
 
 			if (datosAntiguedadXyM == null) {
 				mCumplida = Boolean.FALSE;
-				String msg="Empresa=" + empresa + " -> datosAntiguedadM es NULO para antiguedad=" + antiguedad
+				String msg = "Empresa=" + empresa + " -> datosAntiguedadM es NULO para antiguedad=" + antiguedad
 						+ ", M=" + M + " -> antiguedadM=" + (antiguedad - M) + ", X+M=" + Integer.valueOf(X + M)
 						+ " -> antiguedadXyM=" + (antiguedad - X - M)
 						+ " Posible causa: el mercado estaba abierto cuando hemos ejecutado la descarga de datos";
@@ -1109,8 +1108,8 @@ public class ConstructorElaborados implements Serializable {
 						boolean cumpleEncimaDeB = closeAntiguedadI > bajadaBPrecioTantoPorUno * closeAntiguedad;
 						if (cumpleEncimaDeB) {
 							// El precio no debe bajar más de B
-							String msg="---ATENCION ENCONTRADO TARGET 1---> EMPRESA: " + empresa
-									+ " y antigüedad: " + antiguedad + " (Mes: " + datosAntiguedad.get("mes") + " Dia: "
+							String msg = "---ATENCION ENCONTRADO TARGET 1---> EMPRESA: " + empresa + " y antigüedad: "
+									+ antiguedad + " (Mes: " + datosAntiguedad.get("mes") + " Dia: "
 									+ datosAntiguedad.get("dia") + " Hora: " + datosAntiguedad.get("hora") + ")";
 							MY_LOGGER.debug(msg);
 							mCumplida = Boolean.TRUE;
@@ -1170,7 +1169,7 @@ public class ConstructorElaborados implements Serializable {
 				MY_LOGGER.debug(closeAntiguedadI + ", ");
 			}
 
-			String msg="ANÁLISIS VARIABILIDAD--> EMPRESA: " + empresa + " -> Antigüedad: " + antiguedad + " (Mes: "
+			String msg = "ANÁLISIS VARIABILIDAD--> EMPRESA: " + empresa + " -> Antigüedad: " + antiguedad + " (Mes: "
 					+ datosAntiguedad.get("mes") + " Dia: " + datosAntiguedad.get("dia") + " Hora: "
 					+ datosAntiguedad.get("hora") + ". Variabilidad: " + e.getVariacionRelativaMaxima()
 					+ ", umbral máximo: " + umbralMaximo + ", umbral mínimo: " + umbralMinimo;
@@ -1199,11 +1198,11 @@ public class ConstructorElaborados implements Serializable {
 		if (mCumplida) {
 			// La S sí se cumple, y la M también en todo el rango
 			targetOut = "1";
-			String msg="---ATENCION ENCONTRADO TARGET 1 --> EMPRESA: " + empresa + " -> Antigüedad: " + antiguedad
+			String msg = "---ATENCION ENCONTRADO TARGET 1 --> EMPRESA: " + empresa + " -> Antigüedad: " + antiguedad
 					+ " (Mes: " + datosAntiguedad.get("mes") + " Dia: " + datosAntiguedad.get("dia") + " Hora: "
 					+ datosAntiguedad.get("hora") + ")";
 			MY_LOGGER.debug(msg);
-			
+
 		} else {
 			targetOut = "0";
 		}

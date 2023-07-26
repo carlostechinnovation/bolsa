@@ -1,6 +1,6 @@
 import os
 import sys
-
+import numpy as np
 import pandas as pd
 import seaborn as sns
 
@@ -16,7 +16,9 @@ print("pathSalida: %s" % pathSalida)
 
 ##################### FUNCION - ESTILOS CSS ####################################
 def pintarColores(val):
-    if int(val) == 1:
+    if pd.isna(val):
+        color = ''
+    elif int(val) == 1:
         color = 'background-color: #64b41a99'
     elif 2 <= int(val) < 20:
         color = 'background-color: #f0f600b3'
@@ -245,6 +247,9 @@ indice = matrizDFtraspuesta.index.tolist()
 filaEspecial=matrizDFtraspuesta.filter(like="Numero de features usadas", axis=0)
 matrizDFtraspuesta=matrizDFtraspuesta.drop("Numero de features usadas")
 matrizDFtraspuesta=matrizDFtraspuesta.append(filaEspecial)  # la ponemos al final
+
+print("Convirtiendo todo a Strings para que quede bonito...")
+matrizDFtraspuesta = matrizDFtraspuesta.applymap(lambda x: int(round(x, 1)) if isinstance(x, (int, float)) else x)
 
 print("matrizDFtraspuesta: " + str(matrizDFtraspuesta.shape[0]) + " x " + str(matrizDFtraspuesta.shape[1]))
 # matrizDFtraspuesta.to_csv(pathSalida, index=False, sep='|')

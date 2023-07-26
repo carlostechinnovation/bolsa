@@ -352,7 +352,8 @@ public class GeneradorFeaturesDeSubgrupo implements Serializable {
 					listaAux.remove(posicionTarget); // Borramos este primero, porque es el mas lejano
 				}
 
-				if (posAux1 != -1 && posAux2 != -1 && posAux3 != -1 && posAux4 != -1) {
+				if (posAux1 != -1 && posAux2 != -1 && posAux3 != -1 && posAux4 != -1 && listaAux.contains(posAux1)
+						&& listaAux.contains(posAux2) && listaAux.contains(posAux3) && listaAux.contains(posAux4)) {
 					// FEATURES DE SUBGRUPO preexistentes (si la empresa apareció en otro subgrupo
 					// antes)
 					listaAux.remove(posAux4);

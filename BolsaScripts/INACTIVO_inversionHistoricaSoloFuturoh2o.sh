@@ -25,14 +25,14 @@ echo -e "INVERSION - INICIO: "$( date "+%Y%m%d%H%M%S" )
 #sudo service cron  stop
 
 #################### DIRECTORIOS ###############################################################
-DIR_CODIGOS_CARLOS="/home/carloslinux/Desktop/GIT_BOLSA/"
+DIR_CODIGOS_CARLOS="/home/carloslinux/Desktop/GIT_BOLSA/bolsa/"
 DIR_CODIGOS_LUIS="/home/t151521/bolsa/"
 PYTHON_MOTOR_CARLOS="/home/carloslinux/anaconda3/envs/BolsaPython38/bin/python"
-PYTHON_MOTOR_LUIS="/home/t151521/anaconda3/envs/BolsaPython/bin/python"
+PYTHON_MOTOR_LUIS="/usr/bin/python3.8"
 DIR_DROPBOX_CARLOS="/home/carloslinux/Dropbox/BOLSA_PREDICTOR/"
 DIR_DROPBOX_LUIS="/home/t151521/Dropbox/BOLSA_PREDICTOR/"
 PATH_ANALISIS_LUIS="/home/t151521/bolsa/BolsaScripts/inversionAnalisis.sh"
-PATH_ANALISIS_CARLOS="/home/carloslinux/Desktop/GIT_BOLSA/BolsaScripts/inversionAnalisis.sh"
+PATH_ANALISIS_CARLOS="/home/carloslinux/Desktop/GIT_BOLSA/bolsa/BolsaScripts/inversionAnalisis.sh"
 
 usuario=$(whoami)
 if [ $usuario == "carloslinux" ]

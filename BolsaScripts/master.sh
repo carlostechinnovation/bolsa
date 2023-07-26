@@ -6,7 +6,7 @@ echo -e "MASTER - INICIO: "$( date "+%Y%m%d%H%M%S" )
 
 #################### DIRECTORIOS ###############################################################
 DIR_BASE="/bolsa/"
-DIR_CODIGOS_CARLOS="/home/carloslinux/Desktop/GIT_BOLSA/"
+DIR_CODIGOS_CARLOS="/home/carloslinux/Desktop/GIT_BOLSA/bolsa/"
 DIR_CODIGOS_LUIS="/home/t151521${DIR_BASE}"
 PYTHON_MOTOR_CARLOS="/home/carloslinux/anaconda3/envs/BolsaPython38/bin/python"
 PYTHON_MOTOR_LUIS="/usr/bin/python3.8"
@@ -115,9 +115,10 @@ rm -f "${LOG_MASTER}"
 echo -e "Version de MAVEN:" >> ${LOG_MASTER}
 mvn -version >> ${LOG_MASTER}
 
-echo -e "Compilando JAVA en un JAR..." >> ${LOG_MASTER}
+CARPETA_TARGET="${DIR_JAVA}target/"
+echo -e "Compilando JAVA en un JAR que se pondra aqui: ${CARPETA_TARGET}" >> ${LOG_MASTER}
 cd "${DIR_JAVA}" >> ${LOG_MASTER}
-rm -Rf "${DIR_JAVA}target/" >> ${LOG_MASTER}
+rm -Rf "${CARPETA_TARGET}" >> ${LOG_MASTER}
 echo "JAVA_HOME contiene este valor: ${JAVA_HOME}" >> ${LOG_MASTER}
 
 mvn clean compile assembly:single >> ${LOG_MASTER}
@@ -139,19 +140,19 @@ if [ "${ACTIVAR_DESCARGA}" = "S" ];  then
 	crearCarpetaSiNoExisteYVaciar "${DIR_BRUTOS_CSV}"
 
 	echo -e "DINAMICOS - Descargando de YAHOO FINANCE..." >> ${LOG_MASTER}
-	java -jar ${PATH_JAR} --class "coordinador.Principal" "c10X.brutos.YahooFinance01Descargar" "${NUM_MAX_EMPRESAS_DESCARGADAS}" "${DIR_BRUTOS}" "${DIR_TIEMPO}" "${RANGO_YF}" "${VELA_YF}" "${ES_ENTORNO_VALIDACION}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
+	java -jar ${PATH_JAR} --class "coordinador.Principal" "c10X.brutos.YahooFinance01Descargar" "${NUM_MAX_EMPRESAS_DESCARGADAS}" "${DIR_BRUTOS}" "${DIR_TIEMPO}" "${RANGO_YF}" "${VELA_YF}" "${ES_ENTORNO_VALIDACION}" "${LETRA_INICIO_LISTA_DIRECTA}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 
 	echo -e "DINAMICOS - Limpieza de YAHOO FINANCE..." >> ${LOG_MASTER}
-	java -jar ${PATH_JAR} --class "coordinador.Principal" "c10X.brutos.YahooFinance02Parsear" "${DIR_BRUTOS}" "${DIR_BRUTOS_CSV}" "${DIR_TIEMPO}" "${ES_ENTORNO_VALIDACION}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
+	java -jar ${PATH_JAR} --class "coordinador.Principal" "c10X.brutos.YahooFinance02Parsear" "${DIR_BRUTOS}" "${DIR_BRUTOS_CSV}" "${DIR_TIEMPO}" "${ES_ENTORNO_VALIDACION}" "${LETRA_INICIO_LISTA_DIRECTA}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 	
 	#PENDIENTE DINAMICOS: YAHOO FINANCE (solo modo FUTURO) --> https://finance.yahoo.com/quote/AAPL?p=AAPL --> Campo: Earnings Date
 	#PENDIENTE DINAMICOS: NASDAQOLD_EARNINGS (solo modo PASADO) --> https://old.nasdaq.com/symbol/aapl/earnings-surprise --> tabla de fechas
 
 	echo -e "ESTATICOS - Descargando de FINVIZ (igual para Pasado o Futuro, salvo el directorio)..." >> ${LOG_MASTER}
-	java -jar ${PATH_JAR} --class "coordinador.Principal" "c10X.brutos.EstaticosFinvizDescargarYParsear" "${NUM_MAX_EMPRESAS_DESCARGADAS}" "${DIR_BRUTOS}" "${DIR_BRUTOS_CSV}" "${ES_ENTORNO_VALIDACION}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
+	java -jar ${PATH_JAR} --class "coordinador.Principal" "c10X.brutos.EstaticosFinvizDescargarYParsear" "${NUM_MAX_EMPRESAS_DESCARGADAS}" "${DIR_BRUTOS}" "${DIR_BRUTOS_CSV}" "${ES_ENTORNO_VALIDACION}" "${LETRA_INICIO_LISTA_DIRECTA}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 
 	echo -e "ESTATICOS + DINAMICOS: juntando en un CSV único..." >> ${LOG_MASTER}
-	java -jar ${PATH_JAR} --class "coordinador.Principal" "c10X.brutos.JuntarEstaticosYDinamicosCSVunico" "${DIR_BRUTOS_CSV}" "${DESPLAZAMIENTO_ANTIGUEDAD}" "${ES_ENTORNO_VALIDACION}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
+	java -jar ${PATH_JAR} --class "coordinador.Principal" "c10X.brutos.JuntarEstaticosYDinamicosCSVunico" "${DIR_BRUTOS_CSV}" "${DESPLAZAMIENTO_ANTIGUEDAD}" "${ES_ENTORNO_VALIDACION}" "${LETRA_INICIO_LISTA_DIRECTA}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 
 	echo -e "ESTATICOS + DINAMICOS: limpiando CSVs intermedios brutos..." >> ${LOG_MASTER}
 	java -jar ${PATH_JAR} --class "coordinador.Principal" "c10X.brutos.LimpiarCSVBrutosTemporales" "${DIR_BRUTOS_CSV}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
@@ -197,7 +198,9 @@ echo -e $( date '+%Y%m%d_%H%M%S' )" -------- Capa 3: VARIABLES ELABORADAS ------
 crearCarpetaSiNoExisteYVaciar "${DIR_ELABORADOS}"
 
 echo -e "Calculando elaborados y target..." >> ${LOG_MASTER}
-java -jar ${PATH_JAR} --class "coordinador.Principal" "c30X.elaborados.ConstructorElaborados" "${DIR_LIMPIOS}" "${DIR_ELABORADOS}" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" "${UMBRAL_SUBIDA_POR_VELA}" "${UMBRAL_MINIMO_GRAN_VELA}" "${DINAMICA1}" "${DINAMICA2}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
+#java -jar ${PATH_JAR} --class "coordinador.Principal" "c30X.elaborados.ConstructorElaborados" "${DIR_LIMPIOS}" "${DIR_ELABORADOS}" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" "${UMBRAL_SUBIDA_POR_VELA}" "${UMBRAL_MINIMO_GRAN_VELA}" "${DINAMICA1}" "${DINAMICA2}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
+
+$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/ConstructorElaboradosEnPython.py" "${DIR_LIMPIOS}" "${DIR_ELABORADOS}" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" "${UMBRAL_SUBIDA_POR_VELA}" "${UMBRAL_MINIMO_GRAN_VELA}" "${DINAMICA1}" "${DINAMICA2}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 
 echo -e "Elaborados (incluye la variable elaborada TARGET) ya calculados" >> ${LOG_MASTER}
 
@@ -209,6 +212,10 @@ if [ "$NUM_FICHEROS_30x" -lt "$NUM_FICHEROS_20x" ]; then
 fi
 
 comprobarQueDirectorioNoEstaVacio "${DIR_ELABORADOS}"
+
+echo -e "Clustering alternativo..." >> ${LOG_MASTER}
+$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/ClusteringAlternativo.py" "$DIR_TIEMPO"  2>>${LOG_MASTER} 1>>${LOG_MASTER}
+
 
 ############## Calcular Subgrupos ####################################################################
 
@@ -265,7 +272,23 @@ echo -e "Actualizando informe HTML de uso de FEATURES (mirando el pasado)..." >>
 DIR_SUBGRUPOS_PASADO=$(echo ${DIR_SUBGRUPOS} | sed -e "s/futuro/pasado/g")
 $PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/FeaturesAnalisisPosteriori.py" "${DIR_SUBGRUPOS_PASADO}" "${DIR_BASE}pasado/matriz_features_antes_de_pca.html" "${DIR_BASE}pasado/matriz_features.html" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
 
+
+######################### ANALISIS DE METRICAS Y RENTABILIDADES #################################################
+if [ "$DIR_TIEMPO" = "pasado" ];  then
+	echo -e "Informe entregable HTML sobre metricas y rentabilidades" >> ${LOG_MASTER}
+	PATH_MET_RENTAB_ENTRADA="${DIR_LOGS}pasado_metricas_y_rentabilidades_entrada.csv"
+	PATH_ACI_RENTAB_ENTRADA="${DIR_LOGS}pasado_aciertos_entrada.csv"
+	HTML_MET_RENTAB_SALIDA="${DIR_LOGS}pasado_metricas_y_rentabilidades.html"
+	cat "${LOG_MASTER}" | grep "ENTREGABLEPRECISIONESPASADO"  > "${PATH_MET_RENTAB_ENTRADA}"
+	cat "${LOG_MASTER}" | grep "ENTREGABLEACIERTOSPASADO"  > "${PATH_ACI_RENTAB_ENTRADA}"
+	echo "" > "${HTML_MET_RENTAB_SALIDA}"  # reset
+	$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/PintarMetricasyRentabilidades.py" "${PATH_MET_RENTAB_ENTRADA}" "${PATH_ACI_RENTAB_ENTRADA}" "${HTML_MET_RENTAB_SALIDA}" 2>>${LOG_MASTER} 1>>${LOG_MASTER}
+fi
+#################################################
+
 echo -e "MASTER - FIN: "$( date "+%Y%m%d%H%M%S" )
 echo -e "******** FIN de master**************" >> ${LOG_MASTER}
+
+
 
 

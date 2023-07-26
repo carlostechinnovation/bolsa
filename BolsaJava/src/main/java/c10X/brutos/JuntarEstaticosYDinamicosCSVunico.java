@@ -70,11 +70,12 @@ public class JuntarEstaticosYDinamicosCSVunico {
 		String dirBrutoCsv = BrutosUtils.DIR_BRUTOS_CSV;
 		Integer desplazamientoAntiguedad = BrutosUtils.DESPLAZAMIENTO_ANTIGUEDAD;
 		Integer entornoDeValidacion = BrutosUtils.ES_ENTORNO_VALIDACION;// DEFAULT
+		String letraInicioListaDirecta = EstaticosNasdaqDescargarYParsear.LETRA_INICIO_LISTA_DIRECTA; // DEFAULT
 
 		if (args.length == 0) {
 			MY_LOGGER.info("Sin parametros de entrada. Rellenamos los DEFAULT...");
 
-		} else if (args.length != 3) {
+		} else if (args.length != 4) {
 			MY_LOGGER.error("Parametros de entrada incorrectos!! --> " + args.length);
 			int numParams = args.length;
 			MY_LOGGER.error("Numero de parametros: " + numParams);
@@ -88,12 +89,14 @@ public class JuntarEstaticosYDinamicosCSVunico {
 			dirBrutoCsv = args[0];
 			desplazamientoAntiguedad = Integer.valueOf(args[1]);
 			entornoDeValidacion = Integer.valueOf(args[2]);
+			letraInicioListaDirecta = args[3];
 			MY_LOGGER.info("PARAMS -> " + dirBrutoCsv);
 			MY_LOGGER.info("PARAMS -> " + desplazamientoAntiguedad);
 			MY_LOGGER.info("PARAMS -> " + entornoDeValidacion);
+			MY_LOGGER.info("PARAMS -> " + letraInicioListaDirecta);
 		}
 
-		nucleo(dirBrutoCsv, desplazamientoAntiguedad, entornoDeValidacion);
+		nucleo(dirBrutoCsv, desplazamientoAntiguedad, entornoDeValidacion, letraInicioListaDirecta);
 		MY_LOGGER.info("FIN");
 	}
 
@@ -101,14 +104,15 @@ public class JuntarEstaticosYDinamicosCSVunico {
 	 * @param dirBrutoCsv
 	 * @param desplazamientoAntiguedad
 	 * @param entornoDeValidacion
+	 * @param letraInicioListaDirecta
 	 * @throws IOException
 	 * @throws ParseException
 	 */
-	public static void nucleo(String dirBrutoCsv, Integer desplazamientoAntiguedad, final Integer entornoDeValidacion)
-			throws IOException, ParseException {
+	public static void nucleo(String dirBrutoCsv, Integer desplazamientoAntiguedad, final Integer entornoDeValidacion,
+			final String letraInicioListaDirecta) throws IOException, ParseException {
 
 		List<EstaticoNasdaqModelo> nasdaqEstaticos1 = EstaticosNasdaqDescargarYParsear
-				.descargarNasdaqEstaticosSoloLocal1(entornoDeValidacion);
+				.descargarNasdaqEstaticosSoloLocal1(entornoDeValidacion, letraInicioListaDirecta);
 
 		int numCasosSinNingunFichero = 0;
 
@@ -118,55 +122,70 @@ public class JuntarEstaticosYDinamicosCSVunico {
 			String finvizEstaticos = dirBrutoCsv + BrutosUtils.FINVIZ_ESTATICOS + "_" + BrutosUtils.MERCADO_NQ + "_"
 					+ enm.symbol + ".csv";
 			File fileEstat = new File(finvizEstaticos);
+			MY_LOGGER.debug("Empresa: " + enm.symbol + " --> Obligatorio-Finviz-Estatico: " + finvizEstaticos);
 
 			String yahooFinanceDinamicos = dirBrutoCsv + BrutosUtils.YAHOOFINANCE + "_" + BrutosUtils.MERCADO_NQ + "_"
 					+ enm.symbol + ".csv";
 			File fileDin = new File(yahooFinanceDinamicos);
+			MY_LOGGER.debug("Empresa: " + enm.symbol + " --> Obligatorio-YF-Dinamico: " + yahooFinanceDinamicos);
 
 			// OPCIONAL: se conocen pocas operaciones de insiders
 			String finvizInsiders = dirBrutoCsv + BrutosUtils.FINVIZ_INSIDERS + "_" + BrutosUtils.MERCADO_NQ + "_"
 					+ enm.symbol + ".csv";
-			File fileInsiders = new File(finvizInsiders); // OPCIONAL
+			File fileInsiders = new File(finvizInsiders);
+			MY_LOGGER.debug("Empresa: " + enm.symbol + " --> Opcional-FI: " + finvizInsiders);
 
-			boolean hay0FicherosObligatorios = !fileEstat.exists() && !fileDin.exists();
-			boolean hay1FicherosObligatorio = (fileEstat.exists() && !fileDin.exists())
-					|| (!fileEstat.exists() && fileDin.exists());
-			boolean hay2FicherosObligatorioSinElOpcional = fileEstat.exists() && fileDin.exists()
-					&& !fileInsiders.exists();
-			boolean hay2FicherosObligatorioYElOpcional = fileEstat.exists() && fileDin.exists()
-					&& fileInsiders.exists();
+			// OPCIONAL: se conocen pocas noticias
+			String finvizNoticias = dirBrutoCsv + BrutosUtils.FINVIZ_NOTICIAS + "_" + BrutosUtils.MERCADO_NQ + "_"
+					+ enm.symbol + ".csv";
+			File fileNoticias = new File(finvizNoticias);
+			MY_LOGGER.debug("Empresa: " + enm.symbol + " --> Opcional-FN: " + finvizNoticias);
 
-			if (hay0FicherosObligatorios) {
+			// FLAGS
+			boolean obligatorioFZ = fileEstat.exists();
+			boolean obligatorioYF = fileDin.exists();
+			boolean opcionalFI = fileInsiders.exists();
+			boolean opcionalFN = fileNoticias.exists();
+
+			// Flag para procesar empresa
+			boolean procesarEmpresa = true; // default
+
+			if (obligatorioFZ == false && obligatorioYF == false) {
 				// SOLO LO PINTAMOS EN MODO DEBUG, por no ensuciar el log. Aun asi, lo
 				// contabilizamos para abortar al final si todos entran en este caso
 				MY_LOGGER.debug("Empresa: " + enm.symbol
-						+ " --> No conocemos ningun CSV: FZ (estatico) ni YF (dinamico). No procesamos la empresa, pero seguimos.");
+						+ " --> No conocemos ninguno de los CSV obligatorios: FZ (estatico) ni YF (dinamico). No procesamos la empresa, pero seguimos con otras.");
 				numCasosSinNingunFichero++;
+				procesarEmpresa = false;
 			}
-			if (hay1FicherosObligatorio) {
+			if ((obligatorioFZ == false && obligatorioYF == true)
+					|| (obligatorioFZ == true && obligatorioYF == false)) {
 				MY_LOGGER.warn("Empresa: " + enm.symbol
-						+ " --> Solo conocemos uno de estos dos CSV: FZ (estatico) ni YF (dinamico). No procesamos la empresa, pero seguimos.");
+						+ " --> Solo conocemos uno de estos dos CSV obligatorios: FZ-estatico (" + obligatorioFZ
+						+ ") ni YF-dinamico (" + obligatorioYF
+						+ "). No procesamos la empresa, pero seguimos con otras.");
+				procesarEmpresa = false;
 			}
-			if (hay2FicherosObligatorioSinElOpcional) {
+			if (obligatorioFZ == true && obligatorioYF == true && opcionalFI == false && opcionalFN == false) {
 				// Muy habitual
 				MY_LOGGER.debug("Empresa: " + enm.symbol
-						+ " --> Conocemos ambos CSV: FZ (estatico) ni YF (dinamico). Sin operaciones de insiders conocidas");
+						+ " --> Conocemos ambos CSV obligatorios, FZ (estatico) y YF (dinamico). Pero NO los datos opcionales (insiders o noticias)");
 			}
-			if (hay2FicherosObligatorioYElOpcional) {
+			if (obligatorioFZ == true && obligatorioYF == true && (opcionalFI == true || opcionalFN == true)) {
 				// Habitual
 				MY_LOGGER.debug("Empresa: " + enm.symbol
-						+ " --> Conocemos ambos CSV: FZ (estatico) ni YF (dinamico). Con operaciones de insiders conocidas");
+						+ " --> Conocemos ambos CSV: FZ (estatico) y YF (dinamico). Y tambien alguno de los datos opcionales (insiders y/o noticias)");
 			}
 
-			if (hay2FicherosObligatorioSinElOpcional || hay2FicherosObligatorioYElOpcional) {
+			if (procesarEmpresa) {
 				nucleoEmpresa(dirBrutoCsv, enm, fileEstat, fileDin, fileInsiders, desplazamientoAntiguedad);
 			}
 
 		}
 
 		if (nasdaqEstaticos1.size() == numCasosSinNingunFichero) {
-			MY_LOGGER.debug(
-					"No hay ficheros CSV (estaticos ni dinamicos) para ninguna empresa. Hay algun error previo. Saliendo...");
+			MY_LOGGER.error(
+					"No hay ficheros CSV (estaticos ni dinamicos) para NINGUNA empresa. Hay algun ERROR previo. Saliendo...");
 			System.exit(-1);
 		}
 	}
@@ -186,7 +205,7 @@ public class JuntarEstaticosYDinamicosCSVunico {
 	public static void nucleoEmpresa(String dirBrutoCsv, EstaticoNasdaqModelo enm, File fileEstat, File fileDin,
 			File fileDinInsiders, Integer desplazamientoAntiguedad) throws IOException, ParseException {
 
-		MY_LOGGER.info("Empresa: " + enm.symbol);
+		// MY_LOGGER.info("Empresa: " + enm.symbol);
 
 		// --------- Variables ESTATICAS -------------
 		FileReader fr = new FileReader(fileEstat);
@@ -295,11 +314,17 @@ public class JuntarEstaticosYDinamicosCSVunico {
 				if (primeraLineai == false) {
 					String[] partes = actuali.split("\\|");
 
-					// TODO NO consideramos otros tipos de operaciones (Option Exercise) porque
+					// Es dificil parsear otros tipos de operaciones (Option Exercise) porque
 					// habría que descargar la URL de la SEC, que seguramente interprete las
-					// descargas masivas como un ataque:
+					// descargas masivas como un ataque.
 					if (partes[1].equalsIgnoreCase(OperacionInsiderFinvizModelo.COMPRA)
-							|| partes[1].equalsIgnoreCase(OperacionInsiderFinvizModelo.VENTA)) {
+							|| partes[1].equalsIgnoreCase(OperacionInsiderFinvizModelo.VENTA)
+
+					// Hemos comprobado que las OPTION_EXERCISE no pueden interpretarse como compras
+					// ni ventas. Requeriría entrar en la URL y ver su detalle
+					//// || partes[1].equalsIgnoreCase(OperacionInsiderFinvizModelo.OPTION_EXERCISE)
+
+					) {
 						insidersDatos.add(new OperacionInsiderFinvizModelo(partes[0], partes[1], partes[2]));
 					}
 
@@ -320,7 +345,7 @@ public class JuntarEstaticosYDinamicosCSVunico {
 
 		// ---------- JUNTOS -----------------------
 		String juntos = dirBrutoCsv + BrutosUtils.MERCADO_NQ + "_" + enm.symbol + ".csv";
-		MY_LOGGER.debug("Escribiendo CSV juntos en: " + juntos);
+		MY_LOGGER.debug("Juntar ficheros CSV - Ruta fichero salida: " + juntos);
 		File fjuntos = new File(juntos);
 		if (fjuntos.exists()) {
 			PrintWriter writer = new PrintWriter(fjuntos);

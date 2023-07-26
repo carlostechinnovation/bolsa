@@ -13,9 +13,9 @@ public class InterpreteFalsosPositivos implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	// FALSOS POSITIVOS: por encima de este umbral (%) descartamos subgrupo
-	public static final Float UMBRAL_MAX_RATIOSUBGRUPO_FP = 24.0F;
+	public static final Float UMBRAL_MAX_RATIOSUBGRUPO_FP = 75.0F;
 	// FALSOS POSITIVOS: por encima de este umbral (%) descartamos empresa
-	public static final Float UMBRAL_MAX_RATIOEMPRESA_FP = 85.0F;
+	public static final Float UMBRAL_MAX_RATIOEMPRESA_FP = 90.0F;
 
 	public static final String PATH_FP_SUBGRUPOS = "realimentacion/falsospositivos_subgrupos.csv";
 	public static final String PATH_FP_EMPRESAS = "realimentacion/falsospositivos_empresas.csv";
@@ -38,10 +38,7 @@ public class InterpreteFalsosPositivos implements Serializable {
 	 * @throws IOException
 	 */
 	public static void main(String[] args) throws IOException {
-
-		InterpreteFalsosPositivos instancia = getInstance();
-		instancia.extraerSubgruposConDemasiadosFP();
-
+		InterpreteFalsosPositivos.extraerSubgruposConDemasiadosFP();
 	}
 
 	/**

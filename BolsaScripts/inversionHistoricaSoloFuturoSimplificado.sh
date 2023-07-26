@@ -4,7 +4,7 @@
 
 #################### DESCRIPCIÓN Y PARÁMETROS FUNDAMENTALES ###############################
 # Permite sacar las predicciones en un rango de tiempos del pasado. 
-# Se coge rel modelo de la matigüedad máxima (no lo genera este script). Luego se predice el futuro de la antigüedad mínima, y
+# Se coge el modelo de la antigüedad máxima (no lo genera este script). Luego se predice el futuro de la antigüedad mínima, y
 # se calcula también el de las antigüedades intermedias en base a lo ya descargado para la antigüedad mínima (fichero COMPLETO.csv), 
 # borrando previamente los días necesarios en le fichero COMPLETO y prediciendo el futuro sin redescargar.
 # El modelo predictor NO SERÁ el usado en 
@@ -19,26 +19,27 @@
 #Instantes de las descargas
 #Se analizará el tramo de antiguedad desde máxima hasta minima
 #Se tomarán los ficheros *_GRANDE_0_SG_0_* generados, o que ya se tienen de ejecuciones antiguas, para usarlo como base de información futura.
-ANTIGUEDAD_MAXIMA="50"
+ANTIGUEDAD_MAXIMA="70"
 ANTIGUEDAD_MINIMA="0" # Se puede usar cualquier valor
-NUM_EMPRESAS_TRAIN="1000" # Número de empresas de entrenamiento, NO para los días posteriores (que estarán en el fichero de parámetros). Se recomienda dejar 1000 siempre.
+NUM_EMPRESAS_TRAIN="50" # Número de empresas de entrenamiento, NO para los días posteriores (que estarán en el fichero de parámetros). Se recomienda dejar 1000 siempre.
 
-echo -e "INVERSION - INICIO: "$( date "+%Y%m%d%H%M%S" )
+echo -e "INVERSION HISTORICA SOLO FUTURO SIMPLIFICADO - INICIO: "$( date "+%Y%m%d%H%M%S" )
 
 #echo -e "Parando cron..."
 #sudo service cron  stop
 
+
 #################### DIRECTORIOS ###############################################################
 DIR_BASE="/bolsa/"
 DIR_DROPBOX_REPO="/BOLSA_PREDICTOR/"
-DIR_CODIGOS_CARLOS="/home/carloslinux/Desktop/GIT_BOLSA/"
+DIR_CODIGOS_CARLOS="/home/carloslinux/Desktop/GIT_BOLSA/bolsa/"
 DIR_CODIGOS_LUIS="/home/t151521${DIR_BASE}"
 PYTHON_MOTOR_CARLOS="/home/carloslinux/anaconda3/envs/BolsaPython38/bin/python"
 PYTHON_MOTOR_LUIS="/usr/bin/python3.8"
 DIR_DROPBOX_CARLOS="/home/carloslinux/Dropbox${DIR_DROPBOX_REPO}"
 DIR_DROPBOX_LUIS="/home/t151521/Dropbox${DIR_DROPBOX_REPO}"
 PATH_ANALISIS_LUIS="/home/t151521${DIR_BASE}BolsaScripts/inversionAnalisis.sh"
-PATH_ANALISIS_CARLOS="/home/carloslinux/Desktop/GIT_BOLSA/BolsaScripts/inversionAnalisis.sh"
+PATH_ANALISIS_CARLOS="/home/carloslinux/Desktop/GIT_BOLSA/bolsa/BolsaScripts/inversionAnalisis.sh"
 
 usuario=$(whoami)
 if [ $usuario == "carloslinux" ]
@@ -115,7 +116,7 @@ do
                 # Se evita descargar COMPLETO.csv
 		DESCARGAR="N"
 
-                # Se eliminan ficheros de anitguas predicciones (en TODOS los subgrupos)
+                # Se eliminan ficheros de antiguas predicciones (en TODOS los subgrupos)
                 while IFS= read -r -d '' -u 9
 		do
 			if [[ $REPLY == *"COMPLETO_PREDICCION"* ]]; then
@@ -167,5 +168,6 @@ do
 done
 
 
-echo -e "INVERSION - FIN: "$( date "+%Y%m%d%H%M%S" )
+echo -e "INVERSION HISTORICA SOLO FUTURO SIMPLIFICADO - FIN: "$( date "+%Y%m%d%H%M%S" )
+
 

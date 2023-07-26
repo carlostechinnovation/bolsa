@@ -1,3 +1,4 @@
+import pathlib as p
 import sys
 
 import pandas as pd
@@ -10,6 +11,8 @@ import pandas as pd
 # El resultado se guarda con el mismo nombre que el fichero leído (es decir, se sobreescribe).
 
 print("--- QuitarDiasMasRecientes: INICIO ---")
+
+################### PARAMETROS ##########################################
 pathFicheroEntrada = sys.argv[1]
 diasRecientesAEliminar = sys.argv[2]
 dirSalida = sys.argv[3]
@@ -19,6 +22,12 @@ print("pathFicheroEntrada = " + pathFicheroEntrada)
 print("diasRecientesAEliminar = " + diasRecientesAEliminar)
 print("dirSalida = " + dirSalida)
 print("nombreFicheroSalida = " + nombreFicheroSalida)
+########################################################################
+
+pathInput = p.Path(pathFicheroEntrada)
+if pathInput.exists() and pathInput.stat().st_size == 0:
+    raise RuntimeError(
+        "El fichero " + pathFicheroEntrada + " existe pero esta vacio. Saliendo del script QuitarDiasMasRecientes...")
 
 datosEntrada = pd.read_csv(filepath_or_buffer=pathFicheroEntrada, sep='|')
 

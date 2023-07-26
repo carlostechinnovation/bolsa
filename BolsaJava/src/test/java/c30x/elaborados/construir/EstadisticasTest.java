@@ -2,6 +2,8 @@ package c30x.elaborados.construir;
 
 import static org.junit.Assert.assertTrue;
 
+import java.util.HashMap;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -52,6 +54,25 @@ public class EstadisticasTest {
 
 		double esperado = 1.3846153846153817D;
 		assertTrue(out == esperado);
+	}
+
+	@Test
+	public void incluirParamValorTest() {
+		Estadisticas modelo = new Estadisticas();
+		HashMap<String, String> parametros = new HashMap<String, String>();
+		String prefijo = "PREFIJO_", periodo = "50D";
+		String finalNombreParametro = "_SUFIJO";
+		Boolean rellenarConInvalidos = false;
+
+		int valorInt = 1;
+		modelo.incluirParamValor(parametros, prefijo, periodo, finalNombreParametro, valorInt, rellenarConInvalidos);
+
+		double valorDouble = 1;
+		modelo.incluirParamValor(parametros, prefijo, periodo, finalNombreParametro, valorDouble, rellenarConInvalidos);
+
+		double valorDoubleNaN = Double.NaN;
+		modelo.incluirParamValor(parametros, prefijo, periodo, finalNombreParametro, valorDoubleNaN,
+				rellenarConInvalidos);
 	}
 
 }

@@ -27,6 +27,7 @@ public class BrutosUtils implements Serializable {
 	public static final String YAHOOFINANCE = "YF";
 	public static final String FINVIZ_ESTATICOS = "FZ";
 	public static final String FINVIZ_INSIDERS = "FI";
+	public static final String FINVIZ_NOTICIAS = "FN";
 	public static final String BRUTO_FINAL = "BR"; // Prefijo del fichero final
 
 	public static final String MERCADO_NQ = "NASDAQ";
@@ -55,7 +56,8 @@ public class BrutosUtils implements Serializable {
 
 	public static final int ES_ENTORNO_VALIDACION = 0;
 
-	public static final String COL_ANIO = "anio", COL_MES = "mes", COL_DIA = "dia";
+	public static final String COL_EMPRESA = "empresa", COL_ANIO = "anio", COL_MES = "mes", COL_DIA = "dia",
+			COL_EMPLEADOS = "Employees", COL_MARKET_CAP = "Market Cap";
 
 	/**
 	 * @param in
@@ -69,7 +71,7 @@ public class BrutosUtils implements Serializable {
 
 		Locale locale = new Locale("en", "UK");
 		DecimalFormat df = (DecimalFormat) NumberFormat.getNumberInstance(locale);
-		df.applyPattern("#0.######");
+		df.applyPattern("#0.##");
 
 		if (in != null) {
 			out = in.trim();

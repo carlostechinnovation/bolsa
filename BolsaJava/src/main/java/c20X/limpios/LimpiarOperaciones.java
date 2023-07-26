@@ -117,15 +117,48 @@ public class LimpiarOperaciones implements Serializable {
 		List<String> anios = new ArrayList<String>();
 		List<String> meses = new ArrayList<String>();
 		List<String> dias = new ArrayList<String>();
+		Long empleados = -1L; // default
+		Float marketCap = -1F; // default
 
-		for (List<String> columna : datos) {
+		for (List<String> vectorDatos : datos) {
 
-			if (columna.get(0).equals(BrutosUtils.COL_ANIO)) {
-				anios = columna;
-			} else if (columna.get(0).equals(BrutosUtils.COL_MES)) {
-				meses = columna;
-			} else if (columna.get(0).equals(BrutosUtils.COL_DIA)) {
-				dias = columna;
+			String nombreColumna = vectorDatos.get(0);
+			if (nombreColumna != null && !nombreColumna.isEmpty() && !nombreColumna.equalsIgnoreCase("-")
+					&& !nombreColumna.equalsIgnoreCase("null")) {
+
+				if (nombreColumna.equals(BrutosUtils.COL_ANIO)) {
+					anios = vectorDatos;
+				} else if (nombreColumna.equals(BrutosUtils.COL_MES)) {
+					meses = vectorDatos;
+				} else if (nombreColumna.equals(BrutosUtils.COL_DIA)) {
+					dias = vectorDatos;
+				}
+
+//				if (nombreColumna.equals(BrutosUtils.COL_EMPRESA)) {
+//					String primerDato = vectorDatos.get(1);
+//					if (primerDato != null && !primerDato.isEmpty() && !primerDato.equalsIgnoreCase("-")
+//							&& !primerDato.equalsIgnoreCase("null")) {
+//						System.out.println(BrutosUtils.COL_EMPRESA + "->" + primerDato);
+//					}
+//				}
+//
+//				if (nombreColumna.equals(BrutosUtils.COL_EMPLEADOS)) {
+//					String primerDato = vectorDatos.get(1);
+//					if (primerDato != null && !primerDato.isEmpty() && !primerDato.equalsIgnoreCase("-")
+//							&& !primerDato.equalsIgnoreCase("null")) {
+//						System.out.println(BrutosUtils.COL_EMPLEADOS + "->" + primerDato);
+//						empleados = Long.valueOf(primerDato);
+//					}
+//				}
+//
+//				if (nombreColumna.equals(BrutosUtils.COL_MARKET_CAP)) {
+//					String primerDato = vectorDatos.get(1);
+//					if (primerDato != null && !primerDato.isEmpty() && !primerDato.equalsIgnoreCase("-")
+//							&& !primerDato.equalsIgnoreCase("null")) {
+//						System.out.println(BrutosUtils.COL_MARKET_CAP + "->" + primerDato);
+//						marketCap = Float.valueOf(primerDato);
+//					}
+//				}
 			}
 		}
 

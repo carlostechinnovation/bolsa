@@ -1,10 +1,10 @@
 #!/bin/bash
 
-echo -e "VALIDACION - INICIO: "$( date "+%Y%m%d%H%M%S" )
+echo -e "GENERA MODELO - INICIO: "$( date "+%Y%m%d%H%M%S" )
 
 #################### DIRECTORIOS ###############################################################
 DIR_BASE="/bolsa/"
-DIR_CODIGOS_CARLOS="/home/carloslinux/Desktop/GIT_BOLSA/"
+DIR_CODIGOS_CARLOS="/home/carloslinux/Desktop/GIT_BOLSA/bolsa/"
 DIR_CODIGOS_LUIS="/home/t151521${DIR_BASE}"
 PYTHON_MOTOR_CARLOS="/home/carloslinux/anaconda3/envs/BolsaPython38/bin/python"
 PYTHON_MOTOR_LUIS="/usr/bin/python3.8"
@@ -47,7 +47,7 @@ source ${PARAMS_CONFIG}
 VELAS_RETROCESO="$((${X}+${M}+2))" #INSTANTE ANALIZADO (T1). Su antiguedad debe ser mayor o igual que X+M, para poder ver esas X+M velas del futuro
 
 #Instantes de las descargas
-PASADO_t1="50"
+PASADO_t1="100"
 FUTURO1_t1="${VELAS_RETROCESO}" #No tocar. Se usa en el validador
 FUTURO2_t1="$((${VELAS_RETROCESO}-${X}-${M}))" #No tocar. Se usa en el validador
 

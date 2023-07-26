@@ -75,13 +75,14 @@ public class YahooFinance02Parsear implements Serializable {
 
 		String directorioIn = BrutosUtils.DIR_BRUTOS; // DEFAULT
 		String directorioOut = BrutosUtils.DIR_BRUTOS_CSV; // DEFAULT
-		String modo = BrutosUtils.FUTURO; // DEFAULT
+		String modo = BrutosUtils.PASADO; // DEFAULT
 		Integer entornoDeValidacion = BrutosUtils.ES_ENTORNO_VALIDACION;// DEFAULT
+		String letraInicioListaDirecta = EstaticosNasdaqDescargarYParsear.LETRA_INICIO_LISTA_DIRECTA; // DEFAULT
 
 		if (args.length == 0) {
 			MY_LOGGER.info("Sin parametros de entrada. Rellenamos los DEFAULT...");
 
-		} else if (args.length != 4) {
+		} else if (args.length != 5) {
 			MY_LOGGER.error("Parametros de entrada incorrectos!!");
 			int numParams = args.length;
 			MY_LOGGER.info("Numero de parametros: " + numParams);
@@ -95,15 +96,16 @@ public class YahooFinance02Parsear implements Serializable {
 			directorioOut = args[1];
 			modo = args[2];
 			entornoDeValidacion = Integer.valueOf(args[3]);
+			letraInicioListaDirecta = args[4];
 		}
 
 		MY_LOGGER.info("Parametros de entrada -> " + directorioIn + " | " + directorioOut + " | " + modo + "|"
-				+ entornoDeValidacion);
+				+ entornoDeValidacion + " | " + letraInicioListaDirecta);
 
 		// EMPRESAS NASDAQ
 		MY_LOGGER.info("Cargando empresas del NASDAQ...");
 		List<EstaticoNasdaqModelo> nasdaqEstaticos1 = EstaticosNasdaqDescargarYParsear
-				.descargarNasdaqEstaticosSoloLocal1(entornoDeValidacion);
+				.descargarNasdaqEstaticosSoloLocal1(entornoDeValidacion, letraInicioListaDirecta);
 
 		// VELAS (tomando una empresa buena, que tendra todo relleno)
 		MY_LOGGER.info("Cargando VELAS de empresa de REFERENCIA...");
@@ -135,11 +137,14 @@ public class YahooFinance02Parsear implements Serializable {
 	public static void extraerVelasReferencia(Map<String, Integer> velas, String directorioIn, String directorioOut,
 			String modo) throws IOException {
 
+		MY_LOGGER.info("extraerVelasReferencia --> " + directorioIn + "|" + directorioOut + "|" + modo);
+
 		String mercadoReferencia = BrutosUtils.MERCADO_NQ;
 		String valorReferencia = BrutosUtils.NASDAQ_REFERENCIA;
 
 		String ficheroConVelasYTiempos = parsearDinamicosEmpresa01(mercadoReferencia, valorReferencia, directorioIn,
 				directorioOut, true, modo);
+		MY_LOGGER.info("extraerVelasReferencia --> ficheroConVelasYTiempos:" + ficheroConVelasYTiempos);
 
 		// --------- Leer fichero -------------
 		File file = new File(ficheroConVelasYTiempos);
@@ -160,7 +165,7 @@ public class YahooFinance02Parsear implements Serializable {
 		}
 		br.close();
 
-		MY_LOGGER.debug("Velas leidas: " + velas.size());
+		MY_LOGGER.info("extraerVelasReferencia --> " + "Velas leidas: " + velas.size());
 	}
 
 	/**
@@ -265,8 +270,6 @@ public class YahooFinance02Parsear implements Serializable {
 
 			JSONObject primerJson = (JSONObject) parser.parse(contenido);
 
-//			JSONObject primerJson = (JSONObject) parser.parse(reader);
-
 			Map<String, JSONObject> mapaChart = (HashMap<String, JSONObject>) primerJson.get("chart");
 			Object resultValor = mapaChart.get("result");
 			JSONArray a1 = (JSONArray) resultValor;
@@ -306,7 +309,8 @@ public class YahooFinance02Parsear implements Serializable {
 				}
 
 				// Detectar anomalias gigantes (posibles Splits o contrasplits)
-				boolean tieneAnomalias = detectarAnomaliasGigantes(empresa, listaPreciosClose, listaPreciosOpen);
+				boolean tieneAnomalias = detectarAnomaliasGigantes(empresa, listaPreciosClose, listaPreciosOpen,
+						listaPreciosClose, "OPEN");
 
 				if (tieneAnomalias == false) {
 
@@ -605,53 +609,76 @@ public class YahooFinance02Parsear implements Serializable {
 	}
 
 	/**
+	 * Para una empresa, se comparan los precios del dia 1 y del dia 2. Si hay una
+	 * gran variacion (encima de un umbral), devuelve true. En otro caso, devuelve
+	 * false.
+	 * 
 	 * @param empresa
-	 * @param listaPreciosClose
-	 * @param listaPreciosOpen
+	 * @param listaPreciosDia1 Precios en dia 1 (normalmente el precio CLOSE)
+	 * @param listaPreciosDia2 Precios en dia 2 (normalmente el precio OPEN o
+	 *                         tambien puede usarse el de close)
+	 * @param tipoPrecioDia2   OPEN o CLOSE
 	 * @return
 	 */
-	public static boolean detectarAnomaliasGigantes(String empresa, JSONArray listaPreciosClose,
-			JSONArray listaPreciosOpen) {
+	public static boolean detectarAnomaliasGigantes(String empresa, JSONArray listaPreciosDia1,
+			JSONArray listaPreciosOpenDia2, JSONArray listaPreciosCloseDia2, String tipoPrecioDia2) {
 
 		boolean detectado = false;
 
-		if (listaPreciosClose.size() == listaPreciosOpen.size()) {
+		if (listaPreciosDia1.size() == listaPreciosOpenDia2.size()
+				&& listaPreciosOpenDia2.size() == listaPreciosCloseDia2.size()) {
 
-			for (int i = 0; i < listaPreciosClose.size(); i++) {
+			for (int i = 0; i < listaPreciosDia1.size(); i++) {
 
 				if (i > 0) { // la primera vela no me vale para poder comparar
 
-					Double open1 = listaPreciosOpen.get(i) == null ? null
-							: Double.valueOf(listaPreciosOpen.get(i).toString());
-					Double close0 = listaPreciosClose.get(i - 1) == null ? null
-							: Double.valueOf(listaPreciosClose.get(i - 1).toString());
+					Double precioOpenDia2 = listaPreciosOpenDia2.get(i) == null ? null
+							: Double.valueOf(listaPreciosOpenDia2.get(i).toString());
+					Double precioCloseDia2 = listaPreciosCloseDia2.get(i) == null ? null
+							: Double.valueOf(listaPreciosCloseDia2.get(i).toString());
 
-					if (open1 != null && close0 != null) {
+					Double precioDia1 = listaPreciosDia1.get(i - 1) == null ? null
+							: Double.valueOf(listaPreciosDia1.get(i - 1).toString());
 
-						Double ratioDeCambio = (open1 > close0) ? Math.abs(open1 / close0) : Math.abs(close0 / open1);
+					if (precioOpenDia2 != null && precioCloseDia2 != null && precioDia1 != null
+							&& tipoPrecioDia2 != null && !tipoPrecioDia2.isEmpty()) {
 
-						if (ratioDeCambio >= UMBRAL_RATIO_ANOMALIAS) {
+						Double ratioDeCambio = null;
+
+						if (tipoPrecioDia2 != null && tipoPrecioDia2.equals("OPEN")) {
+							ratioDeCambio = (precioOpenDia2 > precioDia1) ? Math.abs(precioOpenDia2 / precioDia1)
+									: Math.abs(precioDia1 / precioOpenDia2);
+						} else if (tipoPrecioDia2 != null && tipoPrecioDia2.equals("CLOSE")) {
+							ratioDeCambio = (precioCloseDia2 > precioDia1) ? Math.abs(precioCloseDia2 / precioDia1)
+									: Math.abs(precioDia1 / precioCloseDia2);
+						}
+
+						if (ratioDeCambio != null && ratioDeCambio >= UMBRAL_RATIO_ANOMALIAS) {
 							detectado = true;
+
+							Double precioDia2 = null;
+							if (tipoPrecioDia2 != null && tipoPrecioDia2.equals("OPEN")) {
+								precioDia2 = precioOpenDia2;
+							} else if (tipoPrecioDia2 != null && tipoPrecioDia2.equals("CLOSE")) {
+								precioDia2 = precioCloseDia2;
+							}
 
 							MY_LOGGER.warn("Empresa=" + empresa
 									+ " Tiene anomalia gigante (posible split o contraSplit) al pasar de vela = "
-									+ (i - 1) + " con precio CLOSE=" + decFormat.format(close0) + " a vela = " + i
-									+ " con precio OPEN=" + decFormat.format(open1) + " El ratio de cambio es "
-									+ decFormat.format(ratioDeCambio) + " (ratio umbral = " + UMBRAL_RATIO_ANOMALIAS + ")");
+									+ (i - 1) + " con precio=" + decFormat.format(precioDia1) + " a vela = " + i
+									+ " de tipo " + tipoPrecioDia2 + " con precio=" + decFormat.format(precioDia2)
+									+ " El ratio de cambio es " + decFormat.format(ratioDeCambio) + " (ratio umbral = "
+									+ UMBRAL_RATIO_ANOMALIAS + ")");
 						}
-
 					}
-
 				}
-
 			}
 
 		} else {
-			MY_LOGGER.error("Listas de distinto tamanio! Ejemplo de una fila: " + listaPreciosClose.get(0).toString());
+			MY_LOGGER.error("Listas de distinto tamanio! Ejemplo de una fila: " + listaPreciosDia1.get(0).toString());
 		}
 
 		return detectado;
-
 	}
 
 }

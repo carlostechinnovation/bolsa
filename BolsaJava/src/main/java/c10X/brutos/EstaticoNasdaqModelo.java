@@ -14,6 +14,7 @@ public class EstaticoNasdaqModelo implements Comparable<EstaticoNasdaqModelo> {
 	public String sector = "";
 	public String industry = "";
 	public String summaryQuote = "";
+	public Boolean prioritario = false;
 
 	/**
 	 * @param symbol
@@ -26,7 +27,7 @@ public class EstaticoNasdaqModelo implements Comparable<EstaticoNasdaqModelo> {
 	 * @param summaryQuote
 	 */
 	public EstaticoNasdaqModelo(String symbol, String name, String lastSale, String marketCap, String ipoYear,
-			String sector, String industry, String summaryQuote) {
+			String sector, String industry, String summaryQuote, int prioritario) {
 		super();
 		this.symbol = symbol;
 		this.name = name;
@@ -36,13 +37,14 @@ public class EstaticoNasdaqModelo implements Comparable<EstaticoNasdaqModelo> {
 		this.sector = sector;
 		this.industry = industry;
 		this.summaryQuote = summaryQuote;
+		this.prioritario = (prioritario == 1) ? true : false;
 	}
 
 	@Override
 	public String toString() {
-		return "EstaticosNasdaq [symbol=" + symbol + ", name=" + name + ", lastSale=" + lastSale + ", marketCap="
+		return "EstaticoNasdaqModelo [symbol=" + symbol + ", name=" + name + ", lastSale=" + lastSale + ", marketCap="
 				+ marketCap + ", ipoYear=" + ipoYear + ", sector=" + sector + ", industry=" + industry
-				+ ", summaryQuote=" + summaryQuote + "]";
+				+ ", summaryQuote=" + summaryQuote + ", prioritario=" + prioritario + "]";
 	}
 
 	public String getSymbol() {
@@ -51,7 +53,20 @@ public class EstaticoNasdaqModelo implements Comparable<EstaticoNasdaqModelo> {
 
 	@Override
 	public int compareTo(EstaticoNasdaqModelo otro) {
-		return symbol.compareTo(otro.getSymbol());
+
+		if (this.symbol.equalsIgnoreCase(BrutosUtils.NASDAQ_REFERENCIA)) { // Prioritario maximo
+			return -1;
+
+		} else if (otro.symbol.equalsIgnoreCase(BrutosUtils.NASDAQ_REFERENCIA)) { // Prioritario maximo
+			return 1;
+
+		} else if (this.prioritario && !otro.prioritario) {
+			return -1;
+		} else if (!this.prioritario && otro.prioritario) {
+			return 1;
+		} else {
+			return this.symbol.compareTo(otro.symbol);
+		}
 	}
 
 }
