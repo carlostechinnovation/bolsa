@@ -1,15 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-<<<<<<< HEAD
-    <list default="true" id="22edbd2f-b3d9-42f0-a7dd-659033ab601a" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../BolsaJava/src/main/java/c10X/brutos/EstaticosNasdaqDescargarYParsear.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/src/main/java/c10X/brutos/EstaticosNasdaqDescargarYParsear.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bolsa/C5C6Manual.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/C5C6Manual.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaScripts/generaModelo.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/generaModelo.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaScripts/inversionAnalisis.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/inversionAnalisis.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../BolsaScripts/inversionHistoricaSoloFuturoSimplificado.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/inversionHistoricaSoloFuturoSimplificado.sh" afterDir="false" />
-=======
     <list default="true" id="22edbd2f-b3d9-42f0-a7dd-659033ab601a" name="Default Changelist" comment="Machine Learning - Ejemplo">
       <change beforePath="$PROJECT_DIR$/../BolsaJava/realimentacion/falsospositivos_diaensemana.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/realimentacion/falsospositivos_diaensemana.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../BolsaJava/realimentacion/falsospositivos_empresas.csv" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaJava/realimentacion/falsospositivos_empresas.csv" afterDir="false" />
@@ -27,7 +18,6 @@
       <change beforePath="$PROJECT_DIR$/bolsa/AnalisisFalsosPositivos.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/AnalisisFalsosPositivos.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bolsa/C5C6Manual.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/C5C6Manual.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bolsa/ClusteringAlternativo.py" beforeDir="false" afterPath="$PROJECT_DIR$/bolsa/ClusteringAlternativo.py" afterDir="false" />
->>>>>>> origin/masterluis
       <change beforePath="$PROJECT_DIR$/../BolsaScripts/parametros.config" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/parametros.config" afterDir="false" />
 =======
       <change beforePath="$PROJECT_DIR$/../BolsaScripts/inversionHistoricaSoloFuturoSimplificado.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../BolsaScripts/inversionHistoricaSoloFuturoSimplificado.sh" afterDir="false" />
@@ -95,11 +85,7 @@
       <recent name="C:\DATOS\GITHUB_REPOS\bolsa\BolsaPython\bolsa" />
     </key>
   </component>
-<<<<<<< HEAD
-  <component name="RunManager" selected="Python.C5C6Manual">
-=======
   <component name="RunManager" selected="Python.ClusteringAlternativo">
->>>>>>> origin/masterluis
     <configuration name="06_redneuronal_lstm_2" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="BolsaPython" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -170,11 +156,7 @@
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-<<<<<<< HEAD
-      <option name="SDK_HOME" value="/usr/bin/python3.8" />
-=======
       <option name="SDK_HOME" value="" />
->>>>>>> origin/masterluis
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/bolsa" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
@@ -540,21 +522,6 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-<<<<<<< HEAD
-          <url>file://$PROJECT_DIR$/bolsa/C5C6Manual.py</url>
-          <line>901</line>
-          <option name="timeStamp" value="19" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/bolsa/C5C6Manual.py</url>
-          <line>457</line>
-          <option name="timeStamp" value="33" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/bolsa/C5C6Manual.py</url>
-          <line>408</line>
-          <option name="timeStamp" value="35" />
-=======
           <url>file://$PROJECT_DIR$/bolsa/InversionUtils.py</url>
           <line>18</line>
           <option name="timeStamp" value="43" />
@@ -573,7 +540,6 @@
           <url>file://$PROJECT_DIR$/bolsa/InversionJuntarPrediccionesDeUnDia.py</url>
           <line>175</line>
           <option name="timeStamp" value="145" />
->>>>>>> origin/masterluis
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/bolsa/InversionJuntarPrediccionesDeUnDia.py</url>

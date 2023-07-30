@@ -50,6 +50,7 @@ print("dir_subgrupo = %s" % dir_subgrupo)
 print("modoTiempo = %s" % modoTiempo)
 print("maxFeatReducidas = %s" % maxFeatReducidas)
 print("maxFilasEntrada = %s" % maxFilasEntrada)
+print("desplazamientoAntiguedad = %s" % desplazamientoAntiguedad)
 
 ##################################################################################################
 # DEBUG - EMPRESA vigilada en un dia-mes-año
@@ -616,8 +617,7 @@ elif (modoTiempo == "futuro" and pathCsvReducido.endswith('.csv') and os.path.is
     # print(inputFeatures.head())
     print("inputFeatures: " + str(inputFeatures.shape[0]) + " x " + str(inputFeatures.shape[1]))
 
-    print(
-        "MISSING VALUES (FILAS) - Borramos las FILAS que tengan 1 o mas valores NaN porque son huecos que no deberían estar...")
+    print("MISSING VALUES (FILAS) - Borramos las FILAS que tengan 1 o mas valores NaN porque son huecos que no deberían estar...")
     inputFeatures_sinnulos = inputFeatures.dropna(axis=0, how='any')  # Borrar FILA si ALGUNO sus valores tienen NaN
 
     dir_modelo_predictor_ganador = dir_subgrupo.replace("futuro", "pasado")  # Siempre cojo el modelo entrenado en el pasado
@@ -669,8 +669,7 @@ elif (modoTiempo == "futuro" and pathCsvReducido.endswith('.csv') and os.path.is
         print("Guardando targets PREDICHOS en: " + pathCsvPredichos)
         df_predichos = targets_predichosCorregidos.to_frame()
         df_predichos.columns = ['TARGET_PREDICHO']
-        df_predichos.to_csv(pathCsvPredichos, index=False, sep='|',
-                            float_format='%.4f')  # Capa 6 - Salida (para el validador, sin indice)
+        df_predichos.to_csv(pathCsvPredichos, index=False, sep='|', float_format='%.4f')  # Capa 6 - Salida (para el validador, sin indice)
 
         df_predichos_probs = targets_predichosCorregidos_probs.to_frame()
         df_predichos_probs.columns = ['TARGET_PREDICHO_PROB']
