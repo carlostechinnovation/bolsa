@@ -59,7 +59,7 @@ DIR_INVERSION="${DIR_BASE}inversion/"
 DIR_FUT_SUBGRUPOS="${DIR_BASE}futuro/subgrupos/"
 DIR_JAVA="${DIR_CODIGOS}BolsaJava/"
 PATH_JAR="${DIR_JAVA}target/bolsajava-1.0-jar-with-dependencies.jar"
-DIR_GITHUB_INVERSION="${DIR_CODIGOS}inversion/"
+
 
 rm -Rf ${DIR_INVERSION}
 crearCarpetaSiNoExiste "${DIR_INVERSION}"
@@ -97,8 +97,7 @@ do
 	if [[ $REPLY == *"COMPLETO_PREDICCION"* ]]; then
 		echo "Procesamos  ${REPLY}  y lo copiamos en ${DIR_INVERSION} ..."  >>${LOG_INVERSION}
 		ficheronombre=$(basename $REPLY)
-		directorio=$(dirname $REPLY)
-		#$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/InversionUtils.py" "${directorio}/${ficheronombre}"  "0" "${DIR_GITHUB_INVERSION}" "${ficheronombre}" >> ${LOG_INVERSION}		
+		directorio=$(dirname $REPLY)	
 		$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/InversionUtils.py" "${directorio}/${ficheronombre}"  "0" "${DIR_DROPBOX}" "${ficheronombre}" >> ${LOG_INVERSION}
 	fi
 done 9< <( find ${DIR_FUT_SUBGRUPOS} -type f -exec printf '%s\0' {} + )
@@ -109,8 +108,10 @@ $PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/InversionJuntarPrediccionesDeUnDia.py" "${
 
 # Crear CARPETA DIARIA DE ENTREGABLES y meterlos dentro
 CARPETA_ENTREGABLES="${DIR_DROPBOX}/"$(date '+%Y%m%d_%H%M%S')
+echo "CARPETA_ENTREGABLES=${CARPETA_ENTREGABLES}" >> ${LOG_INVERSION}
 mkdir -p "${CARPETA_ENTREGABLES}"
 PREFIJO_RECIEN_CALCULADOS=$(ls -t | grep GRANDE | grep SG_0_ | head -n 1 | awk -F "_" '{print $1}')  # no tiene que cogerse AAAAMMDD de ahora, sino de los CSV mas recientes encontrados
+echo "PREFIJO_RECIEN_CALCULADOS=${PREFIJO_RECIEN_CALCULADOS}" >> ${LOG_INVERSION}
 cp "${DIR_DROPBOX}/${PREFIJO_RECIEN_CALCULADOS}.html" "${CARPETA_ENTREGABLES}/"
 cp "${DIR_DROPBOX}/${PREFIJO_RECIEN_CALCULADOS}_todas_las_empresas.html" "${CARPETA_ENTREGABLES}/"
 cp "/bolsa/logs/pasado_metricas_y_rentabilidades.html" "${CARPETA_ENTREGABLES}/"
@@ -119,11 +120,16 @@ cp "/bolsa/pasado/empresas_clustering_web.html" "${CARPETA_ENTREGABLES}/"
 
 
 ################################## GITHUB: commit and push##############################################################
-#echo -e "Haciendo GIT COMMIT..." >>${LOG_INVERSION}
-#cd "${DIR_GITHUB_INVERSION}" >> ${LOG_INVERSION}
-#git add .  >> ${LOG_INVERSION}
-#git commit -m "Ficheros diarios de inversion" *  >> ${LOG_INVERSION}	
-#git push -u origin master >> ${LOG_INVERSION}
+echo -e "Haciendo GIT COMMIT..." >>${LOG_INVERSION}
+#Subir HTML resultado a GIT
+DIR_DOCS_HTML_GIT="${DIR_CODIGOS}docs/PREFIJO_RECIEN_CALCULADOS/"
+mkdir -p "${DIR_DOCS_HTML_GIT}"
+cp "${CARPETA_ENTREGABLES}/*.html" "${DIR_DOCS_HTML_GIT}"
+
+cd "${DIR_DOCS_HTML_GIT}"
+git add "."
+git commit -am "HTMLs del futuro (ID ejecucion: ${PREFIJO_RECIEN_CALCULADOS})"
+git push
 
 ################################################################################################
 
