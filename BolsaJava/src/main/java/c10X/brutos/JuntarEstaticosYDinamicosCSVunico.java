@@ -67,7 +67,7 @@ public class JuntarEstaticosYDinamicosCSVunico {
 		MY_LOGGER.info("INICIO");
 
 		// DEFAULT
-		String dirBrutoCsv = BrutosUtils.DIR_BRUTOS_CSV;
+		String dirBrutoCsv = "/bolsa/futuro/brutos_csv/";//BrutosUtils.DIR_BRUTOS_CSV;
 		Integer desplazamientoAntiguedad = BrutosUtils.DESPLAZAMIENTO_ANTIGUEDAD;
 		Integer entornoDeValidacion = BrutosUtils.ES_ENTORNO_VALIDACION;// DEFAULT
 		String letraInicioListaDirecta = EstaticosNasdaqDescargarYParsear.LETRA_INICIO_LISTA_DIRECTA; // DEFAULT
@@ -213,13 +213,21 @@ public class JuntarEstaticosYDinamicosCSVunico {
 		String actual;
 		boolean primeraLinea = true;
 
-		String estaticosCabecera = "industria|Insider Own|Quick Ratio|Current Ratio|P/E|Dividend %|Employees|Short Ratio|geo|Short Float|Debt/Eq|LT Debt/Eq|P/S|EPS next Y|Earnings|Recom|sector|Inst Own|Market Cap";
+		
+		String estaticosCabecera = "industria|Insider Own|Quick Ratio|Current Ratio|P/E|Dividend %|Employees|geo|Debt/Eq|LT Debt/Eq|P/S|EPS next Y|Earnings|Recom|sector|Inst Own|Market Cap";
 		String estaticosDatos = "";
 
 		while ((actual = br.readLine()) != null) {
 			if (primeraLinea == false) {
 
 				String[] partes = actual.split("\\|");
+				
+				//System.out.println("nucleoEmpresa() ->"+fileEstat.getAbsolutePath()+"->partes.length="+partes.length);
+				
+				//si la cabecera no tiene exactamente los campos esperados, lanzamos excepcion
+				if(partes.length != 19) {
+					throw new IOException("JuntarEstaticosYDinamicosCSVunico.nucleoEmpresa() ERROR debido a que la cabecera de datos CSV no es la esperada. Saliendo...");
+				}
 
 				// partes[0]=mercado//DESCARTADO porque es un IDENTIFICADOR
 				// partes[1]=empresa//DESCARTADO porque es un IDENTIFICADOR
@@ -227,22 +235,23 @@ public class JuntarEstaticosYDinamicosCSVunico {
 				estaticosDatos += partes[2]; // industria
 				estaticosDatos += "|" + partes[3];// Insider Own
 				estaticosDatos += "|" + partes[4];// Quick Ratio
-				estaticosDatos += "|" + partes[5];// Current Ratio
+				
+				estaticosDatos += "|" + partes[5];// Current Ratio				
 				estaticosDatos += "|" + partes[6];// P/E
 				estaticosDatos += "|" + partes[7];// Dividend %
 				estaticosDatos += "|" + partes[8];// Employees
-				estaticosDatos += "|" + partes[9];// Short Ratio
-				estaticosDatos += "|" + partes[10];// geo
-				estaticosDatos += "|" + partes[11];// Short Float
-				estaticosDatos += "|" + partes[12];// Debt/Eq
-				estaticosDatos += "|" + partes[13];// LT Debt/Eq
-				estaticosDatos += "|" + partes[14];// P/S
-				estaticosDatos += "|" + partes[15];// EPS next Y
-				estaticosDatos += "|" + partes[16];// Earnings date: presentacion resultados
-				estaticosDatos += "|" + partes[17];// Recom
-				estaticosDatos += "|" + partes[18];// sector
-				estaticosDatos += "|" + partes[19];// Inst Own
-				estaticosDatos += "|" + partes[20];// Market Cap
+				estaticosDatos += "|" + partes[9];// geo
+
+				estaticosDatos += "|" + partes[10];// Debt/Eq
+				estaticosDatos += "|" + partes[11];// LT Debt/Eq
+				estaticosDatos += "|" + partes[12];// P/S
+				estaticosDatos += "|" + partes[13];// EPS next Y
+				estaticosDatos += "|" + partes[14];// Earnings date: presentacion resultados
+				
+				estaticosDatos += "|" + partes[15];// Recom
+				estaticosDatos += "|" + partes[16];// sector
+				estaticosDatos += "|" + partes[17];// Inst Own
+				estaticosDatos += "|" + partes[18];// Market Cap
 			}
 			primeraLinea = false;
 		}

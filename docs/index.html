@@ -13,7 +13,19 @@
     <p>Descripción: es un proyecto piloto para aprender tecnologías. No es rentable porque la Bolsa no es predecible con
         las variables disponibles.</p>
 
-    <h3>Resultados de predicciones</h3>
+	<h3>Entrenamiento (pasado)</h3>
+	
+	<select onchange="window.open(this.options[this.selectedIndex].value,'_blank')">
+        <option selected="selected">Selecciona una página</option>
+        <option value="https://carlostechinnovation.github.io/bolsa/pasado/empresas_clustering_web.html">empresas_clustering_web</option>
+		<option value="https://carlostechinnovation.github.io/bolsa/pasado/informe_datos.html">informe_datos</option>
+		<option value="https://carlostechinnovation.github.io/bolsa/pasado/matriz_features.html">matriz_features</option>
+		<option value="https://carlostechinnovation.github.io/bolsa/pasado/matriz_features_antes_de_pca.html">matriz_features_antes_de_pca</option>
+		<option value="https://carlostechinnovation.github.io/bolsa/pasado/matriz_features_sumapesospca.html">matriz_features_sumapesospca</option>
+		<option value="https://carlostechinnovation.github.io/bolsa/pasado/pasado_metricas_y_rentabilidades.html">Métricas y rentabilidades</option>
+    </select>
+
+    <h3>Predicciones (futuro)</h3>
 
     <select onchange="window.open(this.options[this.selectedIndex].value,'_blank')">
         <option selected="selected">Selecciona una página</option>
@@ -21,7 +33,6 @@
         <option value="https://carlostechinnovation.github.io/bolsa/20230711_041123/20230710.html">20230711_041123/20230710.html</option>
         <option value="https://carlostechinnovation.github.io/bolsa/20230711_041123/empresas_clustering_web.html">20230711_041123/empresas_clustering_web.html</option>
         <option value="https://carlostechinnovation.github.io/bolsa/20230711_041123/pasado_metricas_y_rentabilidades.html">20230711_041123/pasado_metricas_y_rentabilidades.html</option>
-
     </select>
 </body>
 

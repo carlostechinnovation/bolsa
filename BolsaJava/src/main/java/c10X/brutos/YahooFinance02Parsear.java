@@ -224,7 +224,7 @@ public class YahooFinance02Parsear implements Serializable {
 
 			if (out.booleanValue() == false) {
 				MY_LOGGER.error(
-						"La descarga de datos estaticos 1 de " + mercado + " - " + ticker + " ha fallado. Saliendo...");
+						"La descarga de datos estaticos 1 de " + mercado + " - " + ticker + " ha fallado. No se procesa esta empresa...");
 			}
 
 		} else {

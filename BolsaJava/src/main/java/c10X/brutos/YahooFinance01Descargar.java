@@ -141,7 +141,7 @@ public class YahooFinance01Descargar implements Serializable {
 				out = instancia.descargarPagina(pathOut, true, URL_yahoo_ticker);
 				if (out.booleanValue() == false) {
 					MY_LOGGER.error("La descarga de datos estaticos 1 de " + mercado + " - " + ticker
-							+ " ha fallado. Saliendo...");
+							+ " ha fallado. No se procesa esta empresa...");
 				}
 
 			} else {
