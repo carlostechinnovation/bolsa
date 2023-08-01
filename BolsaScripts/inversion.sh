@@ -61,6 +61,50 @@ DIR_JAVA="${DIR_CODIGOS}BolsaJava/"
 PATH_JAR="${DIR_JAVA}target/bolsajava-1.0-jar-with-dependencies.jar"
 
 
+rm -Rf ${DIR_INVERSION}
+crearCarpetaSiNoExiste "${DIR_INVERSION}"
+
+############### LOGS ########################################################
+rm -f "${DIR_LOGS}log4j.log"
+rm -f "${LOG_INVERSION}"
+
+############### COMPILAR JAR ########################################################
+echo -e "Comprobando que JAVA tenga su JAR aunque no lo usemos en este script..." >> ${LOG_INVERSION}
+
+if [ -f "$PATH_JAR" ]; then
+    echo "El siguiente JAR se ha generado bien: ${PATH_JAR}"
+else 
+    echo "El siguiente JAR no se ha generado bien: ${PATH_JAR}   Saliendo..."
+	exit -1
+fi
+
+################################################################################################
+
+#En esta ejecucion, nos situamos en HOY MISMO y PREDECIMOS el futuro. Guardaremos esa predicción para meter dinero REAL.
+
+rm -Rf /bolsa/futuro/ >>${LOG_INVERSION}
+crearCarpetaSiNoExiste "${DIR_FUT_SUBGRUPOS}"
+
+echo -e $( date '+%Y%m%d_%H%M%S' )" Ejecución del futuro (para velas de antiguedad=0) con TODAS LAS EMPRESAS (lista DIRECTA ó INVERSA, ya da igual, no estamos mirando overfitting)..." >>${LOG_INVERSION}
+MIN_COBERTURA_CLUSTER=0    # Para predecir, cojo lo que haya, sin minimos. EL modelo ya lo hemos entrenado
+MIN_EMPRESAS_POR_CLUSTER=1   # Para predecir, cojo lo que haya, sin minimos. EL modelo ya lo hemos entrenado
+${PATH_SCRIPTS}master.sh "futuro" "${FUTURO_INVERSION}" "0" "S" "S" "${S}" "${X}" "${R}" "${M}" "${F}" "${B}" "${NUM_EMPRESAS_INVERSION}" "${UMBRAL_SUBIDA_POR_VELA}" "${UMBRAL_MINIMO_GRAN_VELA}" "${MIN_COBERTURA_CLUSTER}" "${MIN_EMPRESAS_POR_CLUSTER}" "20001111" "20991111" "${MAX_NUM_FEAT_REDUCIDAS}" "${CAPA5_MAX_FILAS_ENTRADA}" "${DINAMICA1}" "${DINAMICA2}" 2>>${LOG_INVERSION} 1>>${LOG_INVERSION}
+
+echo -e "Guardamos la prediccion del FUTURO de todos los SUBGRUPOS en la carpeta de INVERSION, para apostar dinero REAL..." >>${LOG_INVERSION}
+
+while IFS= read -r -d '' -u 9
+do
+	if [[ $REPLY == *"COMPLETO_PREDICCION"* ]]; then
+		echo "Procesamos  ${REPLY}  y lo copiamos en ${DIR_INVERSION} ..."  >>${LOG_INVERSION}
+		ficheronombre=$(basename $REPLY)
+		directorio=$(dirname $REPLY)	
+		$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/InversionUtils.py" "${directorio}/${ficheronombre}"  "0" "${DIR_DROPBOX}" "${ficheronombre}" >> ${LOG_INVERSION}
+	fi
+done 9< <( find ${DIR_FUT_SUBGRUPOS} -type f -exec printf '%s\0' {} + )
+
+# En la carpeta DROPBOX, coge el CSV más reciente de predicciones (su nombre es 202XMMDD) y crea un fichero llamado 202XMMDD.html con toda la info que encuentre de ese dia. Ademas, le añade la info de CALIDAD.csv que esta aparte
+$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/InversionJuntarPrediccionesDeUnDia.py" "${DIR_DROPBOX}" "${DIR_DROPBOX}/ANALISIS/CALIDAD.csv" "${DIR_CODIGOS}BolsaJava/src/main/resources/Bolsa_Subgrupos_Descripcion.txt" "${DIR_CODIGOS}BolsaJava/realimentacion/falsospositivos_empresas.csv" >> ${LOG_INVERSION}
+
 
 ##############################################################################################################################
 echo -e "$( date "+%Y%m%d%H%M%S" ) [inversion.sh] Se crea carpeta diaria de entregables y se meten dentro..." >>${LOG_INVERSION}
@@ -80,12 +124,15 @@ else
     cp "/bolsa/logs/pasado_metricas_y_rentabilidades.html" "${DIR_ENTREGABLES_DROPBOX}/"
     cp "/bolsa/pasado/empresas_clustering_web.html" "${DIR_ENTREGABLES_DROPBOX}/"
 
-    ################################## GITHUB: commit and push##############################################################
+    ################################## HTML entregables en GIT (docs/) ##############################################################
     echo -e "$( date "+%Y%m%d%H%M%S" ) [inversion.sh] Copiando a carpeta entregables en GIT..." >>${LOG_INVERSION}
     DIR_DOCS_HTML_GIT="${DIR_CODIGOS}docs/${PREFIJO_RECIEN_CALCULADOS}/"
 	echo "Copiando todos los entregables:  ${DIR_ENTREGABLES_DROPBOX} --> ${DIR_DOCS_HTML_GIT}" >>${LOG_INVERSION}
     mkdir -p "${DIR_DOCS_HTML_GIT}"
     cp ${DIR_ENTREGABLES_DROPBOX}/* ${DIR_DOCS_HTML_GIT}
+	
+	echo -e "$( date "+%Y%m%d%H%M%S" ) [inversion.sh] Generando index.html en GIT (docs/)..." >>${LOG_INVERSION}
+	$PYTHON_MOTOR ${PYTHON_SCRIPTS}/bolsa/GenerarIndexHtml.py
     
 	cd "${DIR_DOCS_HTML_GIT}"
     git add "."
