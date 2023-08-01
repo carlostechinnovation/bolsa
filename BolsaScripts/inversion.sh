@@ -136,7 +136,7 @@ else
     
 	cd "${DIR_DOCS_HTML_GIT}"
     git add "."
-    git commit -am "HTMLs del futuro (ID ejecucion: ${PREFIJO_RECIEN_CALCULADOS})"
+    git commit -a -m "HTMLs del futuro (ID ejecucion: ${PREFIJO_RECIEN_CALCULADOS})"
     git push
     ################################################################################################
 fi
