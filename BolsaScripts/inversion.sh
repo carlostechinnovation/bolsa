@@ -85,7 +85,7 @@ else
     DIR_DOCS_HTML_GIT="${DIR_CODIGOS}docs/${PREFIJO_RECIEN_CALCULADOS}/"
 	echo "Copiando todos los entregables:  ${DIR_ENTREGABLES_DROPBOX} --> ${DIR_DOCS_HTML_GIT}" >>${LOG_INVERSION}
     mkdir -p "${DIR_DOCS_HTML_GIT}"
-    cp "${DIR_ENTREGABLES_DROPBOX}/*.html" "${DIR_DOCS_HTML_GIT}"
+    cp ${DIR_ENTREGABLES_DROPBOX}/* ${DIR_DOCS_HTML_GIT}
     
 	cd "${DIR_DOCS_HTML_GIT}"
     git add "."
