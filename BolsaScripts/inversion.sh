@@ -15,31 +15,31 @@ DIR_DROPBOX_LUIS="/home/t151521/Dropbox/BOLSA_PREDICTOR/"
 usuario=$(whoami)
 if [ $usuario == "carloslinux" ]
 then
-  DIR_CODIGOS="${DIR_CODIGOS_CARLOS}"
-  PYTHON_MOTOR="${PYTHON_MOTOR_CARLOS}"
-  DIR_DROPBOX="${DIR_DROPBOX_CARLOS}"
+    DIR_CODIGOS="${DIR_CODIGOS_CARLOS}"
+    PYTHON_MOTOR="${PYTHON_MOTOR_CARLOS}"
+    DIR_DROPBOX="${DIR_DROPBOX_CARLOS}"
 elif [ $usuario == "t151521" ]
 then
-  DIR_CODIGOS="${DIR_CODIGOS_LUIS}"
-  PYTHON_MOTOR="${PYTHON_MOTOR_LUIS}"
-  DIR_DROPBOX="${DIR_DROPBOX_LUIS}"
+    DIR_CODIGOS="${DIR_CODIGOS_LUIS}"
+    PYTHON_MOTOR="${PYTHON_MOTOR_LUIS}"
+    DIR_DROPBOX="${DIR_DROPBOX_LUIS}"
 else
-  echo "ERROR: USUARIO NO CONTROLADO"
-  s1 -e
+    echo "ERROR: USUARIO NO CONTROLADO"
+    s1 -e
 fi
 
 ################## FUNCIONES #############################################################
 crearCarpetaSiNoExiste() {
-	param1=${1} 			#directorio
-	echo "Creando carpeta: $param1"
-	mkdir -p ${param1}
+    param1=${1} 			#directorio
+    echo "Creando carpeta: $param1"
+    mkdir -p ${param1}
 }
 
 crearCarpetaSiNoExisteYVaciarRecursivo() {
-	param1=${1} 			#directorio
-	echo "Creando carpeta: $param1"
-	mkdir -p ${param1}
-	rm -Rf ${param1}*
+    param1=${1} 			#directorio
+    echo "Creando carpeta: $param1"
+    mkdir -p ${param1}
+    rm -Rf ${param1}*
 }
 
 ################################################################################################
@@ -73,9 +73,9 @@ echo -e "Comprobando que JAVA tenga su JAR aunque no lo usemos en este script...
 
 if [ -f "$PATH_JAR" ]; then
     echo "El siguiente JAR se ha generado bien: ${PATH_JAR}"
-else 
+else
     echo "El siguiente JAR no se ha generado bien: ${PATH_JAR}   Saliendo..."
-	exit -1
+    exit -1
 fi
 
 ################################################################################################
@@ -94,12 +94,12 @@ echo -e "Guardamos la prediccion del FUTURO de todos los SUBGRUPOS en la carpeta
 
 while IFS= read -r -d '' -u 9
 do
-	if [[ $REPLY == *"COMPLETO_PREDICCION"* ]]; then
-		echo "Procesamos  ${REPLY}  y lo copiamos en ${DIR_INVERSION} ..."  >>${LOG_INVERSION}
-		ficheronombre=$(basename $REPLY)
-		directorio=$(dirname $REPLY)	
-		$PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/InversionUtils.py" "${directorio}/${ficheronombre}"  "0" "${DIR_DROPBOX}" "${ficheronombre}" >> ${LOG_INVERSION}
-	fi
+    if [[ $REPLY == *"COMPLETO_PREDICCION"* ]]; then
+        echo "Procesamos  ${REPLY}  y lo copiamos en ${DIR_INVERSION} ..."  >>${LOG_INVERSION}
+        ficheronombre=$(basename $REPLY)
+        directorio=$(dirname $REPLY)
+        $PYTHON_MOTOR "${PYTHON_SCRIPTS}bolsa/InversionUtils.py" "${directorio}/${ficheronombre}"  "0" "${DIR_DROPBOX}" "${ficheronombre}" >> ${LOG_INVERSION}
+    fi
 done 9< <( find ${DIR_FUT_SUBGRUPOS} -type f -exec printf '%s\0' {} + )
 
 # En la carpeta DROPBOX, coge el CSV más reciente de predicciones (su nombre es 202XMMDD) y crea un fichero llamado 202XMMDD.html con toda la info que encuentre de ese dia. Ademas, le añade la info de CALIDAD.csv que esta aparte
@@ -123,18 +123,19 @@ else
     cp "${DIR_DROPBOX}/${PREFIJO_RECIEN_CALCULADOS}_todas_las_empresas.html" "${DIR_ENTREGABLES_DROPBOX}/"
     cp "/bolsa/logs/pasado_metricas_y_rentabilidades.html" "${DIR_ENTREGABLES_DROPBOX}/"
     cp "/bolsa/pasado/empresas_clustering_web.html" "${DIR_ENTREGABLES_DROPBOX}/"
-
+    
     ################################## HTML entregables en GIT (docs/) ##############################################################
     echo -e "$( date "+%Y%m%d%H%M%S" ) [inversion.sh] Copiando a carpeta entregables en GIT..." >>${LOG_INVERSION}
     DIR_DOCS_HTML_GIT="${DIR_CODIGOS}docs/${PREFIJO_RECIEN_CALCULADOS}/"
-	echo "Copiando todos los entregables:  ${DIR_ENTREGABLES_DROPBOX} --> ${DIR_DOCS_HTML_GIT}" >>${LOG_INVERSION}
+    echo "Copiando todos los entregables:  ${DIR_ENTREGABLES_DROPBOX} --> ${DIR_DOCS_HTML_GIT}" >>${LOG_INVERSION}
     mkdir -p "${DIR_DOCS_HTML_GIT}"
     cp ${DIR_ENTREGABLES_DROPBOX}/* ${DIR_DOCS_HTML_GIT}
-	
-	echo -e "$( date "+%Y%m%d%H%M%S" ) [inversion.sh] Generando index.html en GIT (docs/)..." >>${LOG_INVERSION}
-	$PYTHON_MOTOR ${PYTHON_SCRIPTS}/bolsa/GenerarIndexHtml.py
     
-	cd "${DIR_DOCS_HTML_GIT}"
+    echo -e "$( date "+%Y%m%d%H%M%S" ) [inversion.sh] Generando index.html en GIT (docs/)..." >>${LOG_INVERSION}
+    cd "${PYTHON_SCRIPTS}/bolsa/"
+    $PYTHON_MOTOR ${PYTHON_SCRIPTS}/bolsa/GenerarIndexHtml.py
+    
+    cd "${DIR_DOCS_HTML_GIT}"
     git add "."
     git commit -a -m "HTMLs del futuro (ID ejecucion: ${PREFIJO_RECIEN_CALCULADOS})"
     git push

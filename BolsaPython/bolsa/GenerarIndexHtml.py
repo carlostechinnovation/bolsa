@@ -7,16 +7,18 @@ def calculate_root_dir():
     current_directory = os.getcwd()
     print("Directorio actual donde se ejecuta Python:", current_directory)
     tipo1 = current_directory+"/../../docs/"
-    tipo2 = "./docs/"
+    tipo2 = "./"
     if os.path.exists(tipo1):
         print("calculate_root_dir()-1")
         root_dir = tipo1
+
     else:
         print("calculate_root_dir()-2")
         root_dir = tipo2
 
     print("Directorio DOCS: root_dir=" + root_dir)
     return root_dir
+
 
 def generate_index():
     root_dir = calculate_root_dir()
@@ -26,11 +28,15 @@ def generate_index():
         return f"<li><b>{folder_name}</b><ul>{process_files(folder_path)}</ul></li>"
 
     def process_files(folder_path):
+        # print("Procesando ficheros del folder " + folder_path + " ...")
         files_html = ""
         for file in os.listdir(folder_path):
             file_path = os.path.join(folder_path, file)
             if os.path.isfile(file_path) and file.endswith(".html"):
+                print("files_html -->" + files_html)
                 files_html += f"<li><a href=\"{file_path}\" target=\"_blank\">{file}</a></li>"
+            elif os.path.isdir(file_path):
+                files_html += process_folder(file_path)
         return files_html
 
     index_html = f"<!DOCTYPE html><html><head><title>BOLSA ML - Entregables</title></head><body>\n"
@@ -40,26 +46,28 @@ def generate_index():
     index_html += "<p>Release: 1.0.0-stable</p>\n"
     index_html += "<p>Descripción: es un proyecto piloto para aprender tecnologías. No es rentable porque la Bolsa no es predecible con las variables disponibles.</p>\n"
 
-    listaFicheros = os.listdir(root_dir)
-    listaFicheros.sort()
+    directorios = os.listdir(root_dir)
+    directorios.sort()
 
     index_html += "<h3>ENTRENAMIENTO (pasado):</h3>\n"
-    for folder in listaFicheros:
+    for folder in directorios:
         folder_path = os.path.join(root_dir, folder)
         if os.path.isdir(folder_path) and "pasado" in os.path.abspath(folder_path):
             index_html += process_folder(folder_path)
 
     index_html += "<h3>PREDICCIONES (futuro):</h3>\n"
 
-    for folder in listaFicheros:
+    for folder in directorios:
         folder_path = os.path.join(root_dir, folder)
         if os.path.isdir(folder_path) and "pasado" not in os.path.abspath(folder_path):
             index_html += process_folder(folder_path)
 
     index_html += "</ul></body></html>"
 
-    with open(os.path.join(root_dir, "index.html"), "w") as f:
+    pathSalida = os.path.join(root_dir, "index.html")
+    with open(pathSalida, "w") as f:
+        print("Fichero SALIDA: " + pathSalida)
         f.write(index_html)
 
-generate_index()
 
+generate_index()
