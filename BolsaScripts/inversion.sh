@@ -64,7 +64,7 @@ PATH_JAR="${DIR_JAVA}target/bolsajava-1.0-jar-with-dependencies.jar"
 ##############################################################################################################################
 echo -e "$( date "+%Y%m%d%H%M%S" ) [inversion.sh] Se crea carpeta diaria de entregables y se meten dentro..." >>${LOG_INVERSION}
 cd "${DIR_DROPBOX}"
-DIR_ENTREGABLES_DROPBOX="${DIR_DROPBOX}"$(date '+%Y%m%d_%H%M%S')
+DIR_ENTREGABLES_DROPBOX="${DIR_DROPBOX}"$(date '+%Y%m%d_%H%M%S')"/"
 echo "DIR_ENTREGABLES_DROPBOX=${DIR_ENTREGABLES_DROPBOX}" >> ${LOG_INVERSION}
 mkdir -p "${DIR_ENTREGABLES_DROPBOX}"
 PREFIJO_RECIEN_CALCULADOS=$(ls -t | grep GRANDE | grep SG_0_ | head -n 1 | awk -F "_" '{print $1}')  # no tiene que cogerse AAAAMMDD de ahora, sino de los CSV mas recientes encontrados
