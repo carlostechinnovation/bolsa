@@ -7,7 +7,7 @@ def calculate_root_dir():
     current_directory = os.getcwd()
     print("Directorio actual donde se ejecuta Python:", current_directory)
     tipo1 = current_directory+"/../../docs/"
-    tipo2 = current_directory+"/docs/"
+    tipo2 = "./docs/"
     if os.path.exists(tipo1):
         print("calculate_root_dir()-1")
         root_dir = tipo1
