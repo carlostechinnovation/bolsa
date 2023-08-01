@@ -26,6 +26,29 @@ from xgboost import XGBClassifier
 import C5C6ManualFunciones
 import C5C6ManualML
 
+##################################################################################################
+# REDEFINICION DE FUNCION PRINT() PARA QUE TENGA TIMESTAMP
+old_print = print
+def timestamped_print(*args, **kwargs):
+  old_print((datetime.datetime.now()).strftime(
+    "%Y%m%d_%H%M%S"), *args, **kwargs)
+print = timestamped_print
+##################################################################################################
+def check_file_and_exit(file_path):
+    # Check if the file exists
+    if not os.path.exists(file_path):
+        print(f"El fichero '{file_path}' no existe. Saliendo...")
+        exit(-1)
+
+    # Check if the file is empty
+    if os.stat(file_path).st_size == 0:
+        print(f"El fichero '{file_path}' esta vacio. Saliendo...")
+        exit(-1)
+
+    # If the file exists and is not empty, you can proceed with your further logic here
+    print(f"El fichero '{file_path}' existe y no esta vacio. La ejecucion continua...")
+##################################################################################################
+
 print((datetime.datetime.now()).strftime(
     "%Y%m%d_%H%M%S") + " **** CAPA 5  --> Selección de variables/ Reducción de dimensiones (para cada subgrupo) ****")
 # print("URL PCA: https://scikit-learn.org/stable/modules/unsupervised_reduction.html")
@@ -169,6 +192,8 @@ pathCsvEntradaEsCorrecto = (pathCsvCompleto.endswith('.csv') and os.path.isfile(
 if pathCsvEntradaEsCorrecto == False:
     print("El path del CSV de entrada NO es correcto: " + pathCsvCompleto + "   Saliendo...")
     exit(-1)
+
+check_file_and_exit(pathCsvEntradaEsCorrecto)
 
 print((datetime.datetime.now()).strftime("%Y%m%d_%H%M%S") + " ----- leerFeaturesyTarget ------")
 print("PARAMS --> " + pathCsvCompleto + "|" + dir_subgrupo_img + "|" + str(compatibleParaMuchasEmpresas) + "|" + pathModeloOutliers + "|" + modoTiempo + "|" + str(modoDebug)
