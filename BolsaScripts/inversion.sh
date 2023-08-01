@@ -61,6 +61,7 @@ DIR_JAVA="${DIR_CODIGOS}BolsaJava/"
 PATH_JAR="${DIR_JAVA}target/bolsajava-1.0-jar-with-dependencies.jar"
 
 
+
 ##############################################################################################################################
 echo -e "$( date "+%Y%m%d%H%M%S" ) [inversion.sh] Se crea carpeta diaria de entregables y se meten dentro..." >>${LOG_INVERSION}
 cd "${DIR_DROPBOX}"
@@ -71,7 +72,7 @@ PREFIJO_RECIEN_CALCULADOS=$(ls -t | grep GRANDE | grep SG_0_ | head -n 1 | awk -
 echo "PREFIJO_RECIEN_CALCULADOS=${PREFIJO_RECIEN_CALCULADOS}" >> ${LOG_INVERSION}
 
 if [ -z "${PREFIJO_RECIEN_CALCULADOS}" ]; then
-    echo "PREFIJO_RECIEN_CALCULADOS esta vacio!!" >>${LOG_INVERSION}
+    echo "Variable PREFIJO_RECIEN_CALCULADOS esta vacia!!" >>${LOG_INVERSION}
 else
     echo "Copiando a carpeta entregables en DROPBOX..." >>${LOG_INVERSION}
     cp "${DIR_DROPBOX}/${PREFIJO_RECIEN_CALCULADOS}.html" "${DIR_ENTREGABLES_DROPBOX}/"
@@ -81,7 +82,7 @@ else
 
     ################################## GITHUB: commit and push##############################################################
     echo -e "$( date "+%Y%m%d%H%M%S" ) [inversion.sh] Copiando a carpeta entregables en GIT..." >>${LOG_INVERSION}
-    DIR_DOCS_HTML_GIT="${DIR_CODIGOS}docs/PREFIJO_RECIEN_CALCULADOS/"
+    DIR_DOCS_HTML_GIT="${DIR_CODIGOS}docs/${PREFIJO_RECIEN_CALCULADOS}/"
 	echo "Copiando todos los entregables:  ${DIR_ENTREGABLES_DROPBOX} --> ${DIR_DOCS_HTML_GIT}" >>${LOG_INVERSION}
     mkdir -p "${DIR_DOCS_HTML_GIT}"
     cp "${DIR_ENTREGABLES_DROPBOX}/*.html" "${DIR_DOCS_HTML_GIT}"
