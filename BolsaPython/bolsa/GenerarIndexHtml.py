@@ -64,8 +64,6 @@ def generate_index():
 
     index_html += "</ul></body></html>"
 
-
-
     # WEB LOCAL (para debug)
     pathSalida = os.path.join(root_dir, "index_DEBUG.html")
     with open(pathSalida, "w") as f:
