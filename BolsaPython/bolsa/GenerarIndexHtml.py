@@ -47,7 +47,7 @@ def generate_index():
     index_html += "<p>Descripción: es un proyecto piloto para aprender tecnologías. No es rentable porque la Bolsa no es predecible con las variables disponibles.</p>\n"
 
     directorios = os.listdir(root_dir)
-    directorios.sort()
+    directorios.sort(reverse=True)
 
     index_html += "<h3>ENTRENAMIENTO (pasado):</h3>\n"
     for folder in directorios:
