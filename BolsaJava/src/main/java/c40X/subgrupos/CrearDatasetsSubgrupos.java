@@ -832,12 +832,12 @@ public class CrearDatasetsSubgrupos implements Serializable {
 		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 17, pathEmpresasTipo17, realimentacion);
 		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 18, pathEmpresasTipo18, realimentacion);
 		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 19, pathEmpresasTipo19, realimentacion);
-		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 20, pathEmpresasTipo20, realimentacion);
+		//////decidirSiMeterSubgrupoEnLista(empresasPorTipo, 20, pathEmpresasTipo20, realimentacion);//No meter dinero real NUNCA aqui
 		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 21, pathEmpresasTipo21, realimentacion);
 		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 22, pathEmpresasTipo22, realimentacion);
 		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 23, pathEmpresasTipo23, realimentacion);
 		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 24, pathEmpresasTipo24, realimentacion);
-		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 25, pathEmpresasTipo25, realimentacion);
+		//////decidirSiMeterSubgrupoEnLista(empresasPorTipo, 25, pathEmpresasTipo25, realimentacion);//No meter dinero real NUNCA aqui
 		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 26, pathEmpresasTipo26, realimentacion);
 		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 27, pathEmpresasTipo27, realimentacion);
 		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 28, pathEmpresasTipo28, realimentacion);
