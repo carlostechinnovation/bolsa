@@ -71,7 +71,7 @@ def generate_index():
         f.write(index_html)
 
     # WEB PARA GITHUB ONLINE
-    index_html = index_html.replace("home/carloslinux/Desktop/GIT_BOLSA/bolsa/docs/", "bolsa/")
+    index_html = index_html.replace("home/carloslinux/Desktop/GIT_BOLSA/bolsa/BolsaPython/bolsa/../../docs/", "bolsa/")
     pathSalida = os.path.join(root_dir, "index.html")
     with open(pathSalida, "w") as f:
         print("Fichero SALIDA: " + pathSalida)
