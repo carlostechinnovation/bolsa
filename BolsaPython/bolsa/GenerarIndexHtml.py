@@ -64,10 +64,19 @@ def generate_index():
 
     index_html += "</ul></body></html>"
 
-    pathSalida = os.path.join(root_dir, "index.html")
+
+
+    # WEB LOCAL (para debug)
+    pathSalida = os.path.join(root_dir, "index_DEBUG.html")
     with open(pathSalida, "w") as f:
         print("Fichero SALIDA: " + pathSalida)
         f.write(index_html)
 
+    # WEB PARA GITHUB ONLINE
+    index_html = index_html.replace("home/carloslinux/Desktop/GIT_BOLSA/bolsa/docs/", "bolsa/")
+    pathSalida = os.path.join(root_dir, "index.html")
+    with open(pathSalida, "w") as f:
+        print("Fichero SALIDA: " + pathSalida)
+        f.write(index_html)
 
 generate_index()
