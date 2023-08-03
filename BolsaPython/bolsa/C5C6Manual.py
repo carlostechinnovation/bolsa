@@ -200,7 +200,7 @@ print("PARAMS --> " + pathCsvCompleto + "|" + dir_subgrupo_img + "|" + str(compa
       + "|" + str(maxFilasEntrada))
 
 print("Cargar datos (CSV)...")
-entradaFeaturesYTarget = pd.read_csv(filepath_or_buffer=pathCsvCompleto, sep='|')
+entradaFeaturesYTarget = pd.read_csv(filepath_or_buffer=pathCsvCompleto, sep='|', error_bad_lines=False)
 print("entradaFeaturesYTarget (LEIDO): " + str(entradaFeaturesYTarget.shape[0]) + " x " + str(entradaFeaturesYTarget.shape[1]))
 C5C6ManualFunciones.mostrarEmpresaConcreta(entradaFeaturesYTarget, DEBUG_EMPRESA, DEBUG_MES, DEBUG_DIA, 30)
 
@@ -325,7 +325,8 @@ elif modoTiempo == "futuro":
     columnasDemasiadosNulos = pickle.load(open(pathColumnasConDemasiadosNulos, 'rb'))
     # print("columnasDemasiadosNulos: "); print(columnasDemasiadosNulos)
     # print(tabulate(entradaFeaturesYTarget2.head(), headers='keys', tablefmt='psql'))
-    entradaFeaturesYTarget2 = entradaFeaturesYTarget2.drop(columnasDemasiadosNulos, axis=1)
+    columns_to_drop = [col for col in columnasDemasiadosNulos if col in entradaFeaturesYTarget2.columns]
+    entradaFeaturesYTarget2 = entradaFeaturesYTarget2.drop(columns_to_drop, axis=1)
     print("entradaFeaturesYTarget2: " + str(entradaFeaturesYTarget2.shape[0]) + " x " + str(entradaFeaturesYTarget2.shape[1]))
 
     print("MISSING VALUES (FILAS) - Para el FUTURO; el target es NULO siempre...")

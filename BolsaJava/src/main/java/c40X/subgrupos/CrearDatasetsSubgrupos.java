@@ -350,12 +350,12 @@ public class CrearDatasetsSubgrupos implements Serializable {
 				suficientesEmpleados = !empleadosDesconocidos
 						&& Integer.valueOf(empleados) >= MINIMO_NUMERO_EMPLEADOS_INFORMADO;
 
-				if (empleadosDesconocidos) {
-					MY_LOGGER.info("Numero de empleados desconocido (" + empleados + ") en empresa=" + empresa
-							+ " ==>DESCARTADA");
-					contadorDescartadasPorEmpleados++;
-
-				} else if (suficientesEmpleados == false) {
+//				if (empleadosDesconocidos) {
+//					MY_LOGGER.info("Numero de empleados desconocido (" + empleados + ") en empresa=" + empresa
+//							+ " ==>DESCARTADA");
+//					contadorDescartadasPorEmpleados++;
+//				}
+				if (suficientesEmpleados == false) {
 					MY_LOGGER
 							.info("Motivo suficiente para DESCARTE en empresa=" + empresa + " porque tiene " + empleados
 									+ " empleados (umbral=" + MINIMO_NUMERO_EMPLEADOS_INFORMADO + "): " + empleados);
@@ -426,8 +426,9 @@ public class CrearDatasetsSubgrupos implements Serializable {
 
 			}
 
-			boolean empresaCumpleCriteriosComunes = (empleadosDesconocidos == false && suficientesEmpleados)
-					&& (deudaDesconocida == false && deudaConocidaYBaja)
+			boolean empresaCumpleCriteriosComunes = (
+			// empleadosDesconocidos == false &&
+			suficientesEmpleados) && (deudaDesconocida == false && deudaConocidaYBaja)
 					&& (quickRatioDesconocido || suficienteLiquidezSegunQuickRatio)
 					&& (recomAnalistasDesconocido || analistasRecomiendanComprar)
 					&& (ratioPERDesconocido || ratioPERRazonable);
@@ -832,12 +833,14 @@ public class CrearDatasetsSubgrupos implements Serializable {
 		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 17, pathEmpresasTipo17, realimentacion);
 		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 18, pathEmpresasTipo18, realimentacion);
 		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 19, pathEmpresasTipo19, realimentacion);
-		//////decidirSiMeterSubgrupoEnLista(empresasPorTipo, 20, pathEmpresasTipo20, realimentacion);//No meter dinero real NUNCA aqui
+		////// decidirSiMeterSubgrupoEnLista(empresasPorTipo, 20, pathEmpresasTipo20,
+		////// realimentacion);//No meter dinero real NUNCA aqui
 		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 21, pathEmpresasTipo21, realimentacion);
 		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 22, pathEmpresasTipo22, realimentacion);
 		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 23, pathEmpresasTipo23, realimentacion);
 		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 24, pathEmpresasTipo24, realimentacion);
-		//////decidirSiMeterSubgrupoEnLista(empresasPorTipo, 25, pathEmpresasTipo25, realimentacion);//No meter dinero real NUNCA aqui
+		////// decidirSiMeterSubgrupoEnLista(empresasPorTipo, 25, pathEmpresasTipo25,
+		////// realimentacion);//No meter dinero real NUNCA aqui
 		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 26, pathEmpresasTipo26, realimentacion);
 		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 27, pathEmpresasTipo27, realimentacion);
 		decidirSiMeterSubgrupoEnLista(empresasPorTipo, 28, pathEmpresasTipo28, realimentacion);
@@ -962,11 +965,8 @@ public class CrearDatasetsSubgrupos implements Serializable {
 							+ empresasConTarget.keySet().size() + " empresas (mínimo deseado = " + minEmpresasPorCluster
 							+ ")." + " ==> SI SE GENERA DATASET");
 				} else {
-					MY_LOGGER.info("Cluster " + tipo + " tiene un " + Math.round(coberturaEmpresasPorCluster * 100)
-							+ "% de empresas (" + estadisticas.getSum() + " de " + estadisticas.getValues().length
-							+ " ; mínimo = " + coberturaMinima + " %) con al menos una vela positiva." + " Y tiene "
-							+ empresasConTarget.keySet().size() + " empresas."
-							+ " Pero es FUTURO, así que SIEMPRE SE GENERA DATASET.");
+					MY_LOGGER.info("Cluster " + tipo + " tiene "+ empresasConTarget.keySet().size() + " empresas."
+							+ " En modo FUTURO, SIEMPRE SE GENERA DATASET.");
 				}
 
 				// Hay alguna empresa de este tipo. Creo un CSV común para todas las del mismo
@@ -1157,13 +1157,14 @@ public class CrearDatasetsSubgrupos implements Serializable {
 
 			} else if (realimentacion.equals("S")
 					&& fps.ratioFalsosPositivos <= InterpreteFalsosPositivos.UMBRAL_MAX_RATIOSUBGRUPO_FP) {
-				MY_LOGGER.info("SUBGRUPO conocido y debajo del umbral ==> Lo queremos. Subgrupo: " + subgrupoId);
+				MY_LOGGER.info("SUBGRUPO " + subgrupoId + " conocido y debajo del umbral ==> Lo queremos. Subgrupo: "
+						+ subgrupoId);
 				empresasPorTipo.put(subgrupoId, pathEmpresasTipo);
 
 			} else if (realimentacion.equals("S")
 					&& fps.ratioFalsosPositivos > InterpreteFalsosPositivos.UMBRAL_MAX_RATIOSUBGRUPO_FP) {
-				MY_LOGGER.info("SUBGRUPO con DEMASIADOS falsos positivos (ratio=" + fps.ratioFalsosPositivos
-						+ " %). No añadimos el subgrupo: " + subgrupoId);
+				MY_LOGGER.info("SUBGRUPO " + subgrupoId + " con DEMASIADOS falsos positivos (ratio="
+						+ fps.ratioFalsosPositivos + " %). No añadimos el subgrupo: " + subgrupoId);
 			}
 		}
 

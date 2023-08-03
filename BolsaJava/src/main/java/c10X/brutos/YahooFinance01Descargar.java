@@ -138,10 +138,10 @@ public class YahooFinance01Descargar implements Serializable {
 				MY_LOGGER.debug("Espera aleatoria " + msegEspera + " mseg...");
 				Thread.sleep(msegEspera);
 
-				out = instancia.descargarPagina(pathOut, true, URL_yahoo_ticker);
+				out = YahooFinance01Descargar.descargarPagina(pathOut, true, URL_yahoo_ticker);
 				if (out.booleanValue() == false) {
 					MY_LOGGER.error("La descarga de datos estaticos 1 de " + mercado + " - " + ticker
-							+ " ha fallado. No se procesa esta empresa...");
+							+ " ha fallado. No se DESCARGA esta empresa...");
 				}
 
 			} else {

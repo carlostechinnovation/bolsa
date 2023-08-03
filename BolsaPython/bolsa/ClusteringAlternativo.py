@@ -87,7 +87,7 @@ from sklearn.cluster import MeanShift, estimate_bandwidth
 pathModelo = "/bolsa/pasado/clustering_modelo.dat"  # Siempre PASADO (nunca futuro)
 labels = []
 if modo == "pasado":
-    bandwidth = estimate_bandwidth(X, quantile=0.2, n_samples=None, random_state=0, n_jobs=-1)
+    bandwidth = estimate_bandwidth(X, quantile=0.30, n_samples=None, random_state=0, n_jobs=-1)
     modelo = MeanShift(bandwidth=bandwidth, bin_seeding=True, min_bin_freq=2, cluster_all=False)
     modelo.fit(X)
     labels = modelo.labels_
@@ -96,6 +96,7 @@ if modo == "pasado":
     labels_unique = np.unique(labels)
     n_clusters_ = len(labels_unique)
     print("Numero de clusters (pasado): %d" % n_clusters_)
+
 elif modo == "futuro":
     print("Aplicamos modelo  de clustering ya entrenado para asignar clusters ya definados a las muestras del futuro")
     modelo = pickle.load(open(pathModelo, 'rb'))
