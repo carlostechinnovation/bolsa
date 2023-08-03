@@ -38,8 +38,7 @@ import datetime
 from sklearn.manifold import TSNE
 from sklearn.decomposition import PCA, TruncatedSVD
 
-print((datetime.datetime.now()).strftime(
-    "%Y%m%d_%H%M%S") + " **** CAPA 5  --> Selección de variables/ Reducción de dimensiones (para cada subgrupo) ****")
+print(" **** CAPA 5  --> Selección de variables/ Reducción de dimensiones (para cada subgrupo) ****")
 print("URL PCA: https://scikit-learn.org/stable/modules/unsupervised_reduction.html")
 print("URL Feature Selection: https://scikit-learn.org/stable/modules/feature_selection.html")
 
@@ -1028,4 +1027,4 @@ else:
     print("Los parametros de entrada son incorrectos o el CSV no existe o esta vacio!!")
 
 ############################################################
-print((datetime.datetime.now()).strftime("%Y%m%d_%H%M%S") + " ------------ FIN de capa 6----------------")
+print(" ------------ FIN de capa 6 ----------------")

@@ -613,4 +613,4 @@ else:
     print("Los parametros de entrada son incorrectos o el CSV no existe o esta vacio!!")
 
 ############################################################
-print((datetime.datetime.now()).strftime("%Y%m%d_%H%M%S") +" ------------ FIN de capa 6----------------")
+print(" ------------ FIN de capa 6 ----------------")

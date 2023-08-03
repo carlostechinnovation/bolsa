@@ -43,8 +43,8 @@ def mostrarEmpresaConcreta(miDF, DEBUG_EMPRESA, DEBUG_MES, DEBUG_DIA, numFilasMa
     tablaDebugDF = miDF[
         (miDF['empresa'] == DEBUG_EMPRESA) & (miDF['mes'] == DEBUG_MES) & (
                 miDF['dia'] == DEBUG_DIA)].head(n=numFilasMax)
-    print("tablaDebugDF (caso vigilado) - ENTRADA:")
-    print(tabulate(tablaDebugDF, headers='keys', tablefmt='psql'))
+    #print("tablaDebugDF (caso vigilado) - ENTRADA:")
+    #print(tabulate(tablaDebugDF, headers='keys', tablefmt='psql'))
 
 
 def mostrarEmpresaConcretaConFilter(miDF, DEBUG_FILTRO, etiqueta):
@@ -56,8 +56,8 @@ def mostrarEmpresaConcretaConFilter(miDF, DEBUG_FILTRO, etiqueta):
     :return:
     """
     tablaDebugDF = miDF.filter(like=DEBUG_FILTRO, axis=0)
-    print("tablaDebugDF (caso vigilado) - " + etiqueta + ":")
-    print(tabulate(tablaDebugDF, headers='keys', tablefmt='psql'))
+    #print("tablaDebugDF (caso vigilado) - " + etiqueta + ":")
+    #print(tabulate(tablaDebugDF, headers='keys', tablefmt='psql'))
 
 
 ######################### PARÁMETROS TWITTER ########################

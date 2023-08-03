@@ -18,7 +18,7 @@ from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler, PowerTransformer, KBinsDiscretizer
 from sklearn.svm import SVC
 
-print((datetime.datetime.now()).strftime("%Y%m%d_%H%M%S") + " **** CAPA 5  --> Selección de variables/ Reducción de dimensiones (para cada subgrupo) ****")
+print(" **** CAPA 5  --> Selección de variables/ Reducción de dimensiones (para cada subgrupo) ****")
 print("URL PCA: https://scikit-learn.org/stable/modules/unsupervised_reduction.html")
 print("URL Feature Selection: https://scikit-learn.org/stable/modules/feature_selection.html")
 

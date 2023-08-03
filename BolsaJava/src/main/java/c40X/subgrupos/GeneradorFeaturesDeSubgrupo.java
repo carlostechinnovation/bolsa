@@ -102,8 +102,10 @@ public class GeneradorFeaturesDeSubgrupo implements Serializable {
 
 					// Se extraen los precios HIGH y LOW. Los metemos en un nuevo array, pequeño.
 					List<String> partes = Arrays.asList(row.split("\\|"));
-					if (partes.get(posicionHigh) != null && !partes.get(posicionHigh).isEmpty()
-							&& partes.get(posicionLow) != null && !partes.get(posicionLow).isEmpty()) {
+
+					if (Math.max(posicionHigh, posicionLow) < partes.size() && partes.get(posicionHigh) != null
+							&& !partes.get(posicionHigh).isEmpty() && partes.get(posicionLow) != null
+							&& !partes.get(posicionLow).isEmpty()) {
 
 						ordenInsercion++; // SE SUPONE QUE LAS VELAS DE UNA EMPRESA VIENEN ORDENADAS EN ORDEN
 											// CRONOLOGICO
@@ -348,40 +350,47 @@ public class GeneradorFeaturesDeSubgrupo implements Serializable {
 				listaAux = new ArrayList<String>(1);
 				listaAux.addAll(filaLista);
 
-				if (posicionTarget != -1) {
-					listaAux.remove(posicionTarget); // Borramos este primero, porque es el mas lejano
+				boolean filaIncompleta = listaAux.size() > 0 && posicionTarget >= 0
+						&& listaAux.size() < (posicionTarget + 1);
+
+				if (!filaIncompleta) {
+					if (posicionTarget != -1) {
+						listaAux.remove(posicionTarget); // Borramos este primero, porque es el mas lejano
+					}
+
+					if (posAux1 != -1 && posAux2 != -1 && posAux3 != -1 && posAux4 != -1 && listaAux.contains(posAux1)
+							&& listaAux.contains(posAux2) && listaAux.contains(posAux3) && listaAux.contains(posAux4)) {
+						// FEATURES DE SUBGRUPO preexistentes (si la empresa apareció en otro subgrupo
+						// antes)
+						listaAux.remove(posAux4);
+						listaAux.remove(posAux3);
+						listaAux.remove(posAux2);
+						listaAux.remove(posAux1);
+					}
+
+					if (cabecera) {
+						String nuevaCabecera = listaAcadena(listaAux, "|")
+								+ AuxiliarEmpresaAMDpendientes.getCabeceraSinAMD();
+						nuevaCabecera += target != null ? ("|" + target) : "";
+						filasCsvSalida.add(nuevaCabecera);
+
+					} else {
+						String claveAMD = filaLista.get(posicionAnio) + "-" + filaLista.get(posicionMes) + "-"
+								+ filaLista.get(posicionDia);
+
+						AuxiliarEmpresaAMDpendientes featuresSubgrupoDeAMD = mapaAMDFeaturesMediasSubgrupo
+								.get(claveAMD);
+
+						String featuresSubgrupo = featuresSubgrupoDeAMD != null
+								? featuresSubgrupoDeAMD.getDatosParaCSVSinAMD()
+								: AuxiliarEmpresaAMDpendientes.getDatosParaCSVSinAMDnulo();
+
+						String nuevaFilaDatos = listaAcadena(listaAux, "|") + featuresSubgrupo;
+						nuevaFilaDatos += target != null ? ("|" + target) : "";
+						filasCsvSalida.add(nuevaFilaDatos);
+					}
 				}
 
-				if (posAux1 != -1 && posAux2 != -1 && posAux3 != -1 && posAux4 != -1 && listaAux.contains(posAux1)
-						&& listaAux.contains(posAux2) && listaAux.contains(posAux3) && listaAux.contains(posAux4)) {
-					// FEATURES DE SUBGRUPO preexistentes (si la empresa apareció en otro subgrupo
-					// antes)
-					listaAux.remove(posAux4);
-					listaAux.remove(posAux3);
-					listaAux.remove(posAux2);
-					listaAux.remove(posAux1);
-				}
-
-				if (cabecera) {
-					String nuevaCabecera = listaAcadena(listaAux, "|")
-							+ AuxiliarEmpresaAMDpendientes.getCabeceraSinAMD();
-					nuevaCabecera += target != null ? ("|" + target) : "";
-					filasCsvSalida.add(nuevaCabecera);
-
-				} else {
-					String claveAMD = filaLista.get(posicionAnio) + "-" + filaLista.get(posicionMes) + "-"
-							+ filaLista.get(posicionDia);
-
-					AuxiliarEmpresaAMDpendientes featuresSubgrupoDeAMD = mapaAMDFeaturesMediasSubgrupo.get(claveAMD);
-
-					String featuresSubgrupo = featuresSubgrupoDeAMD != null
-							? featuresSubgrupoDeAMD.getDatosParaCSVSinAMD()
-							: AuxiliarEmpresaAMDpendientes.getDatosParaCSVSinAMDnulo();
-
-					String nuevaFilaDatos = listaAcadena(listaAux, "|") + featuresSubgrupo;
-					nuevaFilaDatos += target != null ? ("|" + target) : "";
-					filasCsvSalida.add(nuevaFilaDatos);
-				}
 				cabecera = false;
 			}
 

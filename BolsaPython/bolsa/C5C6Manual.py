@@ -49,8 +49,7 @@ def check_file_and_exit(file_path):
     print(f"El fichero '{file_path}' existe y no esta vacio. La ejecucion continua...")
 ##################################################################################################
 
-print((datetime.datetime.now()).strftime(
-    "%Y%m%d_%H%M%S") + " **** CAPA 5  --> Selección de variables/ Reducción de dimensiones (para cada subgrupo) ****")
+print(" **** CAPA 5  --> Selección de variables/ Reducción de dimensiones (para cada subgrupo) ****")
 # print("URL PCA: https://scikit-learn.org/stable/modules/unsupervised_reduction.html")
 # print("URL Feature Selection: https://scikit-learn.org/stable/modules/feature_selection.html")
 
@@ -139,8 +138,7 @@ with warnings.catch_warnings():
 
 np.random.seed(12345)
 
-print("\n" + (datetime.datetime.now()).strftime(
-    "%Y%m%d_%H%M%S") + " **** CAPAS 5 y 6 - Crear almacenar y evaluar varios modelos (para cada subgrupo) ****")
+print(" **** CAPAS 5 y 6 - Crear almacenar y evaluar varios modelos (para cada subgrupo) ****")
 print("Tipo de problema: CLASIFICACION BINOMIAL (target es boolean)")
 
 print("PARAMETROS: ")
@@ -747,4 +745,4 @@ else:
     print("Los parametros de entrada son incorrectos o el CSV no existe o esta vacio!!")
 
 ############################################################
-print((datetime.datetime.now()).strftime("%Y%m%d_%H%M%S") + " ------------ FIN de capa 6----------------")
+print(" ------------ FIN de capa 6 ----------------")

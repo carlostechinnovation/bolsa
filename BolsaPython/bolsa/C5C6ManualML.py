@@ -321,8 +321,8 @@ def normalizar(path_modelo_normalizador, featuresFichero, modoTiempo, pathCsvInt
     print("featuresFicheroNorm:" + str(featuresFicheroNorm.shape[0]) + " x " + str(featuresFicheroNorm.shape[1]))
 
     tablaDebugDF = featuresFicheroNorm.filter(like=DEBUG_FILTRO, axis=0)
-    print("tablaDebugDF (caso vigilado) - " + "featuresFicheroNorm" + ":")
-    print(tabulate(tablaDebugDF, headers='keys', tablefmt='psql'))
+    #print("tablaDebugDF (caso vigilado) - " + "featuresFicheroNorm" + ":")
+    #print(tabulate(tablaDebugDF, headers='keys', tablefmt='psql'))
 
     featuresFicheroNorm.to_csv(pathCsvIntermedio + ".normalizado.csv", index=True, sep='|', float_format='%.4f')  # UTIL para testIntegracion
 
