@@ -94,28 +94,31 @@ public class GestorFicheros {
 		ordenNombresParametrosLeidos.put(17, "industria");
 		ordenNombresParametrosLeidos.put(18, "Insider Own");
 		ordenNombresParametrosLeidos.put(19, "Quick Ratio");
+		
 		ordenNombresParametrosLeidos.put(20, "Current Ratio");
 		ordenNombresParametrosLeidos.put(21, "P/E");
 		ordenNombresParametrosLeidos.put(22, "Dividend %");
 		ordenNombresParametrosLeidos.put(23, "Employees");
-		ordenNombresParametrosLeidos.put(24, "Short Ratio");
-		ordenNombresParametrosLeidos.put(25, "geo");
-		ordenNombresParametrosLeidos.put(26, "Short Float");
-		ordenNombresParametrosLeidos.put(27, "Debt/Eq");
-		ordenNombresParametrosLeidos.put(28, "LT Debt/Eq");
-		ordenNombresParametrosLeidos.put(29, "P/S");
-		ordenNombresParametrosLeidos.put(30, "EPS next Y");
-		ordenNombresParametrosLeidos.put(31, "Earnings");
-		ordenNombresParametrosLeidos.put(32, "Recom");
-		ordenNombresParametrosLeidos.put(33, "sector");
-		ordenNombresParametrosLeidos.put(34, "Inst Own");
-		ordenNombresParametrosLeidos.put(35, "Market Cap");
+//		ordenNombresParametrosLeidos.put(-, "Short Ratio");
+		ordenNombresParametrosLeidos.put(24, "geo");
+		
+//		ordenNombresParametrosLeidos.put(-, "Short Float");
+		ordenNombresParametrosLeidos.put(25, "Debt/Eq");
+		ordenNombresParametrosLeidos.put(26, "LT Debt/Eq");
+		ordenNombresParametrosLeidos.put(27, "P/S");
+		ordenNombresParametrosLeidos.put(28, "EPS next Y");
+		ordenNombresParametrosLeidos.put(29, "Earnings");
+		
+		ordenNombresParametrosLeidos.put(30, "Recom");
+		ordenNombresParametrosLeidos.put(31, "sector");
+		ordenNombresParametrosLeidos.put(32, "Inst Own");
+		ordenNombresParametrosLeidos.put(33, "Market Cap");
 	}
 
 	public static final int INDICE_PRIMER_CAMPO_INSIDERS = 13;
 	public static final int INDICE_ULTIMO_CAMPO_INSIDERS = 16;
 	public static final int INDICE_PRIMER_CAMPO_ESTATICO = 17;
-	public static final int INDICE_ULTIMO_CAMPO_ESTATICO = 35;
+	public static final int INDICE_ULTIMO_CAMPO_ESTATICO = 33;
 
 	/**
 	 * 
@@ -172,10 +175,12 @@ public class GestorFicheros {
 					// Sólo se leen los parámetros NO ELABORADOS. Meto esto para que se pueda usar
 					// en pasos posteriores del proyecto
 					for (int i = 0; i < Math.min(data.length, ordenNombresParametrosLeidos.size()); i++) {
-						if (ordenNombresParametrosLeidos.get(i).compareTo(data[i]) != 0)
+						if (ordenNombresParametrosLeidos.get(i).compareTo(data[i]) != 0) {
+							System.err.println("Parametros leidos: "+ordenNombresParametrosLeidos);
+							System.err.println("Parametros esperados: "+data[i]);
 							throw new Exception(
 									"El orden de los parametros leidos (sólo se tratan los NO ELABORADOS) en el fichero no es el que espera el gestor de ficheros. Fichero: "
-											+ pathFichero);
+											+ pathFichero);}
 					}
 					esPrimeraLinea = Boolean.FALSE;
 

@@ -57,6 +57,7 @@ for (root, dirs, file) in os.walk(directorioIn):
         if '.csv' in f:
             entradasCsv.append(f)
 
+entradasCsv.sort()
 print("Hay " + str(len(entradasCsv)) + " ficheros en el directorio de entrada " + directorioIn)
 
 ########################################

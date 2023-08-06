@@ -223,8 +223,8 @@ public class YahooFinance02Parsear implements Serializable {
 			out = parsearJson(mercado, ticker, pathBruto, pathBrutoCsv, soloVelas, modo);
 
 			if (out.booleanValue() == false) {
-				MY_LOGGER.error(
-						"La descarga de datos estaticos 1 de " + mercado + " - " + ticker + " ha fallado. No se PARSEA esta empresa...");
+				MY_LOGGER.error("La descarga de datos estaticos 1 de " + mercado + " - " + ticker
+						+ " ha fallado. No se PARSEA esta empresa...");
 			}
 
 		} else {
@@ -308,11 +308,10 @@ public class YahooFinance02Parsear implements Serializable {
 
 				}
 
-				// Detectar anomalias gigantes (posibles Splits o contrasplits)
-				boolean tieneAnomalias = detectarAnomaliasGigantes(empresa, listaPreciosClose, listaPreciosOpen,
-						listaPreciosClose, "OPEN");
-
-				if (tieneAnomalias == false) {
+				// Detectar anomalias gigantes (posibles Splits o contrasplits) - SOLO EN MODO
+				// PASADO
+				if (detectarAnomaliasGigantes(empresa, listaPreciosClose, listaPreciosOpen, listaPreciosClose, "OPEN",
+						modo) == false) {
 
 					// ---------------------------- ESCRITURA ---------------
 					File fout = new File(pathBrutoCsvSalida);
@@ -618,64 +617,73 @@ public class YahooFinance02Parsear implements Serializable {
 	 * @param listaPreciosDia2 Precios en dia 2 (normalmente el precio OPEN o
 	 *                         tambien puede usarse el de close)
 	 * @param tipoPrecioDia2   OPEN o CLOSE
+	 * @param Modo             Pasado o Futuro. Si es futuro, no se detectan
+	 *                         anomalias
 	 * @return
 	 */
 	public static boolean detectarAnomaliasGigantes(String empresa, JSONArray listaPreciosDia1,
-			JSONArray listaPreciosOpenDia2, JSONArray listaPreciosCloseDia2, String tipoPrecioDia2) {
+			JSONArray listaPreciosOpenDia2, JSONArray listaPreciosCloseDia2, String tipoPrecioDia2, String modo) {
 
 		boolean detectado = false;
 
-		if (listaPreciosDia1.size() == listaPreciosOpenDia2.size()
-				&& listaPreciosOpenDia2.size() == listaPreciosCloseDia2.size()) {
+		if (modo.equals(BrutosUtils.FUTURO)) {
+			// En modo FUTURO no detectamos anomalias
+		} else {
 
-			for (int i = 0; i < listaPreciosDia1.size(); i++) {
+			if (listaPreciosDia1.size() == listaPreciosOpenDia2.size()
+					&& listaPreciosOpenDia2.size() == listaPreciosCloseDia2.size()) {
 
-				if (i > 0) { // la primera vela no me vale para poder comparar
+				for (int i = 0; i < listaPreciosDia1.size(); i++) {
 
-					Double precioOpenDia2 = listaPreciosOpenDia2.get(i) == null ? null
-							: Double.valueOf(listaPreciosOpenDia2.get(i).toString());
-					Double precioCloseDia2 = listaPreciosCloseDia2.get(i) == null ? null
-							: Double.valueOf(listaPreciosCloseDia2.get(i).toString());
+					if (i > 0) { // la primera vela no me vale para poder comparar
 
-					Double precioDia1 = listaPreciosDia1.get(i - 1) == null ? null
-							: Double.valueOf(listaPreciosDia1.get(i - 1).toString());
+						Double precioOpenDia2 = listaPreciosOpenDia2.get(i) == null ? null
+								: Double.valueOf(listaPreciosOpenDia2.get(i).toString());
+						Double precioCloseDia2 = listaPreciosCloseDia2.get(i) == null ? null
+								: Double.valueOf(listaPreciosCloseDia2.get(i).toString());
 
-					if (precioOpenDia2 != null && precioCloseDia2 != null && precioDia1 != null
-							&& tipoPrecioDia2 != null && !tipoPrecioDia2.isEmpty()) {
+						Double precioDia1 = listaPreciosDia1.get(i - 1) == null ? null
+								: Double.valueOf(listaPreciosDia1.get(i - 1).toString());
 
-						Double ratioDeCambio = null;
+						if (precioOpenDia2 != null && precioCloseDia2 != null && precioDia1 != null
+								&& tipoPrecioDia2 != null && !tipoPrecioDia2.isEmpty()) {
 
-						if (tipoPrecioDia2 != null && tipoPrecioDia2.equals("OPEN")) {
-							ratioDeCambio = (precioOpenDia2 > precioDia1) ? Math.abs(precioOpenDia2 / precioDia1)
-									: Math.abs(precioDia1 / precioOpenDia2);
-						} else if (tipoPrecioDia2 != null && tipoPrecioDia2.equals("CLOSE")) {
-							ratioDeCambio = (precioCloseDia2 > precioDia1) ? Math.abs(precioCloseDia2 / precioDia1)
-									: Math.abs(precioDia1 / precioCloseDia2);
-						}
+							Double ratioDeCambio = null;
 
-						if (ratioDeCambio != null && ratioDeCambio >= UMBRAL_RATIO_ANOMALIAS) {
-							detectado = true;
-
-							Double precioDia2 = null;
 							if (tipoPrecioDia2 != null && tipoPrecioDia2.equals("OPEN")) {
-								precioDia2 = precioOpenDia2;
+								ratioDeCambio = (precioOpenDia2 > precioDia1) ? Math.abs(precioOpenDia2 / precioDia1)
+										: Math.abs(precioDia1 / precioOpenDia2);
 							} else if (tipoPrecioDia2 != null && tipoPrecioDia2.equals("CLOSE")) {
-								precioDia2 = precioCloseDia2;
+								ratioDeCambio = (precioCloseDia2 > precioDia1) ? Math.abs(precioCloseDia2 / precioDia1)
+										: Math.abs(precioDia1 / precioCloseDia2);
 							}
 
-							MY_LOGGER.warn("Empresa=" + empresa
-									+ " Tiene anomalia gigante (posible split o contraSplit) al pasar de vela = "
-									+ (i - 1) + " con precio=" + decFormat.format(precioDia1) + " a vela = " + i
-									+ " de tipo " + tipoPrecioDia2 + " con precio=" + decFormat.format(precioDia2)
-									+ " El ratio de cambio es " + decFormat.format(ratioDeCambio) + " (ratio umbral = "
-									+ UMBRAL_RATIO_ANOMALIAS + ")");
+							if (ratioDeCambio != null && ratioDeCambio >= UMBRAL_RATIO_ANOMALIAS) {
+								detectado = true;
+
+								Double precioDia2 = null;
+								if (tipoPrecioDia2 != null && tipoPrecioDia2.equals("OPEN")) {
+									precioDia2 = precioOpenDia2;
+								} else if (tipoPrecioDia2 != null && tipoPrecioDia2.equals("CLOSE")) {
+									precioDia2 = precioCloseDia2;
+								}
+
+								MY_LOGGER.warn("Empresa=" + empresa
+										+ " Tiene anomalia gigante (posible split o contraSplit) al pasar de vela = "
+										+ (i - 1) + " con precio=" + decFormat.format(precioDia1) + " a vela = " + i
+										+ " de tipo " + tipoPrecioDia2 + " con precio=" + decFormat.format(precioDia2)
+										+ " El ratio de cambio es " + decFormat.format(ratioDeCambio)
+										+ " (ratio umbral = " + UMBRAL_RATIO_ANOMALIAS + ")");
+							}
 						}
 					}
 				}
+
+			} else {
+				MY_LOGGER.error(
+						"Listas de distinto tamanio! Ejemplo de una fila: " + listaPreciosDia1.get(0).toString());
 			}
 
-		} else {
-			MY_LOGGER.error("Listas de distinto tamanio! Ejemplo de una fila: " + listaPreciosDia1.get(0).toString());
 		}
 
 		return detectado;

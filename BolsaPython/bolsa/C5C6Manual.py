@@ -191,7 +191,7 @@ if pathCsvEntradaEsCorrecto == False:
     print("El path del CSV de entrada NO es correcto: " + pathCsvCompleto + "   Saliendo...")
     exit(-1)
 
-check_file_and_exit(pathCsvEntradaEsCorrecto)
+check_file_and_exit(pathCsvCompleto)
 
 print((datetime.datetime.now()).strftime("%Y%m%d_%H%M%S") + " ----- leerFeaturesyTarget ------")
 print("PARAMS --> " + pathCsvCompleto + "|" + dir_subgrupo_img + "|" + str(compatibleParaMuchasEmpresas) + "|" + pathModeloOutliers + "|" + modoTiempo + "|" + str(modoDebug)
@@ -348,11 +348,11 @@ print("entradaFeaturesYTarget3 (filas con algun nulo borradas):" + str(entradaFe
 entradaFeaturesYTarget3.to_csv(pathCsvIntermedio + ".sololascompletas.csv", index=True, sep='|')  # NO BORRAR: UTIL para testIntegracion
 entradaFeaturesYTarget3.to_csv(pathCsvIntermedio + ".sololascompletas_INDICES.csv", columns=[])  # NO BORRAR: UTIL para testIntegracion
 
-# Limpiar OUTLIERS
+print("Limpiar OUTLIERS...")
 # URL: https://scikit-learn.org/stable/modules/outlier_detection.html
 if modoTiempo == "pasado":
     detector_outliers = IsolationForest()
-    df3aux = entradaFeaturesYTarget3.drop('TARGET', axis=1)
+    df3aux = entradaFeaturesYTarget3.drop('TARGET', axis=1, errors='ignore')
     detector_outliers.fit(df3aux)  # fit 10 trees
     pickle.dump(detector_outliers, open(pathModeloOutliers, 'wb'))
 else:
@@ -388,7 +388,7 @@ entradaFeaturesYTarget4.to_csv(pathCsvIntermedio + ".sinoutliers_INDICES.csv", c
 
 # ENTRADA: features (+ target)
 if modoTiempo == "pasado":
-    featuresFichero = entradaFeaturesYTarget4.drop('TARGET', axis=1)  # default
+    featuresFichero = entradaFeaturesYTarget4.drop('TARGET', axis=1, errors='ignore')  # default
     targetsFichero = (entradaFeaturesYTarget4[['TARGET']] == 1)  # default
 else:
     featuresFichero = entradaFeaturesYTarget4
