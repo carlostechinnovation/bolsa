@@ -233,7 +233,7 @@ if [ "$ACTIVAR_SG_Y_PREDICCION" = "S" ];  then
 		
 		if [ -d "$dir_subgrupo" ]; then  # Comprueba si existe el directorio
 		
-			echo "\n\n\n"$( date '+%Y%m%d_%H%M%S' )" -------- Subgrupo cuya carpeta es: ${dir_subgrupo} --------" >> ${LOG_MASTER}
+			echo $( date '+%Y%m%d_%H%M%S' )" ============ Subgrupo cuya carpeta es: ${dir_subgrupo} ========================================================================" >> ${LOG_MASTER}
 			
 			path_dir_pasado=$( echo ${dir_subgrupo} | sed "s/futuro/pasado/" )
 			echo "$path_dir_pasado"
