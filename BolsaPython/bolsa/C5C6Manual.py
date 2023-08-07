@@ -197,8 +197,9 @@ print((datetime.datetime.now()).strftime("%Y%m%d_%H%M%S") + " ----- leerFeatures
 print("PARAMS --> " + pathCsvCompleto + "|" + dir_subgrupo_img + "|" + str(compatibleParaMuchasEmpresas) + "|" + pathModeloOutliers + "|" + modoTiempo + "|" + str(modoDebug)
       + "|" + str(maxFilasEntrada))
 
-print("Cargar datos (CSV)...")
-entradaFeaturesYTarget = pd.read_csv(filepath_or_buffer=pathCsvCompleto, sep='|', error_bad_lines=False)
+print("Cargar datos (CSV): "+pathCsvCompleto)
+entradaFeaturesYTarget = pd.read_csv(filepath_or_buffer=pathCsvCompleto, sep='|',
+                                     error_bad_lines=False,warn_bad_lines=False)
 print("entradaFeaturesYTarget (LEIDO): " + str(entradaFeaturesYTarget.shape[0]) + " x " + str(entradaFeaturesYTarget.shape[1]))
 C5C6ManualFunciones.mostrarEmpresaConcreta(entradaFeaturesYTarget, DEBUG_EMPRESA, DEBUG_MES, DEBUG_DIA, 30)
 
@@ -278,6 +279,10 @@ missing = pd.DataFrame(entradaFeaturesYTarget2.isnull().sum()).rename(columns={0
 missing['percent'] = missing['total'] / len(entradaFeaturesYTarget2)  # Create a percentage missing
 missing_df = missing.sort_values('percent', ascending=False)
 missing_df = missing_df[missing_df['percent'] > UMBRAL_COLUMNAS_DEMASIADOS_NULOS]
+
+if 'TARGET' in missing_df.index:  # Por si acaso TARGET es una de las columnas, la excluimos
+    missing_df = missing_df.drop('TARGET')
+
 # print(tabulate(missing_df.head(), headers='keys', tablefmt='psql'))  # .drop('TARGET')
 
 # print("Pasado o Futuro: Transformacion en la que borro filas. Por tanto, guardo el indice...")
