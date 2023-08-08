@@ -68,11 +68,11 @@ maxFeatReducidas = sys.argv[3]
 maxFilasEntrada = sys.argv[4]
 desplazamientoAntiguedad = sys.argv[5]
 
-print("dir_subgrupo = %s" % dir_subgrupo)
-print("modoTiempo = %s" % modoTiempo)
-print("maxFeatReducidas = %s" % maxFeatReducidas)
-print("maxFilasEntrada = %s" % maxFilasEntrada)
-print("desplazamientoAntiguedad = %s" % desplazamientoAntiguedad)
+print("\tdir_subgrupo = %s" % dir_subgrupo)
+print("\tmodoTiempo = %s" % modoTiempo)
+print("\tmaxFeatReducidas = %s" % maxFeatReducidas)
+print("\tmaxFilasEntrada = %s" % maxFilasEntrada)
+print("\tdesplazamientoAntiguedad = %s" % desplazamientoAntiguedad)
 
 ##################################################################################################
 # DEBUG - EMPRESA vigilada en un dia-mes-año
@@ -119,17 +119,17 @@ umbralNecesarioCompensarDesbalanceo = 1  # Umbral de desbalanceo clase positiva/
 balancearConSmoteSoloTrain = True  # SMOTE sobre minoritaria y mayoritaria. Sólo aplicable a pasado-Train; no a test ni validacion ni a futuro.
 balancearUsandoDownsampling = False  # Downsampling de clase mayoritaria. Sólo aplicable a pasado-Train; no a test ni validacion ni a futuro.
 
-print("pathCsvCompleto = %s" % pathCsvCompleto)
-print("dir_subgrupo_img = %s" % dir_subgrupo_img)
-print("pathCsvIntermedio = %s" % pathCsvIntermedio)
-print("pathCsvReducido = %s" % pathCsvReducido)
-print("pathModeloOutliers = %s" % pathModeloOutliers)
-print("path_modelo_normalizador = %s" % path_modelo_normalizador)
-print("path_indices_out_capa5 = %s" % path_indices_out_capa5)
-print("path_modelo_reductor_features = %s" % path_modelo_reductor_features)
-print("BALANCEO - umbralNecesarioCompensarDesbalanceo = " + str(umbralNecesarioCompensarDesbalanceo))
-print("BALANCEO - balancearUsandoDownsampling = " + str(balancearUsandoDownsampling))
-print("BALANCEO - balancearConSmoteSoloTrain = " + str(balancearConSmoteSoloTrain))
+print("\tpathCsvCompleto = %s" % pathCsvCompleto)
+print("\tdir_subgrupo_img = %s" % dir_subgrupo_img)
+print("\tpathCsvIntermedio = %s" % pathCsvIntermedio)
+print("\tpathCsvReducido = %s" % pathCsvReducido)
+print("\tpathModeloOutliers = %s" % pathModeloOutliers)
+print("\tpath_modelo_normalizador = %s" % path_modelo_normalizador)
+print("\tpath_indices_out_capa5 = %s" % path_indices_out_capa5)
+print("\tpath_modelo_reductor_features = %s" % path_modelo_reductor_features)
+print("\tBALANCEO - umbralNecesarioCompensarDesbalanceo = " + str(umbralNecesarioCompensarDesbalanceo))
+print("\tBALANCEO - balancearUsandoDownsampling = " + str(balancearUsandoDownsampling))
+print("\tBALANCEO - balancearConSmoteSoloTrain = " + str(balancearConSmoteSoloTrain))
 
 #######################################################################################
 
@@ -152,10 +152,10 @@ fraccion_train = 0.50  # Fracción de datos usada para entrenar
 fraccion_test = 0.25  # Fracción de datos usada para testear (no es validación)
 fraccion_valid = 1.00 - (fraccion_train + fraccion_test)
 
-print("umbralCasosSuficientesClasePositiva (positivos en pasado de train+test+valid) = " + str(
+print("\tumbralCasosSuficientesClasePositiva (positivos en pasado de train+test+valid) = " + str(
     umbralCasosSuficientesClasePositiva))
-print("umbralProbTargetTrue = " + str(umbralProbTargetTrue))
-print("granProbTargetUno = " + str(granProbTargetUno))
+print("\tumbralProbTargetTrue = " + str(umbralProbTargetTrue))
+print("\tgranProbTargetUno = " + str(granProbTargetUno))
 
 ######### ID de subgrupo #######
 partes = dir_subgrupo.split("/")
@@ -174,12 +174,12 @@ dir_subgrupo_img = dir_subgrupo + "img/"
 pathCsvCompletoConFeaturesPython = dir_subgrupo + "COMPLETO_ConFeaturesPython.csv"
 pathColumnasConDemasiadosNulos = (dir_subgrupo + "columnasDemasiadosNulos.txt").replace("futuro", "pasado")  # lo guardamos siempre en el pasado
 
-print("dir_subgrupo: %s" % dir_subgrupo)
-print("modoTiempo: %s" % modoTiempo)
-print("desplazamientoAntiguedad: %s" % desplazamientoAntiguedad)
-print("pathCsvReducido: %s" % pathCsvReducido)
-print("dir_subgrupo_img = %s" % dir_subgrupo_img)
-print("umbralFeaturesCorrelacionadas = " + str(umbralFeaturesCorrelacionadas))
+print("\tdir_subgrupo: %s" % dir_subgrupo)
+print("\tmodoTiempo: %s" % modoTiempo)
+print("\tdesplazamientoAntiguedad: %s" % desplazamientoAntiguedad)
+print("\tpathCsvReducido: %s" % pathCsvReducido)
+print("\tdir_subgrupo_img = %s" % dir_subgrupo_img)
+print("\tumbralFeaturesCorrelacionadas = " + str(umbralFeaturesCorrelacionadas))
 
 ################## MAIN ###########################################################
 if __name__ != '__main__':
@@ -355,6 +355,12 @@ entradaFeaturesYTarget3.to_csv(pathCsvIntermedio + ".sololascompletas_INDICES.cs
 
 print("Limpiar OUTLIERS...")
 # URL: https://scikit-learn.org/stable/modules/outlier_detection.html
+# Pasado y futuro:
+print("Comprobando que el dataframe de entrada tenga datos...")
+num_filas_antesdeaouliers = entradaFeaturesYTarget3.shape[0]
+if (num_filas_antesdeaouliers == 0):
+    raise RuntimeError("Hay 0 filas en el dataframe de entrada: entradaFeaturesYTarget3 Salimos...")
+
 if modoTiempo == "pasado":
     detector_outliers = IsolationForest()
     df3aux = entradaFeaturesYTarget3.drop('TARGET', axis=1, errors='ignore')
@@ -367,7 +373,7 @@ else:
 print("Comprobando que el dataframe de entrada tenga datos...")
 num_filas = df3aux.shape[0]
 if (num_filas == 0):
-    raise RuntimeError("Hay 0 filas en el dataframe de entrada. Salimos...")
+    raise RuntimeError("Hay 0 filas en el dataframe de entrada: df3aux Salimos...")
 
 print("Cargando modelo detector de outliers: " + pathModeloOutliers)
 detector_outliers = pickle.load(open(pathModeloOutliers, 'rb'))
@@ -707,6 +713,7 @@ elif (modoTiempo == "futuro" and pathCsvReducido.endswith('.csv') and os.path.is
         ############### RECONSTRUCCION DEL CSV FINAL IMPORTANTE, viendo los ficheros de indices #################
         print(
             "Partiendo de COMPLETO.csv llevamos la cuenta de los indices pasando por REDUCIDO.csv y por TARGETS_PREDICHOS.csv para generar el CSV final...")
+        print("pathCsvCompleto: " + pathCsvCompleto)
         df_completo = pd.read_csv(pathCsvCompleto, sep='|')  # Capa 5 - Entrada
 
         print("df_completo: " + str(df_completo.shape[0]) + " x " + str(df_completo.shape[1]))

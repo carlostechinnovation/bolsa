@@ -41,14 +41,16 @@ for pathCsvCompleto in glob.iglob("/bolsa/" + modo + "/elaborados/*.csv"):
 # ----------- ENCODE CATEGORICAL FEAT---------------------------------
 from sklearn.preprocessing import OrdinalEncoder
 
-def codificarColumna(X, nombreCol, pathEncoderSalida):
+def codificarColumna(X, nombreCol, pathEncoder, modo):
+    print("ClusteringAlternativo.py->codificarColumna()->pathEncoder: " + pathEncoder)
     if nombreCol in X:
         if modo == "pasado":
             ord_enc1 = OrdinalEncoder()
             X[nombreCol+"_code"] = ord_enc1.fit_transform(X[[nombreCol]])
-            pickle.dump(ord_enc1, open(pathEncoderSalida, 'wb'))
+            pickle.dump(ord_enc1, open(pathEncoder, 'wb'))
+
         elif modo == "futuro":
-            ord_enc1 = pickle.load(open(pathEncoderSalida, 'rb'))
+            ord_enc1 = pickle.load(open(pathEncoder, 'rb'))
             valoresEntrenados = np.array(ord_enc1.categories_)
             valoresEntrada = X[nombreCol].unique()
             valoresNoSoportados = np.setdiff1d(valoresEntrada, valoresEntrenados)
@@ -69,9 +71,9 @@ def codificarColumna(X, nombreCol, pathEncoderSalida):
     return X
 
 
-X = codificarColumna(X, "industria", "/bolsa/" + modo + "/clustering_encoder_industria.dat")
-X = codificarColumna(X, "sector", "/bolsa/" + modo + "/clustering_encoder_sector.dat")
-X = codificarColumna(X, "geo", "/bolsa/" + modo + "/clustering_encoder_geo.dat")
+X = codificarColumna(X, "industria", "/bolsa/pasado/clustering_encoder_industria.dat", modo)
+X = codificarColumna(X, "sector", "/bolsa/pasado/clustering_encoder_sector.dat", modo)
+X = codificarColumna(X, "geo", "/bolsa/pasado/clustering_encoder_geo.dat", modo)
 # --------------------------------------------
 
 X.drop(X.columns[1], axis=1, inplace=True)  # borrar primera columna (es el ID)

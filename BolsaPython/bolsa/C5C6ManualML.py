@@ -304,9 +304,9 @@ def normalizar(path_modelo_normalizador, featuresFichero, modoTiempo, pathCsvInt
     """
     print((datetime.datetime.now()).strftime("%Y%m%d_%H%M%S") + " ----- NORMALIZACIÓN de las features ------")
     print("NORMALIZACION: hacemos que todas las features tengan distribución gaussiana media 0 y varianza 1. El target no se toca.")
-    print("featuresFichero: " + str(featuresFichero.shape[0]) + " x " + str(featuresFichero.shape[1]))
-    print("pathCsvIntermedio: " + pathCsvIntermedio)
-    print("path_modelo_normalizador: " + path_modelo_normalizador)
+    print("\tfeaturesFichero: " + str(featuresFichero.shape[0]) + " x " + str(featuresFichero.shape[1]))
+    print("\tpathCsvIntermedio: " + pathCsvIntermedio)
+    print("\tpath_modelo_normalizador: " + path_modelo_normalizador)
 
     # Vamos a normalizar z-score (media 0, std_dvt=1), pero yeo-johnson tiene un bug (https://github.com/scipy/scipy/issues/10821) que se soluciona sumando una constante a toda la matriz, lo cual no afecta a la matriz normalizada
     featuresFichero = featuresFichero + 1.015815
