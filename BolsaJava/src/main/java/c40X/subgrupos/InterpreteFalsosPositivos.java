@@ -51,7 +51,7 @@ public class InterpreteFalsosPositivos implements Serializable {
 		File tempFile = new File(PATH_FP_SUBGRUPOS);
 		boolean exists = tempFile.exists();
 		if (exists) {
-
+			System.out.println("Fichero de subgrupos con muchos FALSOS POSITIVOS: " + tempFile.getAbsolutePath());
 			List<List<String>> falsosPositivosSubgrupos = LimpiosUtils
 					.leerFicheroHaciaListasDeColumnas(PATH_FP_SUBGRUPOS, null);
 

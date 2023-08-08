@@ -17,15 +17,19 @@ print("=========== ANALISIS DE FALSOS POSITIVOS ==============")
 
 ##################################################################################################
 print("PARAMETROS: ")
+if len(sys.argv) <= 1:
+    print("Falta indicar los PARAMETROS. Saliendo...")
+    exit(-1)
+
 dir_realimentacion = sys.argv[1]  # /home/carloslinux/Desktop/GIT_BOLSA/bolsa/BolsaJava/realimentacion/
 ##################################################################################################
 
 dirPasadoSubgrupos = "/bolsa/pasado/subgrupos/"
 print("dirPasadoSubgrupos = " + dirPasadoSubgrupos)
 dirLogs = "/bolsa/logs/"
-print("dirLogs = " + dirLogs)
-numEmpresasSuficiente = 500
-print("numEmpresasSuficiente = " + str(numEmpresasSuficiente))
+print("\tdirLogs = " + dirLogs)
+numEmpresasSuficiente = 300
+print("\tnumEmpresasSuficiente = " + str(numEmpresasSuficiente))
 
 ##### RUTAS #####
 pathFilesFp = []
@@ -167,8 +171,8 @@ data2.reset_index(drop=True, inplace=True)
 data2 = data2[
     ["numvelasfp", "empresa", "numeroPredicciones", "ratioFalsosPositivos", "subgrupos"]]  # reordenar columnas
 print("FALSOSPOSITIVOS - EMPRESAS - Path: " + dirLogs + "falsospositivos_empresas.csv")
-data2.to_csv(dirLogs + "falsospositivos_empresas.csv", index=True, sep='|', float_format='%.4f')
-print(tabulate(data2.head(20).transpose(), headers='keys', tablefmt='psql'))
+data2.sort_values('empresa').to_csv(dirLogs + "falsospositivos_empresas.csv", index=True, sep='|', float_format='%.4f')
+print(tabulate(data2.sort_values('empresa').head(20), headers='keys', tablefmt='psql'))
 
 print("Top MESES con MENOS falsos positivos:")
 data1 = velasFP.groupby('mes')['dia'].count().to_frame().sort_values(by=['dia'], ascending=True)
@@ -195,7 +199,7 @@ data3['ratioFalsosPositivos'] = 100 * data3['numvelasfp'] / data3['numeroPredicc
 data3 = data3.sort_values(by=['ratioFalsosPositivos'], ascending=True).round(1)
 print("FALSOSPOSITIVOS - SUBGRUPOS - Path: " + dirLogs + "falsospositivos_subgrupos.csv")
 data3.to_csv(dirLogs + "falsospositivos_subgrupos.csv", index=True, sep='|', float_format='%.4f')
-print(tabulate(data3.transpose(), headers='keys', tablefmt='psql'))
+print(tabulate(data3, headers='keys', tablefmt='psql'))
 
 print("Esto podria estar correlado con el OVERFITTING y la metrica ESPERADA de cada SUBGRUPO.")
 
