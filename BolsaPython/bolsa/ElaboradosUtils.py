@@ -8,7 +8,7 @@ from tabulate import tabulate
 from pandas_profiling import ProfileReport
 
 #  Se usan los PERIODOS típicos que suelen usar los robots (consideraremos velas)
-periodosDParaParametros = [4, 7, 20, 50]
+periodosDParaParametros = [3, 4, 20]
 
 ########### FUNCIONES #######################################################################################
 """

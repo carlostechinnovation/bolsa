@@ -8,7 +8,7 @@ import java.util.List;
 
 public class LimpiosUtils {
 
-	public static final String DIR_LIMPIOS = "/bolsa/pasado/limpios/";
+	public static final String DIR_LIMPIOS = "/bolsa/futuro/limpios/";
 	public static final String P_INICIO = "20001111"; // default
 	public static final String P_FIN = "20991111"; // default
 	public static final String SEPARADOR = "|";

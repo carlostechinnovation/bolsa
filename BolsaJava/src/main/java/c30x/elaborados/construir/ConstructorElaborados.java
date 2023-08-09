@@ -130,24 +130,21 @@ public class ConstructorElaborados implements Serializable {
 			datosEntrada = new HashMap<String, HashMap<Integer, HashMap<String, String>>>();
 			ficheroGestionado = iterator.next();
 
-			if (ficheroGestionado.getAbsolutePath().contains("NASDAQ_FORTY.")) {// DEBUG
+			destino = directorioSalida + "/" + ficheroGestionado.getName();
 
-				destino = directorioSalida + "/" + ficheroGestionado.getName();
-
-				if (i % 50 == 1) {
-					MY_LOGGER.info("ENTRADA Empresa numero = " + i + " ENTRADA: " + ficheroGestionado.getAbsolutePath()
-							+ " | salida: " + destino);
-				}
-				i++;
-
-				datosEntrada = gestorFicheros.leeSoloParametrosNoElaboradosFicheroDeSoloUnaEmpresa(
-						ficheroGestionado.getPath(), Boolean.FALSE);
-
-				ordenNombresParametros = gestorFicheros.getOrdenNombresParametrosLeidos();
-				anadirParametrosElaboradosDeSoloUnaEmpresa(datosEntrada, ordenNombresParametros, S, X, R, M, F, B,
-						umbralSubidaPorVela, umbralMinimoGranVela, filtroDinamico1, filtroDinamico2);
-				gestorFicheros.creaFicheroDeSoloUnaEmpresa(datosEntrada, ordenNombresParametros, destino);
+			if (i % 50 == 1) {
+				MY_LOGGER.info("ENTRADA Empresa numero = " + i + " ENTRADA: " + ficheroGestionado.getAbsolutePath()
+						+ " | salida: " + destino);
 			}
+			i++;
+
+			datosEntrada = gestorFicheros
+					.leeSoloParametrosNoElaboradosFicheroDeSoloUnaEmpresa(ficheroGestionado.getPath(), Boolean.FALSE);
+
+			ordenNombresParametros = gestorFicheros.getOrdenNombresParametrosLeidos();
+			anadirParametrosElaboradosDeSoloUnaEmpresa(datosEntrada, ordenNombresParametros, S, X, R, M, F, B,
+					umbralSubidaPorVela, umbralMinimoGranVela, filtroDinamico1, filtroDinamico2);
+			gestorFicheros.creaFicheroDeSoloUnaEmpresa(datosEntrada, ordenNombresParametros, destino);
 
 		}
 
