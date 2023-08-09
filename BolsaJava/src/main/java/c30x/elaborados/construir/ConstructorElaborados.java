@@ -134,7 +134,7 @@ public class ConstructorElaborados implements Serializable {
 
 				destino = directorioSalida + "/" + ficheroGestionado.getName();
 
-				if (i % 10 == 1) {
+				if (i % 50 == 1) {
 					MY_LOGGER.info("ENTRADA Empresa numero = " + i + " ENTRADA: " + ficheroGestionado.getAbsolutePath()
 							+ " | salida: " + destino);
 				}

@@ -804,8 +804,6 @@ public class CrearDatasetsSubgrupos implements Serializable {
 				+ pathEmpresasTipo0.size() + " empresas");
 		MY_LOGGER.info("=================================================================");
 
-		// ----------------- SUBGRUPOS CON DEMASIADOS FALSOS POSITIVOS ----
-
 		// Almacenamiento del tipo de empresa en la lista
 		empresasPorTipo = new HashMap<Integer, ArrayList<String>>();
 		// Para el subgrupo 0 siempre se añade
@@ -965,7 +963,7 @@ public class CrearDatasetsSubgrupos implements Serializable {
 							+ empresasConTarget.keySet().size() + " empresas (mínimo deseado = " + minEmpresasPorCluster
 							+ ")." + " ==> SI SE GENERA DATASET");
 				} else {
-					MY_LOGGER.info("Cluster " + tipo + " tiene "+ empresasConTarget.keySet().size() + " empresas."
+					MY_LOGGER.info("Cluster " + tipo + " tiene " + empresasConTarget.keySet().size() + " empresas."
 							+ " En modo FUTURO, SIEMPRE SE GENERA DATASET.");
 				}
 
