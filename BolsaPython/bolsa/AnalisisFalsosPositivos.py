@@ -28,7 +28,7 @@ dirPasadoSubgrupos = "/bolsa/pasado/subgrupos/"
 print("dirPasadoSubgrupos = " + dirPasadoSubgrupos)
 dirLogs = "/bolsa/logs/"
 print("\tdirLogs = " + dirLogs)
-numEmpresasSuficiente = 200
+numEmpresasSuficiente = 300
 print("\tnumEmpresasSuficiente = " + str(numEmpresasSuficiente))
 
 ##### RUTAS #####
