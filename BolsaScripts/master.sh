@@ -55,14 +55,14 @@ DINAMICA2="${22}" # Default = 1
 ################## FUNCIONES #############################################################
 crearCarpetaSiNoExiste() {
 	param1=${1} 			#directorio
-	echo "Creando carpeta: $param1"
+	echo $( date "+%Y%m%d%H%M%S" )" Creando carpeta: $param1"
 	mkdir -p ${param1}
 	chmod 777 -Rf ${param1}
 }
 
 crearCarpetaSiNoExisteYVaciar() {
 	param1=${1} 			#directorio
-	echo "Creando carpeta: $param1"
+	echo $( date "+%Y%m%d%H%M%S" )" Creando carpeta: $param1"
 	mkdir -p ${param1}
 	chmod 777 -Rf ${param1}
 	rm -f ${param1}*
@@ -70,7 +70,7 @@ crearCarpetaSiNoExisteYVaciar() {
 
 crearCarpetaSiNoExisteYVaciarRecursivo() {
 	param1=${1} 			#directorio
-	echo "Creando carpeta: $param1"
+	echo $( date "+%Y%m%d%H%M%S" )" Creando carpeta: $param1"
 	mkdir -p ${param1}
 	chmod 777 -Rf ${param1}
 	rm -Rf ${param1}*
@@ -80,7 +80,7 @@ comprobarQueDirectorioNoEstaVacio(){
 	param1="${1}"
 	a=`(ls -lrt "${param1}"  | grep "total 0")`
 	if [ $? == "0" ]; then
-		echo "El directorio está vacio, pero debería estar lleno!!! DIR: ${param1}   Saliendo..."
+		echo $( date "+%Y%m%d%H%M%S" )" El directorio está vacio, pero debería estar lleno!!! DIR: ${param1}   Saliendo..."
 		exit -1
 	fi
 }

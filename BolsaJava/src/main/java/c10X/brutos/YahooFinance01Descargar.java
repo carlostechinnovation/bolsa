@@ -140,7 +140,7 @@ public class YahooFinance01Descargar implements Serializable {
 
 				out = YahooFinance01Descargar.descargarPagina(pathOut, true, URL_yahoo_ticker);
 				if (out.booleanValue() == false) {
-					MY_LOGGER.error("La descarga de datos estaticos 1 de " + mercado + " - " + ticker
+					MY_LOGGER.warn("La descarga de datos estaticos 1 de " + mercado + " - " + ticker
 							+ " ha fallado. No se DESCARGA esta empresa...");
 				}
 

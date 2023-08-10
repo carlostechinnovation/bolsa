@@ -232,13 +232,15 @@ def entrenarModeloModoPasado(dir_subgrupo, ds_train_f, ds_train_t, ds_test_f, ds
     from sklearn.model_selection import GroupKFold, RepeatedStratifiedKFold, cross_validate, StratifiedShuffleSplit
     from sklearn import metrics
     import lightgbm as lgb
+    from lightgbm import early_stopping
+    from lightgbm import log_evaluation
 
     nombreModelo = "lgbm"
 
     params = {'objective': 'binary',
               'learning_rate': 0.01,
               "boosting_type": "gbdt",
-              "metric": 'precision',
+              "metric": 'binary_logloss',
               'n_jobs': -1,
               'min_data_in_leaf': 5,
               'min_child_samples': 5,
@@ -251,7 +253,10 @@ def entrenarModeloModoPasado(dir_subgrupo, ds_train_f, ds_train_t, ds_test_f, ds
               }
 
     modelo = lgb.LGBMClassifier(**params, n_estimators=200)
-    modelo.fit(ds_train_f, ds_train_t, eval_set=[(ds_train_f, ds_train_t), (ds_test_f, ds_test_t)])
+    stopper = early_stopping(stopping_rounds=50, first_metric_only=False, verbose=True)
+    logger = log_evaluation(period=50)
+    modelo.fit(ds_train_f, ds_train_t.values.ravel(), eval_set=[(ds_train_f, ds_train_t.values.ravel()), (ds_test_f, ds_test_t.values.ravel())],
+               callbacks=[stopper, logger])
     #####################################################
 
     # ########################## INICIO DE XGBOOST SIN OPTIMIZAR ########################################################

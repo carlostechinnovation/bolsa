@@ -223,7 +223,7 @@ public class YahooFinance02Parsear implements Serializable {
 			out = parsearJson(mercado, ticker, pathBruto, pathBrutoCsv, soloVelas, modo);
 
 			if (out.booleanValue() == false) {
-				MY_LOGGER.error("La descarga de datos estaticos 1 de " + mercado + " - " + ticker
+				MY_LOGGER.warn("La descarga de datos estaticos 1 de " + mercado + " - " + ticker
 						+ " ha fallado. No se PARSEA esta empresa...");
 			}
 
