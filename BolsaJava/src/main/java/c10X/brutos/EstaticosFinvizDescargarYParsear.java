@@ -342,7 +342,7 @@ public class EstaticosFinvizDescargarYParsear {
 			out = true;
 
 		} catch (IOException e) {
-			MY_LOGGER.warn("descargarPaginaFinviz() - ERROR: " + e.getMessage());
+			MY_LOGGER.warn("descargarPaginaFinviz(): " + e.getMessage());
 		}
 
 		return out;
