@@ -115,7 +115,7 @@ public class CrearDatasetsSubgrupos implements Serializable {
 		String directorioOut = SubgruposUtils.DIR_SUBGRUPOS; // DEFAULT
 		String coberturaMinima = SubgruposUtils.MIN_COBERTURA_CLUSTER; // DEFAULT
 		String minEmpresasPorCluster = SubgruposUtils.MIN_EMPRESAS_POR_CLUSTER; // DEFAULT
-		String modoTiempo = BrutosUtils.PASADO; // DEFAULT
+		String modoTiempo = BrutosUtils.FUTURO; // DEFAULT
 		Integer filtroDinamico1 = ElaboradosUtils.DINAMICA1; // DEFAULT
 		Integer filtroDinamico2 = ElaboradosUtils.DINAMICA2; // DEFAULT
 		String realimentacion = SubgruposUtils.REALIMENTACION; // DEFAULT
@@ -978,12 +978,15 @@ public class CrearDatasetsSubgrupos implements Serializable {
 
 				ficheroOut = dirSubgrupoOut + "COMPLETO.csv";
 				ficheroListadoOut = dirSubgrupoOut + "EMPRESAS.txt";
-				MY_LOGGER.debug("CSV de subgrupo: " + ficheroOut);
-				MY_LOGGER.debug("Lista de empresas de subgrupo: " + ficheroListadoOut);
+				MY_LOGGER.info("CSV de subgrupo: " + ficheroOut);
+				MY_LOGGER.info("Lista de empresas de subgrupo: " + ficheroListadoOut);
 				csvWriter = new FileWriter(ficheroOut);
 				writerListadoEmpresas = new FileWriter(ficheroListadoOut);
 
-				for (int i = 0; i < pathFicheros.size(); i++) {
+				int numColumnasCabecera = -1;
+				String cabecera = "";
+
+				for (int i = 0; i < pathFicheros.size(); i++) { // cada ITERACION es una EMPRESA
 
 					esPrimeraLinea = Boolean.TRUE;
 					// Se lee el fichero de la empresa a meter en el CSV común
@@ -1003,13 +1006,32 @@ public class CrearDatasetsSubgrupos implements Serializable {
 							// La cabecera se toma de la primera línea del primer fichero
 							if (i == 0 && esPrimeraLinea) {
 								// En la primera línea está la cabecera de parámetros
+								cabecera = rowTratada;
+								// se cuenta el numero de campos
+								numColumnasCabecera = countElements(rowTratada);
+
 								// Se valida que el nombre recibido es igual que el usado en la constructora, y
 								// en dicho orden
 								csvWriter.append(rowTratada);
 
 							}
 							if (!esPrimeraLinea) {
-								// Para todos los ficheros, se escriben las filas 2 y siguientes
+								// Para todos los ficheros, se tratan las filas 2 y siguientes
+
+								// Se controla que el numero de campos sea el mismo que la cabecera
+								if (numColumnasCabecera != countElements(rowTratada)) {
+									MY_LOGGER.error("Al generar el fichero " + ficheroOut
+											+ " se ha detectado que algunas filas  no tienen los mismos campos ("
+											+ countElements(rowTratada) + ") que la cabecera (" + numColumnasCabecera
+											+ "):");
+									MY_LOGGER.error("Cabecera: " + cabecera);
+									MY_LOGGER.error("Fila: " + rowTratada);
+									MY_LOGGER.error("Se aborta la ejecución...");
+
+									System.exit(-1);
+								}
+
+								// Se escribe en fichero
 								csvWriter.append("\n" + rowTratada);
 							}
 							// Para las siguientes filas del fichero
@@ -1243,6 +1265,22 @@ public class CrearDatasetsSubgrupos implements Serializable {
 				+ " --> " + listWithoutDuplicates.size() + " empresas");
 
 		return listWithoutDuplicates;
+	}
+
+	/**
+	 * Count the number of elements in a given CSV string that uses a pipe (|) as a
+	 * separator.
+	 *
+	 * @param csv The input CSV string with | as separator.
+	 * @return The number of elements in the CSV string.
+	 */
+	public static int countElements(String csv) {
+		if (csv == null || csv.isEmpty()) {
+			return 0;
+		}
+
+		String[] elements = csv.split("\\|");
+		return elements.length;
 	}
 
 }

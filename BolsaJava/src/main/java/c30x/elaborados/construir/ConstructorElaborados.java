@@ -49,7 +49,7 @@ public class ConstructorElaborados implements Serializable {
 
 	// Se usan los periodos típicos que suelen usar los robots
 	// (consideraremos velas)
-	public final static Integer[] periodosDParaParametros = new Integer[] { 3, 4, 20 };
+	public final static Integer[] periodosDParaParametros = new Integer[] { 4, 7, 20, 50 };
 
 	// IMPORTANTE: se asume que los datos estan ordenados de menor a mayor
 	// antiguedad, y agrupados por empresa

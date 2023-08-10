@@ -2,7 +2,7 @@ package c40X.subgrupos;
 
 public class SubgruposUtils {
 
-	public static final String DIR_SUBGRUPOS = "/bolsa/pasado/subgrupos/";
+	public static final String DIR_SUBGRUPOS = "/bolsa/futuro/subgrupos/";
 	// Cobertura mínima en tanto por 100
 	public static final String MIN_COBERTURA_CLUSTER = "30";
 	public static final String MIN_EMPRESAS_POR_CLUSTER = "10";
