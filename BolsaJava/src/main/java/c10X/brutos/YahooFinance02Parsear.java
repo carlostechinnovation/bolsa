@@ -371,7 +371,7 @@ public class YahooFinance02Parsear implements Serializable {
 
 					out = true;
 				} else {
-					MY_LOGGER.error("Empresa=" + empresa + " tiene anomalias. No cogemos sus datos.");
+					MY_LOGGER.warn("Empresa=" + empresa + " tiene anomalias. No cogemos sus datos.");
 				}
 
 			}
