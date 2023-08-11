@@ -190,7 +190,7 @@ todasEmpresasYProbabsDFconInsiders = pd.merge(todasEmpresasYProbabsDF, entradaSG
 todasEmpresasYProbabsDFconInsiders = todasEmpresasYProbabsDFconInsiders.fillna(
     "")  # Sustituir NaN por cadena vacia para que quede bonito
 
-todasEmpresasConFP = pd.merge(todasEmpresasYProbabsDFconInsiders, falsosPositivosEmpresas, how="left", on="empresa")
+todasEmpresasConFP = pd.merge(todasEmpresasYProbabsDFconInsiders, pd.DataFrame(falsosPositivosEmpresas, columns=["numvelasfp", "empresa", "numeroPredicciones", "ratioFalsosPositivos", "subgrupos"]), how="left", on="empresa")
 todasEmpresasConFP = todasEmpresasConFP.fillna("")  # Sustituir NaN por cadena vacia para que quede bonito
 todasEmpresasConFP.rename(columns={"ratioFalsosPositivos": "ratioFalsosPositivos pasado (%)"},
                           inplace=True)  # renombrar columna
@@ -201,6 +201,36 @@ print("Escribiendo en: " + pathSalida)
 datosEnHtml = HTML(todasEmpresasConFP.to_html(index=False,
                                               classes='table table-striped table-bordered table-hover table-condensed'))
 contenidoHtml = datosEnHtml.data
+
+# ------ BUSCADOR ---------------
+# Add search textbox above the table
+search_box_html = """
+<input type="text" id="searchBox" placeholder="Buscar empresa:" style="margin-bottom: 10px;">
+<script>
+    document.getElementById("searchBox").addEventListener("keyup", function() {
+        let filter = this.value.toUpperCase();
+        let table = document.querySelector(".dataframe");
+        let trs = table.getElementsByTagName("tr");
+
+        for (let i = 1; i < trs.length; i++) {
+            let td = trs[i].getElementsByTagName("td")[0];
+            if (td) {
+                let txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    trs[i].style.display = "";
+                } else {
+                    trs[i].style.display = "none";
+                }
+            }
+        }
+    });
+</script>
+"""
+
+# Insert the search box and script before the table
+contenidoHtml = contenidoHtml.replace('<table border="1"', search_box_html + '<table border="1"')
+
+# ------------ ESTILOS CSS------------------
 contenidoHtml = contenidoHtml.replace("<td></td>",
                                       "<td style=\"background-color: lightsteelblue;\"></td>")  # Colores de celda vacia
 contenidoHtml = contenidoHtml.replace("<th>empresa</th>",
