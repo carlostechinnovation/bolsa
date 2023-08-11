@@ -12,8 +12,8 @@ import java.util.List;
  */
 public class InvertirFilasDeFichero {
 
-	public static final String NASDAQ_TICKERS_CSV = "src/main/resources/nasdaq_tickers_v2.csv";
-	public static final String SALIDA = "src/main/resources/nasdaq_tickers_invertidos_v2.csv";
+	public static final String NASDAQ_TICKERS_CSV = "src/main/resources/nasdaq_tickers_v3.csv";
+	public static final String SALIDA = "src/main/resources/nasdaq_tickers_invertidos_v3.csv";
 
 	public static void main(String[] args) throws IOException {
 		invertir(NASDAQ_TICKERS_CSV, SALIDA, Boolean.TRUE);

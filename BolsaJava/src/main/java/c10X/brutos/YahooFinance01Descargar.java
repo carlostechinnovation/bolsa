@@ -229,7 +229,7 @@ public class YahooFinance01Descargar implements Serializable {
 			out = true;
 
 		} catch (IOException e) {
-			MY_LOGGER.warn("descargarPagina(): " + e.getMessage());
+//			MY_LOGGER.warn("descargarPagina(): " + e.getMessage());
 		}
 
 		return out;
