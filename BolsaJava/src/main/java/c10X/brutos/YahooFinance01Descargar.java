@@ -124,7 +124,9 @@ public class YahooFinance01Descargar implements Serializable {
 				String pathOut = directorioOut + BrutosUtils.YAHOOFINANCE + "_" + mercado + "_" + ticker + ".txt";
 				String URL_yahoo_ticker = getUrlYahooFinance(ticker, modo, rango, velaYF);
 
-				if (i == 1) {
+				if (BrutosUtils.INFO_MOSTRAR_CADA_X_EMPRESAS == 1) {
+					MY_LOGGER.info("Empresa numero = " + i + " (" + ticker + ")");
+				} else if (i == 1) {
 					MY_LOGGER.info("Empresa numero = " + i + " (" + ticker + ")");
 				} else if (i % BrutosUtils.INFO_MOSTRAR_CADA_X_EMPRESAS == 1) {
 					MY_LOGGER.info("Empresa numero = " + (i + 1) + " (" + ticker + ")");
