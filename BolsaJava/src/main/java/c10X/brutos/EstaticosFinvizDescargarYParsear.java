@@ -9,6 +9,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.Charset;
@@ -227,6 +228,7 @@ public class EstaticosFinvizDescargarYParsear {
 	 */
 	public static int limpiarDuplicadosEnFicheroDesconocidos(String pathEntrada, String pathSalida) throws IOException {
 
+		// Contenido del fichero
 		BufferedReader reader = new BufferedReader(new FileReader(pathEntrada));
 		Set<String> lines = new HashSet<String>(10000);
 		String line;
@@ -235,6 +237,12 @@ public class EstaticosFinvizDescargarYParsear {
 		}
 		reader.close();
 
+		// Vaciar el fichero
+		PrintWriter printWriter = new PrintWriter(pathSalida);
+		printWriter.print("");
+		printWriter.close();
+
+		// Lista sin duplicados
 		int contador = 0;
 		BufferedWriter writer = new BufferedWriter(new FileWriter(pathSalida));
 		for (String unique : lines) {
