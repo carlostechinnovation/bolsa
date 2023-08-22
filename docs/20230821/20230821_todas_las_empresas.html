@@ -1,0 +1,728 @@
+<meta charset="UTF-8">
+
+<input type="text" id="searchBox" placeholder="Buscar empresa:" style="margin-bottom: 10px;">
+<script>
+    document.getElementById("searchBox").addEventListener("keyup", function() {
+        let filter = this.value.toUpperCase();
+        let table = document.querySelector(".dataframe");
+        let trs = table.getElementsByTagName("tr");
+
+        for (let i = 1; i < trs.length; i++) {
+            let td = trs[i].getElementsByTagName("td")[0];
+            if (td) {
+                let txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    trs[i].style.display = "";
+                } else {
+                    trs[i].style.display = "none";
+                }
+            }
+        }
+    });
+</script>
+<table border="1" class="dataframe table table-striped table-bordered table-hover table-condensed">
+  <thead>
+    <tr style="text-align: right;">
+      <th style="background-color: yellow;">empresa</th>
+      <th>SG_4</th>
+      <th>SG_5</th>
+      <th>SG_7</th>
+      <th>SG_10</th>
+      <th>SG_11</th>
+      <th>SG_12</th>
+      <th>SG_17</th>
+      <th>SG_18</th>
+      <th>SG_21</th>
+      <th>SG_23</th>
+      <th>SG_26</th>
+      <th>SG_35</th>
+      <th>SG_38</th>
+      <th>SG_39</th>
+      <th>SG_41</th>
+      <th>SG_42</th>
+      <th>SG_45</th>
+      <th>SG_46</th>
+      <th>SG_47</th>
+      <th>SG_48</th>
+      <th>SG_50</th>
+      <th>SG_51</th>
+      <th style="background-color: yellow;">prob_media</th>
+      <th>num_sg</th>
+      <th>I90D</th>
+      <th>I30D</th>
+      <th>I15D</th>
+      <th>I5D</th>
+      <th>numvelasfp</th>
+      <th>numeroPredicciones</th>
+      <th>ratioFalsosPositivos pasado (%)</th>
+      <th>subgrupos</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>OSUR</td>
+      <td>0.78</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.8</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.76</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.74</td>
+      <td>0.76</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.77</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.76</td>
+      <td>0.69</td>
+      <td>0.65</td>
+      <td>0.53</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.78</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.729091</td>
+      <td>11</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+    </tr>
+    <tr>
+      <td>GABC</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.77</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.62</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.61</td>
+      <td>0.7</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.63</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.68</td>
+      <td>0.56</td>
+      <td>0.67</td>
+      <td>0.58</td>
+      <td>0.59</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.641000</td>
+      <td>10</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+    </tr>
+    <tr>
+      <td>SBLK</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.63</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.630000</td>
+      <td>1</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+    </tr>
+    <tr>
+      <td>MOV</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.61</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.610000</td>
+      <td>1</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+    </tr>
+    <tr>
+      <td>RCMT</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.61</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.56</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.66</td>
+      <td>0.64</td>
+      <td>0.52</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.68</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.54</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.601429</td>
+      <td>7</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+    </tr>
+    <tr>
+      <td>CRVL</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.6</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.600000</td>
+      <td>1</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+    </tr>
+    <tr>
+      <td>RDWR</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.6</td>
+      <td>0.600000</td>
+      <td>1</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+    </tr>
+    <tr>
+      <td>PNRG</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.6</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.600000</td>
+      <td>1</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+    </tr>
+    <tr>
+      <td>CEIX</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.72</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.62</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.52</td>
+      <td>0.6</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.52</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.596000</td>
+      <td>5</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+    </tr>
+    <tr>
+      <td>TTI</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.67</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.62</td>
+      <td>0.56</td>
+      <td>0.51</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.52</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.56</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.573333</td>
+      <td>6</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+    </tr>
+    <tr>
+      <td>CCRN</td>
+      <td>0.61</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.62</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.51</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.54</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.570000</td>
+      <td>4</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+    </tr>
+    <tr>
+      <td>STKS</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.58</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.58</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.53</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.563333</td>
+      <td>3</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+    </tr>
+    <tr>
+      <td>GAN</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.58</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.65</td>
+      <td>0.52</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.51</td>
+      <td>0.56</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.53</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.54</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.555714</td>
+      <td>7</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+    </tr>
+    <tr>
+      <td>DKS</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.62</td>
+      <td>0.53</td>
+      <td>0.51</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.553333</td>
+      <td>3</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+    </tr>
+    <tr>
+      <td>GSM</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.55</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.550000</td>
+      <td>1</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+    </tr>
+    <tr>
+      <td>GBIO</td>
+      <td>0.55</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.550000</td>
+      <td>1</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+    </tr>
+    <tr>
+      <td>GLDD</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.56</td>
+      <td>0.62</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.51</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.51</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.54</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.548000</td>
+      <td>5</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+    </tr>
+    <tr>
+      <td>GEOS</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.53</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.51</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.520000</td>
+      <td>2</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+    </tr>
+    <tr>
+      <td>GIII</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.51</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td>0.510000</td>
+      <td>1</td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+      <td style="background-color: lightsteelblue;"></td>
+    </tr>
+  </tbody>
+</table>
