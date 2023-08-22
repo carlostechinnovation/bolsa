@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.helpers.NullEnumeration;
 
+import c10X.brutos.BrutosUtils;
 import c20X.limpios.LimpiosUtils;
 import c30x.elaborados.construir.Estadisticas.FINAL_NOMBRES_PARAMETROS_ELABORADOS;
 import c30x.elaborados.construir.Estadisticas.OTROS_PARAMS_ELAB;
@@ -132,7 +133,7 @@ public class ConstructorElaborados implements Serializable {
 
 			destino = directorioSalida + "/" + ficheroGestionado.getName();
 
-			if (i % 50 == 1) {
+			if (i % BrutosUtils.INFO_MOSTRAR_CADA_X_EMPRESAS == 1) {
 				MY_LOGGER.info("ENTRADA Empresa numero = " + i + " ENTRADA: " + ficheroGestionado.getAbsolutePath()
 						+ " | salida: " + destino);
 			}

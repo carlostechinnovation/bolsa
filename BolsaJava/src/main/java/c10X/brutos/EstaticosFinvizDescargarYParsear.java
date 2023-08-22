@@ -152,7 +152,9 @@ public class EstaticosFinvizDescargarYParsear {
 			String empresa = nasdaqEstaticos1.get(i).symbol;
 			noticias = new FinvizNoticiasEmpresa(BrutosUtils.MERCADO_NQ, empresa);
 
-			if (i % 50 == 1) {
+			if (i == 1) {
+				MY_LOGGER.info("Empresa numero = " + i + " (" + empresa + ")");
+			} else if (i % BrutosUtils.INFO_MOSTRAR_CADA_X_EMPRESAS == 1) {
 				MY_LOGGER.info("Empresa numero = " + (i + 1) + " (" + empresa + ")");
 			}
 

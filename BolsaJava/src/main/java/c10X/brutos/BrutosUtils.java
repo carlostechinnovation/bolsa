@@ -59,6 +59,8 @@ public class BrutosUtils implements Serializable {
 	public static final String COL_EMPRESA = "empresa", COL_ANIO = "anio", COL_MES = "mes", COL_DIA = "dia",
 			COL_EMPLEADOS = "Employees", COL_MARKET_CAP = "Market Cap";
 
+	public static final int INFO_MOSTRAR_CADA_X_EMPRESAS = 1;
+
 	/**
 	 * @param in
 	 * @param escala  Numero en escala "uno" o en "millones"

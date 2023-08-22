@@ -264,14 +264,12 @@ public class EstaticosNasdaqDescargarYParsear implements Serializable {
 					int prioritario = (tempArr.length > 8 && tempArr[8] != null && !tempArr[8].isEmpty()
 							&& tempArr[8].trim().equals("1")) ? 1 : 0;
 
-					if (empresaEnListaDesconocidos) {
-						MY_LOGGER.debug("Empresa de la que sabemos que desconocemos datos en alguna de las fuentes: "
-								+ tempArr[0]);
+					if (empresaEnListaDesconocidos && !tempArr[0].equals(BrutosUtils.NASDAQ_REFERENCIA)) {
+						MY_LOGGER.info("Empresa sin datos en alguna de las fuentes: " + tempArr[0]);
 
-					} else if (empresaConMuchosFalsosPositivos) {
+					} else if (empresaConMuchosFalsosPositivos && !tempArr[0].equals(BrutosUtils.NASDAQ_REFERENCIA)) {
 						MY_LOGGER.debug(
-								"Empresa que sabemos que otras veces ha provocado muchos falsos positivos (entonces ya no la usamos): "
-										+ tempArr[0]);
+								"Empresa con demasiados falsos positivos (entonces ya no la usamos): " + tempArr[0]);
 
 					} else if (!empresaYaDescargada && empresaEnRangoDeLetrasPermitido) {
 

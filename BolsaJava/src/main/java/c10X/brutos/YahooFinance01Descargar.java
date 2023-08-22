@@ -124,7 +124,9 @@ public class YahooFinance01Descargar implements Serializable {
 				String pathOut = directorioOut + BrutosUtils.YAHOOFINANCE + "_" + mercado + "_" + ticker + ".txt";
 				String URL_yahoo_ticker = getUrlYahooFinance(ticker, modo, rango, velaYF);
 
-				if (i % 50 == 1) {
+				if (i == 1) {
+					MY_LOGGER.info("Empresa numero = " + i + " (" + ticker + ")");
+				} else if (i % BrutosUtils.INFO_MOSTRAR_CADA_X_EMPRESAS == 1) {
 					MY_LOGGER.info("Empresa numero = " + (i + 1) + " (" + ticker + ")");
 				}
 				MY_LOGGER.debug("pathOut=" + pathOut);
@@ -140,7 +142,7 @@ public class YahooFinance01Descargar implements Serializable {
 
 				out = YahooFinance01Descargar.descargarPagina(pathOut, true, URL_yahoo_ticker);
 				if (out.booleanValue() == false) {
-					MY_LOGGER.warn("La descarga de datos estaticos 1 de " + mercado + " - " + ticker
+					MY_LOGGER.warn("La descarga numero " + i + " de datos estaticos 1 de " + mercado + " - " + ticker
 							+ " ha fallado. No se DESCARGA esta empresa...");
 				}
 
