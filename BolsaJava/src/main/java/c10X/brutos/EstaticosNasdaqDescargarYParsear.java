@@ -48,7 +48,7 @@ public class EstaticosNasdaqDescargarYParsear implements Serializable {
 	// En la lista DIRECTA de empresas, saltamos todas las empresas cuyo ticker
 	// empiece por una letra anterior a la indicada (orden alfabético).
 	// Ej: si letra=N, saltamos todas las empresas cuyo ticker empieza por A-N
-	public static String LETRA_INICIO_LISTA_DIRECTA = "G"; // Default= A
+	public static String LETRA_INICIO_LISTA_DIRECTA = "A"; // Default= A
 
 	private EstaticosNasdaqDescargarYParsear() {
 		super();

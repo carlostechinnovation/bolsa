@@ -22,6 +22,7 @@ if len(sys.argv) <= 1:
     exit(-1)
 
 dir_realimentacion = sys.argv[1]  # /home/carloslinux/Desktop/GIT_BOLSA/bolsa/BolsaJava/realimentacion/
+print("dir_realimentacion = " + dir_realimentacion)
 ##################################################################################################
 
 dirPasadoSubgrupos = "/bolsa/pasado/subgrupos/"
@@ -170,6 +171,9 @@ data2 = data2.sort_values(by=['ratioFalsosPositivos'], ascending=True).round(1)
 data2.reset_index(drop=True, inplace=True)
 data2 = data2[
     ["numvelasfp", "empresa", "numeroPredicciones", "ratioFalsosPositivos", "subgrupos"]]  # reordenar columnas
+
+data2['subgrupos'] = data2['subgrupos'].apply(lambda x: ';'.join(set(x.split(';')))) #quita duplicados en columna subgrupos
+
 print("FALSOSPOSITIVOS - EMPRESAS - Path: " + dirLogs + "falsospositivos_empresas.csv")
 data2.sort_values('empresa').to_csv(dirLogs + "falsospositivos_empresas.csv", index=True, sep='|', float_format='%.4f')
 print(tabulate(data2.sort_values('empresa').head(20), headers='keys', tablefmt='psql'))
